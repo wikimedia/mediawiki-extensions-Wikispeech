@@ -1,0 +1,11 @@
+{
+    "@metadata": {
+        "authors": [
+            "Sebastian Berlin"
+        ]
+    },
+    "wikispeech": "The name of the extension",
+    "wikispeech-desc": "{{desc|name=Wikispeech|url=https://www.mediawiki.org/wiki/Extension:Wikispeech}}",
+    "special-wikispeech-intro": "Description appearing on top of <tvar|1>Special:{{ll|Wikispeech}}</>.",
+    "special-wikispeech-title": "Title of the special page Special:Wikispeech"
+}

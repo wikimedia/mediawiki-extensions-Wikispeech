@@ -1,0 +1,47 @@
+{
+    "name": "Wikispeech",
+    "version": "0.0.1",
+    "author": [
+        "Sebastian Berlin"
+    ],
+    "url": "https://www.mediawiki.org/wiki/Extension:Wikispeech",
+    "namemsg": "wikispeech",
+    "descriptionmsg": "wikispeech-desc",
+    "license-name": "MIT",
+    "type": "other",
+    "manifest_version": 1,
+    "MessageDirs": {
+        "Wikispeech": [
+            "i18n"
+        ]
+    },
+    "AutoloadClasses": {
+        "SpecialWikispeech": "specials/SpecialPage.php",
+        "WikispeechHooks": "Hooks.php"
+    },
+    "ext.wikispeech": {
+        "scripts": [
+            "modules/ext.wikispeech.js"
+        ],
+        "styles": [
+            "modules/ext.wikispeech.css"
+        ],
+        "messages": [
+
+        ],
+        "dependencies": [
+
+        ]
+    },
+    "SpecialPages": {
+        "Wikispeech": "SpecialWikispeech"
+    },
+    "ExtensionMessagesFiles": {
+        "WikispeechAlias": "Wikispeech.alias.php"
+    },
+    "Hooks": {
+        "ResourceLoaderTestModules": [
+            "WikispeechHooks::onResourceLoaderTestModules"
+        ]
+    }
+}

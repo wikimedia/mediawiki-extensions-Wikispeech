@@ -1,0 +1,11 @@
+{
+    "@metadata": {
+        "authors": [
+            "Sebastian Berlin"
+        ]
+    },
+    "wikispeech": "Wikispeech",
+    "wikispeech-desc": "A text-to-speech tool to make Wikimedia's projects more accessible for people that for different reasons have difficulties reading.",
+    "special-wikispeech-intro": "Wikispeech",
+    "special-wikispeech-title": "Special page introduction."
+}

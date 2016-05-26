@@ -16,7 +16,7 @@
         ]
     },
     "AutoloadClasses": {
-        "SpecialWikispeech": "specials/SpecialPage.php",
+        "SpecialWikispeech": "specials/SpecialWikispeech.php",
         "WikispeechHooks": "Hooks.php"
     },
     "ext.wikispeech": {

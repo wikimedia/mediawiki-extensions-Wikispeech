@@ -10,7 +10,7 @@
     "license-name": "MIT",
     "type": "other",
     "manifest_version": 1,
-    "MessageDirs": {
+    "MessagesDirs": {
         "Wikispeech": [
             "i18n"
         ]

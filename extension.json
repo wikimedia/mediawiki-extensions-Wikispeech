@@ -19,19 +19,25 @@
         "SpecialWikispeech": "specials/SpecialWikispeech.php",
         "WikispeechHooks": "Hooks.php"
     },
-    "ext.wikispeech": {
-        "scripts": [
-            "modules/ext.wikispeech.js"
-        ],
-        "styles": [
-            "modules/ext.wikispeech.css"
-        ],
-        "messages": [
+    "ResourceModules": {
+        "ext.wikispeech": {
+            "scripts": [
+                "ext.wikispeech.js"
+            ],
+            "styles": [
+                "ext.wikispeech.css"
+            ],
+            "messages": [
 
-        ],
-        "dependencies": [
+            ],
+            "dependencies": [
 
-        ]
+            ]
+        }
+    },
+    "ResourceFileModulePaths": {
+        "localBasePath": "modules",
+        "remoteExtPath": "Wikispeech/modules"
     },
     "SpecialPages": {
         "Wikispeech": "SpecialWikispeech"

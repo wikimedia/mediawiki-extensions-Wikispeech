@@ -8,5 +8,5 @@ $specialPageAliases = array();
 
 /** English (English) */
 $specialPageAliases['en'] = array(
-	'wikispeech' => array( 'wikispeech' ),
+	'Wikispeech' => array( 'Wikispeech' ),
 );

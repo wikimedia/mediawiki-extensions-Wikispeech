@@ -18,12 +18,12 @@ class WikispeechHooks {
 	public static function onResourceLoaderTestModules( array &$testModules, ResourceLoader &$resourceLoader ) {
 		$testModules['qunit']['ext.wikispeech.tests'] = [
 			'scripts' => [
-				'tests/ext.Wikispeech.test.js'
+				'tests/Wikispeech.test.js'
 			],
 			'dependencies' => [
 				'ext.wikispeech'
 			],
-			'localBasePath' => __DIR__ . '/..',
+			'localBasePath' => __DIR__,
 			'remoteExtPath' => 'Wikispeech',
 		];
 		return true;

@@ -1,0 +1,9 @@
+Andersson, John <john.andersson@wikimedia.se>
+Berlin, Sebastian <sebastian.berlin@wikimedia.se>
+Berthelsen, Harald <harald@stts.se>
+Beskow, Jonas <beskow@kth.se>
+Costa, André <andre.costa@wikimedia.se>
+Edlund, Jens <edlund@speech.kth.se>
+Gustafson, Joakim <jocke@speech.kth.se>
+Lindberg, Nikolaj <nikolaj@stts.se>
+Lindgren, Hanna <hanna@stts.se>

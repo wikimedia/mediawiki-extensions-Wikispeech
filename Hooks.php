@@ -1,11 +1,11 @@
 <?php
+
 /**
- * Wikispeech extension hooks
- *
  * @file
  * @ingroup Extensions
- * @license MIT
+ * @license GPL-3.0+
  */
+
 class WikispeechHooks {
 	/**
 	 * Conditionally register the unit testing module for the ext.wikispeech module

@@ -15,7 +15,10 @@ class WikispeechHooks {
 	 * @param ResourceLoader $resourceLoader The reference to the resource loader
 	 * @return true
 	 */
-	public static function onResourceLoaderTestModules( array &$testModules, ResourceLoader &$resourceLoader ) {
+	public static function onResourceLoaderTestModules(
+		array &$testModules,
+		ResourceLoader &$resourceLoader
+	) {
 		$testModules['qunit']['ext.wikispeech.tests'] = [
 			'scripts' => [
 				'tests/Wikispeech.test.js'
@@ -28,6 +31,4 @@ class WikispeechHooks {
 		];
 		return true;
 	}
-
-
 }

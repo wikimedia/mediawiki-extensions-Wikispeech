@@ -37,9 +37,11 @@ class Cleaner {
 		// @codingStandardsIgnoreStart
 		$wrappedText = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><dummy>' . $markedUpText . '</dummy></head>';
 		// @codingStandardsIgnoreEnd
+		libxml_use_internal_errors( true );
 		$dom->loadHTML(
 			$wrappedText,
-			LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED );
+			LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED
+		);
 		$cleanedText = self::getTextContent( $dom->documentElement );
 		return $cleanedText;
 	}

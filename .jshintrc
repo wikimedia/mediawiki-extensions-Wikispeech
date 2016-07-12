@@ -2,7 +2,9 @@
 	"predef": [
 		"mediaWiki",
 		"jQuery",
-		"QUnit"
+		"QUnit",
+		"sinon",
+		"JSON"
 	],
 
 	// Enforcing

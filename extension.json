@@ -1,53 +1,59 @@
 {
-    "name": "Wikispeech",
-    "version": "0.0.1",
-    "author": [
-        "Sebastian Berlin"
-    ],
-    "url": "https://www.mediawiki.org/wiki/Extension:Wikispeech",
-    "namemsg": "wikispeech",
-    "descriptionmsg": "wikispeech-desc",
-    "license-name": "GPL-2.0+",
-    "type": "other",
-    "manifest_version": 1,
-    "MessagesDirs": {
-        "Wikispeech": [
-            "i18n"
-        ]
-    },
-    "AutoloadClasses": {
-        "SpecialWikispeech": "specials/SpecialWikispeech.php",
-        "WikispeechHooks": "Hooks.php"
-    },
-    "ResourceModules": {
-        "ext.wikispeech": {
-            "scripts": [
-                "ext.wikispeech.js"
-            ],
-            "styles": [
-                "ext.wikispeech.css"
-            ],
-            "messages": [
+	"name": "Wikispeech",
+	"version": "0.0.1",
+	"author": [
+		"Sebastian Berlin"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Wikispeech",
+	"namemsg": "wikispeech",
+	"descriptionmsg": "wikispeech-desc",
+	"license-name": "GPL-2.0+",
+	"type": "other",
+	"manifest_version": 1,
+	"MessagesDirs": {
+		"Wikispeech": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"SpecialWikispeech": "specials/SpecialWikispeech.php",
+		"WikispeechHooks": "Hooks.php"
+	},
+	"ResourceModules": {
+		"ext.wikispeech": {
+			"scripts": [
+				"ext.wikispeech.js"
+			],
+			"styles": [
+				"ext.wikispeech.css"
+			],
+			"messages": [
 
-            ],
-            "dependencies": [
+			],
+			"dependencies": [
 
-            ]
-        }
-    },
-    "ResourceFileModulePaths": {
-        "localBasePath": "modules",
-        "remoteExtPath": "Wikispeech/modules"
-    },
-    "SpecialPages": {
-        "Wikispeech": "SpecialWikispeech"
-    },
-    "ExtensionMessagesFiles": {
-        "WikispeechAlias": "Wikispeech.alias.php"
-    },
-    "Hooks": {
-        "ResourceLoaderTestModules": [
-            "WikispeechHooks::onResourceLoaderTestModules"
-        ]
-    }
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "Wikispeech/modules"
+	},
+	"SpecialPages": {
+		"Wikispeech": "SpecialWikispeech"
+	},
+	"ExtensionMessagesFiles": {
+		"WikispeechAlias": "Wikispeech.alias.php"
+	},
+	"Hooks": {
+		"ResourceLoaderTestModules": [
+			"WikispeechHooks::onResourceLoaderTestModules"
+		],
+		"ParserAfterTidy": [
+			"WikispeechHooks::onParserAfterTidy"
+		],
+		"BeforePageDisplay": [
+			"WikispeechHooks::onBeforePageDisplay"
+		]
+	}
 }

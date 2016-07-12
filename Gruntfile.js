@@ -13,7 +13,8 @@ module.exports = function ( grunt ) {
 			},
 			all: [
 				'*.js',
-				'modules/**/*.js'
+				'modules/**/*.js',
+				'tests/**/*.js'
 			]
 		},
 		jscs: {
@@ -29,6 +30,14 @@ module.exports = function ( grunt ) {
 		}
 	} );
 
-	grunt.registerTask( 'test', [ 'jshint', 'jscs', 'jsonlint', 'banana' ] );
+	grunt.registerTask(
+		'test',
+		[
+			'jshint',
+			'jscs',
+			'jsonlint',
+			'banana'
+		]
+	);
 	grunt.registerTask( 'default', 'test' );
 };

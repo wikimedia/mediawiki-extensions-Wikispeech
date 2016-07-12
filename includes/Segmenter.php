@@ -18,7 +18,7 @@ class Segmenter {
 	 * @return array The segments found.
 	 */
 
-	public function segmentSentences( $text ) {
+	public static function segmentSentences( $text ) {
 		$matches = [];
 		// Find the indices of all characters that may be sentence final.
 		preg_match_all(
@@ -57,10 +57,16 @@ class Segmenter {
 	 * @return bool True if the character is sentence final, else false.
 	 */
 
-	private function isSentenceFinal( $string, $index ) {
+	private static function isSentenceFinal( $string, $index ) {
 		$character = $string[ $index ];
-		$nextCharacter = $string[ $index + 1 ];
-		$characterAfterNext = $string[ $index + 2 ];
+		$nextCharacter = null;
+		if ( strlen( $string ) > $index + 1 ) {
+			$nextCharacter = $string[ $index + 1 ];
+		}
+		$characterAfterNext = null;
+		if ( strlen( $string ) > $index + 2 ) {
+			$characterAfterNext = $string[ $index + 2 ];
+		}
 		if ( $character == "\n" ) {
 			// A newline is always sentence final.
 			return true;
@@ -86,7 +92,7 @@ class Segmenter {
 	 * @return bool True if the entire string is upper case, else false.
 	 */
 
-	private function isUpper( $string ) {
+	private static function isUpper( $string ) {
 		return mb_strtoupper( $string, 'UTF-8' ) == $string;
 	}
 
@@ -99,7 +105,7 @@ class Segmenter {
 	 * are discarded.
 	 */
 
-	public function segmentParagraphs( $text ) {
+	public static function segmentParagraphs( $text ) {
 		$segments = [];
 		foreach ( explode( "\n", $text ) as $segment ) {
 			if ( strlen( trim( $segment ) ) > 0 ) {

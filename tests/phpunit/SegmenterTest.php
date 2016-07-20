@@ -1,12 +1,12 @@
 <?php
 
-require_once __DIR__ . '/../../includes/Segmenter.php';
-
 /**
  * @file
  * @ingroup Extensions
- * @license GPL-3.0+
+ * @license GPL-2.0+
  */
+
+require_once __DIR__ . '/../../includes/Segmenter.php';
 
 class SegmenterTest extends MediaWikiTestCase {
 

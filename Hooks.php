@@ -3,7 +3,7 @@
 /**
  * @file
  * @ingroup Extensions
- * @license GPL-3.0+
+ * @license GPL-2.0+
  */
 
 class WikispeechHooks {

@@ -7,18 +7,6 @@
  */
 
 class Cleaner {
-	// HTML tags that should be removes altogether. If value is null, there
-	// are no further criteria. If the value contains 'class', the tag
-	// also needs to have that class to be removed.
-	private static $REMOVE_TAGS = [
-		'editsection' => null,
-		'toc' => null,
-		'table' => null,
-		'sup' => [ 'class' => 'reference' ],
-		'div' => [ 'class' => 'thumb' ],
-		'ul' => null,
-		'ol' => null
-	];
 
 	/**
 	 * Clean HTML tags by removing some altogether and keeping content
@@ -69,33 +57,63 @@ class Cleaner {
 	}
 
 	/**
-	 * Check if a node matches criteria for removal.
+	 * Check if a tag matches criteria for removal.
+	 *
+	 * The criteria are defined by $wgWikispeechRemoveTags, which is a map
+	 * where the keys are tag names. If the value is true, the tag will be
+	 * removed. If the value is an array, it defines further criteria,
+	 * currently only class name, which needs to match for the tag to be
+	 * removed.
+	 *
+	 * The value may be false, which means the tag won't be removed. This is to
+	 * allow overriding default values in LocalSettings.php, but is otherwise
+	 * not required.
 	 *
 	 * @since 0.0.1
-	 * @param DOMNode $node The node to check.
-	 * @return bool true if the node match removal criteria, otherwise false.
+	 * @param DOMNode $node The node for the tag to check.
+	 * @return bool true if the tag match removal criteria, otherwise false.
 	 */
 
 	private static function matchesRemove( $node ) {
-		if ( !array_key_exists( $node->nodeName, self::$REMOVE_TAGS ) ) {
+		global $wgWikispeechRemoveTags;
+		if ( !array_key_exists( $node->nodeName, $wgWikispeechRemoveTags ) ) {
 			// The node name isn't found in the removal list.
 			return false;
 		}
-		$removeCriteria = self::$REMOVE_TAGS[ $node->nodeName ];
-		if ( $removeCriteria == null ) {
-			// Node name matches and there are no extra criteria.
+		$removeCriteria = $wgWikispeechRemoveTags[ $node->nodeName ];
+		if ( $removeCriteria === true ) {
+			// Node name is found and there are no extra criteria.
 			return true;
 		}
+		if ( self::nodeHasClass( $node, $removeCriteria[ 'class' ] ) ) {
+			// Node name and class name match.
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check if a node has a class attribute, containing a string.
+	 *
+	 * Since this is for checking HTML tag classes, the class attribute, if
+	 * present, is assumed to be a string of substrings, sepparated by spaces.
+	 *
+	 * @since 0.0.1
+	 * @param DOMNode $node The node to check.
+	 * @param string $className The name of the class to check for.
+	 * @return bool true if the node's class attribute contain $className,
+	 * otherwise false.
+	 */
+
+	private static function nodeHasClass( $node, $className ) {
 		$classNode = $node->attributes->getNamedItem( 'class' );
-		if ( array_key_exists( 'class', $removeCriteria ) &&
-			$classNode != null
-		) {
-			$classString = $classNode->nodeValue;
-			$nodeClasses = explode( ' ', $classString );
-			if ( in_array( $removeCriteria[ 'class' ], $nodeClasses ) ) {
-				// Node name and class name match.
-				return true;
-			}
+		if ( $classNode == null ) {
+			return false;
+		}
+		$classString = $classNode->nodeValue;
+		$nodeClasses = explode( ' ', $classString );
+		if ( in_array( $className, $nodeClasses ) ) {
+			return true;
 		}
 		return false;
 	}

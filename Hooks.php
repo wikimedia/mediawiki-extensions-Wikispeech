@@ -51,7 +51,9 @@ class WikispeechHooks {
 	 */
 
 	public static function onParserAfterTidy( &$parser, &$text ) {
-		if ( $parser->getTitle()->getNamespace() == NS_MAIN && $text != "" ) {
+		if ( self::isValidNamespace( $parser->getTitle()->getNamespace() ) &&
+			 $text != ""
+		) {
 			wfDebugLog(
 				'Wikispeech',
 				'HTML from onParserAfterTidy(): ' . $text
@@ -74,6 +76,25 @@ class WikispeechHooks {
 	}
 
 	/**
+	 * Test if a namespace is valid for wikispeech.
+	 *
+	 * @param int $namespace The namespace id to test.
+	 * @return bool true if the namespace id matches one defined in
+	 *  $wgWikispeechNamespaces, else false.
+	 */
+
+	private static function isValidNamespace( $namespace ) {
+		global $wgWikispeechNamespaces;
+		foreach ( $wgWikispeechNamespaces as $namespaceId ) {
+			if ( defined( $namespaceId ) &&
+				$namespace == constant( $namespaceId )
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
 	 * Hook for BeforePageDisplay.
 	 *
 	 * Enables JavaScript.
@@ -88,5 +109,11 @@ class WikispeechHooks {
 		Skin &$skin
 	) {
 		$out->addModules( [ 'ext.wikispeech' ] );
+	}
+
+	public static function onResourceLoaderGetConfigVars( &$vars ) {
+		global $wgWikispeechServerUrl;
+		$vars['wgWikispeechServerUrl'] = $wgWikispeechServerUrl;
+		return true;
 	}
 }

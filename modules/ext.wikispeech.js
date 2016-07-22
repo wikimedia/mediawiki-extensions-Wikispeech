@@ -170,12 +170,12 @@
 		 */
 
 		this.requestTts = function ( text, callback ) {
-			var request, parameters, url, response;
+			var request, parameters, serverUrl, response;
 
 			request = new XMLHttpRequest();
 			request.overrideMimeType( 'text/json' );
-			url = 'https://morf.se/wikispeech/';
-			request.open( 'POST', url, true );
+			serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
+			request.open( 'POST', serverUrl, true );
 			request.setRequestHeader(
 				'Content-type',
 				'application/x-www-form-urlencoded'
@@ -191,7 +191,7 @@
 				response = JSON.parse( request.responseText );
 				callback( response );
 			};
-			mw.log( 'Sending request: ' + url + '?' + parameters );
+			mw.log( 'Sending request: ' + serverUrl + '?' + parameters );
 			request.send( parameters );
 		};
 	}

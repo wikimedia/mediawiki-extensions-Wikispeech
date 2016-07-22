@@ -54,6 +54,22 @@
 		],
 		"BeforePageDisplay": [
 			"WikispeechHooks::onBeforePageDisplay"
+		],
+		"ResourceLoaderGetConfigVars": [
+			"WikispeechHooks::onResourceLoaderGetConfigVars"
 		]
+	},
+	"config": {
+		"WikispeechServerUrl": "https://morf.se/wikispeech/",
+		"WikispeechRemoveTags": {
+			"editsection": true,
+			"toc": true,
+			"table": true,
+			"sup": { "class": "reference" },
+			"div": { "class": "thumb" },
+			"ul": true,
+			"ol": true
+		},
+		"WikispeechNamespaces": [ "NS_MAIN" ]
 	}
 }

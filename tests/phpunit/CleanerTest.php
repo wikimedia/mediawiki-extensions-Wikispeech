@@ -9,6 +9,17 @@
 require_once __DIR__ . '/../../includes/Cleaner.php';
 
 class CleanerTest extends MediaWikiTestCase {
+	protected function setUp() {
+		parent::setUp();
+		global $wgWikispeechRemoveTags;
+		$wgWikispeechRemoveTags = [
+			'table' => true,
+			'sup' => [ 'class' => 'reference' ],
+			'editsection' => true,
+			'h2' => false
+		];
+	}
+
 	public function testCleanTags() {
 		$markedUpText = '<i>Blonde on Blonde</i>';
 		$expectedText = 'Blonde on Blonde';
@@ -57,9 +68,7 @@ class CleanerTest extends MediaWikiTestCase {
 	}
 
 	public function testRemoveTagsAltogether() {
-		// @codingStandardsIgnoreStart
 		$markedUpText = '<table>Remove this table, please.</table>';
-		// @codingStandardsIgnoreEnd
 		$expectedText = '';
 		$this->assertTextCleaned( $expectedText, $markedUpText );
 	}
@@ -67,6 +76,12 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testRemoveTagsWithCertainClass() {
 		$markedUpText = '<sup class="reference"><a>[1]</a>Also remove this.</sup>';
 		$expectedText = '';
+		$this->assertTextCleaned( $expectedText, $markedUpText );
+	}
+
+	public function testDontRemoveTagsWhichCriteriaAreFalse() {
+		$markedUpText = '<h2>Contents</h2>';
+		$expectedText = 'Contents';
 		$this->assertTextCleaned( $expectedText, $markedUpText );
 	}
 
@@ -88,7 +103,7 @@ class CleanerTest extends MediaWikiTestCase {
 
 	public function testCleanNestedTagsWhereSomeAreRemovedAndSomeAreKept() {
 		// @codingStandardsIgnoreStart
-		$markedUpText = '<h2><span class="mw-headline" id="Recording_sessions">Recording sessions</span><mw:editsection page="Test Page" section="1">Recording sessions</mw:editsection></h2>';
+		$markedUpText = '<h2><span class="mw-headline" id="Recording_sessions">Recording sessions</span><mw:editsection page="Test Page" section="1">Recording sessions *REMOVE THIS*</mw:editsection></h2>';
 		// @codingStandardsIgnoreEnd
 		$expectedText = 'Recording sessions';
 		$this->assertTextCleaned( $expectedText, $markedUpText );

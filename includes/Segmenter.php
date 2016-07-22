@@ -6,49 +6,118 @@
  * @license GPL-2.0+
  */
 
+require_once 'CleanedTag.php';
+
 class Segmenter {
 
 	/**
-	 * Divide a string into segments, where each segment is a sentence. A
-	 * sentence is here defined as a number of tokens ending with a dot (full
-	 * stop) or a newline. Headings are also considered sentences.
+	 * Divide a cleaned content array into segments, one for each sentence.
+	 *
+	 * A segment is an array with the keys "content" and "position". Content is
+	 * an array of CleanedTags and strings. Position is the start
+	 * position, in the HTML, for the first node in content, i.e. the start
+	 * position of the segment.
+	 *
+	 * A sentence is here defined as a number of tokens ending with a dot (full
+	 * stop). Headings are also considered sentences.
 	 *
 	 * @since 0.0.1
-	 * @param string $text A string to segment.
-	 * @return array The segments found.
+	 * @param array $cleanedContent An array of cleaned content, as returned by
+	 *  Cleaner::cleanHtml().
+	 * @return array An array of segments, each containing the nodes in that
+	 *  segment and the start position in the HTML.
 	 */
 
-	public static function segmentSentences( $text ) {
-		$matches = [];
-		// Find the indices of all characters that may be sentence final.
-		preg_match_all(
-			"/(.|\n)/",
-			$text,
-			$matches,
-			PREG_OFFSET_CAPTURE );
-		$start = 0;
+	public static function segmentSentences( $cleanedContent ) {
 		$segments = [];
-		foreach ( $matches[ 0 ] as $match ) {
-			$index = $match[ 1 ];
-			if ( self::isSentenceFinal( $text, $index ) ) {
-				$length = $index - $start + 1;
-				$segment = trim( substr( $text, $start, $length ) );
-				if ( $segment != '' ) {
-					// Strings that are only whitespaces are not considered
-					// sentences.
-					array_push( $segments, $segment );
-					// Start the next sentence after the sentence final
-					// character.
-					$start = $index + 1;
-				}
+		$currentSegment = [
+			'position' => 0,
+			'content' => []
+		];
+		foreach ( $cleanedContent as $content ) {
+			if ( $content instanceof CleanedTag ) {
+				// Non-text nodes are always added to the current segment, as
+				// they can't contain segment breaks.
+				array_push( $currentSegment['content'], $content );
+			} else {
+				self::addSegments(
+					$segments,
+					$currentSegment,
+					$content
+				);
 			}
+		}
+		if ( $currentSegment['content'] ) {
+			// Add the last segment, unless it's empty.
+			array_push( $segments, $currentSegment );
 		}
 		return $segments;
 	}
 
 	/**
-	 * Tests if a character is at the end of a sentence. Dots in abbreviations
-	 * should only be counted when they also are sentence final. For example:
+	 * Add segments for a string.
+	 *
+	 * Looks for sentence final string (strings which a sentence ends
+	 * with). When a sentence final string is found, it's sentence is
+	 * added to the $currentSegment, which in turn is added to
+	 * $segments. An empty array is created as the new
+	 * $currentSegment.
+	 *
+	 * When the end of string is reached, the remaining string is
+	 * added to $currentSegment. Subsequent segment parts will be
+	 * added to this semgent.
+	 *
+	 * @since 0.0.1
+	 * @param array $segments The segment array to add new segments to.
+	 * @param array $currentSegment The segment under construction, to which
+	 *  the first found string segment will be added.
+	 * @param string $text The string to segment.
+	 */
+
+	private static function addSegments(
+		&$segments,
+		&$currentSegment,
+		$text
+	) {
+		// Find the indices of all characters that may be sentence final.
+		preg_match_all(
+			"/\./",
+			$text,
+			$matches,
+			PREG_OFFSET_CAPTURE
+		);
+		$position = 0;
+		foreach ( $matches[0] as $match ) {
+			$sentenceFinalPosition = $match[1];
+			if ( self::isSentenceFinal( $text, $sentenceFinalPosition ) ) {
+				$length = $sentenceFinalPosition - $position + 1;
+				$segmentText = substr( $text, $position, $length );
+				if ( trim( $segmentText ) != '' ) {
+					// Don't add segments with only whitespaces.
+					array_push( $currentSegment['content'], $segmentText );
+					$position = $sentenceFinalPosition + 1;
+					array_push( $segments, $currentSegment );
+					$nextSegmentPosition = $currentSegment['position'] +
+						self::getSegmentLength( $currentSegment['content'] );
+					$currentSegment = [
+						'position' => $nextSegmentPosition,
+						'content' => []
+					];
+				}
+			}
+		}
+		$remainder = substr( $text, $position );
+		if ( $remainder ) {
+			// Add any remaining part of the string.
+			array_push( $currentSegment['content'], $remainder );
+		}
+	}
+
+	/**
+	 * Test if a character is at the end of a sentence.
+	 *
+	 * Dots in abbreviations should only be counted when they also are sentence
+	 * final. For example:
 	 * "Monkeys, penguins etc.", but not "Monkeys e.g. baboons".
 	 *
 	 * @since 0.0.1
@@ -58,26 +127,23 @@ class Segmenter {
 	 */
 
 	private static function isSentenceFinal( $string, $index ) {
-		$character = $string[ $index ];
+		$character = $string[$index];
 		$nextCharacter = null;
 		if ( strlen( $string ) > $index + 1 ) {
-			$nextCharacter = $string[ $index + 1 ];
+			$nextCharacter = $string[$index + 1];
 		}
 		$characterAfterNext = null;
 		if ( strlen( $string ) > $index + 2 ) {
-			$characterAfterNext = $string[ $index + 2 ];
+			$characterAfterNext = $string[$index + 2];
 		}
-		if ( $character == "\n" ) {
-			// A newline is always sentence final.
-			return true;
-		} elseif (
+		if (
 			$character == '.' &&
-			$nextCharacter == ' ' && self::isUpper( $characterAfterNext ) ||
-			$nextCharacter == "\n" ||
-			$nextCharacter == ''
+			( $nextCharacter == ' ' && self::isUpper( $characterAfterNext ) ||
+			$nextCharacter == '' ||
+			$nextCharacter == "\n" )
 		) {
 			// A dot is sentence final if it's followed by a space and a
-			// capital letter, at the end of line or at the end of string.
+			// capital letter or at the end of string or line.
 			return true;
 		} else {
 			return false;
@@ -85,11 +151,11 @@ class Segmenter {
 	}
 
 	/**
-	 * Tests if a string is upper case.
+	 * Test if a string is upper case.
 	 *
 	 * @since 0.0.1
 	 * @param string $string The string to test.
-	 * @return bool True if the entire string is upper case, else false.
+	 * @return bool true if the entire string is upper case, else false.
 	 */
 
 	private static function isUpper( $string ) {
@@ -97,21 +163,22 @@ class Segmenter {
 	}
 
 	/**
-	 * Split a string by newline.
+	 * Calculate the length of a segment, as it is represented in HTML.
 	 *
 	 * @since 0.0.1
-	 * @param string $text A string to segment.
-	 * @return array The segments found. Segments only containing whitespaces
-	 * are discarded.
+	 * @param array $segment An array of nodes.
+	 * @return int The combinded length of the HTML of the nodes in $segment.
 	 */
 
-	public static function segmentParagraphs( $text ) {
-		$segments = [];
-		foreach ( explode( "\n", $text ) as $segment ) {
-			if ( strlen( trim( $segment ) ) > 0 ) {
-				array_push( $segments, $segment );
+	private static function getSegmentLength( $segment ) {
+		$length = 0;
+		foreach ( $segment as $content ) {
+			if ( $content instanceof CleanedTag ) {
+				$length += $content->getLength();
+			} else {
+				$length += strlen( $content );
 			}
 		}
-		return $segments;
+		return $length;
 	}
 }

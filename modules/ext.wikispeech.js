@@ -14,9 +14,7 @@
 		 */
 
 		this.addPlayStopButton = function () {
-			var $playStopButton;
-
-			$playStopButton = $( '<button></button>' )
+			var $playStopButton = $( '<button></button>' )
 				.attr( 'id', 'ext-wikispeech-play-stop-button' )
 				.addClass( 'ext-wikispeech-play' );
 			$( '#firstHeading' ).append( $playStopButton );
@@ -42,10 +40,8 @@
 		 */
 
 		this.play = function () {
-			var $playStopButton;
-
+			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
 			self.playUtterance( $( '#utterance-0' ) );
-			$playStopButton = $( '#ext-wikispeech-play-stop-button' );
 			$playStopButton.removeClass( 'ext-wikispeech-play' );
 			$playStopButton.addClass( 'ext-wikispeech-stop' );
 		};
@@ -81,11 +77,9 @@
 		 */
 
 		this.stop = function () {
-			var $playStopButton;
-
+			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
 			self.stopUtterance( $currentUtterance );
 			$currentUtterance = $();
-			$playStopButton = $( '#ext-wikispeech-play-stop-button' );
 			$playStopButton.removeClass( 'ext-wikispeech-stop' );
 			$playStopButton.addClass( 'ext-wikispeech-play' );
 		};
@@ -98,9 +92,7 @@
 		 */
 
 		this.addSkipAheadSentenceButton = function () {
-			var $skipAheadSentenceButton;
-
-			$skipAheadSentenceButton = $( '<button></button>' )
+			var $skipAheadSentenceButton = $( '<button></button>' )
 				.attr( 'id', 'ext-wikispeech-skip-ahead-sentence-button' )
 				.addClass( 'ext-wikispeech-skip-ahead-sentence' );
 			$( '#firstHeading' ).append( $skipAheadSentenceButton );
@@ -116,9 +108,7 @@
 		 */
 
 		this.skipAheadUtterance = function () {
-			var $nextUtterance;
-
-			$nextUtterance = self.getNextUtterance( $currentUtterance );
+			var $nextUtterance = self.getNextUtterance( $currentUtterance );
 			if ( $nextUtterance.length ) {
 				self.playUtterance( $nextUtterance );
 			} else {
@@ -131,14 +121,11 @@
 		 */
 
 		this.addKeyboardShortcuts = function () {
-			var shortcuts;
-
+			var shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
 			$( document ).keydown( function ( event ) {
-				shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
 				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					self.playOrStop();
-				}
-				if ( self.eventMatchShortcut(
+				} else if ( self.eventMatchShortcut(
 					event,
 					shortcuts.skipAheadUtterance )
 				) {
@@ -212,7 +199,7 @@
 		 *
 		 * @param $utterance The original utterance.
 		 * @return The utterance after the original utterance. Empty object if
-		 *	$utterance isn't a valid utterance.
+		 *  $utterance isn't a valid utterance.
 		 */
 
 		this.getNextUtterance = function ( $utterance ) {
@@ -233,8 +220,7 @@
 		/**
 		 * Request audio for an utterance.
 		 *
-		 * When the response is received, set the audio URL as the source for
-		 * the utterance's audio element.
+		 * Adds audio and token elements when the response is received.
 		 *
 		 * @param $utterance The utterance to load audio for.
 		 */
@@ -242,14 +228,23 @@
 		this.loadAudio = function ( $utterance ) {
 			var $audio, text, audioUrl;
 
-			$audio = $utterance.children( 'audio' );
+			$audio = $( '<audio></audio>' ).appendTo( $utterance );
 			mw.log( 'Loading audio for: ' + $utterance.attr( 'id' ) );
-			text = $utterance.children( 'text' ).text();
+			// Get the combined string of the text nodes only, i.e. not from
+			// the cleaned tag.
+			text = $utterance.children( 'content' ).contents().filter(
+				function () {
+					// Filter text nodes. Not using Node.TEXT_NODE to
+					// support IE7.
+					return this.nodeType === 3;
+				}
+			).text();
 			self.requestTts( text, function ( response ) {
 				audioUrl = response.audio;
 				mw.log( 'Setting url for ' + $utterance.attr( 'id' ) + ': ' +
-						audioUrl );
+					audioUrl );
 				$audio.attr( 'src', audioUrl );
+				self.addTokenElements( $utterance, response.tokens );
 			} );
 			$utterance.prop( 'requested', true );
 		};
@@ -267,7 +262,7 @@
 		 *
 		 * @param {string} text The utterance string to send in the request.
 		 * @param {Function} callback Function to be called when a response
-		 *	is received.
+		 *  is received.
 		 */
 
 		this.requestTts = function ( text, callback ) {
@@ -289,11 +284,117 @@
 				// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 			} );
 			request.onload = function () {
+				mw.log( 'Response received: ' + request.responseText );
 				response = JSON.parse( request.responseText );
 				callback( response );
 			};
 			mw.log( 'Sending request: ' + serverUrl + '?' + parameters );
 			request.send( parameters );
+		};
+
+		/**
+		 * Add token elements to an utterance element.
+		 *
+		 * Adds a tokens element and populate it with token elements.
+		 *
+		 * @param $utterance The jQuery object to add tokens to.
+		 * @param tokens Array of tokens from a server response, where each
+		 *  token is an object. For these objects, the property "orth" is the
+		 *  string used by the TTS to generate audio for the token.
+		 */
+
+		this.addTokenElements = function ( $utterance, tokens ) {
+			var position, $tokensElement, $content, firstTokenIndex,
+				removedLength;
+
+			// The character position in the original HTML. Starting at the
+			// position of the utterance, since that's the earliest a child
+			// token can appear.
+			position = parseInt( $utterance.attr( 'position' ), 10 );
+			$tokensElement = $( '<tokens></tokens>' ).appendTo( $utterance );
+			$content = $utterance.children( 'content' );
+			firstTokenIndex = 0;
+			mw.log( 'Adding tokens to ' + $utterance.attr( 'id' ) + ':' );
+			$content.contents().each( function ( i, element ) {
+				if ( element.tagName === 'CLEANED-TAG' ) {
+					removedLength = element.getAttribute( 'removed' );
+					if ( removedLength !== null ) {
+						position += parseInt( removedLength, 10 );
+					}
+					// Advance position two steps extra for the < and >,
+					// that were stripped from the tag at an earlier stage.
+					position += 2;
+				} else {
+					// firstTokenIndex is the index, in tokens, of the first
+					// token we haven't created an element for.
+					firstTokenIndex = self.addTokensForTextElement(
+						tokens,
+						element,
+						position,
+						$tokensElement,
+						firstTokenIndex
+					);
+				}
+				position += element.textContent.length;
+			} );
+		};
+
+		/**
+		 * Add a token element for each token that match a substring of the
+		 * given text element.
+		 *
+		 * Goes through textElement, finds substrings matching tokens and
+		 * creates token elements for these. The position for the token
+		 * elements is the substring position plus the position of textElement.
+		 * When a token can no longer be found, the index of that token is
+		 * returned to remember what to start looking for in the next text
+		 * element.
+		 *
+		 * @param tokens Array of tokens from a server response, where each
+		 *  token is an object. For these objects, the property "orth" is the
+		 *  string used by the TTS to generate audio for the token.
+		 * @param textElement The text element to match tokens against.
+		 * @param {int} startPosition The position of the original text
+		 *  element.
+		 * @param $tokensElement Element which token elements are added to.
+		 * @param {int} firstTokenIndex The index of the first token in tokens
+		 *  to search for.
+		 * @return {int} The index of the first token that wasn't found.
+		 */
+
+		this.addTokensForTextElement = function (
+			tokens,
+			textElement,
+			startPosition,
+			$tokensElement,
+			firstTokenIndex
+		) {
+			var positionInElement, matchingPosition, tokenPositionInHtml,
+				orthographicToken, i, token;
+
+			positionInElement = 0;
+			for ( i = firstTokenIndex; i < tokens.length; i++ ) {
+				token = tokens[ i ];
+				orthographicToken = token.orth;
+				// Look for the token in the remaining string.
+				matchingPosition =
+					textElement.nodeValue.slice( positionInElement )
+					.indexOf( orthographicToken );
+				if ( matchingPosition === -1 ) {
+					// The token wasn't found in this element. Stop looking for
+					// more and return the index of the token.
+					return i;
+				}
+				tokenPositionInHtml = startPosition + positionInElement +
+					matchingPosition;
+				mw.log( '  "' + orthographicToken + '", position: ' +
+					tokenPositionInHtml );
+				$( '<token></token>' )
+					.text( orthographicToken )
+					.attr( 'position', tokenPositionInHtml )
+					.appendTo( $tokensElement );
+				positionInElement += orthographicToken.length;
+			}
 		};
 	}
 

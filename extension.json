@@ -75,6 +75,10 @@
 			"playStop": {
 				"key": 32,
 				"modifiers": [ "ctrl" ]
+			},
+			"skipAheadUtterance": {
+				"key": 39,
+				"modifiers": [ "ctrl" ]
 			}
 		}
 	}

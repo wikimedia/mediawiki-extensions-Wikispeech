@@ -24,6 +24,10 @@
 					playStop: {
 						key: 32,
 						modifiers: [ 'ctrl' ]
+					},
+					skipAheadUtterance: {
+						key: 39,
+						modifiers: [ 'ctrl' ]
 					}
 				}
 			);
@@ -95,21 +99,19 @@
 	} );
 
 	QUnit.test( 'prepareUtterance: play next utterance when ended', function ( assert ) {
-		var $nextUtterance;
+		var $nextAudio;
 
 		assert.expect( 1 );
 		// Assume that both utterances are prepared.
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$nextUtterance = $( '#utterance-1' );
-		wikispeech.prepareUtterance( $nextUtterance );
-		sinon.spy( $( '#utterance-1 audio' ).get( 0 ), 'play' );
+		wikispeech.prepareUtterance( $( '#utterance-1' ) );
+		$nextAudio = $( '#utterance-1' ).children( 'audio' ).get( 0 );
+		sinon.spy( $nextAudio, 'play' );
+		wikispeech.playUtterance( $( '#utterance-0' ) );
 
 		$( '#utterance-0 audio' ).trigger( 'ended' );
 
-		assert.strictEqual(
-			$nextUtterance.children( 'audio' ).get( 0 ).play.called,
-			true
-		);
+		assert.strictEqual( $nextAudio.play.called, true );
 	} );
 
 	QUnit.test( 'prepareUtterance: stop when end of text is reached', function ( assert ) {
@@ -119,6 +121,7 @@
 		sinon.spy( wikispeech, 'stop' );
 		$lastUtterance = $( '#utterance-1' );
 		wikispeech.prepareUtterance( $lastUtterance );
+		wikispeech.playUtterance( $lastUtterance );
 
 		$lastUtterance.children( 'audio' ).trigger( 'ended' );
 
@@ -184,21 +187,45 @@
 		assert.strictEqual( wikispeech.stop.called, true );
 	} );
 
-	QUnit.test( 'addKeyboardShortcut: shortcut calls playOrStop()', function ( assert ) {
-		var event;
-
+	QUnit.test( 'addKeyboardShortcut: shortcut for playOrStop()', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'playOrStop' );
 		wikispeech.addKeyboardShortcuts();
 
-		event = $.Event( 'keydown' );
-		event.which = 32;
-		event.ctrlKey = true;
-		event.altKey = false;
-		event.shiftKey = false;
-		$( document ).trigger( event );
+		$( document ).trigger( createKeydownEvent( 32, 'c' ) );
 
 		assert.strictEqual( wikispeech.playOrStop.called, true );
+	} );
+
+	/**
+	 * Create a keydown event.
+	 *
+	 * @param keyCode The key code for the event.
+	 * @param {string} modifiers A string that defines the modifiers. The
+	 *  characters c, a and s triggers the modifiers for ctrl, alt and shift,
+	 *  respectively.
+	 * @return The created keydown event.
+	 */
+
+	function createKeydownEvent( keyCode, modifiers ) {
+		var event;
+
+		event = $.Event( 'keydown' );
+		event.which = keyCode;
+		event.ctrlKey = modifiers.indexOf( 'c' ) >= 0;
+		event.altKey = modifiers.indexOf( 'a' ) >= 0;
+		event.shiftKey = modifiers.indexOf( 's' ) >= 0;
+		return event;
+	}
+
+	QUnit.test( 'addKeyboardShortcut: shortcut for skipAheadUtterance()', function ( assert ) {
+		assert.expect( 1 );
+		sinon.spy( wikispeech, 'skipAheadUtterance' );
+		wikispeech.addKeyboardShortcuts();
+
+		$( document ).trigger( createKeydownEvent( 39, 'c' ) );
+
+		assert.strictEqual( wikispeech.skipAheadUtterance.called, true );
 	} );
 
 	QUnit.test( 'stop', function ( assert ) {
@@ -249,5 +276,63 @@
 				.hasClass( 'ext-wikispeech-play' ),
 			false
 		);
+	} );
+
+	QUnit.test( 'addSkipAheadSentenceButton: clicking calls skipAheadUtterance()', function ( assert ) {
+		var $button;
+
+		assert.expect( 1 );
+		wikispeech.addSkipAheadSentenceButton();
+		$button = $( '#ext-wikispeech-skip-ahead-sentence-button' );
+		sinon.spy( wikispeech, 'skipAheadUtterance' );
+
+		$button.trigger( 'click' );
+
+		assert.strictEqual( wikispeech.skipAheadUtterance.called, true );
+	} );
+
+	QUnit.test( 'skipAheadUtterance', function ( assert ) {
+		assert.expect( 2 );
+		wikispeech.play();
+
+		wikispeech.skipAheadUtterance();
+
+		assert.strictEqual( $( '#utterance-0 audio' ).prop( 'paused' ), true );
+		assert.strictEqual(
+			$( '#utterance-1 audio' ).prop( 'paused' ),
+			false
+		);
+	} );
+
+	QUnit.test( 'skipAheadUtterance: stop if no next utterance', function ( assert ) {
+		assert.expect( 1 );
+		sinon.spy( wikispeech, 'stop' );
+		wikispeech.playUtterance( $( '#utterance-1' ) );
+
+		wikispeech.skipAheadUtterance();
+
+		assert.strictEqual( wikispeech.stop.called, true );
+	} );
+
+	QUnit.test( 'getNextUtterance', function ( assert ) {
+		var $nextUtterance;
+
+		assert.expect( 1 );
+		$nextUtterance =
+			wikispeech.getNextUtterance( $( '#utterance-0' ) );
+
+		assert.strictEqual(
+			$nextUtterance.get( 0 ),
+			$( '#utterance-1' ).get( 0 )
+		);
+	} );
+
+	QUnit.test( 'getNextUtterance: return the empty object if no current utterance', function ( assert ) {
+		var $nextUtterance;
+
+		assert.expect( 1 );
+		$nextUtterance = wikispeech.getNextUtterance( $() );
+
+		assert.strictEqual( $nextUtterance.length, 0 );
 	} );
 } )( mediaWiki, jQuery );

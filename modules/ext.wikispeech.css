@@ -9,3 +9,7 @@
 .ext-wikispeech-stop:after {
 	content: "Stop";
 }
+
+.ext-wikispeech-skip-ahead-sentence:after {
+	content: "Skip ahead sentence";
+}

@@ -6,7 +6,7 @@
 		$currentUtterance = $();
 
 		/**
-		 * Adds button for starting and stopping recitation to the page.
+		 * Add a button for starting and stopping recitation to the page.
 		 *
 		 * When no utterance is playing, clicking starts the first utterance.
 		 * When an utterance is being played, clicking stops the playback.
@@ -30,7 +30,7 @@
 		 */
 
 		this.playOrStop = function () {
-			if ( $currentUtterance.length === 0 ) {
+			if ( !$currentUtterance.length ) {
 				self.play();
 			} else {
 				self.stop();
@@ -44,11 +44,36 @@
 		this.play = function () {
 			var $playStopButton;
 
-			$currentUtterance = $( '#utterance-0 ' );
-			$currentUtterance.children( 'audio' ).trigger( 'play' );
+			self.playUtterance( $( '#utterance-0' ) );
 			$playStopButton = $( '#ext-wikispeech-play-stop-button' );
 			$playStopButton.removeClass( 'ext-wikispeech-play' );
 			$playStopButton.addClass( 'ext-wikispeech-stop' );
+		};
+
+		/**
+		 * Play the audio for an utterance.
+		 *
+		 * This also stops any currently playing utterance.
+		 *
+		 * @param $utterance The utterance to play the audio for.
+		 */
+
+		this.playUtterance = function ( $utterance ) {
+			self.stopUtterance( $currentUtterance );
+			$currentUtterance = $utterance;
+			$utterance.children( 'audio' ).trigger( 'play' );
+		};
+
+		/**
+		 * Stop and rewind the audio for an utterance.
+		 *
+		 * @param $utterance The utterance to stop the audio for.
+		 */
+
+		this.stopUtterance = function ( $utterance ) {
+			$utterance.children( 'audio' ).trigger( 'pause' );
+			// Rewind audio for next time it plays.
+			$utterance.children( 'audio' ).prop( 'currentTime', 0 );
 		};
 
 		/**
@@ -66,15 +91,39 @@
 		};
 
 		/**
-		 * Stop and rewind the audio for an utterance.
+		 * Add a button for skipping to the next sentence.
 		 *
-		 * @param $utterance The utterance to stop the audio for.
+		 * This actually skips to the next utterance; it's assumed that the
+		 * utterances are sentences, where titles count as sentences.
 		 */
 
-		this.stopUtterance = function ( $utterance ) {
-			$utterance.children( 'audio' ).trigger( 'pause' );
-			// Rewind audio for next time it plays.
-			$utterance.children( 'audio' ).prop( 'currentTime', 0 );
+		this.addSkipAheadSentenceButton = function () {
+			var $skipAheadSentenceButton;
+
+			$skipAheadSentenceButton = $( '<button></button>' )
+				.attr( 'id', 'ext-wikispeech-skip-ahead-sentence-button' )
+				.addClass( 'ext-wikispeech-skip-ahead-sentence' );
+			$( '#firstHeading' ).append( $skipAheadSentenceButton );
+			$skipAheadSentenceButton.click( function () {
+				self.skipAheadUtterance();
+			} );
+		};
+
+		/**
+		 * Skip to the next utterance.
+		 *
+		 * Stop the current utterance and start playing the next one.
+		 */
+
+		this.skipAheadUtterance = function () {
+			var $nextUtterance;
+
+			$nextUtterance = self.getNextUtterance( $currentUtterance );
+			if ( $nextUtterance.length ) {
+				self.playUtterance( $nextUtterance );
+			} else {
+				self.stop();
+			}
 		};
 
 		/**
@@ -86,9 +135,14 @@
 
 			$( document ).keydown( function ( event ) {
 				shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
-				if ( self.eventMatchShortcut( event, shortcuts.playStop )
-				) {
+				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					self.playOrStop();
+				}
+				if ( self.eventMatchShortcut(
+					event,
+					shortcuts.skipAheadUtterance )
+				) {
+					self.skipAheadUtterance();
 				}
 			} );
 		};
@@ -133,7 +187,7 @@
 				self.loadAudio( $utterance );
 				$nextUtterance = self.getNextUtterance( $utterance );
 				$audio = $utterance.children( 'audio' );
-				if ( $nextUtterance.length === 0 ) {
+				if ( !$nextUtterance.length ) {
 					// For last utterance, just stop the playback when done.
 					$audio.on( 'ended', function () {
 						self.stop();
@@ -146,7 +200,7 @@
 							self.prepareUtterance( $nextUtterance );
 						},
 						ended: function () {
-							$nextUtteranceAudio.trigger( 'play' );
+							self.skipAheadUtterance();
 						}
 					} );
 				}
@@ -157,12 +211,16 @@
 		 * Get the utterance after the given utterance.
 		 *
 		 * @param $utterance The original utterance.
-		 * @return The utterance after the original utterance.
+		 * @return The utterance after the original utterance. Empty object if
+		 *	$utterance isn't a valid utterance.
 		 */
 
 		this.getNextUtterance = function ( $utterance ) {
 			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
 
+			if ( !$utterance.length ) {
+				return $();
+			}
 			// Utterance id's follow the pattern "utterance-x", where x is
 			// the index.
 			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
@@ -247,6 +305,7 @@
 		// Prepare the first utterance for playback.
 		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		mw.wikispeech.wikispeech.addPlayStopButton();
+		mw.wikispeech.wikispeech.addSkipAheadSentenceButton();
 		mw.wikispeech.wikispeech.addKeyboardShortcuts();
 	}
 }( mediaWiki, jQuery ) );

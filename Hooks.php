@@ -114,6 +114,9 @@ class WikispeechHooks {
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgWikispeechServerUrl;
 		$vars['wgWikispeechServerUrl'] = $wgWikispeechServerUrl;
+		global $wgWikispeechKeyboardShortcuts;
+		$vars['wgWikispeechKeyboardShortcuts'] =
+			$wgWikispeechKeyboardShortcuts;
 		return true;
 	}
 }

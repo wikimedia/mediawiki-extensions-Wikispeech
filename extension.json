@@ -70,6 +70,12 @@
 			"ul": true,
 			"ol": true
 		},
-		"WikispeechNamespaces": [ "NS_MAIN" ]
+		"WikispeechNamespaces": [ "NS_MAIN" ],
+		"WikispeechKeyboardShortcuts": {
+			"playStop": {
+				"key": 32,
+				"modifiers": [ "ctrl" ]
+			}
+		}
 	}
 }

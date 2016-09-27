@@ -19,6 +19,14 @@
 			$( '#qunit-fixture' ).append(
 				$( '<h1></h1>' ).attr( 'id', 'firstHeading' )
 			);
+			mw.config.set(
+				'wgWikispeechKeyboardShortcuts', {
+					playStop: {
+						key: 32,
+						modifiers: [ 'ctrl' ]
+					}
+				}
+			);
 		},
 		teardown: function () {
 			server.restore();
@@ -147,25 +155,50 @@
 		);
 	} );
 
-	QUnit.test( 'addPlayStopButton: play', function ( assert ) {
+	QUnit.test( 'addPlayStopButton: clicking calls playOrStop()', function ( assert ) {
 		assert.expect( 1 );
 		wikispeech.addPlayStopButton();
+		sinon.spy( wikispeech, 'playOrStop' );
+
+		$( '#ext-wikispeech-play-stop-button' ).click();
+
+		assert.strictEqual( wikispeech.playOrStop.called, true );
+	} );
+
+	QUnit.test( 'playOrStop: play', function ( assert ) {
+		assert.expect( 1 );
 		sinon.spy( wikispeech, 'play' );
 
-		$( '#ext-wikispeech-play-stop-button' ).trigger( 'click' );
+		wikispeech.playOrStop();
 
 		assert.strictEqual( wikispeech.play.called, true );
 	} );
 
-	QUnit.test( 'addPlayStopButton: stop', function ( assert ) {
+	QUnit.test( 'playOrStop: stop', function ( assert ) {
 		assert.expect( 1 );
-		wikispeech.addPlayStopButton();
 		wikispeech.play();
 		sinon.spy( wikispeech, 'stop' );
 
-		$( '#ext-wikispeech-play-stop-button' ).trigger( 'click' );
+		wikispeech.playOrStop();
 
 		assert.strictEqual( wikispeech.stop.called, true );
+	} );
+
+	QUnit.test( 'addKeyboardShortcut: shortcut calls playOrStop()', function ( assert ) {
+		var event;
+
+		assert.expect( 1 );
+		sinon.spy( wikispeech, 'playOrStop' );
+		wikispeech.addKeyboardShortcuts();
+
+		event = $.Event( 'keydown' );
+		event.which = 32;
+		event.ctrlKey = true;
+		event.altKey = false;
+		event.shiftKey = false;
+		$( document ).trigger( event );
+
+		assert.strictEqual( wikispeech.playOrStop.called, true );
 	} );
 
 	QUnit.test( 'stop', function ( assert ) {

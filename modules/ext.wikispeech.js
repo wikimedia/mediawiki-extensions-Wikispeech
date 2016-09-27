@@ -20,13 +20,21 @@
 				.attr( 'id', 'ext-wikispeech-play-stop-button' )
 				.addClass( 'ext-wikispeech-play' );
 			$( '#firstHeading' ).append( $playStopButton );
-			$playStopButton.click( function () {
-				if ( $currentUtterance.length === 0 ) {
-					self.play();
-				} else {
-					self.stop();
-				}
-			} );
+			// For some reason, testing doesn't work with
+			// .click( self.playOrStop ).
+			$playStopButton.click( function () { self.playOrStop(); } );
+		};
+
+		/**
+		 * Play or stop, depending on whether an utterance is playing.
+		 */
+
+		this.playOrStop = function () {
+			if ( $currentUtterance.length === 0 ) {
+				self.play();
+			} else {
+				self.stop();
+			}
 		};
 
 		/**
@@ -67,6 +75,41 @@
 			$utterance.children( 'audio' ).trigger( 'pause' );
 			// Rewind audio for next time it plays.
 			$utterance.children( 'audio' ).prop( 'currentTime', 0 );
+		};
+
+		/**
+		 * Register listeners for keyboard shortcuts.
+		 */
+
+		this.addKeyboardShortcuts = function () {
+			var shortcuts;
+
+			$( document ).keydown( function ( event ) {
+				shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
+				if ( self.eventMatchShortcut( event, shortcuts.playStop )
+				) {
+					self.playOrStop();
+				}
+			} );
+		};
+
+		/**
+		 * Check if a keydown event matches a shortcut from the configuration.
+		 *
+		 * Compare the key and modifier state (of ctrl, alt and shift) for an
+		 * event, to those of a shortcut from the configuration.
+		 *
+		 * @param event The event to compare.
+		 * @param shortcut The shortcut object from the config to compare to.
+		 * @return true if key and all the modifiers match with the shortcut,
+		 *  else false.
+		 */
+
+		this.eventMatchShortcut = function ( event, shortcut ) {
+			return event.which === shortcut.key &&
+				event.ctrlKey === shortcut.modifiers.indexOf( 'ctrl' ) >= 0 &&
+				event.altKey === shortcut.modifiers.indexOf( 'alt' ) >= 0 &&
+				event.shiftKey === shortcut.modifiers.indexOf( 'shift' ) >= 0;
 		};
 
 		/**
@@ -204,5 +247,6 @@
 		// Prepare the first utterance for playback.
 		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		mw.wikispeech.wikispeech.addPlayStopButton();
+		mw.wikispeech.wikispeech.addKeyboardShortcuts();
 	}
 }( mediaWiki, jQuery ) );

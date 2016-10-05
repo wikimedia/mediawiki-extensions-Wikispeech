@@ -76,8 +76,12 @@
 				"key": 32,
 				"modifiers": [ "ctrl" ]
 			},
-			"skipAheadUtterance": {
+			"skipAheadSentence": {
 				"key": 39,
+				"modifiers": [ "ctrl" ]
+			},
+			"skipAheadWord": {
+				"key": 40,
 				"modifiers": [ "ctrl" ]
 			}
 		}

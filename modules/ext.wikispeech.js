@@ -5,12 +5,20 @@
 		self = this;
 		$currentUtterance = $();
 
+		this.addButtons = function () {
+			self.addPlayStopButton();
+			self.addSkipAheadSentenceButton();
+			self.addSkipAheadWordButton();
+		};
+
 		/**
-		 * Add a button for starting and stopping recitation to the page.
+		 * Add a button for starting and stopping recitation to the
+		 * page.
 		 *
-		 * When no utterance is playing, clicking starts the first utterance.
-		 * When an utterance is being played, clicking stops the playback.
-		 * The button changes appearance to reflect its current function.
+		 * When no utterance is playing, clicking starts the first
+		 * utterance.  When an utterance is being played, clicking
+		 * stops the playback.  The button changes appearance to
+		 * reflect its current function.
 		 */
 
 		this.addPlayStopButton = function () {
@@ -28,11 +36,22 @@
 		 */
 
 		this.playOrStop = function () {
-			if ( !$currentUtterance.length ) {
-				self.play();
-			} else {
+			if ( self.isPlaying() ) {
 				self.stop();
+			} else {
+				self.play();
 			}
+		};
+
+		/**
+		 * Test if there currently is an utterance playing
+		 *
+		 * @return {boolean} true if there is an utterance playing,
+		 *  else false.
+		 */
+
+		this.isPlaying = function () {
+			return $currentUtterance.length > 0;
 		};
 
 		/**
@@ -51,7 +70,8 @@
 		 *
 		 * This also stops any currently playing utterance.
 		 *
-		 * @param $utterance The utterance to play the audio for.
+		 * @param {jQuery} $utterance The utterance to play the audio
+		 *  for.
 		 */
 
 		this.playUtterance = function ( $utterance ) {
@@ -63,7 +83,8 @@
 		/**
 		 * Stop and rewind the audio for an utterance.
 		 *
-		 * @param $utterance The utterance to stop the audio for.
+		 * @param {jQuery} $utterance The utterance to stop the audio
+		 *  for.
 		 */
 
 		this.stopUtterance = function ( $utterance ) {
@@ -87,8 +108,8 @@
 		/**
 		 * Add a button for skipping to the next sentence.
 		 *
-		 * This actually skips to the next utterance; it's assumed that the
-		 * utterances are sentences, where titles count as sentences.
+		 * This actually skips to the next utterance; it's assumed
+		 * that the utterances are sentences.
 		 */
 
 		this.addSkipAheadSentenceButton = function () {
@@ -117,6 +138,130 @@
 		};
 
 		/**
+		 * Get the utterance after the given utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @return {jQuery} The utterance after the original
+		 *  utterance. Empty object if $utterance isn't a valid
+		 *  utterance.
+		 */
+
+		this.getNextUtterance = function ( $utterance ) {
+			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
+
+			if ( !$utterance.length ) {
+				return $();
+			}
+			// Utterance id's follow the pattern "utterance-x", where
+			// x is the index.
+			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
+			nextUtteranceIndex = parseInt( utteranceIdParts[ 1 ], 10 ) + 1;
+			utteranceIdParts[ 1 ] = nextUtteranceIndex;
+			nextUtteranceId = utteranceIdParts.join( '-' );
+			return $( '#' + nextUtteranceId );
+		};
+
+		/**
+		 * Add a button for skipping to the next word.
+		 */
+
+		this.addSkipAheadWordButton = function () {
+			var $button = $( '<button></button>' )
+				.attr( 'id', 'ext-wikispeech-skip-ahead-word-button' )
+				.addClass( 'ext-wikispeech-skip-ahead-word' );
+			$( '#firstHeading' ).append( $button );
+			$button.click( function () {
+				self.skipAheadToken();
+			} );
+		};
+
+		/**
+		 * Skip to the next token in the current utterance.
+		 */
+
+		this.skipAheadToken = function () {
+			var nextToken, $audio, $succeedingTokens;
+
+			if ( self.isPlaying() ) {
+				$succeedingTokens =
+					self.getCurrentToken().nextAll().filter( function () {
+						return !self.isSilent( this );
+					} );
+				if ( $succeedingTokens.length === 0 ) {
+					self.skipAheadUtterance();
+				} else {
+					nextToken = $succeedingTokens.get( 0 );
+					$audio = $currentUtterance.children( 'audio' );
+					$audio.prop(
+						'currentTime',
+						nextToken.getAttribute( 'start-time' )
+					);
+				}
+			}
+		};
+
+		/**
+		 * Get the token being played.
+		 *
+		 * @return {jQuery} The token being played.
+		 */
+
+		this.getCurrentToken = function () {
+			var $tokens, currentTime, $currentToken, $tokensWithDuration,
+				duration, startTime, endTime;
+
+			$currentToken = null;
+			$tokens = $currentUtterance.find( 'token' );
+			currentTime = $currentUtterance.children( 'audio' )
+				.prop( 'currentTime' );
+			$tokensWithDuration = $tokens.filter( function () {
+				duration = this.getAttribute( 'end-time' ) -
+					this.getAttribute( 'start-time' );
+				return duration > 0.0;
+			} );
+			if (
+				currentTime ===
+					parseFloat( $tokensWithDuration.last().attr( 'end-time' ) )
+			) {
+				// If the current time is equal to the end time of the
+				// last token, the last token is the current.
+				$currentToken = $tokensWithDuration.last();
+			} else {
+				$tokensWithDuration.each( function ( i, element ) {
+					startTime =
+						parseFloat( element.getAttribute( 'start-time' ) );
+					endTime =
+						parseFloat( element.getAttribute( 'end-time' ) );
+					if ( startTime <= currentTime && endTime > currentTime
+					) {
+						$currentToken = $( element );
+						return false;
+					}
+				} );
+			}
+			return $currentToken;
+		};
+
+		/**
+		 * Test if a token is silent.
+		 *
+		 * Silent is here defined as either having no transcription
+		 * (i.e. the empty string) or having no duration (i.e. start
+		 * and end time is the same.)
+		 *
+		 * @param {HTMLElement} tokenElement The token element to test.
+		 * @return {boolean} true if the token is silent, else false.
+		 */
+
+		this.isSilent = function ( tokenElement ) {
+			var startTime, endTime;
+
+			startTime = tokenElement.getAttribute( 'start-time' );
+			endTime = tokenElement.getAttribute( 'end-time' );
+			return startTime === endTime || tokenElement.textContent === '';
+		};
+
+		/**
 		 * Register listeners for keyboard shortcuts.
 		 */
 
@@ -125,25 +270,35 @@
 			$( document ).keydown( function ( event ) {
 				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					self.playOrStop();
+					return false;
 				} else if ( self.eventMatchShortcut(
 					event,
-					shortcuts.skipAheadUtterance )
+					shortcuts.skipAheadSentence )
 				) {
 					self.skipAheadUtterance();
+					return false;
+				} else if (
+					self.eventMatchShortcut( event, shortcuts.skipAheadWord )
+				) {
+					self.skipAheadToken();
+					return false;
 				}
 			} );
 		};
 
 		/**
-		 * Check if a keydown event matches a shortcut from the configuration.
+		 * Check if a keydown event matches a shortcut from the
+		 * configuration.
 		 *
-		 * Compare the key and modifier state (of ctrl, alt and shift) for an
-		 * event, to those of a shortcut from the configuration.
+		 * Compare the key and modifier state (of ctrl, alt and shift)
+		 * for an event, to those of a shortcut from the
+		 * configuration.
 		 *
-		 * @param event The event to compare.
-		 * @param shortcut The shortcut object from the config to compare to.
-		 * @return true if key and all the modifiers match with the shortcut,
-		 *  else false.
+		 * @param {Event} event The event to compare.
+		 * @param {Object }shortcut The shortcut object from the
+		 *  config to compare to.
+		 * @return {boolean} true if key and all the modifiers match
+		 *  with the shortcut, else false.
 		 */
 
 		this.eventMatchShortcut = function ( event, shortcut ) {
@@ -156,26 +311,28 @@
 		/**
 		 * Prepare an utterance for playback.
 		 *
-		 * Audio for the utterance is requested from the TTS server and event
-		 * listeners are added. When an utterance starts playing, the next one
-		 * is prepared, and when an utterance is done, the next utterance is
-		 * played. This is meant to be a balance between not having to pause
-		 * between utterance and not requesting more than needed.
+		 * Audio for the utterance is requested from the TTS server
+		 * and event listeners are added. When an utterance starts
+		 * playing, the next one is prepared, and when an utterance is
+		 * done, the next utterance is played. This is meant to be a
+		 * balance between not having to pause between utterance and
+		 * not requesting more than needed.
 
-		 * @param $utterance The utterance to prepare.
+		 * @param {jQuery} $utterance The utterance to prepare.
 		 */
 
 		this.prepareUtterance = function ( $utterance ) {
 			var $audio, $nextUtterance, $nextUtteranceAudio;
 
 			if ( !$utterance.prop( 'requested' ) ) {
-				// Only load audio for an utterance if we haven't already
-				// sent a request for it.
+				// Only load audio for an utterance if we haven't
+				// already sent a request for it.
 				self.loadAudio( $utterance );
 				$nextUtterance = self.getNextUtterance( $utterance );
 				$audio = $utterance.children( 'audio' );
 				if ( !$nextUtterance.length ) {
-					// For last utterance, just stop the playback when done.
+					// For last utterance, just stop the playback when
+					// done.
 					$audio.on( 'ended', function () {
 						self.stop();
 					} );
@@ -195,34 +352,12 @@
 		};
 
 		/**
-		 * Get the utterance after the given utterance.
-		 *
-		 * @param $utterance The original utterance.
-		 * @return The utterance after the original utterance. Empty object if
-		 *  $utterance isn't a valid utterance.
-		 */
-
-		this.getNextUtterance = function ( $utterance ) {
-			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
-
-			if ( !$utterance.length ) {
-				return $();
-			}
-			// Utterance id's follow the pattern "utterance-x", where x is
-			// the index.
-			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
-			nextUtteranceIndex = parseInt( utteranceIdParts[ 1 ], 10 ) + 1;
-			utteranceIdParts[ 1 ] = nextUtteranceIndex;
-			nextUtteranceId = utteranceIdParts.join( '-' );
-			return $( '#' + nextUtteranceId );
-		};
-
-		/**
 		 * Request audio for an utterance.
 		 *
-		 * Adds audio and token elements when the response is received.
+		 * Adds audio and token elements when the response is
+		 * received.
 		 *
-		 * @param $utterance The utterance to load audio for.
+		 * @param {jQuery} $utterance The utterance to load audio for.
 		 */
 
 		this.loadAudio = function ( $utterance ) {
@@ -230,8 +365,8 @@
 
 			$audio = $( '<audio></audio>' ).appendTo( $utterance );
 			mw.log( 'Loading audio for: ' + $utterance.attr( 'id' ) );
-			// Get the combined string of the text nodes only, i.e. not from
-			// the cleaned tag.
+			// Get the combined string of the text nodes only,
+			// i.e. not from the cleaned tag.
 			text = $utterance.children( 'content' ).contents().filter(
 				function () {
 					// Filter text nodes. Not using Node.TEXT_NODE to
@@ -254,15 +389,16 @@
 		 *
 		 * The request should specify the following parameters:
 		 * - lang: the language used by the synthesizer.
-		 * - input_type: "ssml" if you want SSML markup, otherwise "text" for
-		 * plain text.
+		 * - input_type: "ssml" if you want SSML markup, otherwise
+		 * "text" for plain text.
 		 * - input: the text to be synthesized.
 		 * For more on the parameters, see:
 		 * https://github.com/stts-se/wikispeech_mockup/wiki/api.
 		 *
-		 * @param {string} text The utterance string to send in the request.
-		 * @param {Function} callback Function to be called when a response
-		 *  is received.
+		 * @param {string} text The utterance string to send in the
+		 *  request.
+		 * @param {Function} callback Function to be called when a
+		 *  response is received.
 		 */
 
 		this.requestTts = function ( text, callback ) {
@@ -297,36 +433,38 @@
 		 *
 		 * Adds a tokens element and populate it with token elements.
 		 *
-		 * @param $utterance The jQuery object to add tokens to.
-		 * @param tokens Array of tokens from a server response, where each
-		 *  token is an object. For these objects, the property "orth" is the
-		 *  string used by the TTS to generate audio for the token.
+		 * @param {jQuery} $utterance The jQuery object to add tokens to.
+		 * @param {Object[]} tokens Tokens from a server response,
+		 *  where each token is an object. For these objects, the
+		 *  property "orth" is the string used by the TTS to generate
+		 *  audio for the token.
 		 */
 
 		this.addTokenElements = function ( $utterance, tokens ) {
 			var position, $tokensElement, $content, firstTokenIndex,
 				removedLength;
 
-			// The character position in the original HTML. Starting at the
-			// position of the utterance, since that's the earliest a child
-			// token can appear.
+			// The character position in the original HTML. Starting
+			// at the position of the utterance, since that's the
+			// earliest a child token can appear.
 			position = parseInt( $utterance.attr( 'position' ), 10 );
 			$tokensElement = $( '<tokens></tokens>' ).appendTo( $utterance );
 			$content = $utterance.children( 'content' );
 			firstTokenIndex = 0;
-			mw.log( 'Adding tokens to ' + $utterance.attr( 'id' ) + ':' );
+			mw.log( 'Adding tokens to ' + $utterance.attr( 'id' ) + '.' );
 			$content.contents().each( function ( i, element ) {
 				if ( element.tagName === 'CLEANED-TAG' ) {
 					removedLength = element.getAttribute( 'removed' );
 					if ( removedLength !== null ) {
 						position += parseInt( removedLength, 10 );
 					}
-					// Advance position two steps extra for the < and >,
-					// that were stripped from the tag at an earlier stage.
+					// Advance position two steps extra for the < and
+					// >, that were stripped from the tag at an
+					// earlier stage.
 					position += 2;
 				} else {
-					// firstTokenIndex is the index, in tokens, of the first
-					// token we haven't created an element for.
+					// firstTokenIndex is the index, in tokens, of the
+					// first token we haven't created an element for.
 					firstTokenIndex = self.addTokensForTextElement(
 						tokens,
 						element,
@@ -340,26 +478,30 @@
 		};
 
 		/**
-		 * Add a token element for each token that match a substring of the
-		 * given text element.
+		 * Add a token element for each token that match a substring
+		 * of the given text element.
 		 *
-		 * Goes through textElement, finds substrings matching tokens and
-		 * creates token elements for these. The position for the token
-		 * elements is the substring position plus the position of textElement.
-		 * When a token can no longer be found, the index of that token is
-		 * returned to remember what to start looking for in the next text
-		 * element.
+		 * Goes through textElement, finds substrings matching tokens
+		 * and creates token elements for these. The position for the
+		 * token elements is the substring position plus the position
+		 * of textElement. When a token can no longer be found, the
+		 * index of that token is returned to remember what to start
+		 * looking for in the next text element.
 		 *
-		 * @param tokens Array of tokens from a server response, where each
-		 *  token is an object. For these objects, the property "orth" is the
-		 *  string used by the TTS to generate audio for the token.
-		 * @param textElement The text element to match tokens against.
-		 * @param {int} startPosition The position of the original text
-		 *  element.
-		 * @param $tokensElement Element which token elements are added to.
-		 * @param {int} firstTokenIndex The index of the first token in tokens
-		 *  to search for.
-		 * @return {int} The index of the first token that wasn't found.
+		 * @param {Object[]} tokens Tokens from a server response,
+		 *  where each token is an object. For these objects, the
+		 *  property "orth" is the string used by the TTS to generate
+		 *  audio for the token.
+		 * @param {HTMLElement} textElement The text element to match
+		 *  tokens against.
+		 * @param {number} startPosition The position of the original
+		 *  text element.
+		 * @param {HTMLElement} $tokensElement Element which token
+		 *  elements are added to.
+		 * @param {number} firstTokenIndex The index of the first
+		 *  token in tokens to search for.
+		 * @return {number} The index of the first token that wasn't
+		 *  found.
 		 */
 
 		this.addTokensForTextElement = function (
@@ -370,7 +512,7 @@
 			firstTokenIndex
 		) {
 			var positionInElement, matchingPosition, tokenPositionInHtml,
-				orthographicToken, i, token;
+				orthographicToken, i, token, startTime;
 
 			positionInElement = 0;
 			for ( i = firstTokenIndex; i < tokens.length; i++ ) {
@@ -381,17 +523,23 @@
 					textElement.nodeValue.slice( positionInElement )
 					.indexOf( orthographicToken );
 				if ( matchingPosition === -1 ) {
-					// The token wasn't found in this element. Stop looking for
-					// more and return the index of the token.
+					// The token wasn't found in this element. Stop
+					// looking for more and return the index of the
+					// token.
 					return i;
 				}
 				tokenPositionInHtml = startPosition + positionInElement +
 					matchingPosition;
-				mw.log( '  "' + orthographicToken + '", position: ' +
-					tokenPositionInHtml );
+				if ( i === 0 ) {
+					startTime = 0.0;
+				} else {
+					startTime = tokens[ i - 1 ].endtime;
+				}
 				$( '<token></token>' )
 					.text( orthographicToken )
 					.attr( 'position', tokenPositionInHtml )
+					.attr( 'start-time', startTime )
+					.attr( 'end-time', tokens[ i ].endtime )
 					.appendTo( $tokensElement );
 				positionInElement += orthographicToken.length;
 			}
@@ -405,8 +553,7 @@
 		mw.wikispeech.wikispeech = new mw.wikispeech.Wikispeech();
 		// Prepare the first utterance for playback.
 		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.addPlayStopButton();
-		mw.wikispeech.wikispeech.addSkipAheadSentenceButton();
+		mw.wikispeech.wikispeech.addButtons();
 		mw.wikispeech.wikispeech.addKeyboardShortcuts();
 	}
 }( mediaWiki, jQuery ) );

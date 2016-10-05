@@ -13,3 +13,7 @@
 .ext-wikispeech-skip-ahead-sentence:after {
 	content: "Skip ahead sentence";
 }
+
+.ext-wikispeech-skip-ahead-word:after {
+	content: "Skip ahead word";
+}

@@ -1,7 +1,10 @@
 {
 	"--title": "Wikispeech - Documentation",
 	"--processes": "0",
-	"--external": "QUnit.*",
+	"--external": [
+		"QUnit.*",
+		"jQuery"
+	],
 	"--warnings-exit-nonzero": true,
 	"--warnings": [
 		"-nodoc(class,public)",

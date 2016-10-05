@@ -29,8 +29,12 @@
 						key: 32,
 						modifiers: [ 'ctrl' ]
 					},
-					skipAheadUtterance: {
+					skipAheadSentence: {
 						key: 39,
+						modifiers: [ 'ctrl' ]
+					},
+					skipAheadWord: {
+						key: 40,
 						modifiers: [ 'ctrl' ]
 					}
 				}
@@ -41,7 +45,7 @@
 		}
 	} );
 
-	QUnit.test( 'prepareUtterance', function ( assert ) {
+	QUnit.test( 'prepareUtterance()', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'loadAudio' );
 
@@ -54,7 +58,7 @@
 	} );
 
 	// jscs:disable validateQuoteMarks
-	QUnit.test( "prepareUtterance: don't request if already requested", function ( assert ) {
+	QUnit.test( "prepareUtterance(): don't request if already requested", function ( assert ) {
 		// jscs:enable validateQuoteMarks
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'loadAudio' );
@@ -65,7 +69,7 @@
 		assert.strictEqual( wikispeech.loadAudio.called, false );
 	} );
 
-	QUnit.test( 'prepareUtterance: prepare next utterance when playing', function ( assert ) {
+	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', function ( assert ) {
 		var $nextUtterance = $( '#utterance-1' );
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
@@ -80,7 +84,7 @@
 	} );
 
 	// jscs:disable validateQuoteMarks
-	QUnit.test( "prepareUtterance: don't prepare next audio if it doesn't exist", function ( assert ) {
+	QUnit.test( "prepareUtterance(): don't prepare next audio if it doesn't exist", function ( assert ) {
 		// jscs:enable validateQuoteMarks
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'prepareUtterance' );
@@ -92,7 +96,7 @@
 			$( '#utterance-2' ) ), false );
 	} );
 
-	QUnit.test( 'prepareUtterance: play next utterance when ended', function ( assert ) {
+	QUnit.test( 'prepareUtterance(): play next utterance when ended', function ( assert ) {
 		var $nextAudio;
 
 		assert.expect( 1 );
@@ -108,7 +112,7 @@
 		assert.strictEqual( $nextAudio.play.called, true );
 	} );
 
-	QUnit.test( 'prepareUtterance: stop when end of text is reached', function ( assert ) {
+	QUnit.test( 'prepareUtterance(): stop when end of text is reached', function ( assert ) {
 		var $lastUtterance = $( '#utterance-1' );
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'stop' );
@@ -120,7 +124,7 @@
 		assert.strictEqual( wikispeech.stop.called, true );
 	} );
 
-	QUnit.test( 'loadAudio', function ( assert ) {
+	QUnit.test( 'loadAudio()', function ( assert ) {
 		assert.expect( 4 );
 		$( '<content></content>' )
 			.append( 'An utterance.' )
@@ -151,27 +155,68 @@
 		);
 	} );
 
-	QUnit.test( 'addPlayStopButton', function ( assert ) {
-		assert.expect( 1 );
-		wikispeech.addPlayStopButton();
+	QUnit.test( 'addButtons()', function ( assert ) {
+		assert.expect( 3 );
+		wikispeech.addButtons();
 
 		assert.strictEqual(
 			$( '#firstHeading #ext-wikispeech-play-stop-button' ).length,
 			1
 		);
+		assert.strictEqual(
+			$( '#firstHeading #ext-wikispeech-skip-ahead-sentence-button' ).length,
+			1
+		);
+		assert.strictEqual(
+			$( '#firstHeading #ext-wikispeech-skip-ahead-word-button' ).length,
+			1
+		);
 	} );
 
-	QUnit.test( 'addPlayStopButton: clicking calls playOrStop()', function ( assert ) {
+	QUnit.test( 'Clicking play/stop button', function ( assert ) {
+		testClickButton(
+			assert,
+			'playOrStop',
+			'#ext-wikispeech-play-stop-button'
+		);
+	} );
+
+	/**
+	 * Test that clicking a button calls the correct function.
+	 *
+	 * @param {QUnit.assert} assert
+	 * @param {string} functionName Name of the function that should
+	 *  be called.
+	 * @param {string} buttonId Id of the button that is clicked.
+	 */
+
+	function testClickButton( assert, functionName, buttonId ) {
 		assert.expect( 1 );
-		wikispeech.addPlayStopButton();
-		sinon.spy( wikispeech, 'playOrStop' );
+		wikispeech.addButtons();
+		sinon.spy( wikispeech, functionName );
 
-		$( '#ext-wikispeech-play-stop-button' ).click();
+		$( buttonId ).click();
 
-		assert.strictEqual( wikispeech.playOrStop.called, true );
+		assert.strictEqual( wikispeech[ functionName ].called, true );
+	}
+
+	QUnit.test( 'Clicking skip ahead sentence button', function ( assert ) {
+		testClickButton(
+			assert,
+			'skipAheadUtterance',
+			'#ext-wikispeech-skip-ahead-sentence-button'
+		);
 	} );
 
-	QUnit.test( 'playOrStop: play', function ( assert ) {
+	QUnit.test( 'Clicking skip ahead word button', function ( assert ) {
+		testClickButton(
+			assert,
+			'skipAheadToken',
+			'#ext-wikispeech-skip-ahead-word-button'
+		);
+	} );
+
+	QUnit.test( 'playOrStop(): play', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'play' );
 
@@ -180,7 +225,7 @@
 		assert.strictEqual( wikispeech.play.called, true );
 	} );
 
-	QUnit.test( 'playOrStop: stop', function ( assert ) {
+	QUnit.test( 'playOrStop(): stop', function ( assert ) {
 		assert.expect( 1 );
 		wikispeech.play();
 		sinon.spy( wikispeech, 'stop' );
@@ -190,23 +235,39 @@
 		assert.strictEqual( wikispeech.stop.called, true );
 	} );
 
-	QUnit.test( 'addKeyboardShortcut: shortcut for playOrStop()', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for playStop', function ( assert ) {
+		testKeyboardShortcut( assert, 'playOrStop', 32, 'c' );
+	} );
+
+	/**
+	 * Test that a keyboard event triggers the correct function.
+	 *
+	 * @param {QUnit.assert} assert
+	 * @param {string} functionName Name of the function that should
+	 *  be called.
+	 * @param {number} keyCode The key code for the event.
+	 * @param {string} modifiers A string that defines the
+	 *  modifiers. The characters c, a and s triggers the modifiers
+	 *  for ctrl, alt and shift, respectively.
+	 */
+
+	function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
 		assert.expect( 1 );
-		sinon.spy( wikispeech, 'playOrStop' );
+		sinon.stub( wikispeech, functionName, function () {} );
 		wikispeech.addKeyboardShortcuts();
 
-		$( document ).trigger( createKeydownEvent( 32, 'c' ) );
+		$( document ).trigger( createKeydownEvent( keyCode, modifiers ) );
 
-		assert.strictEqual( wikispeech.playOrStop.called, true );
-	} );
+		assert.strictEqual( wikispeech[ functionName ].called, true );
+	}
 
 	/**
 	 * Create a keydown event.
 	 *
-	 * @param keyCode The key code for the event.
-	 * @param {string} modifiers A string that defines the modifiers. The
-	 *  characters c, a and s triggers the modifiers for ctrl, alt and shift,
-	 *  respectively.
+	 * @param {number} keyCode The key code for the event.
+	 * @param {string} modifiers A string that defines the
+	 *  modifiers. The characters c, a and s triggers the modifiers
+	 *  for ctrl, alt and shift, respectively.
 	 * @return The created keydown event.
 	 */
 
@@ -219,17 +280,15 @@
 		return event;
 	}
 
-	QUnit.test( 'addKeyboardShortcut: shortcut for skipAheadUtterance()', function ( assert ) {
-		assert.expect( 1 );
-		sinon.spy( wikispeech, 'skipAheadUtterance' );
-		wikispeech.addKeyboardShortcuts();
-
-		$( document ).trigger( createKeydownEvent( 39, 'c' ) );
-
-		assert.strictEqual( wikispeech.skipAheadUtterance.called, true );
+	QUnit.test( 'Pressing keyboard shortcut for skipAheadSentence', function ( assert ) {
+		testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
 	} );
 
-	QUnit.test( 'stop', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipAheadWord', function ( assert ) {
+		testKeyboardShortcut( assert, 'skipAheadToken', 40, 'c' );
+	} );
+
+	QUnit.test( 'stop()', function ( assert ) {
 		assert.expect( 4 );
 		wikispeech.addPlayStopButton();
 		wikispeech.play();
@@ -255,7 +314,7 @@
 		);
 	} );
 
-	QUnit.test( 'play', function ( assert ) {
+	QUnit.test( 'play()', function ( assert ) {
 		var $firstUtterance = $( '#utterance-0' );
 		assert.expect( 3 );
 		wikispeech.addPlayStopButton();
@@ -279,20 +338,7 @@
 		);
 	} );
 
-	QUnit.test( 'addSkipAheadSentenceButton: clicking calls skipAheadUtterance()', function ( assert ) {
-		var $button;
-
-		assert.expect( 1 );
-		wikispeech.addSkipAheadSentenceButton();
-		$button = $( '#ext-wikispeech-skip-ahead-sentence-button' );
-		sinon.spy( wikispeech, 'skipAheadUtterance' );
-
-		$button.trigger( 'click' );
-
-		assert.strictEqual( wikispeech.skipAheadUtterance.called, true );
-	} );
-
-	QUnit.test( 'skipAheadUtterance', function ( assert ) {
+	QUnit.test( 'skipAheadUtterance()', function ( assert ) {
 		assert.expect( 2 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		wikispeech.play();
@@ -306,7 +352,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadUtterance: stop if no next utterance', function ( assert ) {
+	QUnit.test( 'skipAheadUtterance(): stop if no next utterance', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'stop' );
 		wikispeech.playUtterance( $( '#utterance-1' ) );
@@ -316,7 +362,7 @@
 		assert.strictEqual( wikispeech.stop.called, true );
 	} );
 
-	QUnit.test( 'getNextUtterance', function ( assert ) {
+	QUnit.test( 'getNextUtterance()', function ( assert ) {
 		var $nextUtterance;
 
 		assert.expect( 1 );
@@ -329,7 +375,7 @@
 		);
 	} );
 
-	QUnit.test( 'getNextUtterance: return the empty object if no current utterance', function ( assert ) {
+	QUnit.test( 'getNextUtterance(): return the empty object if no current utterance', function ( assert ) {
 		var $nextUtterance;
 
 		assert.expect( 1 );
@@ -339,43 +385,63 @@
 		assert.strictEqual( $nextUtterance.length, 0 );
 	} );
 
-	QUnit.test( 'addTokenElements', function ( assert ) {
+	QUnit.test( 'addTokenElements()', function ( assert ) {
 		var tokens, $tokensElement, $expectedTokensElement;
 
 		$( '<content></content>' ).html( 'An utterance.' )
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
-			{ orth: 'An' },
-			{ orth: 'utterance' },
-			{ orth: '.' }
+			{
+				orth: 'An',
+				endtime: 1.0
+			},
+			{
+				orth: 'utterance',
+				endtime: 2.0
+			},
+			{
+				orth: '.',
+				endtime: 3.0
+			}
 		];
 
 		wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		$expectedTokensElement = $( '<tokens></tokens>' )
-			.append(
-				$( '<token></token>' )
-					.text( 'An' )
-					.attr( 'position', 0 )
-			)
-			.append(
-				$( '<token></token>' )
-					.text( 'utterance' )
-					.attr( 'position', 3 )
-			)
-			.append(
-				$( '<token></token>' )
-					.text( '.' )
-					.attr( 'position', 12 )
-			);
+		$expectedTokensElement = $( '<tokens></tokens>' );
+		addToken( $expectedTokensElement, 'An', 0, 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'utterance', 3, 1.0, 2.0 );
+		addToken( $expectedTokensElement, '.', 12, 2.0, 3.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
 		);
 	} );
 
-	QUnit.test( 'addTokenElements: handle tags', function ( assert ) {
+	/**
+	 * Add a token element.
+	 *
+	 * @param {jQuery} $parent The jQuery to add the element to.
+	 * @param {string} string The token string.
+	 * @param {number} position The position of the token.
+	 * @param {number} startTime The start time of the token.
+	 * @param {number} endTime The end time of the token.
+	 * @return {HTMLElement} The added token element.
+	 */
+
+	function addToken( $parent, string, position, startTime, endTime ) {
+		var $token = $( '<token></token>' )
+			.text( string )
+			.attr( {
+				position: position,
+				'start-time': startTime,
+				'end-time': endTime
+			} );
+		$parent.append( $token );
+		return $token.get( 0 );
+	}
+
+	QUnit.test( 'addTokenElements(): handle tag', function ( assert ) {
 		var tokens, $tokensElement, $expectedTokensElement;
 
 		$( '<content></content>' ).html(
@@ -383,67 +449,66 @@
 		)
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
-			{ orth: 'Utterance' },
-			{ orth: 'with' },
-			{ orth: 'tag' },
-			{ orth: '.' }
+			{
+				orth: 'Utterance',
+				endtime: 1.0
+			},
+			{
+				orth: 'with',
+				endtime: 2.0
+			},
+			{
+				orth: 'tag',
+				endtime: 3.0
+			},
+			{
+				orth: '.',
+				endtime: 4.0
+			}
 		];
 
 		wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		$expectedTokensElement = $( '<tokens></tokens>' )
-			.append(
-				$( '<token></token>' )
-					.text( 'Utterance' )
-					.attr( 'position', 0 )
-			)
-			.append(
-				$( '<token></token>' )
-					.text( 'with' )
-					.attr( 'position', 10 )
-			)
-			.append(
-				$( '<token></token>' )
-					.text( 'tag' )
-					.attr( 'position', 18 )
-			)
-			.append(
-				$( '<token></token>' )
-					.text( '.' )
-					.attr( 'position', 25 )
-			);
+		$expectedTokensElement = $( '<tokens></tokens>' );
+		addToken( $expectedTokensElement, 'Utterance', 0, 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'with', 10, 1.0, 2.0 );
+		addToken( $expectedTokensElement, 'tag', 18, 2.0, 3.0 );
+		addToken( $expectedTokensElement, '.', 25, 3.0, 4.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
 		);
 	} );
 
-	QUnit.test( 'addTokenElements: utterance position offset', function ( assert ) {
+	QUnit.test( 'addTokenElements(): utterance position offset', function ( assert ) {
 		var tokens, $tokensElement, $expectedTokensElement;
 
 		$( '<content></content>' ).html( 'An utterance.' )
 			.appendTo( $( '#utterance-0' ) );
 		$( '#utterance-0' ).attr( 'position', 3 );
 		tokens = [
-			{ orth: 'An' },
-			{ orth: 'utterance' },
-			{ orth: '.' }
+			{
+				orth: 'An',
+				endtime: 1.0
+			},
+			{
+				orth: 'utterance',
+				endtime: 2.0
+			},
+			{
+				orth: '.',
+				endtime: 3.0
+			}
 		];
 
 		wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		$expectedTokensElement = $( '<tokens></tokens>' )
-			.append( $( '<token></token>' )
-					.text( 'An' )
-					.attr( 'position', 3 ) )
-			.append( $( '<token></token>' )
-					.text( 'utterance' )
-					.attr( 'position', 6 ) )
-			.append( $( '<token></token>' )
-					.text( '.' )
-					.attr( 'position', 15 ) );
+		$expectedTokensElement = $( '<tokens></tokens>' );
+		addToken( $expectedTokensElement, 'An', 3, 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'utterance', 6, 1.0, 2.0 );
+		addToken( $expectedTokensElement, '.', 15, 2.0, 3.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
@@ -458,27 +523,223 @@
 		)
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
-			{ orth: 'Utterance' },
-			{ orth: 'with' },
-			{ orth: '.' }
+			{
+				orth: 'Utterance',
+				endtime: 1.0
+			},
+			{
+				orth: 'with',
+				endtime: 2.0
+			},
+			{
+				orth: '.',
+				endtime: 3.0
+			}
 		];
 
 		wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		$expectedTokensElement = $( '<tokens></tokens>' )
-			.append( $( '<token></token>' )
-					.text( 'Utterance' )
-					.attr( 'position', 0 ) )
-			.append( $( '<token></token>' )
-					.text( 'with' )
-					.attr( 'position', 10 ) )
-			.append( $( '<token></token>' )
-					.text( '.' )
-					.attr( 'position', 37 ) );
+		$expectedTokensElement = $( '<tokens></tokens>' );
+		addToken( $expectedTokensElement, 'Utterance', 0, 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'with', 10, 1.0, 2.0 );
+		addToken( $expectedTokensElement, '.', 37, 2.0, 3.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
+		);
+	} );
+
+	QUnit.test( 'getCurrentToken()', function ( assert ) {
+		var $tokens, token, expectedToken;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, '', 0, 0.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		addToken( $tokens, '', 0, 2.0, 3.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		wikispeech.play();
+
+		token = wikispeech.getCurrentToken().get( 0 );
+
+		assert.strictEqual( token, expectedToken );
+	} );
+
+	QUnit.test( 'getCurrentToken(): get first token', function ( assert ) {
+		var $tokens, token, expectedToken;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		expectedToken = addToken( $tokens, '', 0, 0.0, 1.0 );
+		addToken( $tokens, '', 0, 1.0, 2.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 0.1 );
+		wikispeech.play();
+
+		token = wikispeech.getCurrentToken().get( 0 );
+
+		assert.strictEqual( token, expectedToken );
+	} );
+
+	QUnit.test( 'getCurrentToken(): get the last token', function ( assert ) {
+		var token, $tokens, expectedToken;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, '', 0, 0.0, 1.0 );
+		addToken( $tokens, '', 0, 1.0, 2.0 );
+		expectedToken = addToken( $tokens, '', 0, 2.0, 3.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 2.1 );
+		wikispeech.play();
+
+		token = wikispeech.getCurrentToken().get( 0 );
+
+		assert.strictEqual( token, expectedToken );
+	} );
+
+	QUnit.test( 'getCurrentToken(): get the last token when current time is equal to last tokens end time', function ( assert ) {
+		var token, $tokens, expectedToken;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, '', 0, 0.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 2.0 );
+		wikispeech.play();
+
+		token = wikispeech.getCurrentToken().get( 0 );
+
+		assert.strictEqual( token, expectedToken );
+	} );
+
+	QUnit.test( 'getCurrentToken(): ignore tokens with no duration', function ( assert ) {
+		var token, $tokens, expectedToken;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, '', 0, 0.0, 1.0 );
+		addToken( $tokens, '', 0, 1.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
+		wikispeech.play();
+
+		token = wikispeech.getCurrentToken().get( 0 );
+
+		assert.strictEqual( token, expectedToken );
+	} );
+
+	QUnit.test( 'getCurrentToken(): give correct token if there are tokens with no duration', function ( assert ) {
+		var token, $tokens, expectedToken;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, '', 0, 0.0, 1.0 );
+		addToken( $tokens, '', 0, 1.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		wikispeech.play();
+
+		token = wikispeech.getCurrentToken().get( 0 );
+
+		assert.strictEqual( token, expectedToken );
+	} );
+
+	QUnit.test( 'skipAheadToken()', function ( assert ) {
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$( '#utterance-0' ).append(
+			$( '<tokens></tokens>' )
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 0.0 )
+						.attr( 'end-time', 1.0 )
+						.text( 'word' )
+				)
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 1.0 )
+						.attr( 'end-time', 2.0 )
+						.text( 'word' )
+				)
+		);
+		wikispeech.play();
+
+		wikispeech.skipAheadToken();
+
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			1.0
+		);
+	} );
+
+	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', function ( assert ) {
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$( '#utterance-0' ).append(
+			$( '<tokens></tokens>' )
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 0.0 )
+						.attr( 'end-time', 1.0 )
+				)
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 1.0 )
+						.attr( 'end-time', 2.0 )
+				)
+		);
+		wikispeech.play();
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		sinon.spy( wikispeech, 'skipAheadUtterance' );
+
+		wikispeech.skipAheadToken();
+
+		assert.strictEqual( wikispeech.skipAheadUtterance.called, true );
+	} );
+
+	QUnit.test( 'skipAheadToken(): ignore silent tokens', function ( assert ) {
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$( '#utterance-0' ).append(
+			$( '<tokens></tokens>' )
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 0.0 )
+						.attr( 'end-time', 1.0 )
+						.text( 'starting point' )
+				)
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 1.0 )
+						.attr( 'end-time', 1.0 )
+						.text( 'no duration' )
+				)
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 1.0 )
+						.attr( 'end-time', 2.0 )
+						.text( '' )
+				)
+				.append(
+					$( '<token></token>' )
+						.attr( 'start-time', 2.0 )
+						.attr( 'end-time', 3.0 )
+						.text( 'target' )
+				)
+		);
+		wikispeech.play();
+
+		wikispeech.skipAheadToken();
+
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			2.0
 		);
 	} );
 } )( mediaWiki, jQuery );

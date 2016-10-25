@@ -1,0 +1,16 @@
+{
+	"--title": "Wikispeech - Documentation",
+	"--processes": "0",
+	"--external": "QUnit.*",
+	"--warnings-exit-nonzero": true,
+	"--warnings": [
+		"-nodoc(class,public)",
+		"-global"
+	],
+	"--output": "js-docs",
+	"--tags": "../../maintenance/jsduck/custom_tags.rb",
+	"--": [
+		"modules",
+		"tests/qunit"
+	]
+}

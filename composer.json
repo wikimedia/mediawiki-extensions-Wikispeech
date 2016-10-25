@@ -11,6 +11,10 @@
 		],
 		"fix": [
 			"phpcbf"
+		],
+		"doc": [
+			"doxygen",
+			"jsduck"
 		]
 	}
 }

@@ -18,7 +18,7 @@ class WikispeechHooks {
 	 *
 	 * @param array $testModules The array of registered test modules
 	 * @param ResourceLoader $resourceLoader The reference to the resource
-	 *	loader
+	 *  loader
 	 * @return true
 	 */
 
@@ -46,7 +46,7 @@ class WikispeechHooks {
 	 * namespace.
 	 *
 	 * @param $parser Parser object. Can be used to manually parse a portion
-	 *	of wiki text from the $text.
+	 *  of wiki text from the $text.
 	 * @param $text Represents the text for page.
 	 */
 
@@ -59,14 +59,17 @@ class WikispeechHooks {
 				'HTML from onParserAfterTidy(): ' . $text
 			);
 			$cleanedText = Cleaner::cleanHtml( $text );
-			wfDebugLog( 'Wikispeech', 'Cleaned text: ' . $cleanedText );
+			wfDebugLog(
+				'Wikispeech',
+				'Cleaned text: ' . var_export( $cleanedText, true )
+			);
 			$utterances = Segmenter::segmentSentences( $cleanedText );
 			wfDebugLog(
 				'Wikispeech',
 				'Utterances: ' . var_export( $utterances, true )
 			);
 			$utterancesHtml =
-				HtmlGenerator::generateUtterancesHtml( $utterances );
+				HtmlGenerator::createUtterancesHtml( $utterances );
 			wfDebugLog(
 				'Wikispeech',
 				'Adding utterances HTML: ' . $utterancesHtml
@@ -101,7 +104,7 @@ class WikispeechHooks {
 	 *
 	 * @param OutputPage $out The OutputPage object.
 	 * @param Skin $skin Skin object that will be used to generate the page,
-	 *	added in 1.13.
+	 *  added in 1.13.
 	 */
 
 	public static function onBeforePageDisplay(

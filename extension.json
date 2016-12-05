@@ -80,10 +80,15 @@
 				"key": 39,
 				"modifiers": [ "ctrl" ]
 			},
+			"skipBackSentence": {
+				"key": 37,
+				"modifiers": [ "ctrl" ]
+			},
 			"skipAheadWord": {
 				"key": 40,
 				"modifiers": [ "ctrl" ]
 			}
-		}
+		},
+		"WikispeechSkipBackRewindsThreshold": 3.0
 	}
 }

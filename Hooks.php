@@ -120,6 +120,9 @@ class WikispeechHooks {
 		global $wgWikispeechKeyboardShortcuts;
 		$vars['wgWikispeechKeyboardShortcuts'] =
 			$wgWikispeechKeyboardShortcuts;
+		global $wgWikispeechSkipBackRewindsThreshold;
+		$vars['wgWikispeechSkipBackRewindsThreshold'] =
+			$wgWikispeechSkipBackRewindsThreshold;
 		return true;
 	}
 }

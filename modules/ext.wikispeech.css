@@ -14,6 +14,10 @@
 	content: "Skip ahead sentence";
 }
 
+.ext-wikispeech-skip-back-sentence:after {
+	content: "Skip back sentence";
+}
+
 .ext-wikispeech-skip-ahead-word:after {
 	content: "Skip ahead word";
 }

@@ -33,11 +33,19 @@
 						key: 39,
 						modifiers: [ 'ctrl' ]
 					},
+					skipBackSentence: {
+						key: 37,
+						modifiers: [ 'ctrl' ]
+					},
 					skipAheadWord: {
 						key: 40,
 						modifiers: [ 'ctrl' ]
 					}
 				}
+			);
+			mw.config.set(
+				'wgWikispeechSkipBackRewindsThreshold',
+				3.0
 			);
 		},
 		teardown: function () {
@@ -156,7 +164,7 @@
 	} );
 
 	QUnit.test( 'addButtons()', function ( assert ) {
-		assert.expect( 3 );
+		assert.expect( 4 );
 		wikispeech.addButtons();
 
 		assert.strictEqual(
@@ -165,6 +173,10 @@
 		);
 		assert.strictEqual(
 			$( '#firstHeading #ext-wikispeech-skip-ahead-sentence-button' ).length,
+			1
+		);
+		assert.strictEqual(
+			$( '#firstHeading #ext-wikispeech-skip-back-sentence-button' ).length,
 			1
 		);
 		assert.strictEqual(
@@ -192,8 +204,8 @@
 
 	function testClickButton( assert, functionName, buttonId ) {
 		assert.expect( 1 );
-		wikispeech.addButtons();
 		sinon.spy( wikispeech, functionName );
+		wikispeech.addButtons();
 
 		$( buttonId ).click();
 
@@ -205,6 +217,14 @@
 			assert,
 			'skipAheadUtterance',
 			'#ext-wikispeech-skip-ahead-sentence-button'
+		);
+	} );
+
+	QUnit.test( 'Clicking skip back sentence button', function ( assert ) {
+		testClickButton(
+			assert,
+			'skipBackUtterance',
+			'#ext-wikispeech-skip-back-sentence-button'
 		);
 	} );
 
@@ -284,13 +304,17 @@
 		testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
 	} );
 
+	QUnit.test( 'Pressing keyboard shortcut for skipBackSentence', function ( assert ) {
+		testKeyboardShortcut( assert, 'skipBackUtterance', 37, 'c' );
+	} );
+
 	QUnit.test( 'Pressing keyboard shortcut for skipAheadWord', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipAheadToken', 40, 'c' );
 	} );
 
 	QUnit.test( 'stop()', function ( assert ) {
 		assert.expect( 4 );
-		wikispeech.addPlayStopButton();
+		wikispeech.addButtons();
 		wikispeech.play();
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1 );
@@ -317,7 +341,7 @@
 	QUnit.test( 'play()', function ( assert ) {
 		var $firstUtterance = $( '#utterance-0' );
 		assert.expect( 3 );
-		wikispeech.addPlayStopButton();
+		wikispeech.addButtons();
 		wikispeech.prepareUtterance( $firstUtterance );
 
 		wikispeech.play();
@@ -341,6 +365,7 @@
 	QUnit.test( 'skipAheadUtterance()', function ( assert ) {
 		assert.expect( 2 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		wikispeech.prepareUtterance( $( '#utterance-1' ) );
 		wikispeech.play();
 
 		wikispeech.skipAheadUtterance();
@@ -360,6 +385,62 @@
 		wikispeech.skipAheadUtterance();
 
 		assert.strictEqual( wikispeech.stop.called, true );
+	} );
+
+	QUnit.test( 'skipBackUtterance()', function ( assert ) {
+		assert.expect( 2 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		wikispeech.prepareUtterance( $( '#utterance-1' ) );
+		wikispeech.playUtterance( $( '#utterance-1' ) );
+
+		wikispeech.skipBackUtterance();
+
+		assert.strictEqual( $( '#utterance-1 audio' ).prop( 'paused' ), true );
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'paused' ),
+			false
+		);
+	} );
+
+	QUnit.test( 'skipBackUtterance(): restart if first utterance', function ( assert ) {
+		assert.expect( 2 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		wikispeech.playUtterance( $( '#utterance-0' ) );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
+
+		wikispeech.skipBackUtterance();
+
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'paused' ),
+			false
+		);
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			0.0
+		);
+	} );
+
+	QUnit.test( 'skipBackUtterance(): restart if played long enough', function ( assert ) {
+		assert.expect( 3 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		wikispeech.prepareUtterance( $( '#utterance-1' ) );
+		wikispeech.playUtterance( $( '#utterance-1' ) );
+		$( '#utterance-1 audio' ).prop( 'currentTime', 3.1 );
+
+		wikispeech.skipBackUtterance();
+
+		assert.strictEqual(
+			$( '#utterance-1 audio' ).prop( 'paused' ),
+			false
+		);
+		assert.strictEqual(
+			$( '#utterance-1 audio' ).prop( 'currentTime' ),
+			0.0
+		);
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'paused' ),
+			true
+		);
 	} );
 
 	QUnit.test( 'getNextUtterance()', function ( assert ) {
@@ -651,23 +732,13 @@
 	} );
 
 	QUnit.test( 'skipAheadToken()', function ( assert ) {
+		var $tokens;
+
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$( '#utterance-0' ).append(
-			$( '<tokens></tokens>' )
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 0.0 )
-						.attr( 'end-time', 1.0 )
-						.text( 'word' )
-				)
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 1.0 )
-						.attr( 'end-time', 2.0 )
-						.text( 'word' )
-				)
-		);
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, 'one', 0, 0.0, 1.0 );
+		addToken( $tokens, 'two', 0, 1.0, 2.0 );
 		wikispeech.play();
 
 		wikispeech.skipAheadToken();
@@ -679,21 +750,13 @@
 	} );
 
 	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', function ( assert ) {
+		var $tokens;
+
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$( '#utterance-0' ).append(
-			$( '<tokens></tokens>' )
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 0.0 )
-						.attr( 'end-time', 1.0 )
-				)
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 1.0 )
-						.attr( 'end-time', 2.0 )
-				)
-		);
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, 'first', 0, 0.0, 1.0 );
+		addToken( $tokens, 'last', 0, 1.0, 2.0 );
 		wikispeech.play();
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 		sinon.spy( wikispeech, 'skipAheadUtterance' );
@@ -704,35 +767,15 @@
 	} );
 
 	QUnit.test( 'skipAheadToken(): ignore silent tokens', function ( assert ) {
+		var $tokens;
+
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$( '#utterance-0' ).append(
-			$( '<tokens></tokens>' )
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 0.0 )
-						.attr( 'end-time', 1.0 )
-						.text( 'starting point' )
-				)
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 1.0 )
-						.attr( 'end-time', 1.0 )
-						.text( 'no duration' )
-				)
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 1.0 )
-						.attr( 'end-time', 2.0 )
-						.text( '' )
-				)
-				.append(
-					$( '<token></token>' )
-						.attr( 'start-time', 2.0 )
-						.attr( 'end-time', 3.0 )
-						.text( 'target' )
-				)
-		);
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, 'starting word', 0, 0.0, 1.0 );
+		addToken( $tokens, 'no duration', 0, 1.0, 1.0 );
+		addToken( $tokens, '', 0, 1.0, 2.0 );
+		addToken( $tokens, 'goal', 0, 2.0, 3.0 );
 		wikispeech.play();
 
 		wikispeech.skipAheadToken();

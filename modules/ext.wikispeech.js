@@ -5,30 +5,49 @@
 		self = this;
 		$currentUtterance = $();
 
+		/**
+		 * Add buttons for controlling playback to the top of the page.
+		 */
+
 		this.addButtons = function () {
-			self.addPlayStopButton();
-			self.addSkipAheadSentenceButton();
-			self.addSkipAheadWordButton();
+			self.addButton(
+				'ext-wikispeech-play-stop-button',
+				'ext-wikispeech-play',
+				self.playOrStop
+			);
+			self.addButton(
+				'ext-wikispeech-skip-ahead-sentence-button',
+				'ext-wikispeech-skip-ahead-sentence',
+				self.skipAheadUtterance
+			);
+			self.addButton(
+				'ext-wikispeech-skip-back-sentence-button',
+				'ext-wikispeech-skip-back-sentence',
+				self.skipBackUtterance
+			);
+			self.addButton(
+				'ext-wikispeech-skip-ahead-word-button',
+				'ext-wikispeech-skip-ahead-word',
+				self.skipAheadToken
+			);
 		};
 
 		/**
-		 * Add a button for starting and stopping recitation to the
-		 * page.
-		 *
-		 * When no utterance is playing, clicking starts the first
-		 * utterance.  When an utterance is being played, clicking
-		 * stops the playback.  The button changes appearance to
-		 * reflect its current function.
-		 */
+		* Add a control button.
+		*
+		* @param {string} id The id of the button.
+		* @param {string} cssClass The name of the CSS class to add to
+		*  the button.
+		* @param {string} onClickFunction The name of the function to
+		*  call when the button is clicked.
+		*/
 
-		this.addPlayStopButton = function () {
-			var $playStopButton = $( '<button></button>' )
-				.attr( 'id', 'ext-wikispeech-play-stop-button' )
-				.addClass( 'ext-wikispeech-play' );
-			$( '#firstHeading' ).append( $playStopButton );
-			// For some reason, testing doesn't work with
-			// .click( self.playOrStop ).
-			$playStopButton.click( function () { self.playOrStop(); } );
+		this.addButton = function ( id, cssClass, onClickFunction ) {
+			var $button = $( '<button></button>' )
+				.attr( 'id', id )
+				.addClass( cssClass );
+			$( '#firstHeading' ).append( $button );
+			$button.click( onClickFunction );
 		};
 
 		/**
@@ -106,23 +125,6 @@
 		};
 
 		/**
-		 * Add a button for skipping to the next sentence.
-		 *
-		 * This actually skips to the next utterance; it's assumed
-		 * that the utterances are sentences.
-		 */
-
-		this.addSkipAheadSentenceButton = function () {
-			var $skipAheadSentenceButton = $( '<button></button>' )
-				.attr( 'id', 'ext-wikispeech-skip-ahead-sentence-button' )
-				.addClass( 'ext-wikispeech-skip-ahead-sentence' );
-			$( '#firstHeading' ).append( $skipAheadSentenceButton );
-			$skipAheadSentenceButton.click( function () {
-				self.skipAheadUtterance();
-			} );
-		};
-
-		/**
 		 * Skip to the next utterance.
 		 *
 		 * Stop the current utterance and start playing the next one.
@@ -138,41 +140,34 @@
 		};
 
 		/**
-		 * Get the utterance after the given utterance.
+		 * Skip to the previous utterance.
 		 *
-		 * @param {jQuery} $utterance The original utterance.
-		 * @return {jQuery} The utterance after the original
-		 *  utterance. Empty object if $utterance isn't a valid
-		 *  utterance.
+		 * Stop the current utterance and start playing the previous one. If
+		 * the first utterance is playing, restart it.
 		 */
 
-		this.getNextUtterance = function ( $utterance ) {
-			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
+		this.skipBackUtterance = function () {
+			var previousUtterance, rewindThreshold, $audio, time;
 
-			if ( !$utterance.length ) {
-				return $();
+			previousUtterance =
+				self.getPreviousUtterance( $currentUtterance );
+			if ( previousUtterance.length ) {
+				// Only consider skipping back to previous if the
+				// current utterance isn't the first one.
+				rewindThreshold = mw.config.get(
+					'wgWikispeechSkipBackRewindsThreshold' );
+				$audio = $currentUtterance.children( 'audio' );
+				time = $audio.prop( 'currentTime' );
+				if ( time > rewindThreshold ) {
+					$audio.prop( 'currentTime', 0.0 );
+				} else {
+					self.playUtterance( previousUtterance );
+				}
+			} else if ( self.isPlaying() ) {
+				// Alwas skip to start of utterance if the current
+				// uterrance is the first.
+				self.play();
 			}
-			// Utterance id's follow the pattern "utterance-x", where
-			// x is the index.
-			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
-			nextUtteranceIndex = parseInt( utteranceIdParts[ 1 ], 10 ) + 1;
-			utteranceIdParts[ 1 ] = nextUtteranceIndex;
-			nextUtteranceId = utteranceIdParts.join( '-' );
-			return $( '#' + nextUtteranceId );
-		};
-
-		/**
-		 * Add a button for skipping to the next word.
-		 */
-
-		this.addSkipAheadWordButton = function () {
-			var $button = $( '<button></button>' )
-				.attr( 'id', 'ext-wikispeech-skip-ahead-word-button' )
-				.addClass( 'ext-wikispeech-skip-ahead-word' );
-			$( '#firstHeading' ).append( $button );
-			$button.click( function () {
-				self.skipAheadToken();
-			} );
 		};
 
 		/**
@@ -277,6 +272,11 @@
 				) {
 					self.skipAheadUtterance();
 					return false;
+				} else if ( self.eventMatchShortcut(
+					event,
+					shortcuts.skipBackSentence )
+				) {
+					self.skipBackUtterance();
 				} else if (
 					self.eventMatchShortcut( event, shortcuts.skipAheadWord )
 				) {
@@ -352,6 +352,58 @@
 		};
 
 		/**
+		 * Get the utterance after the given utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @return {jQuery} The utterance after the original
+		 *  utterance. Empty object if $utterance is the last one.
+		 */
+
+		this.getNextUtterance = function ( $utterance ) {
+			return self.getUtteranceByOffset( $utterance, 1 );
+		};
+
+		/**
+		 * Get the utterance by offset from another utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @param {number} offset The difference, in index, to the
+		 *  wanted utterance. Can be negative for preceding
+		 *  utterances.
+		 * @return {jQuery} The utterance after the original
+		 *  utterance. Empty object if $utterance isn't a valid
+		 *  utterance or if an utterance couldn't be found.
+		 */
+
+		this.getUtteranceByOffset = function ( $utterance, offset ) {
+			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
+
+			if ( !$utterance.length ) {
+				return $();
+			}
+			// Utterance id's follow the pattern "utterance-x", where
+			// x is the index.
+			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
+			nextUtteranceIndex =
+				parseInt( utteranceIdParts[ 1 ], 10 ) + offset;
+			utteranceIdParts[ 1 ] = nextUtteranceIndex;
+			nextUtteranceId = utteranceIdParts.join( '-' );
+			return $( '#' + nextUtteranceId );
+		};
+
+		/**
+		 * Get the utterance before the given utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @return {jQuery} The utterance before the original
+		 *  utterance. Empty object if $utterance is the first one.
+		 */
+
+		this.getPreviousUtterance = function ( $utterance ) {
+			return self.getUtteranceByOffset( $utterance, -1 );
+		};
+
+		/**
 		 * Request audio for an utterance.
 		 *
 		 * Adds audio and token elements when the response is
@@ -390,7 +442,7 @@
 		 * The request should specify the following parameters:
 		 * - lang: the language used by the synthesizer.
 		 * - input_type: "ssml" if you want SSML markup, otherwise
-		 * "text" for plain text.
+		 *  "text" for plain text.
 		 * - input: the text to be synthesized.
 		 * For more on the parameters, see:
 		 * https://github.com/stts-se/wikispeech_mockup/wiki/api.

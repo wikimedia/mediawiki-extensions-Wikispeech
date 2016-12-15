@@ -30,6 +30,11 @@
 				'ext-wikispeech-skip-ahead-word',
 				self.skipAheadToken
 			);
+			self.addButton(
+				'ext-wikispeech-skip-back-word-button',
+				'ext-wikispeech-skip-back-word',
+				self.skipBackToken
+			);
 		};
 
 		/**
@@ -140,6 +145,46 @@
 		};
 
 		/**
+		 * Get the utterance after the given utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @return {jQuery} The utterance after the original
+		 *  utterance. Empty object if $utterance is the last one.
+		 */
+
+		this.getNextUtterance = function ( $utterance ) {
+			return self.getUtteranceByOffset( $utterance, 1 );
+		};
+
+		/**
+		 * Get the utterance by offset from another utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @param {number} offset The difference, in index, to the
+		 *  wanted utterance. Can be negative for preceding
+		 *  utterances.
+		 * @return {jQuery} The utterance after the original
+		 *  utterance. Empty object if $utterance isn't a valid
+		 *  utterance or if an utterance couldn't be found.
+		 */
+
+		this.getUtteranceByOffset = function ( $utterance, offset ) {
+			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
+
+			if ( !$utterance.length ) {
+				return $();
+			}
+			// Utterance id's follow the pattern "utterance-x", where
+			// x is the index.
+			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
+			nextUtteranceIndex =
+				parseInt( utteranceIdParts[ 1 ], 10 ) + offset;
+			utteranceIdParts[ 1 ] = nextUtteranceIndex;
+			nextUtteranceId = utteranceIdParts.join( '-' );
+			return $( '#' + nextUtteranceId );
+		};
+
+		/**
 		 * Skip to the previous utterance.
 		 *
 		 * Stop the current utterance and start playing the previous one. If
@@ -168,6 +213,18 @@
 				// uterrance is the first.
 				self.play();
 			}
+		};
+
+		/**
+		 * Get the utterance before the given utterance.
+		 *
+		 * @param {jQuery} $utterance The original utterance.
+		 * @return {jQuery} The utterance before the original
+		 *  utterance. Empty object if $utterance is the first one.
+		 */
+
+		this.getPreviousUtterance = function ( $utterance ) {
+			return self.getUtteranceByOffset( $utterance, -1 );
 		};
 
 		/**
@@ -205,7 +262,7 @@
 			var $tokens, currentTime, $currentToken, $tokensWithDuration,
 				duration, startTime, endTime;
 
-			$currentToken = null;
+			$currentToken = $();
 			$tokens = $currentUtterance.find( 'token' );
 			currentTime = $currentUtterance.children( 'audio' )
 				.prop( 'currentTime' );
@@ -257,6 +314,61 @@
 		};
 
 		/**
+		 * Skip to the previous token.
+		 */
+
+		this.skipBackToken = function () {
+			var $previousToken, $utterance, $audio;
+
+			if ( self.isPlaying() ) {
+				$previousToken =
+					self.getPreviousToken( self.getCurrentToken() );
+				$utterance = $previousToken.parent().parent();
+				if ( $utterance.get( 0 ) !== $currentUtterance.get( 0 ) ) {
+					self.playUtterance( $utterance );
+				}
+				$audio = $currentUtterance.children( 'audio' );
+				$audio.prop(
+					'currentTime',
+					$previousToken.attr( 'start-time' )
+				);
+			}
+		};
+
+		/**
+		 * Get the token before a given token.
+		 *
+		 * Tokens that are "silent" i.e. have a duration of zero or have no
+		 * transcription, are ignored.
+		 *
+		 * @param {jQuery} $token Original token.
+		 * @return {jQuery} The token before $token, empty object if
+		 *  $token is the first token.
+		 */
+
+		this.getPreviousToken = function ( $token ) {
+			var $utterance, $followingToken, $tokens;
+
+			$utterance = $token.parent().parent();
+			do {
+				$followingToken = $token;
+				$token = $token.prev();
+				if ( !$token.length ) {
+					$utterance = $utterance.prev();
+					if ( !$utterance.length ) {
+						return $();
+					}
+					$tokens = $utterance.find( 'token' );
+					$token = $( $utterance.find( 'token' )
+						.get( $tokens.length - 1 ) );
+				}
+				// Ignore tokens that either have a duration of zero
+				// or no text.
+			} while ( self.isSilent( $token.get( 0 ) ) );
+			return $token;
+		};
+
+		/**
 		 * Register listeners for keyboard shortcuts.
 		 */
 
@@ -277,10 +389,16 @@
 					shortcuts.skipBackSentence )
 				) {
 					self.skipBackUtterance();
+					return false;
 				} else if (
 					self.eventMatchShortcut( event, shortcuts.skipAheadWord )
 				) {
 					self.skipAheadToken();
+					return false;
+				} else if (
+					self.eventMatchShortcut( event, shortcuts.skipBackWord )
+				) {
+					self.skipBackToken();
 					return false;
 				}
 			} );
@@ -322,7 +440,7 @@
 		 */
 
 		this.prepareUtterance = function ( $utterance ) {
-			var $audio, $nextUtterance, $nextUtteranceAudio;
+			var $audio, $nextUtterance;
 
 			if ( !$utterance.prop( 'requested' ) ) {
 				// Only load audio for an utterance if we haven't
@@ -337,7 +455,6 @@
 						self.stop();
 					} );
 				} else {
-					$nextUtteranceAudio = $nextUtterance.children( 'audio' );
 					$audio.on( {
 						play: function () {
 							$currentUtterance = $utterance;
@@ -349,58 +466,6 @@
 					} );
 				}
 			}
-		};
-
-		/**
-		 * Get the utterance after the given utterance.
-		 *
-		 * @param {jQuery} $utterance The original utterance.
-		 * @return {jQuery} The utterance after the original
-		 *  utterance. Empty object if $utterance is the last one.
-		 */
-
-		this.getNextUtterance = function ( $utterance ) {
-			return self.getUtteranceByOffset( $utterance, 1 );
-		};
-
-		/**
-		 * Get the utterance by offset from another utterance.
-		 *
-		 * @param {jQuery} $utterance The original utterance.
-		 * @param {number} offset The difference, in index, to the
-		 *  wanted utterance. Can be negative for preceding
-		 *  utterances.
-		 * @return {jQuery} The utterance after the original
-		 *  utterance. Empty object if $utterance isn't a valid
-		 *  utterance or if an utterance couldn't be found.
-		 */
-
-		this.getUtteranceByOffset = function ( $utterance, offset ) {
-			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
-
-			if ( !$utterance.length ) {
-				return $();
-			}
-			// Utterance id's follow the pattern "utterance-x", where
-			// x is the index.
-			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
-			nextUtteranceIndex =
-				parseInt( utteranceIdParts[ 1 ], 10 ) + offset;
-			utteranceIdParts[ 1 ] = nextUtteranceIndex;
-			nextUtteranceId = utteranceIdParts.join( '-' );
-			return $( '#' + nextUtteranceId );
-		};
-
-		/**
-		 * Get the utterance before the given utterance.
-		 *
-		 * @param {jQuery} $utterance The original utterance.
-		 * @return {jQuery} The utterance before the original
-		 *  utterance. Empty object if $utterance is the first one.
-		 */
-
-		this.getPreviousUtterance = function ( $utterance ) {
-			return self.getUtteranceByOffset( $utterance, -1 );
 		};
 
 		/**

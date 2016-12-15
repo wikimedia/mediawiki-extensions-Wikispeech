@@ -21,3 +21,7 @@
 .ext-wikispeech-skip-ahead-word:after {
 	content: "Skip ahead word";
 }
+
+.ext-wikispeech-skip-back-word:after {
+	content: "Skip back word";
+}

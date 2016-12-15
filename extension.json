@@ -87,6 +87,10 @@
 			"skipAheadWord": {
 				"key": 40,
 				"modifiers": [ "ctrl" ]
+			},
+			"skipBackWord": {
+				"key": 38,
+				"modifiers": [ "ctrl" ]
 			}
 		},
 		"WikispeechSkipBackRewindsThreshold": 3.0

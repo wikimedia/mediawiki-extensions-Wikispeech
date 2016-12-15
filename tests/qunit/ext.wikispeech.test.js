@@ -40,6 +40,10 @@
 					skipAheadWord: {
 						key: 40,
 						modifiers: [ 'ctrl' ]
+					},
+					skipBackWord: {
+						key: 38,
+						modifiers: [ 'ctrl' ]
 					}
 				}
 			);
@@ -164,7 +168,8 @@
 	} );
 
 	QUnit.test( 'addButtons()', function ( assert ) {
-		assert.expect( 4 );
+		assert.expect( 5 );
+
 		wikispeech.addButtons();
 
 		assert.strictEqual(
@@ -181,6 +186,10 @@
 		);
 		assert.strictEqual(
 			$( '#firstHeading #ext-wikispeech-skip-ahead-word-button' ).length,
+			1
+		);
+		assert.strictEqual(
+			$( '#firstHeading #ext-wikispeech-skip-back-word-button' ).length,
 			1
 		);
 	} );
@@ -255,7 +264,7 @@
 		assert.strictEqual( wikispeech.stop.called, true );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for playStop', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for play/stop', function ( assert ) {
 		testKeyboardShortcut( assert, 'playOrStop', 32, 'c' );
 	} );
 
@@ -273,8 +282,8 @@
 
 	function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
 		assert.expect( 1 );
-		sinon.stub( wikispeech, functionName, function () {} );
 		wikispeech.addKeyboardShortcuts();
+		sinon.spy( wikispeech, functionName );
 
 		$( document ).trigger( createKeydownEvent( keyCode, modifiers ) );
 
@@ -288,7 +297,7 @@
 	 * @param {string} modifiers A string that defines the
 	 *  modifiers. The characters c, a and s triggers the modifiers
 	 *  for ctrl, alt and shift, respectively.
-	 * @return The created keydown event.
+	 * @return {jQuery} The created keydown event.
 	 */
 
 	function createKeydownEvent( keyCode, modifiers ) {
@@ -300,16 +309,20 @@
 		return event;
 	}
 
-	QUnit.test( 'Pressing keyboard shortcut for skipAheadSentence', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for skipBackSentence', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipBackUtterance', 37, 'c' );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for skipAheadWord', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping ahead word', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipAheadToken', 40, 'c' );
+	} );
+
+	QUnit.test( 'Pressing keyboard shortcut for skipping back word', function ( assert ) {
+		testKeyboardShortcut( assert, 'skipBackToken', 38, 'c' );
 	} );
 
 	QUnit.test( 'stop()', function ( assert ) {
@@ -317,14 +330,14 @@
 		wikispeech.addButtons();
 		wikispeech.play();
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
 
 		wikispeech.stop();
 
 		assert.strictEqual( $( '#utterance-0 audio' ).prop( 'paused' ), true );
 		assert.strictEqual(
 			$( '#utterance-0 audio' ).prop( 'currentTime' ),
-			0
+			0.0
 		);
 		assert.strictEqual(
 			$( '#ext-wikispeech-play-stop-button' )
@@ -706,7 +719,7 @@
 		addToken( $tokens, '', 0, 0.0, 1.0 );
 		addToken( $tokens, '', 0, 1.0, 1.0 );
 		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 		wikispeech.play();
 
 		token = wikispeech.getCurrentToken().get( 0 );
@@ -783,6 +796,75 @@
 		assert.strictEqual(
 			$( '#utterance-0 audio' ).prop( 'currentTime' ),
 			2.0
+		);
+	} );
+
+	QUnit.test( 'skipBackToken()', function ( assert ) {
+		var $tokens;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, 'one', 0, 0.0, 1.0 );
+		addToken( $tokens, 'two', 0, 1.0, 2.0 );
+		wikispeech.play();
+		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+
+		wikispeech.skipBackToken();
+
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			0.0
+		);
+	} );
+
+	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', function ( assert ) {
+		var $tokens, $tokens2;
+
+		assert.expect( 3 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		wikispeech.prepareUtterance( $( '#utterance-1' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, 'one', 0, 0.0, 1.0 );
+		addToken( $tokens, 'two', 0, 1.0, 2.0 );
+		$tokens2 = $( '<tokens></tokens>' ).appendTo( $( '#utterance-1' ) );
+		addToken( $tokens2, 'three', 0, 0.0, 1.0 );
+		wikispeech.playUtterance( $( '#utterance-1' ) );
+
+		wikispeech.skipBackToken();
+
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'paused' ),
+			false
+		);
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			1.0
+		);
+		assert.strictEqual(
+			$( '#utterance-1 audio' ).prop( 'paused' ),
+			true
+		);
+	} );
+
+	QUnit.test( 'skipBackToken(): ignore silent tokens', function ( assert ) {
+		var $tokens;
+
+		assert.expect( 1 );
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
+		addToken( $tokens, 'starting word', 0, 0.0, 1.0 );
+		addToken( $tokens, 'no duration', 0, 1.0, 1.0 );
+		addToken( $tokens, '', 0, 1.0, 2.0 );
+		addToken( $tokens, 'goal', 0, 2.0, 3.0 );
+		wikispeech.playUtterance( $( '#utterance-0' ) );
+		$( '#utterance-0 audio' ).prop( 'currentTime', 2.1 );
+
+		wikispeech.skipBackToken();
+
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			0.0
 		);
 	} );
 } )( mediaWiki, jQuery );

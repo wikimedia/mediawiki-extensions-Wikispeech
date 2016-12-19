@@ -17,7 +17,14 @@
 	},
 	"AutoloadClasses": {
 		"SpecialWikispeech": "specials/SpecialWikispeech.php",
-		"WikispeechHooks": "Hooks.php"
+		"WikispeechHooks": "Hooks.php",
+		"CleanedTag": "includes/CleanedTag.php",
+		"CleanedStartTag": "includes/CleanedTag.php",
+		"CleanedEndTag": "includes/CleanedTag.php",
+		"CleanedEmptyElementTag": "includes/CleanedTag.php",
+		"Cleaner": "includes/Cleaner.php",
+		"HtmlGenerator": "includes/HtmlGenerator.php",
+		"Segmenter": "includes/Segmenter.php"
 	},
 	"ResourceModules": {
 		"ext.wikispeech": {

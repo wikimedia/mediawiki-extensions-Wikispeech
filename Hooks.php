@@ -6,10 +6,6 @@
  * @license GPL-2.0+
  */
 
-require_once __DIR__ . '/includes/Cleaner.php';
-require_once __DIR__ . '/includes/Segmenter.php';
-require_once __DIR__ . '/includes/HtmlGenerator.php';
-
 class WikispeechHooks {
 
 	/**

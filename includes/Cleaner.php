@@ -6,8 +6,6 @@
  * @license GPL-2.0+
  */
 
-require_once 'CleanedTag.php';
-
 class Cleaner {
 
 	/**

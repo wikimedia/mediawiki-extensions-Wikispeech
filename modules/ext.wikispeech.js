@@ -531,7 +531,7 @@
 			);
 			parameters = $.param( {
 				// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-				lang: 'en',
+				lang: mw.config.get( 'wgPageContentLanguage' ),
 				input_type: 'text',
 				input: text
 				// jscs:enable requireCamelCaseOrUpperCaseIdentifiers

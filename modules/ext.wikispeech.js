@@ -102,6 +102,7 @@
 			self.stopUtterance( $currentUtterance );
 			$currentUtterance = $utterance;
 			$utterance.children( 'audio' ).trigger( 'play' );
+			self.highlightUtterance( $utterance );
 		};
 
 		/**
@@ -115,6 +116,169 @@
 			$utterance.children( 'audio' ).trigger( 'pause' );
 			// Rewind audio for next time it plays.
 			$utterance.children( 'audio' ).prop( 'currentTime', 0 );
+			self.unhighlightUtterances();
+		};
+
+		/**
+		 * Highlight text associated with an utterance.
+		 *
+		 * Adds highlight spans to the text nodes from which the
+		 * tokens of $utterance were created. For first and last node,
+		 * it's possible that only part of the text is highlighted,
+		 * since they may contain start/end of next/previous
+		 * utterance.
+		 *
+		 * @param {jQuery} $utterance The utterance to add
+		 *  highlighting to.
+		 */
+
+		this.highlightUtterance = function ( $utterance ) {
+			var firstTextElement, firstNode, lastTextElement, lastNode,
+				firstNodeRange, startOffset, endOffset, textNode;
+
+			firstTextElement = $utterance.find( 'text' ).get( 0 );
+			if ( firstTextElement ) {
+				firstNode = self.getNodeForTextElement( firstTextElement );
+				lastTextElement = $utterance.find( 'text' ).get( -1 );
+				lastNode = self.getNodeForTextElement( lastTextElement );
+
+				// Range for the first node, since it may be that only
+				// part of this should be highlighted.
+				firstNodeRange = document.createRange();
+				startOffset =
+					parseInt( $utterance.attr( 'start-offset' ), 10 );
+				firstNodeRange.setStart( firstNode, startOffset );
+				endOffset =
+					parseInt( $utterance.attr( 'end-offset' ), 10 );
+				if ( firstNode === lastNode ) {
+					// All highlighted text is in the same text node, so
+					// only a range is needed.
+					firstNodeRange.setEnd( firstNode, endOffset + 1 );
+				} else {
+					// Since the highlighting extends beyond the first
+					// text node, all text from the start position should
+					// be highlighted.
+					firstNodeRange.setEnd(
+						firstNode,
+						firstNode.textContent.length
+					);
+					// Add highlighting by range for the last text
+					// node, since it may be that the highlighting
+					// doesn't cover the whole node.
+					self.highlightRange( lastNode, 0, endOffset + 1 );
+
+					$utterance.find( 'text:gt(0):lt(-1)' ).each( function () {
+						// Add highlighting to all text nodes between
+						// first and last node.
+						textNode = self.getNodeForTextElement( this );
+						$( textNode ).wrap(
+							self.createHighilightUtteranceSpan()
+						);
+					} );
+				}
+				firstNodeRange.surroundContents(
+					self.createHighilightUtteranceSpan()
+				);
+			}
+		};
+
+		/**
+		 * Find the text node from which a `<text>` element was created.
+		 *
+		 * The path attribute of textElement is used to traverse the
+		 * DOM tree.
+		 *
+		 * @param {HTMLElement} textElement The `<text>` element to find
+		 *  the text node for.
+		 * @return {TextNode} The text node associated with textElement.
+		 */
+
+		this.getNodeForTextElement = function ( textElement ) {
+			var path, node;
+
+			path = textElement.getAttribute( 'path' ).split( ',' );
+			node =
+				self.getNodeFromPath( path, $( '#mw-content-text' ).get( 0 ) );
+			return node;
+		};
+
+		/**
+		 * Get the node from a path.
+		 *
+		 * Starts at topNode and traverses the DOM tree along path.
+		 *
+		 * @param {number[]} path Indices of each step in the path.
+		 * @param {TextNode} topNode The node to start from.
+		 * @return {TextNode} The node found by following path.
+		 */
+
+		this.getNodeFromPath = function ( path, topNode ) {
+			var node, i, step;
+
+			node = topNode;
+			for ( i = 0; i < path.length; i++ ) {
+				step = path[ i ];
+				node = $( node ).contents().get( parseInt( step, 10 ) );
+			}
+			return node;
+		};
+
+		/**
+		 * Add highlighting to a range within a text node.
+		 *
+		 * @param {TextNode} node The text node that the highlighting is
+		 *  added to.
+		 * @param {number} start The index of the first character in the
+		 *  highlighting.
+		 * @param {number} end The index of the last character in the
+		 *  highlighting.
+		 */
+
+		this.highlightRange = function ( node, start, end ) {
+			var range = document.createRange();
+			range.setStart( node, start );
+			range.setEnd( node, end );
+			range.surroundContents( self.createHighilightUtteranceSpan() );
+		};
+
+		/**
+		 * Create a span used for highlighting sentences.
+		 *
+		 * @return {HTMLElement} The highlighting `<span>`.
+		 */
+
+		this.createHighilightUtteranceSpan = function () {
+			var span = $( '<span></span>' )
+				.addClass( 'ext-wikispeech-highlight-sentence' )
+				.get( 0 );
+			return span;
+		};
+
+		/**
+		 * Remove any highlighting from utterances.
+		 *
+		 * If a text node was devided by a span tag, the two resulting
+		 * text nodes are merged.
+		 */
+
+		this.unhighlightUtterances = function () {
+			var parents, $span;
+
+			parents = [];
+			$span = $( '.ext-wikispeech-highlight-sentence' );
+			$span.replaceWith( function () {
+				var textNode;
+
+				parents.push( this.parentNode );
+				textNode = this.firstChild;
+				return textNode.textContent;
+			} );
+			if ( parents.length > 0 ) {
+				// Merge first and last text nodes, if the original was
+				// divided by adding the <span>.
+				parents[ 0 ].normalize();
+				parents[ parents.length - 1 ].normalize();
+			}
 		};
 
 		/**
@@ -486,9 +650,13 @@
 			// i.e. not from the cleaned tag.
 			text = $utterance.children( 'content' ).contents().filter(
 				function () {
-					// Filter text nodes. Not using Node.TEXT_NODE to
-					// support IE7.
-					return this.nodeType === 3;
+					// Filter text nodes. Not using Node.ELEMENT_NODE
+					// to support IE7.
+					if ( this.nodeType === 1 && this.tagName === 'TEXT' ) {
+						return true;
+					} else {
+						return false;
+					}
 				}
 			).text();
 			self.requestTts( text, function ( response ) {
@@ -558,107 +726,23 @@
 		 */
 
 		this.addTokenElements = function ( $utterance, tokens ) {
-			var position, $tokensElement, $content, firstTokenIndex,
-				removedLength;
+			var $tokensElement, $contentElement, i, token, startTime;
 
-			// The character position in the original HTML. Starting
-			// at the position of the utterance, since that's the
-			// earliest a child token can appear.
-			position = parseInt( $utterance.attr( 'position' ), 10 );
 			$tokensElement = $( '<tokens></tokens>' ).appendTo( $utterance );
-			$content = $utterance.children( 'content' );
-			firstTokenIndex = 0;
+			$contentElement = $utterance.children( 'content' );
 			mw.log( 'Adding tokens to ' + $utterance.attr( 'id' ) + '.' );
-			$content.contents().each( function ( i, element ) {
-				if ( element.tagName === 'CLEANED-TAG' ) {
-					removedLength = element.getAttribute( 'removed' );
-					if ( removedLength !== null ) {
-						position += parseInt( removedLength, 10 );
-					}
-					// Advance position two steps extra for the < and
-					// >, that were stripped from the tag at an
-					// earlier stage.
-					position += 2;
-				} else {
-					// firstTokenIndex is the index, in tokens, of the
-					// first token we haven't created an element for.
-					firstTokenIndex = self.addTokensForTextElement(
-						tokens,
-						element,
-						position,
-						$tokensElement,
-						firstTokenIndex
-					);
-				}
-				position += element.textContent.length;
-			} );
-		};
-
-		/**
-		 * Add a token element for each token that match a substring
-		 * of the given text element.
-		 *
-		 * Goes through textElement, finds substrings matching tokens
-		 * and creates token elements for these. The position for the
-		 * token elements is the substring position plus the position
-		 * of textElement. When a token can no longer be found, the
-		 * index of that token is returned to remember what to start
-		 * looking for in the next text element.
-		 *
-		 * @param {Object[]} tokens Tokens from a server response,
-		 *  where each token is an object. For these objects, the
-		 *  property "orth" is the string used by the TTS to generate
-		 *  audio for the token.
-		 * @param {HTMLElement} textElement The text element to match
-		 *  tokens against.
-		 * @param {number} startPosition The position of the original
-		 *  text element.
-		 * @param {HTMLElement} $tokensElement Element which token
-		 *  elements are added to.
-		 * @param {number} firstTokenIndex The index of the first
-		 *  token in tokens to search for.
-		 * @return {number} The index of the first token that wasn't
-		 *  found.
-		 */
-
-		this.addTokensForTextElement = function (
-			tokens,
-			textElement,
-			startPosition,
-			$tokensElement,
-			firstTokenIndex
-		) {
-			var positionInElement, matchingPosition, tokenPositionInHtml,
-				orthographicToken, i, token, startTime;
-
-			positionInElement = 0;
-			for ( i = firstTokenIndex; i < tokens.length; i++ ) {
+			for ( i = 0; i < tokens.length; i++ ) {
 				token = tokens[ i ];
-				orthographicToken = token.orth;
-				// Look for the token in the remaining string.
-				matchingPosition =
-					textElement.nodeValue.slice( positionInElement )
-					.indexOf( orthographicToken );
-				if ( matchingPosition === -1 ) {
-					// The token wasn't found in this element. Stop
-					// looking for more and return the index of the
-					// token.
-					return i;
-				}
-				tokenPositionInHtml = startPosition + positionInElement +
-					matchingPosition;
 				if ( i === 0 ) {
 					startTime = 0.0;
 				} else {
 					startTime = tokens[ i - 1 ].endtime;
 				}
 				$( '<token></token>' )
-					.text( orthographicToken )
-					.attr( 'position', tokenPositionInHtml )
+					.text( token.orth )
 					.attr( 'start-time', startTime )
 					.attr( 'end-time', tokens[ i ].endtime )
 					.appendTo( $tokensElement );
-				positionInElement += orthographicToken.length;
 			}
 		};
 	}

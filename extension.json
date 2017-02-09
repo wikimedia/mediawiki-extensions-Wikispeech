@@ -18,10 +18,9 @@
 	"AutoloadClasses": {
 		"SpecialWikispeech": "specials/SpecialWikispeech.php",
 		"WikispeechHooks": "Hooks.php",
-		"CleanedTag": "includes/CleanedTag.php",
-		"CleanedStartTag": "includes/CleanedTag.php",
-		"CleanedEndTag": "includes/CleanedTag.php",
-		"CleanedEmptyElementTag": "includes/CleanedTag.php",
+		"CleanedContent": "includes/CleanedContent.php",
+		"CleanedTag": "includes/CleanedContent.php",
+		"CleanedText": "includes/CleanedContent.php",
 		"Cleaner": "includes/Cleaner.php",
 		"HtmlGenerator": "includes/HtmlGenerator.php",
 		"Segmenter": "includes/Segmenter.php"

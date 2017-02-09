@@ -19,11 +19,29 @@ class HtmlGenerator {
 	 */
 
 	public static function createUtterancesHtml( $segments ) {
+		$dom = new DOMDocument();
+		$utterancesElement = self::createUtterancesElement( $dom, $segments );
+		$utterancesHtml = $dom->saveHTML( $utterancesElement );
+		return $utterancesHtml;
+	}
+
+	/**
+	 * Create an utterances element.
+	 *
+	 * The element is populated with utterance elements.
+	 *
+	 * @since 0.0.1
+	 * @param DOMDocument $dom The DOM Document used to create the element.
+	 * @param array $segments Array of segments to generate utterances
+	 *  from.
+	 * @return DOMElement The utterances element.
+	 */
+
+	private static function createUtterancesElement( $dom, $segments ) {
 		if ( count( $segments ) ) {
-			$dom = new DOMDocument();
-			$utterancesNode = $dom->createElement( 'utterances' );
+			$utterancesElement = $dom->createElement( 'utterances' );
 			// Hide the content of the utterance elements.
-			$utterancesNode->setAttribute( 'hidden', '' );
+			$utterancesElement->setAttribute( 'hidden', '' );
 			$index = 0;
 			foreach ( $segments as $segment ) {
 				$utteranceElement = self::createUtteranceElement(
@@ -31,11 +49,10 @@ class HtmlGenerator {
 					$segment,
 					$index
 				);
-				$utterancesNode->appendChild( $utteranceElement );
+				$utterancesElement->appendChild( $utteranceElement );
 				$index += 1;
 			}
-			$utternacesHtml = $dom->saveHTML( $utterancesNode );
-			return $utternacesHtml;
+			return $utterancesElement;
 		}
 	}
 
@@ -73,8 +90,12 @@ class HtmlGenerator {
 		$utteranceElement = $dom->createElement( 'utterance' );
 		$utteranceElement->setAttribute( 'id', "utterance-$index" );
 		$utteranceElement->setAttribute(
-			'position',
-			$segment['position']
+			'start-offset',
+			$segment['startOffset']
+		);
+		$utteranceElement->setAttribute(
+			'end-offset',
+			$segment['endOffset']
 		);
 		$contentElement = self::createContentElement(
 			$dom,
@@ -101,17 +122,11 @@ class HtmlGenerator {
 			if ( $part instanceof CleanedTag ) {
 				// Remove the < and > from the tag string to not have to
 				// decode them later.
-				$text = substr( $part->tagString, 1, -1 );
+				$text = substr( $part->string, 1, -1 );
 				$cleanedTagElement = $dom->createElement( 'cleaned-tag', $text );
-				if (
-					$part instanceof CleanedStartTag &&
-					$part->contentLength
-				) {
-					$cleanedTagElement->setAttribute( 'removed', $part->contentLength );
-				}
 				$contentElement->appendChild( $cleanedTagElement );
 			} else {
-				$contentElement->appendChild( $dom->createTextNode( $part ) );
+				$contentElement->appendChild( $part->toElement( $dom ) );
 			}
 		}
 		return $contentElement;

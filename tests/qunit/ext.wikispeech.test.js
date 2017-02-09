@@ -17,11 +17,9 @@
 			);
 			$( '<utterance></utterance>' )
 				.attr( 'id', 'utterance-0' )
-				.attr( 'position', 0 )
 				.appendTo( $utterances );
 			$( '<utterance></utterance>' )
 				.attr( 'id', 'utterance-1' )
-				.attr( 'position', 1 )
 				.appendTo( $utterances );
 			mw.config.set(
 				'wgWikispeechKeyboardShortcuts', {
@@ -139,8 +137,8 @@
 	QUnit.test( 'loadAudio()', function ( assert ) {
 		assert.expect( 4 );
 		$( '<content></content>' )
-			.append( 'An utterance.' )
-			.appendTo( $( '#utterance-0' ) );
+			.append( $( '<text></text>' ).text( 'An utterance.' ) )
+			.appendTo( '#utterance-0' );
 		server.respondWith(
 			'{"audio": "http://server.url/audio", "tokens": [{"orth": "An"}, {"orth": "utterance"}, {"orth": "."}]}'
 		);
@@ -482,8 +480,10 @@
 	QUnit.test( 'addTokenElements()', function ( assert ) {
 		var tokens, $tokensElement, $expectedTokensElement;
 
-		$( '<content></content>' ).html( 'An utterance.' )
-			.appendTo( $( '#utterance-0' ) );
+		assert.expect( 1 );
+		$( '<content></content>' )
+			.append( $( '<text></text>' ).text( 'An utterance.' ) )
+			.appendTo( '#utterance-0' );
 		tokens = [
 			{
 				orth: 'An',
@@ -503,9 +503,9 @@
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
 		$expectedTokensElement = $( '<tokens></tokens>' );
-		addToken( $expectedTokensElement, 'An', 0, 0.0, 1.0 );
-		addToken( $expectedTokensElement, 'utterance', 3, 1.0, 2.0 );
-		addToken( $expectedTokensElement, '.', 12, 2.0, 3.0 );
+		addToken( $expectedTokensElement, 'An', 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'utterance', 1.0, 2.0 );
+		addToken( $expectedTokensElement, '.', 2.0, 3.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
@@ -517,17 +517,15 @@
 	 *
 	 * @param {jQuery} $parent The jQuery to add the element to.
 	 * @param {string} string The token string.
-	 * @param {number} position The position of the token.
 	 * @param {number} startTime The start time of the token.
 	 * @param {number} endTime The end time of the token.
 	 * @return {HTMLElement} The added token element.
 	 */
 
-	function addToken( $parent, string, position, startTime, endTime ) {
+	function addToken( $parent, string, startTime, endTime ) {
 		var $token = $( '<token></token>' )
 			.text( string )
 			.attr( {
-				position: position,
 				'start-time': startTime,
 				'end-time': endTime
 			} );
@@ -538,8 +536,9 @@
 	QUnit.test( 'addTokenElements(): handle tag', function ( assert ) {
 		var tokens, $tokensElement, $expectedTokensElement;
 
+		assert.expect( 1 );
 		$( '<content></content>' ).html(
-			'Utterance with <cleaned-tag>b</cleaned-tag>tag<cleaned-tag>/b</cleaned-tag>.'
+			'<text>Utterance with </text><cleaned-tag>b</cleaned-tag><text>tag</text><cleaned-tag>/b</cleaned-tag><text>.</text>'
 		)
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
@@ -565,55 +564,22 @@
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
 		$expectedTokensElement = $( '<tokens></tokens>' );
-		addToken( $expectedTokensElement, 'Utterance', 0, 0.0, 1.0 );
-		addToken( $expectedTokensElement, 'with', 10, 1.0, 2.0 );
-		addToken( $expectedTokensElement, 'tag', 18, 2.0, 3.0 );
-		addToken( $expectedTokensElement, '.', 25, 3.0, 4.0 );
+		addToken( $expectedTokensElement, 'Utterance', 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'with', 1.0, 2.0 );
+		addToken( $expectedTokensElement, 'tag', 2.0, 3.0 );
+		addToken( $expectedTokensElement, '.', 3.0, 4.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
 		);
 	} );
 
-	QUnit.test( 'addTokenElements(): utterance position offset', function ( assert ) {
+	QUnit.test( 'addTokenElements(): handle removed element', function ( assert ) {
 		var tokens, $tokensElement, $expectedTokensElement;
 
-		$( '<content></content>' ).html( 'An utterance.' )
-			.appendTo( $( '#utterance-0' ) );
-		$( '#utterance-0' ).attr( 'position', 3 );
-		tokens = [
-			{
-				orth: 'An',
-				endtime: 1.0
-			},
-			{
-				orth: 'utterance',
-				endtime: 2.0
-			},
-			{
-				orth: '.',
-				endtime: 3.0
-			}
-		];
-
-		wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
-
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		$expectedTokensElement = $( '<tokens></tokens>' );
-		addToken( $expectedTokensElement, 'An', 3, 0.0, 1.0 );
-		addToken( $expectedTokensElement, 'utterance', 6, 1.0, 2.0 );
-		addToken( $expectedTokensElement, '.', 15, 2.0, 3.0 );
-		assert.strictEqual(
-			$tokensElement.prop( 'outerHTML' ),
-			$expectedTokensElement.prop( 'outerHTML' )
-		);
-	} );
-
-	QUnit.test( 'addTokenElements: handle removed element', function ( assert ) {
-		var tokens, $tokensElement, $expectedTokensElement;
-
+		assert.expect( 1 );
 		$( '<content></content>' ).html(
-			'Utterance with <cleaned-tag>del</cleaned-tag>removed tag<cleaned-tag>/del</cleaned-tag>.'
+			'<text>Utterance with </text><cleaned-tag>del</cleaned-tag><text>removed tag</text><cleaned-tag>/del</cleaned-tag><text>.</text>'
 		)
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
@@ -635,9 +601,9 @@
 
 		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
 		$expectedTokensElement = $( '<tokens></tokens>' );
-		addToken( $expectedTokensElement, 'Utterance', 0, 0.0, 1.0 );
-		addToken( $expectedTokensElement, 'with', 10, 1.0, 2.0 );
-		addToken( $expectedTokensElement, '.', 37, 2.0, 3.0 );
+		addToken( $expectedTokensElement, 'Utterance', 0.0, 1.0 );
+		addToken( $expectedTokensElement, 'with', 1.0, 2.0 );
+		addToken( $expectedTokensElement, '.', 2.0, 3.0 );
 		assert.strictEqual(
 			$tokensElement.prop( 'outerHTML' ),
 			$expectedTokensElement.prop( 'outerHTML' )
@@ -650,9 +616,9 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, '', 0, 0.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
-		addToken( $tokens, '', 0, 2.0, 3.0 );
+		addToken( $tokens, '', 0.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
+		addToken( $tokens, '', 2.0, 3.0 );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 		wikispeech.play();
 
@@ -667,8 +633,8 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		expectedToken = addToken( $tokens, '', 0, 0.0, 1.0 );
-		addToken( $tokens, '', 0, 1.0, 2.0 );
+		expectedToken = addToken( $tokens, '', 0.0, 1.0 );
+		addToken( $tokens, '', 1.0, 2.0 );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 0.1 );
 		wikispeech.play();
 
@@ -683,9 +649,9 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, '', 0, 0.0, 1.0 );
-		addToken( $tokens, '', 0, 1.0, 2.0 );
-		expectedToken = addToken( $tokens, '', 0, 2.0, 3.0 );
+		addToken( $tokens, '', 0.0, 1.0 );
+		addToken( $tokens, '', 1.0, 2.0 );
+		expectedToken = addToken( $tokens, '', 2.0, 3.0 );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 2.1 );
 		wikispeech.play();
 
@@ -700,8 +666,8 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, '', 0, 0.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		addToken( $tokens, '', 0.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 2.0 );
 		wikispeech.play();
 
@@ -716,9 +682,9 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, '', 0, 0.0, 1.0 );
-		addToken( $tokens, '', 0, 1.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		addToken( $tokens, '', 0.0, 1.0 );
+		addToken( $tokens, '', 1.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 		wikispeech.play();
 
@@ -733,9 +699,9 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, '', 0, 0.0, 1.0 );
-		addToken( $tokens, '', 0, 1.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 0, 1.0, 2.0 );
+		addToken( $tokens, '', 0.0, 1.0 );
+		addToken( $tokens, '', 1.0, 1.0 );
+		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 		wikispeech.play();
 
@@ -750,8 +716,8 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'one', 0, 0.0, 1.0 );
-		addToken( $tokens, 'two', 0, 1.0, 2.0 );
+		addToken( $tokens, 'one', 0.0, 1.0 );
+		addToken( $tokens, 'two', 1.0, 2.0 );
 		wikispeech.play();
 
 		wikispeech.skipAheadToken();
@@ -768,8 +734,8 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'first', 0, 0.0, 1.0 );
-		addToken( $tokens, 'last', 0, 1.0, 2.0 );
+		addToken( $tokens, 'first', 0.0, 1.0 );
+		addToken( $tokens, 'last', 1.0, 2.0 );
 		wikispeech.play();
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 		sinon.spy( wikispeech, 'skipAheadUtterance' );
@@ -785,10 +751,10 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'starting word', 0, 0.0, 1.0 );
-		addToken( $tokens, 'no duration', 0, 1.0, 1.0 );
-		addToken( $tokens, '', 0, 1.0, 2.0 );
-		addToken( $tokens, 'goal', 0, 2.0, 3.0 );
+		addToken( $tokens, 'starting word', 0.0, 1.0 );
+		addToken( $tokens, 'no duration', 1.0, 1.0 );
+		addToken( $tokens, '', 1.0, 2.0 );
+		addToken( $tokens, 'goal', 2.0, 3.0 );
 		wikispeech.play();
 
 		wikispeech.skipAheadToken();
@@ -805,8 +771,8 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'one', 0, 0.0, 1.0 );
-		addToken( $tokens, 'two', 0, 1.0, 2.0 );
+		addToken( $tokens, 'one', 0.0, 1.0 );
+		addToken( $tokens, 'two', 1.0, 2.0 );
 		wikispeech.play();
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
 
@@ -825,10 +791,10 @@
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		wikispeech.prepareUtterance( $( '#utterance-1' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'one', 0, 0.0, 1.0 );
-		addToken( $tokens, 'two', 0, 1.0, 2.0 );
+		addToken( $tokens, 'one', 0.0, 1.0 );
+		addToken( $tokens, 'two', 1.0, 2.0 );
 		$tokens2 = $( '<tokens></tokens>' ).appendTo( $( '#utterance-1' ) );
-		addToken( $tokens2, 'three', 0, 0.0, 1.0 );
+		addToken( $tokens2, 'three', 0.0, 1.0 );
 		wikispeech.playUtterance( $( '#utterance-1' ) );
 
 		wikispeech.skipBackToken();
@@ -853,10 +819,10 @@
 		assert.expect( 1 );
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'starting word', 0, 0.0, 1.0 );
-		addToken( $tokens, 'no duration', 0, 1.0, 1.0 );
-		addToken( $tokens, '', 0, 1.0, 2.0 );
-		addToken( $tokens, 'goal', 0, 2.0, 3.0 );
+		addToken( $tokens, 'starting word', 0.0, 1.0 );
+		addToken( $tokens, 'no duration', 1.0, 1.0 );
+		addToken( $tokens, '', 1.0, 2.0 );
+		addToken( $tokens, 'goal', 2.0, 3.0 );
 		wikispeech.playUtterance( $( '#utterance-0' ) );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 2.1 );
 
@@ -865,6 +831,174 @@
 		assert.strictEqual(
 			$( '#utterance-0 audio' ).prop( 'currentTime' ),
 			0.0
+		);
+	} );
+
+	QUnit.test( 'highlightUtterance()', function ( assert ) {
+		assert.expect( 2 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.text( 'An utterance.' )
+		);
+		$( '#utterance-0' ).append(
+			$( '<content></content>' )
+				.append( $( '<text></text>' )
+					.text( 'An utterance.' )
+					.attr( 'path', '0' )
+				)
+		);
+		$( '#utterance-0' ).attr( 'start-offset', 0 );
+		$( '#utterance-0' ).attr( 'end-offset', 12 );
+
+		wikispeech.highlightUtterance( $( '#utterance-0' ) );
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'<span class="ext-wikispeech-highlight-sentence">An utterance.</span>'
+		);
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'utterance' ),
+			$( 'utterance-0' ).get( 0 )
+		);
+	} );
+
+	QUnit.test( 'highlightUtterance(): multiple utterances', function ( assert ) {
+		assert.expect( 1 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.text( 'Utterance one. Utterance two. Utterance three.' )
+		);
+		$( '#utterance-0' ).append(
+			$( '<content></content>' )
+				.append( $( '<text></text>' )
+					.text( ' Utterance two.' )
+					.attr( 'path', '0' )
+				)
+		);
+		$( '#utterance-0' ).attr( 'start-offset', 14 );
+		$( '#utterance-0' ).attr( 'end-offset', 28 );
+
+		wikispeech.highlightUtterance( $( '#utterance-0' ) );
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'Utterance one.<span class="ext-wikispeech-highlight-sentence"> Utterance two.</span> Utterance three.'
+		);
+	} );
+
+	QUnit.test( 'highlightUtterance(): with tags', function ( assert ) {
+		assert.expect( 1 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.html( '<p>Utterance with <b>a</b> tag.</p>' )
+		);
+		$( '#utterance-0' ).append(
+			$( '<content></content>' )
+				.append( $( '<text></text>' )
+					.text( 'Utterance with ' )
+					.attr( 'path', '0,0' )
+				)
+				.append( $( '<cleaned-tag></cleaned-tag>' )
+					.text( 'b' )
+				)
+				.append( $( '<text></text>' )
+					.text( 'a' )
+					.attr( 'path', '0,1,0' )
+				)
+				.append( $( '<cleaned-tag></cleaned-tag>' )
+					.text( 'b' )
+				)
+				.append( $( '<text></text>' )
+					.text( ' tag.' )
+					.attr( 'path', '0,2' )
+				)
+		);
+		$( '#utterance-0' ).attr( 'start-offset', 0 );
+		$( '#utterance-0' ).attr( 'end-offset', 4 );
+
+		wikispeech.highlightUtterance( $( '#utterance-0' ) );
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'<p><span class="ext-wikispeech-highlight-sentence">Utterance with </span><b><span class="ext-wikispeech-highlight-sentence">a</span></b><span class="ext-wikispeech-highlight-sentence"> tag.</span></p>'
+		);
+	} );
+
+	QUnit.test( 'unhighlightUtterance()', function ( assert ) {
+		assert.expect( 2 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.html( '<span class="ext-wikispeech-highlight-sentence">An utterance.</span>' )
+		);
+
+		wikispeech.unhighlightUtterances();
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'An utterance.'
+		);
+		assert.strictEqual(
+			$( '.ext-wikispeech-highlight-sentence' ).contents().length,
+			0
+		);
+	} );
+
+	QUnit.test( 'unhighlightUtterance(): restore text nodes as one', function ( assert ) {
+		assert.expect( 3 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.html( 'prefix <span class="ext-wikispeech-highlight-sentence">An utterance.</span> suffix' )
+		);
+		$( '.ext-wikispeech-highlight-sentence' )
+			.prop( 'utterance', $( '#utterance-0' ).get( 0 ) );
+		$( '#utterance-0' ).append(
+			$( '<content></content>' )
+				.append( $( '<text></text>' )
+					.text( 'An utterance.' )
+					.attr( 'path', '0' )
+				)
+		);
+		$( '#utterance-0' ).attr( 'start-offset', 7 );
+		$( '#utterance-0' ).attr( 'end-offset', 19 );
+
+		wikispeech.unhighlightUtterances();
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'prefix An utterance. suffix'
+		);
+		assert.strictEqual( $( '#mw-content-text' ).contents().length, 1 );
+		assert.strictEqual(
+			$( '.ext-wikispeech-highlight-sentence' ).contents().length,
+			0
+		);
+	} );
+
+	QUnit.test( 'unhighlightUtterance(): multiple highlights', function ( assert ) {
+		assert.expect( 3 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.html( '<span class="ext-wikispeech-highlight-sentence">An </span><span class="ext-wikispeech-highlight-sentence">utterance.</span>' )
+		);
+		$( '.ext-wikispeech-highlight-sentence' )
+			.prop( 'utterance', $( '#utterance-0' ).get( 0 ) );
+
+		wikispeech.unhighlightUtterances();
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'An utterance.'
+		);
+		assert.strictEqual( $( '#mw-content-text' ).contents().length, 1 );
+		assert.strictEqual(
+			$( '.ext-wikispeech-highlight-sentence' ).contents().length,
+			0
 		);
 	} );
 } )( mediaWiki, jQuery );

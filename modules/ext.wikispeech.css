@@ -25,3 +25,8 @@
 .ext-wikispeech-skip-back-word:after {
 	content: "Skip back word";
 }
+
+.ext-wikispeech-highlight-sentence {
+	background-color: rgb(0, 200, 0);
+	background-color: rgba(0, 200, 0, 0.5);
+}

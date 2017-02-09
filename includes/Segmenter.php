@@ -11,26 +11,30 @@ class Segmenter {
 	/**
 	 * Divide a cleaned content array into segments, one for each sentence.
 	 *
-	 * A segment is an array with the keys "content" and "position". Content is
-	 * an array of CleanedTags and strings. Position is the start
-	 * position, in the HTML, for the first node in content, i.e. the start
-	 * position of the segment.
+	 * A segment is an array with the keys "content", "startOffset"
+	 * and "endOffset". "content" is an array of `CleanedContent`s.
+
+	 * "startOffset" is the position of the first character of the
+	 * segment, within the text node it appears. "endOffset" is the
+	 * position of the last character of the segment, within the text
+	 * node it appears. These are used to determine start and end of a
+	 * segment in the original HTML.
 	 *
-	 * A sentence is here defined as a number of tokens ending with a dot (full
-	 * stop). Headings are also considered sentences.
+	 * A sentence is here defined as a number of tokens ending with a
+	 * dot (full stop). Headings are also considered sentences.
 	 *
 	 * @since 0.0.1
-	 * @param array $cleanedContent An array of cleaned content, as returned by
-	 *  Cleaner::cleanHtml().
-	 * @return array An array of segments, each containing the nodes in that
-	 *  segment and the start position in the HTML.
+	 * @param array $cleanedContent An array of `CleanedContent`s, as
+	 *  returned by `Cleaner::cleanHtml()`.
+	 * @return array An array of segments, each containing the
+	 *  `CleanedContent's in that segment.
 	 */
 
 	public static function segmentSentences( $cleanedContent ) {
 		$segments = [];
 		$currentSegment = [
-			'position' => 0,
-			'content' => []
+			'content' => [],
+			'startOffset' => 0
 		];
 		foreach ( $cleanedContent as $content ) {
 			if ( $content instanceof CleanedTag ) {
@@ -67,8 +71,8 @@ class Segmenter {
 	 *
 	 * @since 0.0.1
 	 * @param array $segments The segment array to add new segments to.
-	 * @param array $currentSegment The segment under construction, to which
-	 *  the first found string segment will be added.
+	 * @param array $currentSegment The segment under construction, to
+	 *  which the first found string segment will be added.
 	 * @param string $text The string to segment.
 	 */
 
@@ -80,34 +84,52 @@ class Segmenter {
 		// Find the indices of all characters that may be sentence final.
 		preg_match_all(
 			"/\./",
-			$text,
+			$text->string,
 			$matches,
 			PREG_OFFSET_CAPTURE
 		);
-		$position = 0;
+		$offset = 0;
 		foreach ( $matches[0] as $match ) {
 			$sentenceFinalPosition = $match[1];
-			if ( self::isSentenceFinal( $text, $sentenceFinalPosition ) ) {
-				$length = $sentenceFinalPosition - $position + 1;
-				$segmentText = substr( $text, $position, $length );
+			if (
+				self::isSentenceFinal(
+					$text->string,
+					$sentenceFinalPosition
+				)
+			) {
+				$length = $sentenceFinalPosition - $offset + 1;
+				$segmentText = substr( $text->string, $offset, $length );
 				if ( trim( $segmentText ) != '' ) {
 					// Don't add segments with only whitespaces.
-					array_push( $currentSegment['content'], $segmentText );
-					$position = $sentenceFinalPosition + 1;
+					$newText = new CleanedText(
+						$segmentText,
+						$text->path
+					);
+					array_push( $currentSegment['content'], $newText );
+					$offset = $sentenceFinalPosition + 1;
+					$currentSegment['endOffset'] = $offset;
 					array_push( $segments, $currentSegment );
-					$nextSegmentPosition = $currentSegment['position'] +
-						self::getSegmentLength( $currentSegment['content'] );
+
+					// Create the next segment, which should start at
+					// the position after the end position of the
+					// current one.
 					$currentSegment = [
-						'position' => $nextSegmentPosition,
-						'content' => []
+						'content' => [],
+						'startOffset' => $offset
 					];
 				}
 			}
 		}
-		$remainder = substr( $text, $position );
+		$remainder = substr( $text->string, $offset );
 		if ( $remainder ) {
 			// Add any remaining part of the string.
-			array_push( $currentSegment['content'], $remainder );
+			$remainderText = new CleanedText( $remainder, $text->path );
+			array_push( $currentSegment['content'], $remainderText );
+			$currentSegment['endOffset'] = $offset + strlen( $remainder );
+		} else {
+			// If there was no remainder, the next segment will always
+			// start at the beginning of the text.
+			$currentSegment['startOffset'] = 0;
 		}
 	}
 
@@ -158,25 +180,5 @@ class Segmenter {
 
 	private static function isUpper( $string ) {
 		return mb_strtoupper( $string, 'UTF-8' ) == $string;
-	}
-
-	/**
-	 * Calculate the length of a segment, as it is represented in HTML.
-	 *
-	 * @since 0.0.1
-	 * @param array $segment An array of nodes.
-	 * @return int The combinded length of the HTML of the nodes in $segment.
-	 */
-
-	private static function getSegmentLength( $segment ) {
-		$length = 0;
-		foreach ( $segment as $content ) {
-			if ( $content instanceof CleanedTag ) {
-				$length += $content->getLength();
-			} else {
-				$length += strlen( $content );
-			}
-		}
-		return $length;
 	}
 }

@@ -12,16 +12,18 @@ require_once 'Util.php';
 class SegmenterTest extends MediaWikiTestCase {
 	public function testSegmentSentences() {
 		$cleanedContent = [
-			'Sentence 1. Sentence 2.'
+			new CleanedText( 'Sentence 1. Sentence 2.' )
 		];
 		$expectedSegments = [
 			[
-				'position' => 0,
-				'content' => [ 'Sentence 1.' ]
+				'startOffset' => 0,
+				'endOffset' => 11,
+				'content' => [ new CleanedText( 'Sentence 1.' ) ]
 			],
 			[
-				'position' => 11,
-				'content' => [ ' Sentence 2.' ]
+				'startOffset' => 11,
+				'endOffset' => 23,
+				'content' => [ new CleanedText( ' Sentence 2.' ) ]
 			]
 		];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
@@ -30,151 +32,151 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testDontSegmentByEllipses() {
 		$cleanedContent = [
-			'This is... one sentence.'
+			new CleanedText( 'This is... one sentence.' )
 			];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [ 'This is... one sentence.' ]
-			]
-		];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			[ new CleanedText( 'This is... one sentence.' ) ],
+			$segments[0]['content']
+		);
 	}
 
 	public function testDontSegmentByAbbreviations() {
-		$cleanedContent = [ 'One sentence i.e. one segment.' ];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [ 'One sentence i.e. one segment.' ]
-			]
-		];
+		$cleanedContent = [ new CleanedText( 'One sentence i.e. one segment.' ) ];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			[ new CleanedText( 'One sentence i.e. one segment.' ) ],
+			$segments[0]['content']
+		);
 	}
 
 	public function testDontSegmentByDotDirectlyFollowedByComma() {
-		$cleanedContent = [ 'As with etc., jr. and friends.' ];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [ 'As with etc., jr. and friends.' ]
-			]
-		];
+		$cleanedContent = [ new CleanedText( 'As with etc., jr. and friends.' ) ];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			[ new CleanedText( 'As with etc., jr. and friends.' ) ],
+			$segments[0]['content']
+		);
 	}
 
 	public function testDontSegmentByDecimalDot() {
-		$cleanedContent = [ 'In numbers like 2.9.' ];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [ 'In numbers like 2.9.' ]
-			]
-		];
+		$cleanedContent = [ new CleanedText( 'In numbers like 2.9.' ) ];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			[ new CleanedText( 'In numbers like 2.9.' ) ],
+			$segments[0]['content']
+		);
 	}
 
 	public function testKeepLastSegmentEvenIfNotEndingWithSentenceFinalCharacter() {
-		$cleanedContent = [ 'Recording sessions' ];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [ 'Recording sessions' ]
-			]
-		];
+		$cleanedContent = [ new CleanedText( 'Sentence. No sentence final' ) ];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			[ new CleanedText( ' No sentence final' ) ],
+			$segments[1]['content']
+		);
+		$this->assertEquals( 27, $segments[1]['endOffset'] );
 	}
 
 	public function testSegmentContainingTag() {
 		$cleanedContent = [
-			'Sentence with a ',
-			Util::createStartTag( '<i>' ),
-			'tag',
-			new CleanedEndTag( '</i>' ),
-			'.'
+			new CleanedText( 'Sentence with a ' ),
+			new CleanedTag( '<i>' ),
+			new CleanedText( 'tag' ),
+			new CleanedTag( '</i>' ),
+			new CleanedText( '.' )
 		];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [
-					'Sentence with a ',
-					Util::createStartTag( '<i>' ),
-					'tag',
-					new CleanedEndTag( '</i>' ),
-					'.'
-				]
-			]
+		$expectedContent = [
+			new CleanedText( 'Sentence with a ' ),
+			new CleanedTag( '<i>' ),
+			new CleanedText( 'tag' ),
+			new CleanedTag( '</i>' ),
+			new CleanedText( '.' )
 		];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			$expectedContent,
+			$segments[0]['content']
+		);
 	}
 
 	public function testSegmentEndingWithTag() {
 		$cleanedContent = [
-			"There's a tag after this",
-			new CleanedEmptyElementTag( '<br />' )
+			new CleanedText( "There's a tag after this" ),
+			new CleanedTag( '<br />' )
 		];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [
-					"There's a tag after this",
-					new CleanedEmptyElementTag( '<br />' )
-				]
-			]
+		$expectedContent = [
+			new CleanedText( "There's a tag after this" ),
+			new CleanedTag( '<br />' )
 		];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals(
+			$expectedContent,
+			$segments[0]['content']
+		);
 	}
 
-	public function testCalculatePosition() {
-		$cleanedContent = [ 'Segment 1.', 'Segment 2.', 'Segment 3.' ];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [ 'Segment 1.' ]
-			],
-			[
-				'position' => 10,
-				'content' => [ 'Segment 2.' ]
-			],
-			[
-				'position' => 20,
-				'content' => [ 'Segment 3.' ]
-			],
-		];
+	public function testTextOffset() {
+		$cleanedContent = [ new CleanedText( 'Sentence.' ) ];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals( 0, $segments[0]['startOffset'] );
+		$this->assertEquals( 9, $segments[0]['endOffset'] );
 	}
 
-	public function testCalculatePositionWhenTagIsRemoved() {
+	public function testTextOffsetMultipleUtterances() {
+		$cleanedContent = [ new CleanedText( 'Sentence one. Sentence two.' ) ];
+		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$this->assertEquals( 0, $segments[0]['startOffset'] );
+		$this->assertEquals( 13, $segments[0]['endOffset'] );
+		$this->assertEquals( 13, $segments[1]['startOffset'] );
+		$this->assertEquals( 27, $segments[1]['endOffset'] );
+	}
+
+	public function testTextOffsetWithTags() {
 		$cleanedContent = [
-			'Sentence with a ',
-			Util::createStartTag( '<del>', 'removed ' ),
-			new CleanedEndTag( '</del>' ),
-			'tag. Another sentence.'
-		];
-		$expectedSegments = [
-			[
-				'position' => 0,
-				'content' => [
-					'Sentence with a ',
-					Util::createStartTag( '<del>', 'removed ' ),
-					new CleanedEndTag( '</del>' ),
-					'tag.',
-				]
-			],
-			[
-				'position' => 39,
-				'content' => [ ' Another sentence.' ]
-			]
+			new CleanedText( 'Sentence ' ),
+			new CleanedTag( '<i>' ),
+			new CleanedText( 'with' ),
+			new CleanedTag( '</i>' ),
+			new CleanedText( ' a tag.' )
 		];
 		$segments = Segmenter::segmentSentences( $cleanedContent );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals( 0, $segments[0]['startOffset'] );
+		$this->assertEquals( 7, $segments[0]['endOffset'] );
+	}
+
+	public function testTextOffsetAfterTags() {
+		$cleanedContent = [
+			new CleanedText( 'Sentence one.' ),
+			new CleanedTag( '<br />' ),
+			new CleanedText( ' Sentence two.' )
+		];
+		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$this->assertEquals(
+			[
+				new CleanedTag( '<br />' ),
+				new CleanedText( ' Sentence two.' )
+			],
+			$segments[1]['content'] );
+		$this->assertEquals( 0, $segments[1]['startOffset'] );
+		$this->assertEquals( 14, $segments[1]['endOffset'] );
+	}
+
+	public function testStartTextOffsetWhenTagInSegment() {
+		$cleanedContent = [
+			new CleanedText( 'Sentence one. Sentence' ),
+			new CleanedTag( '<br />' ),
+			new CleanedText( 'two.' )
+		];
+		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$this->assertEquals(
+			[
+				new CleanedText( ' Sentence' ),
+				new CleanedTag( '<br />' ),
+				new CleanedText( 'two.' )
+			],
+			$segments[1]['content'] );
+		$this->assertEquals( 13, $segments[1]['startOffset'] );
+		$this->assertEquals( 4, $segments[1]['endOffset'] );
 	}
 }

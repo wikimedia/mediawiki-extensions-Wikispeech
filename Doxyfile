@@ -10,11 +10,11 @@ QT_AUTOBRIEF           = YES
 
 QUIET                  = YES
 WARNINGS               = YES
-WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = NO
-WARN_NO_PARAMDOC       = NO
+WARN_NO_PARAMDOC       = YES
 
-EXCLUDE                = docs vendor node_modules
+EXCLUDE                = docs vendor node_modules tests
 FILE_PATTERNS          = *.php
 RECURSIVE              = YES
 

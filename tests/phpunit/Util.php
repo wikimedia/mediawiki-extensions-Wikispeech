@@ -7,29 +7,6 @@
  */
 
 class Util {
-
-	/**
-	 * Create a CleanedStartTag and set it's $contentLength.
-	 *
-	 * @since 0.0.1
-	 * @param string $tagString The tag string for the CleanedStartTag.
-	 * @param string $contentString The content string, used for
-	 *  calculating $contentLength for the CleanedStartTag, if not
-	 *  null. null by default.
-	 * @return CleanedStartTag
-	 */
-
-	public static function createStartTag(
-		$tagString,
-		$contentString=null
-	) {
-		$cleanedTag = new CleanedStartTag( $tagString );
-		if ( $contentString != null ) {
-			$cleanedTag->contentLength = strlen( $contentString );
-		}
-		return $cleanedTag;
-	}
-
 	/**
 	 * Call a private function.
 	 *
@@ -49,5 +26,4 @@ class Util {
 		$arguments = array_slice( func_get_args(), 2 );
 		return $reflection->invokeArgs( null, $arguments );
 	}
-
 }

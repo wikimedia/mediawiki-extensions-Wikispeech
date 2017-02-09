@@ -14,7 +14,7 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 		$segment = [
 			'startOffset' => 0,
 			'endOffset' => 12,
-			'content' => [ new CleanedText( 'An utterance.', [ 0, 1 ] ) ],
+			'content' => [ new CleanedText( 'An utterance.', '/p/text()' ) ]
 		];
 		$utteranceElement = Util::call(
 			'HtmlGenerator',
@@ -42,7 +42,10 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 		$textElement = $xpath->query( '/utterance/content/text' )->item( 0 );
 		$this->assertEquals( 'text', $textElement->nodeName );
 		$this->assertEquals( 'An utterance.', $textElement->nodeValue );
-		$this->assertEquals( '0,1', $textElement->getAttribute( 'path' ) );
+		$this->assertEquals(
+			'/p/text()',
+			$textElement->getAttribute( 'path' )
+		);
 	}
 
 	/**
@@ -63,7 +66,7 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 		$segment = [
 			'startOffset' => null,
 			'endOffset' => null,
-			'content' => [ new CleanedText( 'This is #1.', [] ) ]
+			'content' => [ new CleanedText( 'This is #1.' ) ]
 		];
 		$utteranceElement = Util::call(
 			'HtmlGenerator',
@@ -81,7 +84,7 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 		$segment = [
 			'startOffset' => null,
 			'endOffset' => null,
-			'content' => [ new CleanedText( 'This is not really a <tag>.', [] ) ]
+			'content' => [ new CleanedText( 'This is not really a <tag>.' ) ]
 		];
 		$utteranceElement = Util::call(
 			'HtmlGenerator',
@@ -114,12 +117,12 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 			[
 				'startOffset' => null,
 				'endOffset' => null,
-				'content' => [ new CleanedText( 'Sentence 1.', [] ) ]
+				'content' => [ new CleanedText( 'Sentence 1.' ) ]
 			],
 			[
 				'startOffset' => null,
 				'endOffset' => null,
-				'content' => [ new CleanedText( ' Sentence 2.', [] ) ]
+				'content' => [ new CleanedText( ' Sentence 2.' ) ]
 			]
 		];
 		$utterancesElement = Util::call(
@@ -132,53 +135,5 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 			$utterancesElement->getElementsByTagName( 'utterance' );
 		$this->assertEquals( 2, $utteranceElements->length );
 		$this->assertTrue( $utterancesElement->hasAttribute( 'hidden' ) );
-	}
-
-	public function testCreateUtterancesContainingCleanedTags() {
-		$segment = [
-			'startOffset' => null,
-			'endOffset' => null,
-			'content' => [
-				new CleanedText( 'Here is a ', [] ),
-				new CleanedTag( '<i>' ),
-				new CleanedText( 'tag', [] ),
-				new CleanedTag( '</i>', [] )
-			]
-		];
-		$utteranceElement = Util::call(
-			'HtmlGenerator',
-			'createUtteranceElement',
-			new DOMDocument(),
-			$segment,
-			0
-		);
-		$xpath = self::getXpath( $utteranceElement );
-		$contentChildren = $xpath->evaluate( '/utterance/content/*' );
-		$this->assertEquals( 'text', $contentChildren->item( 0 )->nodeName );
-		$this->assertEquals(
-			'Here is a ',
-			$contentChildren->item( 0 )->nodeValue
-		);
-		$this->assertEquals(
-			'cleaned-tag',
-			$contentChildren->item( 1 )->nodeName
-		);
-		$this->assertEquals(
-			'i',
-			$contentChildren->item( 1 )->nodeValue
-		);
-		$this->assertEquals( 'text', $contentChildren->item( 2 )->nodeName );
-		$this->assertEquals(
-			'tag',
-			$contentChildren->item( 2 )->nodeValue
-		);
-		$this->assertEquals(
-			'cleaned-tag',
-			$contentChildren->item( 3 )->nodeName
-		);
-		$this->assertEquals(
-			'/i',
-			$contentChildren->item( 3 )->nodeValue
-		);
 	}
 }

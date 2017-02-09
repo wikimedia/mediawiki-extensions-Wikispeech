@@ -62,7 +62,9 @@ class HtmlGenerator {
 	 * The element looks like this in HTML:
 	 * <utterance id="utterance-0>
 	 *   <content>
-	 *     Utterance string with <cleaned-tag>not removed tag</cleaned-tag>.
+	 *     <text>Utterance with</text>
+	 *     <text>tag</text>
+	 *     <text>.</text>
 	 *   </content>
 	 * </utterance>
 	 *
@@ -70,16 +72,13 @@ class HtmlGenerator {
 	 * utterances, when next or previous utterance should be played.
 	 *
 	 * The content element contains a representation of the HTML that
-	 * was used to generate this utterance. Text nodes are the same as
-	 * in the original HTML. Elements are represented by cleaned-tag
-	 * elements, whose contents are the tags from the original HTML,
-	 * excluding < and >.
+	 * was used to generate this utterance. Text nodes are represented
+	 * by `<text>` elements.
 	 *
 	 * @since 0.0.1
 	 * @param DOMDocument $dom The DOMDocument to use for creating the
 	 *  element.
-	 * @param array $segment An array with position and content as an
-	 *  array of CleanedTags and strings.
+	 * @param array $segment An array of `CleanedText`s.
 	 * @param int $index The index of the element, used for giving it
 	 *  an id. Later used for playing the utterances in the correct
 	 *  order.
@@ -108,26 +107,17 @@ class HtmlGenerator {
 	/**
 	 * Create a content element from a content array.
 	 *
-	 * CleanedTags are represented as cleaned-tag elements, strings as
-	 * text nodes.
+	 * `CleanedText`s are represented by `<text>` nodes.
 	 *
 	 * @since 0.0.1
-	 * @param array $content An array of CleanedTags and strings.
+	 * @param array $content An array of `CleanedText`s.
 	 * @return DOMNode A content element.
 	 */
 
 	private static function createContentElement( $dom, $content ) {
 		$contentElement = $dom->createElement( 'content' );
 		foreach ( $content as $part ) {
-			if ( $part instanceof CleanedTag ) {
-				// Remove the < and > from the tag string to not have to
-				// decode them later.
-				$text = substr( $part->string, 1, -1 );
-				$cleanedTagElement = $dom->createElement( 'cleaned-tag', $text );
-				$contentElement->appendChild( $cleanedTagElement );
-			} else {
 				$contentElement->appendChild( $part->toElement( $dom ) );
-			}
 		}
 		return $contentElement;
 	}

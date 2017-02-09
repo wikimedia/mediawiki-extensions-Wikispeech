@@ -12,7 +12,7 @@ class Segmenter {
 	 * Divide a cleaned content array into segments, one for each sentence.
 	 *
 	 * A segment is an array with the keys "content", "startOffset"
-	 * and "endOffset". "content" is an array of `CleanedContent`s.
+	 * and "endOffset". "content" is an array of `CleanedText`s.
 
 	 * "startOffset" is the position of the first character of the
 	 * segment, within the text node it appears. "endOffset" is the
@@ -24,10 +24,10 @@ class Segmenter {
 	 * dot (full stop). Headings are also considered sentences.
 	 *
 	 * @since 0.0.1
-	 * @param array $cleanedContent An array of `CleanedContent`s, as
+	 * @param array $cleanedContent An array of `CleanedText`s, as
 	 *  returned by `Cleaner::cleanHtml()`.
 	 * @return array An array of segments, each containing the
-	 *  `CleanedContent's in that segment.
+	 *  `CleanedText's in that segment.
 	 */
 
 	public static function segmentSentences( $cleanedContent ) {
@@ -37,17 +37,11 @@ class Segmenter {
 			'startOffset' => 0
 		];
 		foreach ( $cleanedContent as $content ) {
-			if ( $content instanceof CleanedTag ) {
-				// Non-text nodes are always added to the current segment, as
-				// they can't contain segment breaks.
-				array_push( $currentSegment['content'], $content );
-			} else {
-				self::addSegments(
-					$segments,
-					$currentSegment,
-					$content
-				);
-			}
+			self::addSegments(
+				$segments,
+				$currentSegment,
+				$content
+			);
 		}
 		if ( $currentSegment['content'] ) {
 			// Add the last segment, unless it's empty.

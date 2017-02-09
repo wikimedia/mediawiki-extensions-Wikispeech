@@ -538,7 +538,7 @@
 
 		assert.expect( 1 );
 		$( '<content></content>' ).html(
-			'<text>Utterance with </text><cleaned-tag>b</cleaned-tag><text>tag</text><cleaned-tag>/b</cleaned-tag><text>.</text>'
+			'<text>Utterance with </text><text>tag</text><text>.</text>'
 		)
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
@@ -579,7 +579,7 @@
 
 		assert.expect( 1 );
 		$( '<content></content>' ).html(
-			'<text>Utterance with </text><cleaned-tag>del</cleaned-tag><text>removed tag</text><cleaned-tag>/del</cleaned-tag><text>.</text>'
+			'<text>Utterance with </text><text>removed tag</text><text>.</text>'
 		)
 			.appendTo( $( '#utterance-0' ) );
 		tokens = [
@@ -835,7 +835,7 @@
 	} );
 
 	QUnit.test( 'highlightUtterance()', function ( assert ) {
-		assert.expect( 2 );
+		assert.expect( 1 );
 		$( '#qunit-fixture' ).append(
 			$( '<div></div>' )
 				.attr( 'id', 'mw-content-text' )
@@ -845,7 +845,7 @@
 			$( '<content></content>' )
 				.append( $( '<text></text>' )
 					.text( 'An utterance.' )
-					.attr( 'path', '0' )
+					.attr( 'path', './text()' )
 				)
 		);
 		$( '#utterance-0' ).attr( 'start-offset', 0 );
@@ -856,10 +856,6 @@
 		assert.strictEqual(
 			$( '#mw-content-text' ).prop( 'innerHTML' ),
 			'<span class="ext-wikispeech-highlight-sentence">An utterance.</span>'
-		);
-		assert.strictEqual(
-			$( '#mw-content-text' ).prop( 'utterance' ),
-			$( 'utterance-0' ).get( 0 )
 		);
 	} );
 
@@ -874,7 +870,7 @@
 			$( '<content></content>' )
 				.append( $( '<text></text>' )
 					.text( ' Utterance two.' )
-					.attr( 'path', '0' )
+					.attr( 'path', './text()' )
 				)
 		);
 		$( '#utterance-0' ).attr( 'start-offset', 14 );
@@ -897,23 +893,20 @@
 		);
 		$( '#utterance-0' ).append(
 			$( '<content></content>' )
-				.append( $( '<text></text>' )
-					.text( 'Utterance with ' )
-					.attr( 'path', '0,0' )
+				.append(
+					$( '<text></text>' )
+						.text( 'Utterance with ' )
+						.attr( 'path', './p/text()[1]' )
 				)
-				.append( $( '<cleaned-tag></cleaned-tag>' )
-					.text( 'b' )
+				.append(
+					$( '<text></text>' )
+						.text( 'a' )
+						.attr( 'path', './p/b/text()' )
 				)
-				.append( $( '<text></text>' )
-					.text( 'a' )
-					.attr( 'path', '0,1,0' )
-				)
-				.append( $( '<cleaned-tag></cleaned-tag>' )
-					.text( 'b' )
-				)
-				.append( $( '<text></text>' )
-					.text( ' tag.' )
-					.attr( 'path', '0,2' )
+				.append(
+					$( '<text></text>' )
+						.text( ' tag.' )
+						.attr( 'path', './p/text()[2]' )
 				)
 		);
 		$( '#utterance-0' ).attr( 'start-offset', 0 );
@@ -924,6 +917,42 @@
 		assert.strictEqual(
 			$( '#mw-content-text' ).prop( 'innerHTML' ),
 			'<p><span class="ext-wikispeech-highlight-sentence">Utterance with </span><b><span class="ext-wikispeech-highlight-sentence">a</span></b><span class="ext-wikispeech-highlight-sentence"> tag.</span></p>'
+		);
+	} );
+
+	QUnit.test( 'highlightUtterance(): wrap middle text nodes properly', function ( assert ) {
+		assert.expect( 1 );
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.html( 'First<br />middle<br />last. Next utterance.' )
+		);
+		$( '#utterance-0' ).append(
+			$( '<content></content>' )
+				.append(
+					$( '<text></text>' )
+						.text( 'First' )
+						.attr( 'path', './text()[1]' )
+				)
+				.append(
+					$( '<text></text>' )
+						.text( 'middle' )
+						.attr( 'path', './text()[2]' )
+				)
+				.append(
+					$( '<text></text>' )
+						.text( 'last.' )
+						.attr( 'path', './text()[3]' )
+				)
+		);
+		$( '#utterance-0' ).attr( 'start-offset', 0 );
+		$( '#utterance-0' ).attr( 'end-offset', 4 );
+
+		wikispeech.highlightUtterance( $( '#utterance-0' ) );
+
+		assert.strictEqual(
+			$( '#mw-content-text' ).prop( 'innerHTML' ),
+			'<span class="ext-wikispeech-highlight-sentence">First</span><br><span class="ext-wikispeech-highlight-sentence">middle</span><br><span class="ext-wikispeech-highlight-sentence">last.</span> Next utterance.'
 		);
 	} );
 
@@ -954,17 +983,6 @@
 				.attr( 'id', 'mw-content-text' )
 				.html( 'prefix <span class="ext-wikispeech-highlight-sentence">An utterance.</span> suffix' )
 		);
-		$( '.ext-wikispeech-highlight-sentence' )
-			.prop( 'utterance', $( '#utterance-0' ).get( 0 ) );
-		$( '#utterance-0' ).append(
-			$( '<content></content>' )
-				.append( $( '<text></text>' )
-					.text( 'An utterance.' )
-					.attr( 'path', '0' )
-				)
-		);
-		$( '#utterance-0' ).attr( 'start-offset', 7 );
-		$( '#utterance-0' ).attr( 'end-offset', 19 );
 
 		wikispeech.unhighlightUtterances();
 
@@ -972,11 +990,11 @@
 			$( '#mw-content-text' ).prop( 'innerHTML' ),
 			'prefix An utterance. suffix'
 		);
-		assert.strictEqual( $( '#mw-content-text' ).contents().length, 1 );
 		assert.strictEqual(
 			$( '.ext-wikispeech-highlight-sentence' ).contents().length,
 			0
 		);
+		assert.strictEqual( $( '#mw-content-text' ).contents().length, 1 );
 	} );
 
 	QUnit.test( 'unhighlightUtterance(): multiple highlights', function ( assert ) {

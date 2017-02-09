@@ -25,9 +25,7 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testCleanTags() {
 		$markedUpText = '<i>Element content</i>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedText( 'Element content' ),
-			new CleanedTag( '</i>' )
+			new CleanedText( 'Element content' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -105,9 +103,8 @@ class CleanerTest extends MediaWikiTestCase {
 	 * Assert correct output when input is preceded and followed by text.
 	 *
 	 * Pre- and suffix strings are concatenated to the first and last
-	 * part respectively, of the expected content if they are
-	 * `Text`s. If they are `CleanedTag`s, they are added as new
-	 * parts.
+	 * `CleanedText` respectively, unless there are tags in the marked
+	 * up text. In that case, new `CleanedText`s are added.
 	 *
 	 * @since 0.0.1
 	 * @param array $expectedCleanedContents The content array that is
@@ -120,20 +117,30 @@ class CleanerTest extends MediaWikiTestCase {
 		$expectedCleanedContents,
 		$markedUpText
 	) {
-		if ( is_a( $expectedCleanedContents[0], 'CleanedText' ) ) {
+		if ( $markedUpText[0] == '<' ) {
+			array_unshift(
+				$expectedCleanedContents,
+				new CleanedText( 'prefix' )
+			);
+		} else {
 			$expectedCleanedContents[0] =
-				new CleanedText( 'prefix' . $expectedCleanedContents[0]->string );
-		} else {
-			array_unshift( $expectedCleanedContents, new CleanedText( 'prefix' ) );
-		}
-		$lastIndex = count( $expectedCleanedContents ) - 1;
-		if ( is_a( $expectedCleanedContents[$lastIndex], 'CleanedText' ) ) {
-			$expectedCleanedContents[$lastIndex] =
 				new CleanedText(
-					$expectedCleanedContents[$lastIndex]->string . 'suffix'
+					'prefix' . $expectedCleanedContents[0]->string
 				);
+		}
+		$lastCharIndex = mb_strlen( $markedUpText ) - 1;
+		if ( $markedUpText[$lastCharIndex] == '>' ) {
+			array_push(
+				$expectedCleanedContents,
+				new CleanedText( 'suffix' )
+			);
 		} else {
-			array_push( $expectedCleanedContents, new CleanedText( 'suffix' ) );
+			$lastContentIndex = count( $expectedCleanedContents ) - 1;
+			$expectedCleanedContents[$lastContentIndex] =
+				new CleanedText(
+					$expectedCleanedContents[$lastContentIndex]->string
+					. 'suffix'
+				);
 		}
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
@@ -144,12 +151,11 @@ class CleanerTest extends MediaWikiTestCase {
 	/**
 	 * Assert correct output when input is repeated and separated by string.
 	 *
-	 * If the first instance of the expected content ends with a
-	 * `Text`, the infix is added after that. If the second instance
-	 * starts with a `Text`, the infix is added before that. If both
-	 * cases occur at the same time, the `Text` between the instances
-	 * will consist of the last `Text` of first instance, infix and
-	 * first `Text` of second instance.
+	 * Adds the infix as a `CleanedText` between two copies of
+	 * $expectedCleanedContents. If the marked up text doesn't end
+	 * with a tag, the infix is added to the end of the first
+	 * copy. Similarily, it's added to the beginning if the marked up
+	 * text doesn't start with a tag.
 	 *
 	 * @since 0.0.1
 	 * @param array $expectedCleanedContents The content array that
@@ -164,13 +170,13 @@ class CleanerTest extends MediaWikiTestCase {
 	) {
 		$infix = new CleanedText( 'infix' );
 		$firstContents = $expectedCleanedContents;
-		$lastIndex = count( $firstContents ) - 1;
-		if ( is_a( $firstContents[$lastIndex], 'CleanedText' ) ) {
+		$lastCharIndex = mb_strlen( $markedUpText ) - 1;
+		if ( $markedUpText[$lastCharIndex] != '>' ) {
 			$adjacent = array_pop( $firstContents );
 			$infix->string = $adjacent->string . $infix->string;
 		}
 		$secondContents = $expectedCleanedContents;
-		if ( is_a( $secondContents[0], 'CleanedText' ) ) {
+		if ( $markedUpText[0] != '<' ) {
 			$adjacent = array_shift( $secondContents );
 			$infix->string .= $adjacent->string;
 		}
@@ -194,69 +200,42 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testCleanNestedTags() {
 		$markedUpText = '<i><b>Nested content</b></i>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedTag( '<b>' ),
-			new CleanedText( 'Nested content' ),
-			new CleanedTag( '</b>' ),
-			new CleanedTag( '</i>' )
+			new CleanedText( 'Nested content' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
 	public function testCleanEmptyElementTags() {
 		$markedUpText = '<br />';
-		$expectedCleanedContent = [
-			new CleanedTag( '<br />' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+		$this->assertTextCleaned( [], $markedUpText );
 	}
 
 	public function testRemoveTags() {
 		$markedUpText = '<del>removed tag </del>';
-		$expectedCleanedContent = [
-			new CleanedTag( '<del>' ),
-			new CleanedTag( '</del>' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testDontAddCleanedTagsForTagsUnderRemovedTags() {
+	public function testRemoveNestedTags() {
 		$markedUpText = '<del><i>nested removed tag</i></del>';
-		$expectedCleanedContent = [
-			new CleanedTag( '<del>' ),
-			new CleanedTag( '</del>' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+		$this->assertTextCleaned( [], $markedUpText );
 	}
 
 	public function testRemoveDoubleNestedTags() {
 		$markedUpText = '<del><i><b>double nested removed tag</b></i></del>';
-		$expectedCleanedContent = [
-			new CleanedTag( '<del>' ),
-			new CleanedTag( '</del>' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+		$this->assertTextCleaned( [], $markedUpText );
 	}
 
 	public function testRemoveTagsWithCertainClass() {
 		$markedUpText = '<sup class="reference">Remove this.</sup>';
-		$expectedCleanedContent = [
-			new CleanedTag( '<sup class="reference">' ),
-			new CleanedTag( '</sup>' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+		$this->assertTextCleaned( [], $markedUpText );
 	}
 
 	public function testDontRemoveTagsWithoutCertainClass() {
 		$markedUpText =
 			'<sup>I am not a reference.</sup><sup class="not-a-reference">Neither am I.</sup>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<sup>' ),
 			new CleanedText( 'I am not a reference.' ),
-			new CleanedTag( '</sup>' ),
-			new CleanedTag( '<sup class="not-a-reference">' ),
-			new CleanedText( 'Neither am I.' ),
-			new CleanedTag( '</sup>' )
+			new CleanedText( 'Neither am I.' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -264,9 +243,7 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testDontRemoveTagsWhoseCriteriaAreFalse() {
 		$markedUpText = '<h2>Contents</h2>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<h2>' ),
-			new CleanedText( 'Contents' ),
-			new CleanedTag( '</h2>' )
+			new CleanedText( 'Contents' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -274,23 +251,13 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testHandleMultipleClasses() {
 		$markedUpText =
 			'<sup class="reference another-class">Remove this.</sup>';
-		$expectedCleanedContent = [
-			new CleanedTag( '<sup class="reference another-class">' ),
-			new CleanedTag( '</sup>' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+		$this->assertTextCleaned( [], $markedUpText );
 	}
 
 	public function testCleanNestedTagsWhereSomeAreRemovedAndSomeAreKept() {
 		$markedUpText = '<i><b>not removed</b><del>removed</del></i>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedTag( '<b>' ),
-			new CleanedText( 'not removed' ),
-			new CleanedTag( '</b>' ),
-			new CleanedTag( '<del>' ),
-			new CleanedTag( '</del>' ),
-			new CleanedTag( '</i>' )
+			new CleanedText( 'not removed' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -310,9 +277,7 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testHandleNewlines() {
 		$markedUpText = "<i>Keep this newline\n</i>";
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedText( "Keep this newline\n" ),
-			new CleanedTag( '</i>' )
+			new CleanedText( "Keep this newline\n" )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -320,10 +285,7 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testHandleEndTagFollowedByEmptyElementTag() {
 		$markedUpText = '<i>content</i><br />';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedText( 'content' ),
-			new CleanedTag( '</i>' ),
-			new CleanedTag( '<br />' )
+			new CleanedText( 'content' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -331,10 +293,7 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testHandleEmptyElementTagInsideElement() {
 		$markedUpText = '<i>content<br /></i>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedText( 'content' ),
-			new CleanedTag( '<br />' ),
-			new CleanedTag( '</i>' )
+			new CleanedText( 'content' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
@@ -342,14 +301,9 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testGeneratePaths() {
 		$markedUpText = '<i>level one<br /><b>level two</b></i>level zero';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i>' ),
-			new CleanedText( 'level one', [ 0, 0 ] ),
-			new CleanedTag( '<br />' ),
-			new CleanedTag( '<b>' ),
-			new CleanedText( 'level two', [ 0, 2, 0 ] ),
-			new CleanedTag( '</b>' ),
-			new CleanedTag( '</i>' ),
-			new CleanedText( 'level zero', [ 1 ] )
+			new CleanedText( 'level one', './i/text()' ),
+			new CleanedText( 'level two', './i/b/text()' ),
+			new CleanedText( 'level zero', './text()' )
 		];
 		$this->assertEquals(
 			$expectedCleanedContent,
@@ -360,12 +314,8 @@ class CleanerTest extends MediaWikiTestCase {
 	public function testGeneratePathsNestedOfSameType() {
 		$markedUpText = '<i id="1">one<i id="2">two</i></i>';
 		$expectedCleanedContent = [
-			new CleanedTag( '<i id="1">' ),
-			new CleanedText( 'one', [ 0, 0 ] ),
-			new CleanedTag( '<i id="2">' ),
-			new CleanedText( 'two', [ 0, 1, 0 ] ),
-			new CleanedTag( '</i>' ),
-			new CleanedTag( '</i>' )
+			new CleanedText( 'one', './i/text()' ),
+			new CleanedText( 'two', './i/i/text()' )
 		];
 		$this->assertEquals(
 			$expectedCleanedContent,
@@ -373,69 +323,15 @@ class CleanerTest extends MediaWikiTestCase {
 		);
 	}
 
-	public function testGetTags() {
-		$textWithTags = '<i>content</i>';
-		$expectedTags = [ [
-			'<i>',
-			'</i>'
-		] ];
-		$this->assertEquals(
-			$expectedTags,
-			Util::call( 'Cleaner', 'getTags', $textWithTags )
-		);
-	}
-
-	public function testGetTagsEmptyElementTag() {
-		$textWithTags = '<br />';
-		$expectedTags = [ '<br />' ];
-		$this->assertEquals(
-			$expectedTags,
-			Util::call( 'Cleaner', 'getTags', $textWithTags )
-		);
-	}
-
-	public function testGetTagsEmptyElementTagWithoutSpace() {
-		$textWithTags = '<br/>';
-		$expectedTags = [ '<br/>' ];
-		$this->assertEquals(
-			$expectedTags,
-			Util::call( 'Cleaner', 'getTags', $textWithTags )
-		);
-	}
-
-	public function testGetTagsNestedTags() {
-		$textWithTags = '<i>content<b>content</b></i>';
-		$expectedTags = [
-			[
-				'<i>',
-				'</i>'
-			],
-			[
-				'<b>',
-				'</b>'
-			]
+	public function testGeneratePathsNodesOnSameLevel() {
+		$markedUpText = 'level zero<br />also level zero';
+		$expectedCleanedContent = [
+			new CleanedText( 'level zero', './text()[1]' ),
+			new CleanedText( 'also level zero', './text()[2]' )
 		];
 		$this->assertEquals(
-			$expectedTags,
-			Util::call( 'Cleaner', 'getTags', $textWithTags )
-		);
-	}
-
-	public function testGetTagsNestedTagsOfSameType() {
-		$textWithTags = '<i id="1">content<i id="2">content</i></i>';
-		$expectedTags = [
-			[
-				'<i id="1">',
-				'</i>'
-			],
-			[
-				'<i id="2">',
-				'</i>'
-			]
-		];
-		$this->assertEquals(
-			$expectedTags,
-			Util::call( 'Cleaner', 'getTags', $textWithTags )
+			$expectedCleanedContent,
+			Cleaner::cleanHtml( $markedUpText )
 		);
 	}
 }

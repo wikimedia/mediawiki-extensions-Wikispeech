@@ -9,7 +9,12 @@
 		 * Add buttons for controlling playback to the top of the page.
 		 */
 
-		this.addButtons = function () {
+		this.addControlPanel = function () {
+			$( '<div></div>' )
+				.attr( 'id', 'ext-wikispeech-control-panel' )
+				.addClass( 'ext-wikispeech-control-panel' )
+				.appendTo( '#content' );
+			self.moveControlPanelWhenDebugging();
 			self.addButton(
 				'ext-wikispeech-play-stop-button',
 				'ext-wikispeech-play',
@@ -38,6 +43,56 @@
 		};
 
 		/**
+		* Make sure the control panel isn't covered by the debug panel.
+		*
+		* The debug panel is also added to the bottom of the page and
+		* covers the control panel. This function moves the control
+		* panel above the debug panel, when it is added or has
+		* children added (which changes the size).
+		*/
+
+		this.moveControlPanelWhenDebugging = function () {
+			var debugPanelChangedObserver, debugPanelAddedObserver;
+
+			debugPanelChangedObserver =
+				new MutationObserver( function ( ) {
+					// Move the control panel above the debug panel.
+					// jquery-foot-hovzer is the id of the debug
+					// panel.
+					$( '#ext-wikispeech-control-panel' ).css(
+						'bottom',
+						$( '#jquery-foot-hovzer' ).height()
+					);
+				} );
+			debugPanelAddedObserver =
+				new MutationObserver( function ( mutations ) {
+					mutations.forEach( function ( mutation ) {
+						mutation.addedNodes.forEach( function ( addedNode ) {
+							if ( addedNode.getAttribute( 'id' ) ===
+									'jquery-foot-hovzer' ) {
+								// Start observing changes to nodes in
+								// the debug panel. This needs to wait
+								// until the actual panel is added.
+								debugPanelChangedObserver.observe(
+									$( '#jquery-foot-hovzer' ).get( 0 ),
+									{ childList: true }
+								);
+								// We don't need to listen to this
+								// anymore, since we are just
+								// interested in when things are added
+								// to the debug panel.
+								debugPanelAddedObserver.disconnect();
+							}
+						} );
+					} );
+				} );
+			debugPanelAddedObserver.observe(
+				$( 'body' ).get( 0 ),
+				{ childList: true }
+			);
+		};
+
+		/**
 		* Add a control button.
 		*
 		* @param {string} id The id of the button.
@@ -51,7 +106,7 @@
 			var $button = $( '<button></button>' )
 				.attr( 'id', id )
 				.addClass( cssClass );
-			$( '#firstHeading' ).append( $button );
+			$( '#ext-wikispeech-control-panel' ).append( $button );
 			$button.click( onClickFunction );
 		};
 
@@ -754,7 +809,7 @@
 		mw.wikispeech.wikispeech = new mw.wikispeech.Wikispeech();
 		// Prepare the first utterance for playback.
 		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.addButtons();
+		mw.wikispeech.wikispeech.addControlPanel();
 		mw.wikispeech.wikispeech.addKeyboardShortcuts();
 	}
 }( mediaWiki, jQuery ) );

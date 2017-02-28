@@ -10,7 +10,7 @@
 			// overrideMimeType() isn't defined by default.
 			server.xhr.prototype.overrideMimeType = function () {};
 			$( '#qunit-fixture' ).append(
-				$( '<h1></h1>' ).attr( 'id', 'firstHeading' )
+				$( '<div></div>' ).attr( 'id', 'content' )
 			);
 			$utterances = $( '#qunit-fixture' ).append(
 				$( '<utterances></utterances>' )
@@ -165,29 +165,29 @@
 		);
 	} );
 
-	QUnit.test( 'addButtons()', function ( assert ) {
+	QUnit.test( 'addControlPanel()', function ( assert ) {
 		assert.expect( 5 );
 
-		wikispeech.addButtons();
+		wikispeech.addControlPanel();
 
 		assert.strictEqual(
-			$( '#firstHeading #ext-wikispeech-play-stop-button' ).length,
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-play-stop-button' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#firstHeading #ext-wikispeech-skip-ahead-sentence-button' ).length,
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-ahead-sentence-button' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#firstHeading #ext-wikispeech-skip-back-sentence-button' ).length,
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-back-sentence-button' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#firstHeading #ext-wikispeech-skip-ahead-word-button' ).length,
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-ahead-word-button' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#firstHeading #ext-wikispeech-skip-back-word-button' ).length,
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-back-word-button' ).length,
 			1
 		);
 	} );
@@ -212,7 +212,7 @@
 	function testClickButton( assert, functionName, buttonId ) {
 		assert.expect( 1 );
 		sinon.spy( wikispeech, functionName );
-		wikispeech.addButtons();
+		wikispeech.addControlPanel();
 
 		$( buttonId ).click();
 
@@ -325,7 +325,7 @@
 
 	QUnit.test( 'stop()', function ( assert ) {
 		assert.expect( 4 );
-		wikispeech.addButtons();
+		wikispeech.addControlPanel();
 		wikispeech.play();
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
@@ -352,7 +352,7 @@
 	QUnit.test( 'play()', function ( assert ) {
 		var $firstUtterance = $( '#utterance-0' );
 		assert.expect( 3 );
-		wikispeech.addButtons();
+		wikispeech.addControlPanel();
 		wikispeech.prepareUtterance( $firstUtterance );
 
 		wikispeech.play();

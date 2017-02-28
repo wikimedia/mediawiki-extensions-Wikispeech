@@ -3,30 +3,40 @@
 }
 
 .ext-wikispeech-play:after {
-	content: "Play";
+	content: 'Play';
 }
 
 .ext-wikispeech-stop:after {
-	content: "Stop";
+	content: 'Stop';
 }
 
 .ext-wikispeech-skip-ahead-sentence:after {
-	content: "Skip ahead sentence";
+	content: 'Skip ahead sentence';
 }
 
 .ext-wikispeech-skip-back-sentence:after {
-	content: "Skip back sentence";
+	content: 'Skip back sentence';
 }
 
 .ext-wikispeech-skip-ahead-word:after {
-	content: "Skip ahead word";
+	content: 'Skip ahead word';
 }
 
 .ext-wikispeech-skip-back-word:after {
-	content: "Skip back word";
+	content: 'Skip back word';
 }
 
 .ext-wikispeech-highlight-sentence {
-	background-color: rgb(0, 200, 0);
-	background-color: rgba(0, 200, 0, 0.5);
+	background-color: rgb( 0, 200, 0 );
+	background-color: rgba( 0, 200, 0, 0.5 );
+}
+
+.ext-wikispeech-control-panel {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	border: solid 1px rgb( 150, 150, 150 );
+	background-color: rgb( 200, 200, 200 );
 }

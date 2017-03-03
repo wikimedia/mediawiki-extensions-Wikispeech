@@ -2,28 +2,34 @@
 	font-size: 1.1em;
 }
 
-.ext-wikispeech-play:after {
-	content: 'Play';
-}
-
-.ext-wikispeech-stop:after {
-	content: 'Stop';
-}
-
-.ext-wikispeech-skip-ahead-sentence:after {
-	content: 'Skip ahead sentence';
-}
-
 .ext-wikispeech-skip-back-sentence:after {
-	content: 'Skip back sentence';
-}
-
-.ext-wikispeech-skip-ahead-word:after {
-	content: 'Skip ahead word';
+	font-family: 'Fontawesome';
+	content: '\f049';
 }
 
 .ext-wikispeech-skip-back-word:after {
-	content: 'Skip back word';
+	font-family: 'Fontawesome';
+	content: '\f048';
+}
+
+.ext-wikispeech-play:after {
+	font-family: 'Fontawesome';
+	content: '\f04b';
+}
+
+.ext-wikispeech-stop:after {
+	font-family: 'Fontawesome';
+	content: '\f04d';
+}
+
+.ext-wikispeech-skip-ahead-word:after {
+	font-family: 'Fontawesome';
+	content: '\f051';
+}
+
+.ext-wikispeech-skip-ahead-sentence:after {
+	font-family: 'Fontawesome';
+	content: '\f050';
 }
 
 .ext-wikispeech-highlight-sentence {

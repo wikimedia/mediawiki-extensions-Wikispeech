@@ -16,19 +16,19 @@
 				.appendTo( '#content' );
 			self.moveControlPanelWhenDebugging();
 			self.addButton(
-				'ext-wikispeech-play-stop-button',
-				'ext-wikispeech-play',
-				self.playOrStop
-			);
-			self.addButton(
-				'ext-wikispeech-skip-ahead-sentence-button',
-				'ext-wikispeech-skip-ahead-sentence',
-				self.skipAheadUtterance
-			);
-			self.addButton(
 				'ext-wikispeech-skip-back-sentence-button',
 				'ext-wikispeech-skip-back-sentence',
 				self.skipBackUtterance
+			);
+			self.addButton(
+				'ext-wikispeech-skip-back-word-button',
+				'ext-wikispeech-skip-back-word',
+				self.skipBackToken
+			);
+			self.addButton(
+				'ext-wikispeech-play-stop-button',
+				'ext-wikispeech-play',
+				self.playOrStop
 			);
 			self.addButton(
 				'ext-wikispeech-skip-ahead-word-button',
@@ -36,9 +36,9 @@
 				self.skipAheadToken
 			);
 			self.addButton(
-				'ext-wikispeech-skip-back-word-button',
-				'ext-wikispeech-skip-back-word',
-				self.skipBackToken
+				'ext-wikispeech-skip-ahead-sentence-button',
+				'ext-wikispeech-skip-ahead-sentence',
+				self.skipAheadUtterance
 			);
 		};
 

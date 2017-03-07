@@ -26,7 +26,8 @@
 	"ResourceModules": {
 		"ext.wikispeech": {
 			"scripts": [
-				"ext.wikispeech.js"
+				"ext.wikispeech.js",
+				"ext.wikispeech.highlighter.js"
 			],
 			"styles": [
 				"ext.wikispeech.css"

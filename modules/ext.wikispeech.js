@@ -1,9 +1,7 @@
 ( function ( mw, $ ) {
 	function Wikispeech() {
-		var self, $currentUtterance;
-
-		self = this;
-		$currentUtterance = $();
+		var self = this;
+		self.$currentUtterance = $();
 
 		/**
 		 * Add a panel with controls for for Wikispeech.
@@ -179,7 +177,19 @@
 		 */
 
 		this.isPlaying = function () {
-			return $currentUtterance.length > 0;
+			return self.$currentUtterance.length > 0;
+		};
+
+		/**
+		 * Stop playing the utterance currently playing.
+		 */
+
+		this.stop = function () {
+			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
+			self.stopUtterance( self.$currentUtterance );
+			self.$currentUtterance = $();
+			$playStopButton.removeClass( 'ext-wikispeech-stop' );
+			$playStopButton.addClass( 'ext-wikispeech-play' );
 		};
 
 		/**
@@ -203,10 +213,10 @@
 		 */
 
 		this.playUtterance = function ( $utterance ) {
-			self.stopUtterance( $currentUtterance );
-			$currentUtterance = $utterance;
-			$utterance.children( 'audio' ).trigger( 'play' );
-			self.highlightUtterance( $utterance );
+			self.stopUtterance( self.$currentUtterance );
+			self.$currentUtterance = $utterance;
+			$utterance.children( 'audio' ).get( 0 ).play();
+			mw.wikispeech.highlighter.highlightUtterance( $utterance );
 		};
 
 		/**
@@ -217,195 +227,21 @@
 		 */
 
 		this.stopUtterance = function ( $utterance ) {
-			$utterance.children( 'audio' ).trigger( 'pause' );
+			var $audio = $utterance.children( 'audio' );
+			if ( $audio.length ) {
+				$audio.get( 0 ).pause();
+			}
 			// Rewind audio for next time it plays.
-			$utterance.children( 'audio' ).prop( 'currentTime', 0 );
-			self.unhighlightUtterances();
-		};
-
-		/**
-		 * Highlight text associated with an utterance.
-		 *
-		 * Adds highlight spans to the text nodes from which the
-		 * tokens of $utterance were created. For first and last node,
-		 * it's possible that only part of the text is highlighted,
-		 * since they may contain start/end of next/previous
-		 * utterance.
-		 *
-		 * @param {jQuery} $utterance The utterance to add
-		 *  highlighting to.
-		 */
-
-		this.highlightUtterance = function ( $utterance ) {
-			var firstTextElement, firstNode, lastTextElement, lastNode,
-				startOffset, endOffset, textNode, middleNodes;
-
-			firstTextElement = $utterance.find( 'text' ).get( 0 );
-			if ( firstTextElement ) {
-				firstNode = self.getNodeForTextElement( firstTextElement );
-				lastTextElement = $utterance.find( 'text' ).get( -1 );
-				lastNode = self.getNodeForTextElement( lastTextElement );
-				startOffset =
-					parseInt( $utterance.attr( 'start-offset' ), 10 );
-				endOffset =
-					parseInt( $utterance.attr( 'end-offset' ), 10 );
-				if ( firstNode === lastNode ) {
-					// All highlighted text is in the same text node,
-					// so only one <span> is needed.
-					self.highlightRange(
-						firstNode,
-						startOffset,
-						endOffset
-					);
-				} else {
-					// The middle nodes need to be found before the
-					// other highlighting, since adding <span>s
-					// changes how the XPath expressions are
-					// interpreted.
-					middleNodes = [];
-					$utterance.find( 'text:gt(0):lt(-1)' ).each( function () {
-						textNode = self.getNodeForTextElement( this );
-						middleNodes.push( textNode );
-					} );
-
-					// Add a <span> around the part of the last node
-					// that is part if the utterance.
-					self.highlightRange( lastNode, 0, endOffset );
-					// Wrap all nodes between the first and last
-					// completely in <span>s.
-					middleNodes.forEach( function ( node ) {
-						$( node ).wrap(
-							self.createHighilightUtteranceSpan()
-						);
-					} );
-					// Add a <span> around the part of the first node
-					// that is part if the utterance.
-					self.highlightRange( firstNode, startOffset );
-				}
-			}
-		};
-
-		/**
-		 * Find the text node from which a `<text>` element was created.
-		 *
-		 * The path attribute of textElement is an XPath expression
-		 * and is used to traverse the DOM tree.
-		 *
-		 * @param {HTMLElement} textElement The `<text>` element to find
-		 *  the text node for.
-		 * @return {TextNode} The text node associated with textElement.
-		 */
-
-		this.getNodeForTextElement = function ( textElement ) {
-			var path, node, result;
-
-			path = textElement.getAttribute( 'path' );
-			// The path should be unambiguous, so just get the first
-			// matching node.
-			result = document.evaluate(
-				path,
-				$( '#mw-content-text' ).get( 0 ),
-				null,
-				XPathResult.FIRST_ORDERED_NODE_TYPE,
-				null
+			$audio.prop( 'currentTime', 0 );
+			// Remove sentence highlighting.
+			mw.wikispeech.highlighter.removeWrappers(
+				'.ext-wikispeech-highlight-sentence'
 			);
-			node = result.singleNodeValue;
-			return node;
-		};
-
-		/**
-		 * Get the node from a path.
-		 *
-		 * Starts at topNode and traverses the DOM tree along path.
-		 *
-		 * @param {number[]} path Indices of each step in the path.
-		 * @param {TextNode} topNode The node to start from.
-		 * @return {TextNode} The node found by following path.
-		 */
-
-		this.getNodeFromPath = function ( path, topNode ) {
-			var node, i, step;
-
-			node = topNode;
-			for ( i = 0; i < path.length; i++ ) {
-				step = path[ i ];
-				node = $( node ).contents().get( parseInt( step, 10 ) );
-			}
-			return node;
-		};
-
-		/**
-		 * Add highlighting to a range within a text node.
-		 *
-		 * @param {TextNode} node The text node that the highlighting is
-		 *  added to.
-		 * @param {number} start The index of the first character in the
-		 *  highlighting.
-		 * @param {number} end The index of the last character in the
-		 *  highlighting. If not specified, the last character in the
-		 *  text node is used.
-		 */
-
-		this.highlightRange = function ( node, start, end ) {
-			var range = document.createRange();
-			range.setStart( node, start );
-			if ( end === undefined ) {
-				end = node.textContent.length - 1;
-			}
-			range.setEnd( node, end + 1 );
-			range.surroundContents( self.createHighilightUtteranceSpan() );
-		};
-
-		/**
-		 * Create a span used for highlighting sentences.
-		 *
-		 * @return {HTMLElement} The highlighting `<span>`.
-		 */
-
-		this.createHighilightUtteranceSpan = function () {
-			var span = $( '<span></span>' )
-				.addClass( 'ext-wikispeech-highlight-sentence' )
-				.get( 0 );
-			return span;
-		};
-
-		/**
-		 * Remove any highlighting from utterances.
-		 *
-		 * If a text node was devided by a span tag, the two resulting
-		 * text nodes are merged.
-		 */
-
-		this.unhighlightUtterances = function () {
-			var parents, $span;
-
-			parents = [];
-			$span = $( '.ext-wikispeech-highlight-sentence' );
-			$span.replaceWith( function () {
-				var textNode;
-
-				parents.push( this.parentNode );
-				textNode = this.firstChild;
-				return textNode.textContent;
-			} );
-			if ( parents.length > 0 ) {
-				// Merge first and last text nodes, if the original was
-				// divided by adding the <span>.
-				parents[ 0 ].normalize();
-				parents[ parents.length - 1 ].normalize();
-			}
-		};
-
-		/**
-		 * Stop playing the utterance currently playing.
-		 */
-
-		this.stop = function () {
-			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
-			self.stopUtterance( $currentUtterance );
-			$currentUtterance = $();
-			$playStopButton.removeClass( 'ext-wikispeech-stop' );
-			$playStopButton.addClass( 'ext-wikispeech-play' );
+			// Remove word highlighting.
+			mw.wikispeech.highlighter.removeWrappers(
+				'.ext-wikispeech-highlight-word'
+			);
+			clearTimeout( mw.wikispeech.highlighter.highlightTokenTimer );
 		};
 
 		/**
@@ -415,7 +251,8 @@
 		 */
 
 		this.skipAheadUtterance = function () {
-			var $nextUtterance = self.getNextUtterance( $currentUtterance );
+			var $nextUtterance =
+				self.getNextUtterance( self.$currentUtterance );
 			if ( $nextUtterance.length ) {
 				self.playUtterance( $nextUtterance );
 			} else {
@@ -474,13 +311,13 @@
 			var previousUtterance, rewindThreshold, $audio, time;
 
 			previousUtterance =
-				self.getPreviousUtterance( $currentUtterance );
+				self.getPreviousUtterance( self.$currentUtterance );
 			if ( previousUtterance.length ) {
 				// Only consider skipping back to previous if the
 				// current utterance isn't the first one.
 				rewindThreshold = mw.config.get(
 					'wgWikispeechSkipBackRewindsThreshold' );
-				$audio = $currentUtterance.children( 'audio' );
+				$audio = self.$currentUtterance.children( 'audio' );
 				time = $audio.prop( 'currentTime' );
 				if ( time > rewindThreshold ) {
 					$audio.prop( 'currentTime', 0.0 );
@@ -511,23 +348,46 @@
 		 */
 
 		this.skipAheadToken = function () {
-			var nextToken, $audio, $succeedingTokens;
+			var nextToken, $audio;
 
 			if ( self.isPlaying() ) {
-				$succeedingTokens =
-					self.getCurrentToken().nextAll().filter( function () {
-						return !self.isSilent( this );
-					} );
-				if ( $succeedingTokens.length === 0 ) {
+				nextToken = self.getNextToken( self.getCurrentToken() );
+				if ( nextToken === null ) {
 					self.skipAheadUtterance();
 				} else {
-					nextToken = $succeedingTokens.get( 0 );
-					$audio = $currentUtterance.children( 'audio' );
-					$audio.prop(
-						'currentTime',
-						nextToken.getAttribute( 'start-time' )
+					$audio = self.$currentUtterance.children( 'audio' );
+					$audio.prop( 'currentTime', nextToken.startTime );
+					mw.wikispeech.highlighter.removeWrappers(
+						'.ext-wikispeech-highlight-word'
 					);
+					mw.wikispeech.highlighter.highlightToken( nextToken );
 				}
+			}
+		};
+
+		/**
+		 * Get the token following a given token.
+		 *
+		 * @param {jQuery} $originalToken Find the next token element
+		 *  after this one.
+		 * @return {HTMLElement} The first token following
+		 *  $originalToken that has time greater than zero and a
+		 *  transcription. null if no such token is found. Will not
+		 *  look beyond the $originalToken's utterance.
+		 */
+
+		this.getNextToken = function ( $originalToken ) {
+			var $succeedingTokens, nextToken;
+
+			$succeedingTokens =
+				$originalToken.nextAll().filter( function () {
+					return !self.isSilent( this );
+				} );
+			if ( $succeedingTokens.length ) {
+				nextToken = $succeedingTokens.get( 0 );
+				return nextToken;
+			} else {
+				return null;
 			}
 		};
 
@@ -539,33 +399,30 @@
 
 		this.getCurrentToken = function () {
 			var $tokens, currentTime, $currentToken, $tokensWithDuration,
-				duration, startTime, endTime;
+				duration;
 
 			$currentToken = $();
-			$tokens = $currentUtterance.find( 'token' );
-			currentTime = $currentUtterance.children( 'audio' )
+			$tokens = self.$currentUtterance.find( 'token' );
+			currentTime = self.$currentUtterance.children( 'audio' )
 				.prop( 'currentTime' );
 			$tokensWithDuration = $tokens.filter( function () {
-				duration = this.getAttribute( 'end-time' ) -
-					this.getAttribute( 'start-time' );
+				duration = this.endTime - this.startTime;
 				return duration > 0.0;
 			} );
 			if (
 				currentTime ===
-					parseFloat( $tokensWithDuration.last().attr( 'end-time' ) )
+					parseFloat( $tokensWithDuration.last().prop( 'endTime' ) )
 			) {
 				// If the current time is equal to the end time of the
 				// last token, the last token is the current.
 				$currentToken = $tokensWithDuration.last();
 			} else {
-				$tokensWithDuration.each( function ( i, element ) {
-					startTime =
-						parseFloat( element.getAttribute( 'start-time' ) );
-					endTime =
-						parseFloat( element.getAttribute( 'end-time' ) );
-					if ( startTime <= currentTime && endTime > currentTime
+				$tokensWithDuration.each( function () {
+					if (
+						this.startTime <= currentTime &&
+							this.endTime > currentTime
 					) {
-						$currentToken = $( element );
+						$currentToken = $( this );
 						return false;
 					}
 				} );
@@ -587,8 +444,8 @@
 		this.isSilent = function ( tokenElement ) {
 			var startTime, endTime;
 
-			startTime = tokenElement.getAttribute( 'start-time' );
-			endTime = tokenElement.getAttribute( 'end-time' );
+			startTime = tokenElement.startTime;
+			endTime = tokenElement.endTime;
 			return startTime === endTime || tokenElement.textContent === '';
 		};
 
@@ -602,15 +459,20 @@
 			if ( self.isPlaying() ) {
 				$previousToken =
 					self.getPreviousToken( self.getCurrentToken() );
-				$utterance = $previousToken.parent().parent();
-				if ( $utterance.get( 0 ) !== $currentUtterance.get( 0 ) ) {
+				$utterance =
+					$previousToken.parentsUntil( 'utterance' ).parent();
+				if ( $utterance.get( 0 ) !== self.$currentUtterance.get( 0 ) ) {
 					self.playUtterance( $utterance );
 				}
-				$audio = $currentUtterance.children( 'audio' );
+				$audio = self.$currentUtterance.children( 'audio' );
 				$audio.prop(
 					'currentTime',
-					$previousToken.attr( 'start-time' )
+					$previousToken.prop( 'startTime' )
 				);
+				mw.wikispeech.highlighter.removeWrappers(
+					'.ext-wikispeech-highlight-word'
+				);
+				mw.wikispeech.highlighter.highlightToken( $previousToken.get( 0 ) );
 			}
 		};
 
@@ -628,7 +490,7 @@
 		this.getPreviousToken = function ( $token ) {
 			var $utterance, $followingToken, $tokens;
 
-			$utterance = $token.parent().parent();
+			$utterance = $token.parentsUntil( 'utterance' ).parent();
 			do {
 				$followingToken = $token;
 				$token = $token.prev();
@@ -749,21 +611,35 @@
 				// already loaded or waiting for response from server.
 				self.loadAudio( $utterance );
 				$nextUtterance = self.getNextUtterance( $utterance );
+				$audio.on( {
+					playing: function () {
+						var firstToken;
+
+						// Highlight token only when the audio starts
+						// playing, since we need the token info from
+						// the response to know what to highlight.
+						if ( $audio.prop( 'currentTime' ) === 0 ) {
+							firstToken =
+								$utterance.find( 'token' ).get( 0 );
+							mw.wikispeech.highlighter.highlightToken(
+								firstToken
+							);
+							mw.wikispeech.highlighter.setHighlightTokenTimer(
+								firstToken
+							);
+						}
+					}
+				} );
 				if ( !$nextUtterance.length ) {
 					// For last utterance, just stop the playback when
 					// done.
-					$audio.on( 'ended', function () {
-						self.stop();
-					} );
+					$audio.on( 'ended', self.stop );
 				} else {
 					$audio.on( {
 						play: function () {
-							$currentUtterance = $utterance;
 							self.prepareUtterance( $nextUtterance );
 						},
-						ended: function () {
-							self.skipAheadUtterance();
-						}
+						ended: self.skipAheadUtterance
 					} );
 				}
 			}
@@ -871,32 +747,186 @@
 		 */
 
 		this.addTokenElements = function ( $utterance, tokens ) {
-			var $tokensElement, $contentElement, i, token, startTime;
+			var $tokensElement, i, token, startTime, utteranceOffset,
+				searchOffset, lastEndOffset, $tokenElement;
 
 			$tokensElement = $( '<tokens></tokens>' ).appendTo( $utterance );
-			$contentElement = $utterance.children( 'content' );
-			mw.log( 'Adding tokens to ' + $utterance.attr( 'id' ) + '.' );
+			utteranceOffset =
+				parseInt( $utterance.attr( 'start-offset' ), 10 );
+			searchOffset = 0;
+			lastEndOffset = 0;
 			for ( i = 0; i < tokens.length; i++ ) {
 				token = tokens[ i ];
 				if ( i === 0 ) {
+					// The first token in an utterance always start on
+					// time zero.
 					startTime = 0.0;
 				} else {
+					// Since the response only contains end times for
+					// token, the start time for a token is set to the
+					// end time of the previous one.
 					startTime = tokens[ i - 1 ].endtime;
 				}
-				$( '<token></token>' )
+				$tokenElement = $( '<token></token>' )
 					.text( token.orth )
-					.attr( 'start-time', startTime )
-					.attr( 'end-time', tokens[ i ].endtime )
+					.prop( {
+						startTime: startTime,
+						endTime: token.endtime
+					} )
 					.appendTo( $tokensElement );
+				if ( i > 0 ) {
+					// Start looking for the next token after the
+					// previous one, except for the first token, where
+					// we want to start on zero.
+					searchOffset += 1;
+				}
+				searchOffset = self.addOffsetsAndTextElements(
+					$tokenElement,
+					searchOffset
+				);
 			}
+		};
+
+		/**
+		 * Add properties for offsets and text elements to an token element.
+		 *
+		 * The offsets are for the start and end of the token in the
+		 * text node which they appear. These text nodes are not
+		 * necessary the same.
+		 *
+		 * The text elements are the element in which the token start,
+		 * the element in which it ends and any element in between.
+		 *
+		 * @param {jQuery} $tokenElement The token element to add
+		 *  properties to.
+		 * @param {number} searchOffset The offset to start searching
+		 *  from, in the concatenated string.
+		 * @return {number} The end offset in the concatenated string.
+		 */
+
+		this.addOffsetsAndTextElements = function (
+			$tokenElement,
+			searchOffset
+		) {
+			var $utterance, utteranceOffset,
+				$textElementsForUtterance, textElements,
+				startOffsetInUtteranceString,
+				endOffsetInUtteranceString, endOffsetForTextElement,
+				firstElementIndex, elementsBeforeStart,
+				lastElementIndex, elementsBeforeEnd;
+
+			$utterance = $tokenElement.parentsUntil( 'utterance' ).parent();
+			utteranceOffset =
+				parseInt( $utterance.attr( 'start-offset' ), 10 );
+			$textElementsForUtterance = $utterance.find( 'content text' );
+			textElements = [];
+			startOffsetInUtteranceString =
+				self.getStartOffsetInUtteranceString(
+					$tokenElement.text(),
+					$textElementsForUtterance,
+					textElements,
+					searchOffset
+				);
+			endOffsetInUtteranceString =
+				startOffsetInUtteranceString +
+				$tokenElement.text().length - 1;
+			// textElements now contains all the text elements in the
+			// utterance, from the first one to the last, that
+			// contains at least part of the token. To get only the
+			// ones that contain part of the token, the elements that
+			// appear before the token are removed.
+			endOffsetForTextElement = 0;
+			textElements =
+				$( textElements ).filter( function () {
+					endOffsetForTextElement += this.textContent.length;
+					return endOffsetForTextElement >
+						startOffsetInUtteranceString;
+				} )
+				.get();
+			$tokenElement.prop( 'textElements', textElements, $tokenElement );
+
+			// Calculate start and end offset for the token, in the
+			// text nodes it appears in, and add them to the
+			// token.
+			firstElementIndex =
+				$textElementsForUtterance.index( textElements[ 0 ] );
+			elementsBeforeStart =
+				$textElementsForUtterance.slice( 0, firstElementIndex );
+			$tokenElement.prop(
+				'startOffset',
+				utteranceOffset - $( elementsBeforeStart ).text().length +
+					startOffsetInUtteranceString
+			);
+			lastElementIndex =
+				$textElementsForUtterance.index(
+					textElements[ textElements.length - 1 ]
+				);
+			elementsBeforeEnd =
+				$textElementsForUtterance.slice( 0, lastElementIndex );
+			$tokenElement.prop(
+				'endOffset',
+				utteranceOffset - $( elementsBeforeEnd ).text().length +
+					endOffsetInUtteranceString
+			);
+			return endOffsetInUtteranceString;
+		};
+
+		/**
+		 * Calculate the start offset of a token in the utterance string.
+		 *
+		 * The token is the first match found, starting at
+		 * searchOffset.
+		 *
+		 * @param {string} token The token to search for.
+		 * @param {jQuery} $textElementsForUtterance The text elements
+		 *  of the utterance where the token appear.
+		 * @param {HTMLElement[]} textElements An array of text
+		 *  elements to which each element, up to and including the
+		 *  last one that contains part of the token, is added.
+		 * @param {number} searchOffset Where we want to start looking
+		 *  for the token in the utterance string.
+		 * @return {number} The offset where the first character of
+		 *  the token appears in the utterance string.
+		 */
+
+		this.getStartOffsetInUtteranceString = function (
+			token,
+			$textElementsForUtterance,
+			textElements,
+			searchOffset
+		) {
+			var concatenatedText, startOffsetInUtteranceString;
+
+			// The concatenation of the strings from text
+			// elements. Used to find tokens that span multiple text
+			// nodes.
+			concatenatedText = '';
+			$textElementsForUtterance.each( function () {
+				// Look through the text elements until we find a
+				// substring matching the token.
+				concatenatedText += this.textContent;
+				textElements.push( this );
+				if ( searchOffset > concatenatedText.length ) {
+					// Don't look in text elements that end before
+					// where we start looking.
+					return;
+				}
+				startOffsetInUtteranceString = concatenatedText.indexOf(
+					token, searchOffset
+				);
+				if ( startOffsetInUtteranceString !== -1 ) {
+					return false;
+				}
+			} );
+			return startOffsetInUtteranceString;
 		};
 	}
 
-	mw.wikispeech = {};
+	mw.wikispeech = mw.wikispeech || {};
+	mw.wikispeech.wikispeech = new Wikispeech();
 	mw.wikispeech.Wikispeech = Wikispeech;
 
 	if ( $( 'utterances' ).length ) {
-		mw.wikispeech.wikispeech = new mw.wikispeech.Wikispeech();
 		// Prepare the first utterance for playback.
 		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
 		mw.wikispeech.wikispeech.addControlPanel();

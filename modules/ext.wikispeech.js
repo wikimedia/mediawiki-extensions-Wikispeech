@@ -592,7 +592,9 @@
 		 */
 
 		this.addKeyboardShortcuts = function () {
-			var shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
+			var shortcuts, name, shortcut;
+
+			shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
 			$( document ).keydown( function ( event ) {
 				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					self.playOrStop();
@@ -619,6 +621,18 @@
 				) {
 					self.skipBackToken();
 					return false;
+				}
+			} );
+			// Prevent keyup events from triggering if there is
+			// keydown event for the same key combination. This caused
+			// buttons in focus to trigger if a shortcut had space as
+			// key.
+			$( document ).keyup( function ( event ) {
+				for ( name in shortcuts ) {
+					shortcut = shortcuts[ name ];
+					if ( self.eventMatchShortcut( event, shortcut ) ) {
+						event.preventDefault();
+					}
 				}
 			} );
 		};

@@ -85,23 +85,23 @@
 		"WikispeechKeyboardShortcuts": {
 			"playStop": {
 				"key": 32,
-				"modifiers": [ "ctrl" ]
+				"modifiers": [ "alt", "shift" ]
 			},
 			"skipAheadSentence": {
 				"key": 39,
-				"modifiers": [ "ctrl" ]
+				"modifiers": [ "alt", "shift" ]
 			},
 			"skipBackSentence": {
 				"key": 37,
-				"modifiers": [ "ctrl" ]
+				"modifiers": [ "alt", "shift" ]
 			},
 			"skipAheadWord": {
 				"key": 40,
-				"modifiers": [ "ctrl" ]
+				"modifiers": [ "alt", "shift" ]
 			},
 			"skipBackWord": {
 				"key": 38,
-				"modifiers": [ "ctrl" ]
+				"modifiers": [ "alt", "shift" ]
 			}
 		},
 		"WikispeechSkipBackRewindsThreshold": 3.0

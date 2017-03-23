@@ -189,59 +189,58 @@
 
 		this.highlightUtterance = function ( $utterance ) {
 			var firstTextElement, firstNode, lastTextElement, lastNode,
-				firstNodeRange, startOffset, endOffset, textNode;
+				startOffset, endOffset, textNode, middleNodes;
 
 			firstTextElement = $utterance.find( 'text' ).get( 0 );
 			if ( firstTextElement ) {
 				firstNode = self.getNodeForTextElement( firstTextElement );
 				lastTextElement = $utterance.find( 'text' ).get( -1 );
 				lastNode = self.getNodeForTextElement( lastTextElement );
-
-				// Range for the first node, since it may be that only
-				// part of this should be highlighted.
-				firstNodeRange = document.createRange();
 				startOffset =
 					parseInt( $utterance.attr( 'start-offset' ), 10 );
-				firstNodeRange.setStart( firstNode, startOffset );
 				endOffset =
 					parseInt( $utterance.attr( 'end-offset' ), 10 );
 				if ( firstNode === lastNode ) {
-					// All highlighted text is in the same text node, so
-					// only a range is needed.
-					firstNodeRange.setEnd( firstNode, endOffset + 1 );
-				} else {
-					// Since the highlighting extends beyond the first
-					// text node, all text from the start position should
-					// be highlighted.
-					firstNodeRange.setEnd(
+					// All highlighted text is in the same text node,
+					// so only one <span> is needed.
+					self.highlightRange(
 						firstNode,
-						firstNode.textContent.length
+						startOffset,
+						endOffset
 					);
-					// Add highlighting by range for the last text
-					// node, since it may be that the highlighting
-					// doesn't cover the whole node.
-					self.highlightRange( lastNode, 0, endOffset + 1 );
-
+				} else {
+					// The middle nodes need to be found before the
+					// other highlighting, since adding <span>s
+					// changes how the XPath expressions are
+					// interpreted.
+					middleNodes = [];
 					$utterance.find( 'text:gt(0):lt(-1)' ).each( function () {
-						// Add highlighting to all text nodes between
-						// first and last node.
 						textNode = self.getNodeForTextElement( this );
-						$( textNode ).wrap(
+						middleNodes.push( textNode );
+					} );
+
+					// Add a <span> around the part of the last node
+					// that is part if the utterance.
+					self.highlightRange( lastNode, 0, endOffset );
+					// Wrap all nodes between the first and last
+					// completely in <span>s.
+					middleNodes.forEach( function ( node ) {
+						$( node ).wrap(
 							self.createHighilightUtteranceSpan()
 						);
 					} );
+					// Add a <span> around the part of the first node
+					// that is part if the utterance.
+					self.highlightRange( firstNode, startOffset );
 				}
-				firstNodeRange.surroundContents(
-					self.createHighilightUtteranceSpan()
-				);
 			}
 		};
 
 		/**
 		 * Find the text node from which a `<text>` element was created.
 		 *
-		 * The path attribute of textElement is used to traverse the
-		 * DOM tree.
+		 * The path attribute of textElement is an XPath expression
+		 * and is used to traverse the DOM tree.
 		 *
 		 * @param {HTMLElement} textElement The `<text>` element to find
 		 *  the text node for.
@@ -249,11 +248,19 @@
 		 */
 
 		this.getNodeForTextElement = function ( textElement ) {
-			var path, node;
+			var path, node, result;
 
-			path = textElement.getAttribute( 'path' ).split( ',' );
-			node =
-				self.getNodeFromPath( path, $( '#mw-content-text' ).get( 0 ) );
+			path = textElement.getAttribute( 'path' );
+			// The path should be unambiguous, so just get the first
+			// matching node.
+			result = document.evaluate(
+				path,
+				$( '#mw-content-text' ).get( 0 ),
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			);
+			node = result.singleNodeValue;
 			return node;
 		};
 
@@ -286,13 +293,17 @@
 		 * @param {number} start The index of the first character in the
 		 *  highlighting.
 		 * @param {number} end The index of the last character in the
-		 *  highlighting.
+		 *  highlighting. If not specified, the last character in the
+		 *  text node is used.
 		 */
 
 		this.highlightRange = function ( node, start, end ) {
 			var range = document.createRange();
 			range.setStart( node, start );
-			range.setEnd( node, end );
+			if ( end === undefined ) {
+				end = node.textContent.length - 1;
+			}
+			range.setEnd( node, end + 1 );
 			range.surroundContents( self.createHighilightUtteranceSpan() );
 		};
 
@@ -744,7 +755,7 @@
 		 * The request should specify the following parameters:
 		 * - lang: the language used by the synthesizer.
 		 * - input_type: "ssml" if you want SSML markup, otherwise
-		 *  "text" for plain text.
+		 *    "text" for plain text.
 		 * - input: the text to be synthesized.
 		 * For more on the parameters, see:
 		 * https://github.com/stts-se/wikispeech_mockup/wiki/api.

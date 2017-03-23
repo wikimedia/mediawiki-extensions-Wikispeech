@@ -18,8 +18,6 @@
 	"AutoloadClasses": {
 		"SpecialWikispeech": "specials/SpecialWikispeech.php",
 		"WikispeechHooks": "Hooks.php",
-		"CleanedContent": "includes/CleanedContent.php",
-		"CleanedTag": "includes/CleanedContent.php",
 		"CleanedText": "includes/CleanedContent.php",
 		"Cleaner": "includes/Cleaner.php",
 		"HtmlGenerator": "includes/HtmlGenerator.php",

@@ -32,11 +32,6 @@
 	content: '\f050';
 }
 
-.ext-wikispeech-highlight-sentence {
-	background-color: rgb( 0, 200, 0 );
-	background-color: rgba( 0, 200, 0, 0.5 );
-}
-
 .ext-wikispeech-control-panel {
 	position: fixed;
 	left: 0;
@@ -45,4 +40,9 @@
 	text-align: center;
 	border: solid 1px rgb( 150, 150, 150 );
 	background-color: rgb( 200, 200, 200 );
+}
+
+.ext-wikispeech-highlight-sentence {
+	background-color: rgb( 0, 200, 0 );
+	background-color: rgba( 0, 200, 0, 0.5 );
 }

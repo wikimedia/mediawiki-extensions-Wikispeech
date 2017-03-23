@@ -6,11 +6,9 @@
  * @license GPL-2.0+
  */
 
-abstract class CleanedContent {
+class CleanedText {
 	/**
-	 * The string representation of the content, as it is written in
-	 * the HTML. This includes the tag name, any attributes, and the
-	 * brackets, if content is a tag.
+	 * The text content from the text node this was created from.
 	 *
 	 * @var string $string
 	 */
@@ -18,25 +16,8 @@ abstract class CleanedContent {
 	public $string;
 
 	/**
-	 * Create a CleanedContent, given a string representation.
-	 *
-	 * @since 0.0.1
-	 * @param string $string The string representation of this content.
-	 */
-
-	function __construct( $string ) {
-		$this->string = $string;
-	}
-}
-
-class CleanedTag extends CleanedContent {
-}
-
-class CleanedText extends CleanedContent {
-	/**
-	 * The path in the HTML to the text node that this was created
-	 * from. The path consists of indices of the elements leading to
-	 * the text node, and the index of the text node itself.
+	 * The XPath expression for the text node that this was created
+	 * from.
 	 *
 	 * @var array $path
 	 */
@@ -46,15 +27,15 @@ class CleanedText extends CleanedContent {
 	/**
 	 * Create a CleanedText, given a string representation.
 	 *
-	 * If the path isn't set, it defaults to the empty array.
+	 * If the path isn't set, it defaults to the empty string.
 	 *
 	 * @since 0.0.1
 	 * @param string $string The string representation of this text.
 	 * @param array $path The path to the text node this was created from.
 	 */
 
-	function __construct( $string, $path=[] ) {
-		parent::__construct( $string );
+	function __construct( $string, $path='' ) {
+		$this->string = $string;
 		$this->path = $path;
 	}
 
@@ -70,8 +51,7 @@ class CleanedText extends CleanedContent {
 
 	function toElement( $dom ) {
 		$element = $dom->createElement( 'text', $this->string );
-		$pathString = implode( $this->path, ',' );
-		$element->setAttribute( 'path', $pathString );
+		$element->setAttribute( 'path', $this->path );
 		return $element;
 	}
 }

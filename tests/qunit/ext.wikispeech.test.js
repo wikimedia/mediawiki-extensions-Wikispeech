@@ -869,18 +869,18 @@
 		$( '#utterance-0' ).append(
 			$( '<content></content>' )
 				.append( $( '<text></text>' )
-					.text( ' Utterance two.' )
+					.text( 'Utterance two.' )
 					.attr( 'path', './text()' )
 				)
 		);
-		$( '#utterance-0' ).attr( 'start-offset', 14 );
+		$( '#utterance-0' ).attr( 'start-offset', 15 );
 		$( '#utterance-0' ).attr( 'end-offset', 28 );
 
 		wikispeech.highlightUtterance( $( '#utterance-0' ) );
 
 		assert.strictEqual(
 			$( '#mw-content-text' ).prop( 'innerHTML' ),
-			'Utterance one.<span class="ext-wikispeech-highlight-sentence"> Utterance two.</span> Utterance three.'
+			'Utterance one. <span class="ext-wikispeech-highlight-sentence">Utterance two.</span> Utterance three.'
 		);
 	} );
 
@@ -895,7 +895,7 @@
 			$( '<content></content>' )
 				.append(
 					$( '<text></text>' )
-						.text( 'Utterance with ' )
+						.text( 'Utterance with' )
 						.attr( 'path', './p/text()[1]' )
 				)
 				.append(
@@ -905,7 +905,7 @@
 				)
 				.append(
 					$( '<text></text>' )
-						.text( ' tag.' )
+						.text( 'tag.' )
 						.attr( 'path', './p/text()[2]' )
 				)
 		);

@@ -25,12 +25,12 @@ class Cleaner {
 		// Only add elements below the dummy element. These are the
 		// elements from the original HTML.
 		$top = $xpath->evaluate( '/meta/dummy' )->item( 0 );
-		$cleanedContent = [];
+		$cleanedContents = [];
 		self::addContent(
-			$cleanedContent,
+			$cleanedContents,
 			$top
 		);
-		return $cleanedContent;
+		return $cleanedContents;
 	}
 
 	/**

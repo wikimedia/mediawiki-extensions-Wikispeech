@@ -192,6 +192,18 @@ class SegmenterTest extends MediaWikiTestCase {
 		);
 	}
 
+	public function testRemoveTextWithOnlyWhitespacesOutsideSegments() {
+		$cleanedContent = [
+			new CleanedText( ' ' ),
+			new CleanedText( 'Sentence 1.' )
+		];
+		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$this->assertEquals(
+			'Sentence 1.',
+			$segments[0]['content'][0]->string
+		);
+	}
+
 	public function testRemoveLeadingAndTrailingWhitespaces() {
 		$cleanedContent = [ new CleanedText( ' Sentence. ' ) ];
 		$segments = Segmenter::segmentSentences( $cleanedContent );

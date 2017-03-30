@@ -135,25 +135,28 @@ class Segmenter {
 			$startOffset,
 			$endOffset - $startOffset + 1
 		);
-		$sentenceText = new CleanedText(
-			$sentence,
-			$text->path
-		);
-		array_push( $currentSegment['content'], $sentenceText );
-		if ( $currentSegment['startOffset'] === null ) {
-			// Record the start offset if this is the first text added
-			// to the segment.
-			$currentSegment['startOffset'] = $startOffset;
-		}
-		$currentSegment['endOffset'] = $endOffset;
-		if ( $ended ) {
-			array_push( $segments, $currentSegment );
-			// Create a fresh segment to add following text to.
-			$currentSegment = [
-				'content' => [],
-				'startOffset' => null,
-				'endOffset' => null
-			];
+		if ( $sentence !== '' ) {
+			// Don't add `CleanedText`s with the empty string.
+			$sentenceText = new CleanedText(
+				$sentence,
+				$text->path
+			);
+			array_push( $currentSegment['content'], $sentenceText );
+			if ( $currentSegment['startOffset'] === null ) {
+				// Record the start offset if this is the first text
+				// added to the segment.
+				$currentSegment['startOffset'] = $startOffset;
+			}
+			$currentSegment['endOffset'] = $endOffset;
+			if ( $ended ) {
+				array_push( $segments, $currentSegment );
+				// Create a fresh segment to add following text to.
+				$currentSegment = [
+					'content' => [],
+					'startOffset' => null,
+					'endOffset' => null
+				];
+			}
 		}
 		return $endOffset;
 	}

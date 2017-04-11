@@ -102,6 +102,7 @@
 				"modifiers": [ "alt", "shift" ]
 			}
 		},
-		"WikispeechSkipBackRewindsThreshold": 3.0
+		"WikispeechSkipBackRewindsThreshold": 3.0,
+		"WikispeechHelpPage": "Help:Wikispeech"
 	}
 }

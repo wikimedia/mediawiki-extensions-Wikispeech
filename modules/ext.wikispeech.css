@@ -32,6 +32,16 @@
 	content: '\f050';
 }
 
+.ext-wikispeech-divider {
+	border-left: solid 1px rgb( 150, 150, 150 );
+	margin: 3px;
+}
+
+.ext-wikispeech-help:after {
+	font-family: 'Fontawesome';
+	content: '\f128';
+}
+
 .ext-wikispeech-control-panel {
 	position: fixed;
 	left: 0;

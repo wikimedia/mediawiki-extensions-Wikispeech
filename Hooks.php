@@ -119,6 +119,9 @@ class WikispeechHooks {
 		global $wgWikispeechSkipBackRewindsThreshold;
 		$vars['wgWikispeechSkipBackRewindsThreshold'] =
 			$wgWikispeechSkipBackRewindsThreshold;
+		global $wgWikispeechHelpPage;
+		$vars['wgWikispeechHelpPage'] =
+			$wgWikispeechHelpPage;
 		return true;
 	}
 }

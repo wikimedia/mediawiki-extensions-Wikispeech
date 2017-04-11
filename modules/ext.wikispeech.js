@@ -6,40 +6,58 @@
 		$currentUtterance = $();
 
 		/**
-		 * Add buttons for controlling playback to the top of the page.
+		 * Add a panel with controls for for Wikispeech.
+		 *
+		 * The panel contains buttons for controlling playback and
+		 * links to related pages.
 		 */
 
 		this.addControlPanel = function () {
-			$( '<div></div>' )
+			var $controlPanel, helpPage, helpPagePath;
+
+			$controlPanel = $( '<div></div>' )
 				.attr( 'id', 'ext-wikispeech-control-panel' )
 				.addClass( 'ext-wikispeech-control-panel' )
 				.appendTo( '#content' );
 			self.moveControlPanelWhenDebugging();
 			self.addButton(
-				'ext-wikispeech-skip-back-sentence-button',
 				'ext-wikispeech-skip-back-sentence',
 				self.skipBackUtterance
 			);
 			self.addButton(
-				'ext-wikispeech-skip-back-word-button',
 				'ext-wikispeech-skip-back-word',
 				self.skipBackToken
 			);
 			self.addButton(
-				'ext-wikispeech-play-stop-button',
 				'ext-wikispeech-play',
-				self.playOrStop
+				self.playOrStop,
+				'ext-wikispeech-play-stop-button'
 			);
 			self.addButton(
-				'ext-wikispeech-skip-ahead-word-button',
 				'ext-wikispeech-skip-ahead-word',
 				self.skipAheadToken
 			);
 			self.addButton(
-				'ext-wikispeech-skip-ahead-sentence-button',
 				'ext-wikispeech-skip-ahead-sentence',
 				self.skipAheadUtterance
 			);
+			helpPage = mw.config.get( 'wgWikispeechHelpPage' );
+			if ( helpPage ) {
+				// Only add button for help page if it is specified in
+				// the config.
+				$( '<span></span>' )
+					.addClass( 'ext-wikispeech-divider' )
+					.appendTo( $controlPanel );
+				helpPagePath = mw.config.get( 'wgArticlePath' )
+					.replace( '$1', helpPage );
+				$( '<a></a>' )
+					.attr( 'href', helpPagePath )
+					.append(
+						$( '<button></button>' )
+							.addClass( 'ext-wikispeech-help' )
+					)
+					.appendTo( '#ext-wikispeech-control-panel' );
+			}
 		};
 
 		/**
@@ -95,19 +113,20 @@
 		/**
 		* Add a control button.
 		*
-		* @param {string} id The id of the button.
 		* @param {string} cssClass The name of the CSS class to add to
 		*  the button.
 		* @param {string} onClickFunction The name of the function to
 		*  call when the button is clicked.
+		* @param {string} id The id of the button.
 		*/
 
-		this.addButton = function ( id, cssClass, onClickFunction ) {
+		this.addButton = function ( cssClass, onClickFunction, id ) {
 			var $button = $( '<button></button>' )
+				.addClass( cssClass )
 				.attr( 'id', id )
-				.addClass( cssClass );
-			$( '#ext-wikispeech-control-panel' ).append( $button );
+				.appendTo( '#ext-wikispeech-control-panel' );
 			$button.click( onClickFunction );
+			return $button;
 		};
 
 		/**
@@ -764,7 +783,7 @@
 		 * The request should specify the following parameters:
 		 * - lang: the language used by the synthesizer.
 		 * - input_type: "ssml" if you want SSML markup, otherwise
-		 *    "text" for plain text.
+		 *  "text" for plain text.
 		 * - input: the text to be synthesized.
 		 * For more on the parameters, see:
 		 * https://github.com/stts-se/wikispeech_mockup/wiki/api.

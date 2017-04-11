@@ -237,20 +237,48 @@
 			1
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-ahead-sentence-button' ).length,
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-ahead-sentence' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-back-sentence-button' ).length,
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-back-sentence' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-ahead-word-button' ).length,
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-ahead-word' ).length,
 			1
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel #ext-wikispeech-skip-back-word-button' ).length,
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-back-word' ).length,
 			1
+		);
+	} );
+
+	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
+		assert.expect( 1 );
+		mw.config.set(
+			'wgWikispeechHelpPage',
+			'Help'
+		);
+		wikispeech.addControlPanel();
+
+		assert.strictEqual(
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-help' ).length,
+			1
+		);
+	} );
+
+	QUnit.test( 'addControlPanel(): do not add help button if page is not set', function ( assert ) {
+		assert.expect( 1 );
+		mw.config.set(
+			'wgWikispeechHelpPage',
+			null
+		);
+		wikispeech.addControlPanel();
+
+		assert.strictEqual(
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-help' ).length,
+			0
 		);
 	} );
 
@@ -271,12 +299,12 @@
 	 * @param {string} buttonId Id of the button that is clicked.
 	 */
 
-	function testClickButton( assert, functionName, buttonId ) {
+	function testClickButton( assert, functionName, buttonSelector ) {
 		assert.expect( 1 );
-		sinon.spy( wikispeech, functionName );
+		sinon.stub( wikispeech, functionName );
 		wikispeech.addControlPanel();
 
-		$( buttonId ).click();
+		$( buttonSelector ).click();
 
 		assert.strictEqual( wikispeech[ functionName ].called, true );
 	}
@@ -285,7 +313,7 @@
 		testClickButton(
 			assert,
 			'skipAheadUtterance',
-			'#ext-wikispeech-skip-ahead-sentence-button'
+			'.ext-wikispeech-skip-ahead-sentence'
 		);
 	} );
 
@@ -293,7 +321,7 @@
 		testClickButton(
 			assert,
 			'skipBackUtterance',
-			'#ext-wikispeech-skip-back-sentence-button'
+			'.ext-wikispeech-skip-back-sentence'
 		);
 	} );
 
@@ -301,7 +329,7 @@
 		testClickButton(
 			assert,
 			'skipAheadToken',
-			'#ext-wikispeech-skip-ahead-word-button'
+			'.ext-wikispeech-skip-ahead-word'
 		);
 	} );
 

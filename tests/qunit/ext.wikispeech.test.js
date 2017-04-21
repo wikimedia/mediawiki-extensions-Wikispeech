@@ -49,6 +49,10 @@
 				'wgWikispeechSkipBackRewindsThreshold',
 				3.0
 			);
+			mw.config.set(
+				'wgWikispeechServerUrl',
+				'http://server.url/wikispeech/'
+			);
 		},
 		teardown: function () {
 			server.restore();
@@ -68,15 +72,32 @@
 	} );
 
 	// jscs:disable validateQuoteMarks
-	QUnit.test( "prepareUtterance(): don't request if already requested", function ( assert ) {
+	QUnit.test( "prepareUtterance(): don't request if waiting for response", function ( assert ) {
 		// jscs:enable validateQuoteMarks
 		assert.expect( 1 );
 		sinon.spy( wikispeech, 'loadAudio' );
-		$( '#utterance-0' ).prop( 'requested', true );
+		$( '#utterance-0' ).prop( 'waitingForResponse', true );
 
 		wikispeech.prepareUtterance( $( '#utterance-0' ) );
 
-		assert.strictEqual( wikispeech.loadAudio.called, false );
+		assert.strictEqual( wikispeech.loadAudio.notCalled, true );
+	} );
+
+	// jscs:disable validateQuoteMarks
+	QUnit.test( "prepareUtterance(): don't load audio if already loaded", function ( assert ) {
+		// jscs:enable validateQuoteMarks
+		assert.expect( 1 );
+		$( '<content></content>' )
+			.append( $( '<text></text>' ).text( 'An utterance.' ) )
+			.appendTo( '#utterance-0' );
+		$( '<audio></audio>' )
+			.attr( 'src', 'http://server.url/audio' )
+			.appendTo( '#utterance-0' );
+		sinon.spy( wikispeech, 'loadAudio' );
+
+		wikispeech.prepareUtterance( $( '#utterance-0' ) );
+
+		assert.strictEqual( wikispeech.loadAudio.notCalled, true );
 	} );
 
 	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', function ( assert ) {
@@ -135,33 +156,74 @@
 	} );
 
 	QUnit.test( 'loadAudio()', function ( assert ) {
-		assert.expect( 4 );
+		assert.expect( 2 );
 		$( '<content></content>' )
 			.append( $( '<text></text>' ).text( 'An utterance.' ) )
 			.appendTo( '#utterance-0' );
+		sinon.spy( wikispeech, 'requestTts' );
+
+		wikispeech.loadAudio( $( '#utterance-0' ) );
+
+		assert.strictEqual( wikispeech.requestTts.called, true );
+		assert.strictEqual(
+			server.requests[ 0 ].url,
+			'http://server.url/wikispeech/?lang=en&input_type=text&input=An%20utterance.'
+		);
+	} );
+
+	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
+		assert.expect( 3 );
+		$( '<content></content>' )
+			.append( $( '<text></text>' ).text( 'An utterance.' ) )
+			.appendTo( '#utterance-0' );
+		$( '<audio></audio>' ).appendTo( '#utterance-0' );
+		$( '#utterance-0' ).prop( 'waitingForResponse', true );
 		server.respondWith(
 			'{"audio": "http://server.url/audio", "tokens": [{"orth": "An"}, {"orth": "utterance"}, {"orth": "."}]}'
 		);
 		sinon.spy( wikispeech, 'addTokenElements' );
-
 		wikispeech.loadAudio( $( '#utterance-0' ) );
 
 		server.respond();
-		assert.strictEqual(
-			server.requests[ 0 ].requestBody,
-			'lang=en&input_type=text&input=An+utterance.'
-		);
+
 		assert.strictEqual(
 			$( '#utterance-0 audio' ).attr( 'src' ),
 			'http://server.url/audio'
 		);
-		assert.strictEqual( $( '#utterance-0' ).prop( 'requested' ), true );
 		assert.strictEqual(
 			wikispeech.addTokenElements.calledWith(
 				$( '#utterance-0' ),
 				[ { orth: 'An' }, { orth: 'utterance' }, { orth: '.' } ]
 			),
 			true
+		);
+		assert.strictEqual(
+			$( '#utterance-0' ).prop( 'waitingForResponse' ),
+			false
+		);
+	} );
+
+	QUnit.test( 'loadAudio(): request failed', function ( assert ) {
+		assert.expect( 3 );
+		$( '<content></content>' )
+			.append( $( '<text></text>' ).text( 'An utterance.' ) )
+			.appendTo( '#utterance-0' );
+		$( '<audio></audio>' ).appendTo( '#utterance-0' );
+		$( '#utterance-0' ).prop( 'waitingForResponse', true );
+		server.respondWith( [ 404, {}, '' ] );
+		sinon.spy( wikispeech, 'addTokenElements' );
+		wikispeech.loadAudio( $( '#utterance-0' ) );
+
+		server.respond();
+
+		assert.strictEqual( wikispeech.addTokenElements.notCalled, true );
+		assert.strictEqual(
+			$( '#utterance-0' ).prop( 'waitingForResponse' ),
+			false
+		);
+		assert.strictEqual(
+			$( '#utterance-0 audio' ).attr( 'src' ),
+			undefined
 		);
 	} );
 

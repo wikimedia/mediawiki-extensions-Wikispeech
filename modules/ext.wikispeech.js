@@ -686,12 +686,20 @@
 		this.prepareUtterance = function ( $utterance ) {
 			var $audio, $nextUtterance;
 
-			if ( !$utterance.prop( 'requested' ) ) {
-				// Only load audio for an utterance if we haven't
-				// already sent a request for it.
+			if ( !$utterance.children( 'audio' ).length ) {
+				// Make sure there is an audio element for this
+				// utterance.
+				$utterance.append( '<audio></audio>' );
+			}
+			$audio = $utterance.children( 'audio' );
+			if (
+				!$audio.attr( 'src' ) &&
+					!$utterance.prop( 'waitingForResponse' )
+			) {
+				// Only load audio for an utterance if it isn't
+				// already loaded or waiting for response from server.
 				self.loadAudio( $utterance );
 				$nextUtterance = self.getNextUtterance( $utterance );
-				$audio = $utterance.children( 'audio' );
 				if ( !$nextUtterance.length ) {
 					// For last utterance, just stop the playback when
 					// done.
@@ -724,7 +732,6 @@
 		this.loadAudio = function ( $utterance ) {
 			var $audio, text, audioUrl;
 
-			$audio = $( '<audio></audio>' ).appendTo( $utterance );
 			mw.log( 'Loading audio for: ' + $utterance.attr( 'id' ) );
 			// Get the combined string of the text nodes only,
 			// i.e. not from the cleaned tag.
@@ -739,14 +746,16 @@
 					}
 				}
 			).text();
-			self.requestTts( text, function ( response ) {
+			self.requestTts( text, $utterance, function ( response ) {
 				audioUrl = response.audio;
-				mw.log( 'Setting url for ' + $utterance.attr( 'id' ) + ': ' +
-					audioUrl );
+				mw.log(
+					'Setting url for ' + $utterance.attr( 'id' ) + ': ' +
+						audioUrl
+				);
+				$audio = $utterance.children( 'audio' );
 				$audio.attr( 'src', audioUrl );
 				self.addTokenElements( $utterance, response.tokens );
 			} );
-			$utterance.prop( 'requested', true );
 		};
 
 		/**
@@ -762,35 +771,41 @@
 		 *
 		 * @param {string} text The utterance string to send in the
 		 *  request.
+		 * @param {jQuery} $utterance The utterance for this request.
 		 * @param {Function} callback Function to be called when a
 		 *  response is received.
 		 */
 
-		this.requestTts = function ( text, callback ) {
-			var request, parameters, serverUrl, response;
-
-			request = new XMLHttpRequest();
-			request.overrideMimeType( 'text/json' );
-			serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
-			request.open( 'POST', serverUrl, true );
-			request.setRequestHeader(
-				'Content-type',
-				'application/x-www-form-urlencoded'
-			);
-			parameters = $.param( {
-				// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-				lang: mw.config.get( 'wgPageContentLanguage' ),
-				input_type: 'text',
-				input: text
-				// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+		this.requestTts = function ( text, $utterance, callback ) {
+			var serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
+			$.ajax( {
+				url: serverUrl,
+				data: {
+					// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+					lang: mw.config.get( 'wgPageContentLanguage' ),
+					input_type: 'text',
+					input: text
+					// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+				},
+				dataType: 'json',
+				beforeSend: function ( jqXHR, settings ) {
+					mw.log( 'Sending request:', settings.url );
+					$utterance.prop( 'waitingForResponse', true );
+				},
+				success: function ( data ) {
+					mw.log( 'Response received:', data );
+					callback( data );
+				},
+				error: function ( jqXHR, textStatus ) {
+					mw.log.warn(
+						'Request failed, error type "' + textStatus + '":',
+						this.url
+					);
+				},
+				complete: function () {
+					$utterance.prop( 'waitingForResponse', false );
+				}
 			} );
-			request.onload = function () {
-				mw.log( 'Response received: ' + request.responseText );
-				response = JSON.parse( request.responseText );
-				callback( response );
-			};
-			mw.log( 'Sending request: ' + serverUrl + '?' + parameters );
-			request.send( parameters );
 		};
 
 		/**

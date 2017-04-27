@@ -780,6 +780,7 @@
 			var serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
 			$.ajax( {
 				url: serverUrl,
+				method: 'POST',
 				data: {
 					// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 					lang: mw.config.get( 'wgPageContentLanguage' ),
@@ -789,23 +790,23 @@
 				},
 				dataType: 'json',
 				beforeSend: function ( jqXHR, settings ) {
-					mw.log( 'Sending request:', settings.url );
+					mw.log( 'Sending request: ' + settings.url + '?' + settings.data );
 					$utterance.prop( 'waitingForResponse', true );
-				},
-				success: function ( data ) {
+				}
+			} )
+				.done( function ( data ) {
 					mw.log( 'Response received:', data );
 					callback( data );
-				},
-				error: function ( jqXHR, textStatus ) {
+				} )
+				.fail( function ( jqXHR, textStatus ) {
 					mw.log.warn(
 						'Request failed, error type "' + textStatus + '":',
 						this.url
 					);
-				},
-				complete: function () {
+				} )
+				.always( function () {
 					$utterance.prop( 'waitingForResponse', false );
-				}
-			} );
+				} );
 		};
 
 		/**

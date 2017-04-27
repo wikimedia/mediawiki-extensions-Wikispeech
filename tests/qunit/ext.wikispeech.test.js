@@ -166,8 +166,8 @@
 
 		assert.strictEqual( wikispeech.requestTts.called, true );
 		assert.strictEqual(
-			server.requests[ 0 ].url,
-			'http://server.url/wikispeech/?lang=en&input_type=text&input=An%20utterance.'
+			server.requests[ 0 ].requestBody,
+			'lang=en&input_type=text&input=An+utterance.'
 		);
 	} );
 

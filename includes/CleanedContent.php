@@ -6,6 +6,13 @@
  * @license GPL-2.0+
  */
 
+/**
+ * Holds information about a text node that has been cleaned, to be
+ * used during recitation.
+ *
+ * @since 0.0.1
+ */
+
 class CleanedText {
 	/**
 	 * The text content from the text node this was created from.
@@ -54,4 +61,14 @@ class CleanedText {
 		$element->setAttribute( 'path', $this->path );
 		return $element;
 	}
+}
+
+/**
+ * Denotes a break between to segments. Added by `Cleaner` and
+ * consumed by `Segmenter`.
+ *
+ * @since 0.0.1
+ */
+
+class SegmentBreak {
 }

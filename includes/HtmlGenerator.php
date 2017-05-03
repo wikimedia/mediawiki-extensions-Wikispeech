@@ -6,6 +6,12 @@
  * @license GPL-2.0+
  */
 
+/**
+ * Used for generating HTML with utterance elements.
+ *
+ * @since 0.0.1
+ */
+
 class HtmlGenerator {
 
 	/**
@@ -116,8 +122,8 @@ class HtmlGenerator {
 
 	private static function createContentElement( $dom, $content ) {
 		$contentElement = $dom->createElement( 'content' );
-		foreach ( $content as $part ) {
-				$contentElement->appendChild( $part->toElement( $dom ) );
+		foreach ( $content as $item ) {
+				$contentElement->appendChild( $item->toElement( $dom ) );
 		}
 		return $contentElement;
 	}

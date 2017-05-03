@@ -726,7 +726,7 @@
 				.fail( function ( jqXHR, textStatus ) {
 					mw.log.warn(
 						'Request failed, error type "' + textStatus + '":',
-						this.url
+						this.url + '?' + this.data
 					);
 				} )
 				.always( function () {

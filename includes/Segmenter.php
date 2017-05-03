@@ -6,6 +6,14 @@
  * @license GPL-2.0+
  */
 
+/**
+ * Used for dividing text into segments, that can then be sent to the
+ * TTS server. Also calculates values for variables that are needed
+ * for highlighting.
+ *
+ * @since 0.0.1
+ */
+
 class Segmenter {
 
 	/**
@@ -23,29 +31,33 @@ class Segmenter {
 	 * dot (full stop).
 	 *
 	 * @since 0.0.1
-	 * @param array $cleanedContents An array of `CleanedText`s, as
-	 *  returned by `Cleaner::cleanHtml()`.
+	 * @param array $cleanedContent An array of items returned by
+	 *  `Cleaner::cleanHtml()`.
 	 * @return array An array of segments, each containing the
 	 *  `CleanedText's in that segment.
 	 */
 
-	public static function segmentSentences( $cleanedContents ) {
+	public static function segmentSentences( $cleanedContent ) {
 		$segments = [];
 		$currentSegment = [
 			'content' => [],
 			'startOffset' => null,
 			'endOffset' => null
 		];
-		foreach ( $cleanedContents as $content ) {
-			self::addSegments(
-				$segments,
-				$currentSegment,
-				$content
-			);
+		foreach ( $cleanedContent as $item ) {
+			if ( $item instanceof CleanedText ) {
+				self::addSegments(
+					$segments,
+					$currentSegment,
+					$item
+				);
+			} elseif ( $item instanceof SegmentBreak ) {
+				self::finishSegment( $segments, $currentSegment );
+			}
 		}
 		if ( $currentSegment['content'] ) {
 			// Add the last segment, unless it's empty.
-			array_push( $segments, $currentSegment );
+			self::finishSegment( $segments, $currentSegment );
 		}
 		return $segments;
 	}
@@ -149,13 +161,7 @@ class Segmenter {
 			}
 			$currentSegment['endOffset'] = $endOffset;
 			if ( $ended ) {
-				array_push( $segments, $currentSegment );
-				// Create a fresh segment to add following text to.
-				$currentSegment = [
-					'content' => [],
-					'startOffset' => null,
-					'endOffset' => null
-				];
+				self::finishSegment( $segments, $currentSegment );
 			}
 		}
 		return $endOffset;
@@ -252,5 +258,28 @@ class Segmenter {
 
 	private static function isUpper( $string ) {
 		return mb_strtoupper( $string ) == $string;
+	}
+
+	/**
+	 * Add the current segment to the array of segments.
+	 *
+	 * Creates a new, empty segment as the new current segment.
+	 *
+	 * @since 0.0.1
+	 * @param array $segments The array of segments to add the
+	 *  finished one to.
+	 * @param array $currentCegments The finished segment to add.
+	 */
+
+	private static function finishSegment( &$segments, &$currentSegment ) {
+		if ( count( $currentSegment['content'] ) ) {
+			array_push( $segments, $currentSegment );
+		}
+		// Create a fresh segment to add following text to.
+		$currentSegment = [
+			'content' => [],
+			'startOffset' => null,
+			'endOffset' => null
+		];
 	}
 }

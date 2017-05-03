@@ -255,29 +255,64 @@
 	} );
 
 	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
-		assert.expect( 1 );
-		mw.config.set(
-			'wgWikispeechHelpPage',
-			'Help'
-		);
+		assert.expect( 2 );
+		mw.config.set( 'wgArticlePath', '/wiki/$1' );
+		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
 		wikispeech.addControlPanel();
 
 		assert.strictEqual(
 			$( '#ext-wikispeech-control-panel .ext-wikispeech-help' ).length,
 			1
 		);
+		assert.strictEqual(
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-help' )
+				.parent()
+				.attr( 'href' ),
+			'/wiki/Help'
+		);
 	} );
 
 	QUnit.test( 'addControlPanel(): do not add help button if page is not set', function ( assert ) {
 		assert.expect( 1 );
-		mw.config.set(
-			'wgWikispeechHelpPage',
-			null
-		);
+		mw.config.set( 'wgWikispeechHelpPage', null );
+
 		wikispeech.addControlPanel();
 
 		assert.strictEqual(
 			$( '#ext-wikispeech-control-panel #ext-wikispeech-help' ).length,
+			0
+		);
+	} );
+
+	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
+		assert.expect( 2 );
+		mw.config.set( 'wgArticlePath', '/wiki/$1' );
+		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
+
+		wikispeech.addControlPanel();
+
+		assert.strictEqual(
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-feedback' )
+				.length,
+			1
+		);
+		assert.strictEqual(
+			$( '#ext-wikispeech-control-panel .ext-wikispeech-feedback' )
+				.parent()
+				.attr( 'href' ),
+			'/wiki/Feedback'
+		);
+	} );
+
+	QUnit.test( 'addControlPanel(): do not add feedback button if page is not set', function ( assert ) {
+		assert.expect( 1 );
+		mw.config.set( 'wgWikispeechFeedbackPage', null );
+
+		wikispeech.addControlPanel();
+
+		assert.strictEqual(
+			$( '#ext-wikispeech-control-panel #ext-wikispeech-feedback' )
+				.length,
 			0
 		);
 	} );

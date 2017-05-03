@@ -103,6 +103,7 @@
 			}
 		},
 		"WikispeechSkipBackRewindsThreshold": 3.0,
-		"WikispeechHelpPage": "Help:Wikispeech"
+		"WikispeechHelpPage": "Help:Wikispeech",
+		"WikispeechFeedbackPage": "Wikispeech feedback"
 	}
 }

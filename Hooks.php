@@ -122,6 +122,9 @@ class WikispeechHooks {
 		global $wgWikispeechHelpPage;
 		$vars['wgWikispeechHelpPage'] =
 			$wgWikispeechHelpPage;
+		global $wgWikispeechFeedbackPage;
+		$vars['wgWikispeechFeedbackPage'] =
+			$wgWikispeechFeedbackPage;
 		return true;
 	}
 }

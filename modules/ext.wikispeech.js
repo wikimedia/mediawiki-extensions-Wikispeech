@@ -13,9 +13,7 @@
 		 */
 
 		this.addControlPanel = function () {
-			var $controlPanel, helpPage, helpPagePath;
-
-			$controlPanel = $( '<div></div>' )
+			$( '<div></div>' )
 				.attr( 'id', 'ext-wikispeech-control-panel' )
 				.addClass( 'ext-wikispeech-control-panel' )
 				.appendTo( '#content' );
@@ -41,22 +39,24 @@
 				'ext-wikispeech-skip-ahead-sentence',
 				self.skipAheadUtterance
 			);
-			helpPage = mw.config.get( 'wgWikispeechHelpPage' );
-			if ( helpPage ) {
-				// Only add button for help page if it is specified in
-				// the config.
+			self.addLinkButton(
+				'ext-wikispeech-help',
+				'wgWikispeechHelpPage'
+			);
+			self.addLinkButton(
+				'ext-wikispeech-feedback',
+				'wgWikispeechFeedbackPage'
+			);
+			if (
+				$( '.ext-wikispeech-help, ext-wikispeech-feedback' ).length
+			) {
+				// Add divider if there are any non-control buttons.
 				$( '<span></span>' )
 					.addClass( 'ext-wikispeech-divider' )
-					.appendTo( $controlPanel );
-				helpPagePath = mw.config.get( 'wgArticlePath' )
-					.replace( '$1', helpPage );
-				$( '<a></a>' )
-					.attr( 'href', helpPagePath )
-					.append(
-						$( '<button></button>' )
-							.addClass( 'ext-wikispeech-help' )
-					)
-					.appendTo( '#ext-wikispeech-control-panel' );
+					.insertBefore(
+						$( '.ext-wikispeech-help, ext-wikispeech-feedback' )
+							.first()
+					);
 			}
 		};
 
@@ -127,6 +127,36 @@
 				.appendTo( '#ext-wikispeech-control-panel' );
 			$button.click( onClickFunction );
 			return $button;
+		};
+
+		/**
+		* Add a button that takes the user to another page.
+		*
+		* The button gets the link destination from a supplied
+		* config variable. If the variable isn't specified, the button
+		* isn't added.
+		*
+		* @param {string} cssClass The name of the CSS class to add to
+		*  the button.
+		* @param {string} configVariable The config variable to get
+		*  link destination from.
+		*/
+
+		this.addLinkButton = function ( cssClass, configVariable ) {
+			var page, pagePath;
+
+			page = mw.config.get( configVariable );
+			if ( page ) {
+				pagePath = mw.config.get( 'wgArticlePath' )
+					.replace( '$1', page );
+				$( '<a></a>' )
+					.attr( 'href', pagePath )
+					.append(
+						$( '<button></button>' )
+							.addClass( cssClass )
+					)
+					.appendTo( '#ext-wikispeech-control-panel' );
+			}
 		};
 
 		/**

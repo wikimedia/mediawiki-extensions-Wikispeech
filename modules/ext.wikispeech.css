@@ -42,6 +42,11 @@
 	content: '\f128';
 }
 
+.ext-wikispeech-feedback:after {
+	font-family: 'Fontawesome';
+	content: '\f075';
+}
+
 .ext-wikispeech-control-panel {
 	position: fixed;
 	left: 0;

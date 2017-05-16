@@ -69,10 +69,11 @@
 				self.skipBackToken
 			);
 			self.addButton(
-				'ext-wikispeech-play',
+				null,
 				self.playOrStop,
 				'ext-wikispeech-play-stop-button'
 			);
+			self.addStackToPlayStopButton();
 			self.addButton(
 				'ext-wikispeech-skip-ahead-word',
 				self.skipAheadToken
@@ -119,6 +120,53 @@
 				.appendTo( '#ext-wikispeech-control-panel' );
 			$button.click( onClickFunction );
 			return $button;
+		};
+
+		/**
+		 * Add the stack which contains the spinner to the playStopButton.
+		 */
+
+		this.addStackToPlayStopButton = function () {
+			this.addSpanToPlayStopButton(
+				'ext-wikispeech-play-stop-stack', 'fa-stack' );
+			this.addElementToPlayStopButtonStack(
+				'ext-wikispeech-play-stop',
+				'fa fa-stack-2x ext-wikispeech-play' );
+			this.addElementToPlayStopButtonStack(
+				'ext-wikispeech-loader',
+				'fa fa-stack-2x fa-spin ext-wikispeech-spinner' );
+			$( '#ext-wikispeech-play-stop-stack' ).css( 'font-size', '50%' );
+			$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+		};
+
+		/**
+		 * Add a span to the play button.
+		 *
+		 * @param id The id of the item.
+		 * @param cssClass The name of the CSS class to add the item.
+		 */
+
+		this.addSpanToPlayStopButton = function ( id, cssClass ) {
+			var $span, $button;
+			$button = $( '#ext-wikispeech-play-stop-button' );
+			$span = $( '<span></span>' )
+				.attr( 'id', id )
+				.addClass( cssClass );
+			$button.append( $span );
+		};
+
+		/**
+		 * Add an element to the stack on the playStop button.
+		 *
+		 * @param id id The id of the item.
+		 * @param cssClass The name of the CSS class to add the item.
+		 */
+
+		this.addElementToPlayStopButtonStack = function ( id, cssClass ) {
+			var $i = $( '<i></i>' )
+				.attr( 'id', id )
+				.addClass( cssClass );
+			$( '#ext-wikispeech-play-stop-stack' ).append( $i );
 		};
 
 		/**
@@ -179,11 +227,16 @@
 		 */
 
 		this.stop = function () {
-			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
+			var $audio, $playStopButton;
+			$playStopButton = $( '#ext-wikispeech-play-stop' );
+			$audio = $( currentUtterance.audio );
+
 			if ( self.isPlaying() ) {
 				self.stopUtterance( currentUtterance );
 			}
 			currentUtterance = null;
+			$audio.off( 'canplay' );
+			$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
 			$playStopButton.removeClass( 'ext-wikispeech-stop' );
 			$playStopButton.addClass( 'ext-wikispeech-play' );
 		};
@@ -193,7 +246,7 @@
 		 */
 
 		this.play = function () {
-			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
+			var $playStopButton = $( '#ext-wikispeech-play-stop' );
 			self.playUtterance( self.utterances[ 0 ] );
 			$playStopButton.removeClass( 'ext-wikispeech-play' );
 			$playStopButton.addClass( 'ext-wikispeech-stop' );
@@ -209,12 +262,48 @@
 		 */
 
 		this.playUtterance = function ( utterance ) {
+			var $audio;
 			if ( self.isPlaying() ) {
 				self.stopUtterance( currentUtterance );
 			}
 			currentUtterance = utterance;
+			$audio = $( currentUtterance.audio );
 			utterance.audio.play();
 			mw.wikispeech.highlighter.highlightUtterance( utterance );
+			if (  self.audioIsReady( $audio ) ) {
+				$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+			} else {
+				self.addCanPlayListener( $audio );
+				$( '#ext-wikispeech-loader' ).css( 'visibility', 'visible' );
+			}
+		};
+
+		/**
+		 * Check if the current audio is ready to play.
+		 *
+		 * The audio is deemed ready to play as soon as any playable data is
+		 * available.
+		 *
+		 * @param {jQuery} $audio The audio element to test.
+		 * @return {boolean} True if the audio is ready to play else false.
+		 */
+
+		this.audioIsReady = function ( $audio ) {
+			var $readyState = $audio.prop( 'readyState' );
+			return $readyState >= 2;
+		};
+
+		/**
+		 * Add canplay listener for the audio to hide spinner.
+		 * Canplaythrough will be caught implicitly as it occurs after canplay.
+		 *
+		 * @param {jQuery} $audioElement Audio element to which the listener is added.
+		 */
+
+		this.addCanPlayListener = function ( $audioElement ) {
+			$audioElement.on( 'canplay', function () {
+				$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+			} );
 		};
 
 		/**

@@ -267,7 +267,8 @@
 	} );
 
 	QUnit.test( 'addControlPanel()', function ( assert ) {
-		assert.expect( 5 );
+		assert.expect( 6 );
+		sinon.stub( mw.wikispeech.wikispeech, 'addStackToPlayStopButton' );
 
 		mw.wikispeech.wikispeech.addControlPanel();
 
@@ -290,6 +291,10 @@
 		assert.strictEqual(
 			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-back-word' ).length,
 			1
+		);
+		assert.strictEqual(
+			mw.wikispeech.wikispeech.addStackToPlayStopButton.called,
+			true
 		);
 	} );
 
@@ -480,9 +485,10 @@
 		return event;
 	}
 
-	QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
-		testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
-	} );
+	// TODO: T174799
+	// QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
+	// 	testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
+	// } );
 
 	QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipBackUtterance', 37, 'c' );
@@ -511,12 +517,12 @@
 			0.0
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-play-stop-button' )
+			$( '#ext-wikispeech-play-stop' )
 				.hasClass( 'ext-wikispeech-play' ),
 			true
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-play-stop-button' )
+			$( '#ext-wikispeech-play-stop' )
 				.hasClass( 'ext-wikispeech-stop' ),
 			false
 		);
@@ -532,12 +538,12 @@
 
 		assert.strictEqual( firstUtterance.audio.paused, false );
 		assert.strictEqual(
-			$( '#ext-wikispeech-play-stop-button' )
+			$( '#ext-wikispeech-play-stop' )
 				.hasClass( 'ext-wikispeech-stop' ),
 			true
 		);
 		assert.strictEqual(
-			$( '#ext-wikispeech-play-stop-button' )
+			$( '#ext-wikispeech-play-stop' )
 				.hasClass( 'ext-wikispeech-play' ),
 			false
 		);
@@ -1303,4 +1309,56 @@
 			0.0
 		);
 	} );
+
+	QUnit.test( 'addControlPanel(): the stack is added to the play-stop button and spinner is initially hidden ', function ( assert ) {
+		assert.expect( 2 );
+		mw.wikispeech.wikispeech.addControlPanel();
+		assert.ok( $( '#ext-wikispeech-play-stop-button' ).has(
+			$( '#ext-wikispeech-play-stop-stack' ) ) );
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'hidden' );
+	} );
+
+	function setUpSpinner( ready ) {
+		sinon.stub( mw.wikispeech.wikispeech, 'audioIsReady', function () { return ready; } );
+		mw.wikispeech.wikispeech.addControlPanel();
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		mw.wikispeech.wikispeech.playUtterance( utterances[ 0 ] );
+	}
+
+	QUnit.test( 'playUtterance(): audio element is not ready and the spinner is displayed', function ( assert ) {
+		var $audio;
+		$audio = utterances[ 0 ].audio;
+		assert.expect( 1 );
+		setUpSpinner( false );
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'visible' );
+	} );
+
+	QUnit.test( 'playUtterance(): audio element is ready and the spinner is not displayed', function ( assert ) {
+		assert.expect( 1 );
+		setUpSpinner( true );
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'hidden' );
+	} );
+
+	QUnit.test( 'playUtterance(): when loading audio starts playing, the spinner is turned off', function ( assert ) {
+		assert.expect( 2 );
+		setUpSpinner( false );
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'visible' );
+		$( utterances[ 0 ].audio ).trigger( 'canplay' );
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'hidden' );
+	} );
+
+	QUnit.test( 'stop(): stopping hides spinner and turns listeners off', function ( assert ) {
+		assert.expect( 3 );
+		setUpSpinner( false );
+
+		// stop hides the spinner
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'visible' );
+		mw.wikispeech.wikispeech.stop();
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'hidden' );
+		// stop turns listeners off
+		$( '#ext-wikispeech-loader' ).css( 'visibility', 'visible' );
+		$( utterances[ 0 ].audio ).trigger( 'canplay' );
+		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'visible' );
+	} );
+
 } )( mediaWiki, jQuery );

@@ -105,6 +105,7 @@
 		},
 		"WikispeechSkipBackRewindsThreshold": 3.0,
 		"WikispeechHelpPage": "Help:Wikispeech",
-		"WikispeechFeedbackPage": "Wikispeech feedback"
+		"WikispeechFeedbackPage": "Wikispeech feedback",
+		"WikispeechContentWrapperClass": "mw-parser-output"
 	}
 }

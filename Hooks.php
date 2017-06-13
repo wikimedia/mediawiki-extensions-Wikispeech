@@ -133,6 +133,9 @@ class WikispeechHooks {
 		global $wgWikispeechFeedbackPage;
 		$vars['wgWikispeechFeedbackPage'] =
 			$wgWikispeechFeedbackPage;
+		global $wgWikispeechContentWrapperClass;
+		$vars['wgWikispeechContentWrapperClass'] =
+			$wgWikispeechContentWrapperClass;
 		return true;
 	}
 }

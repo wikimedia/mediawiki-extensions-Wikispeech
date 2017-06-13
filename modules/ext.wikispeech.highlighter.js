@@ -64,14 +64,16 @@
 		 */
 
 		this.getNodeForTextElement = function ( textElement ) {
-			var path, node, result;
+			var path, node, result, contentWrapperSelector;
 
 			path = textElement.getAttribute( 'path' );
+			contentWrapperSelector =
+				'.' + mw.config.get( 'wgWikispeechContentWrapperClass' );
 			// The path should be unambiguous, so just get the first
 			// matching node.
 			result = document.evaluate(
 				path,
-				$( '#mw-content-text' ).get( 0 ),
+				$( contentWrapperSelector ).get( 0 ),
 				null,
 				XPathResult.FIRST_ORDERED_NODE_TYPE,
 				null

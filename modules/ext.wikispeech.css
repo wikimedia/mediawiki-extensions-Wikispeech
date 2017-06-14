@@ -58,6 +58,9 @@
 }
 
 .ext-wikispeech-highlight-sentence {
-	background-color: rgb( 0, 200, 0 );
-	background-color: rgba( 0, 200, 0, 0.5 );
+	background-color: rgb( 200, 170, 255 );
+}
+
+.ext-wikispeech-highlight-word {
+	background-color: rgb( 255, 200, 140 );
 }

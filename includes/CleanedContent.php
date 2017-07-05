@@ -40,7 +40,6 @@ class CleanedText {
 	 * @param string $string The string representation of this text.
 	 * @param array $path The path to the text node this was created from.
 	 */
-
 	function __construct( $string, $path='' ) {
 		$this->string = $string;
 		$this->path = $path;
@@ -55,7 +54,6 @@ class CleanedText {
 	 * @param DOMDocument $dom The DOM Document used to create the element.
 	 * @return DOMElement The created text element.
 	 */
-
 	function toElement( $dom ) {
 		$element = $dom->createElement( 'text', $this->string );
 		$element->setAttribute( 'path', $this->path );

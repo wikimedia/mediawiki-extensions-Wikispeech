@@ -23,7 +23,6 @@ class HtmlGenerator {
 	 * @return string An HTML string containing the <utterance> tags,
 	 *  wrapped in an <utterances> tag.
 	 */
-
 	public static function createUtterancesHtml( $segments ) {
 		$dom = new DOMDocument();
 		$utterancesElement = self::createUtterancesElement( $dom, $segments );
@@ -42,7 +41,6 @@ class HtmlGenerator {
 	 *  from.
 	 * @return DOMElement The utterances element.
 	 */
-
 	private static function createUtterancesElement( $dom, $segments ) {
 		if ( count( $segments ) ) {
 			$utterancesElement = $dom->createElement( 'utterances' );
@@ -90,7 +88,6 @@ class HtmlGenerator {
 	 *  order.
 	 * @return DOMElement The resulting utterance element.
 	 */
-
 	private static function createUtteranceElement( $dom, $segment, $index ) {
 		$utteranceElement = $dom->createElement( 'utterance' );
 		$utteranceElement->setAttribute( 'id', "utterance-$index" );
@@ -119,7 +116,6 @@ class HtmlGenerator {
 	 * @param array $content An array of `CleanedText`s.
 	 * @return DOMNode A content element.
 	 */
-
 	private static function createContentElement( $dom, $content ) {
 		$contentElement = $dom->createElement( 'content' );
 		foreach ( $content as $item ) {

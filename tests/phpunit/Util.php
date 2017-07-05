@@ -19,7 +19,6 @@ class Util {
 	 * @param string $function The name of the function to call
 	 * @return Whatever $function returns
 	 */
-
 	public static function call( $class, $function ) {
 		$reflection = new ReflectionMethod( $class, $function );
 		$reflection->setAccessible( true );

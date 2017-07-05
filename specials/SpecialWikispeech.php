@@ -22,6 +22,11 @@ class SpecialWikispeech extends SpecialPage {
 		$out->addWikiMsg( 'special-wikispeech-intro' );
 	}
 
+	/**
+	 * @see SpecialPage::getGroupName
+	 *
+	 * @return string
+	 */
 	protected function getGroupName() {
 		return 'other';
 	}

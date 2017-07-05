@@ -10,14 +10,13 @@ class WikispeechHooks {
 
 	/**
 	 * Conditionally register the unit testing module for the ext.wikispeech
-	 * module only if that module is loaded
+	 * module only if that module is loaded.
 	 *
-	 * @param array $testModules The array of registered test modules
-	 * @param ResourceLoader $resourceLoader The reference to the resource
+	 * @param array &$testModules The array of registered test modules
+	 * @param ResourceLoader &$resourceLoader The reference to the resource
 	 *  loader
 	 * @return true
 	 */
-
 	public static function onResourceLoaderTestModules(
 		array &$testModules,
 		ResourceLoader &$resourceLoader
@@ -46,11 +45,10 @@ class WikispeechHooks {
 	 * Adds Wikispeech elements to the HTML, if the page is in the main
 	 * namespace.
 	 *
-	 * @param $parser Parser object. Can be used to manually parse a portion
-	 *  of wiki text from the $text.
-	 * @param $text Represents the text for page.
+	 * @param Parser &$parser Can be used to manually parse a portion of wiki
+	 *  text from the $text.
+	 * @param string &$text Represents the text for page.
 	 */
-
 	public static function onParserAfterTidy( &$parser, &$text ) {
 		if ( self::isValidNamespace( $parser->getTitle()->getNamespace() ) &&
 			 $text != ""
@@ -93,7 +91,6 @@ class WikispeechHooks {
 	 * @return bool true if the namespace id matches one defined in
 	 *  $wgWikispeechNamespaces, else false.
 	 */
-
 	private static function isValidNamespace( $namespace ) {
 		global $wgWikispeechNamespaces;
 		foreach ( $wgWikispeechNamespaces as $namespaceId ) {
@@ -110,11 +107,10 @@ class WikispeechHooks {
 	 *
 	 * Enables JavaScript.
 	 *
-	 * @param OutputPage $out The OutputPage object.
-	 * @param Skin $skin Skin object that will be used to generate the page,
+	 * @param OutputPage &$out The OutputPage object.
+	 * @param Skin &$skin Skin object that will be used to generate the page,
 	 *  added in 1.13.
 	 */
-
 	public static function onBeforePageDisplay(
 		OutputPage &$out,
 		Skin &$skin
@@ -125,6 +121,13 @@ class WikispeechHooks {
 		] );
 	}
 
+	/**
+	 * Conditionally register static configuration variables for the
+	 * ext.wikispeech module only if that module is loaded.
+	 *
+	 * @param array &$vars The array of static configuration variables.
+	 * @return true
+	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgWikispeechServerUrl;
 		$vars['wgWikispeechServerUrl'] = $wgWikispeechServerUrl;

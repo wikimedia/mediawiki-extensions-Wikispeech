@@ -13,7 +13,6 @@ class ApiWikispeech extends ApiBase {
 	 *
 	 * @since 0.0.1
 	 */
-
 	function execute() {
 		$parameters = $this->extractRequestParams();
 		if ( empty( $parameters['output'] ) ) {
@@ -32,7 +31,7 @@ class ApiWikispeech extends ApiBase {
 	 * Process HTML and return it as original, cleaned and/or segmented.
 	 *
 	 * @since 0.0.1
-	 * @param string $html The HTML string to process.
+	 * @param string $pageContent The HTML string to process.
 	 * @param array $outputFormats Specifies what output formats to
 	 *  return. Can be any combination of: "originalcontent",
 	 *  "cleanedtext" and "segments".
@@ -45,7 +44,6 @@ class ApiWikispeech extends ApiBase {
 	 *  * "cleanedtext": The cleaned HTML, as a string.
 	 *  * "segments": Cleaned and segmented HTML as an array.
 	 */
-
 	public function processPageContent(
 		$pageContent,
 		$outputFormats,
@@ -99,7 +97,6 @@ class ApiWikispeech extends ApiBase {
 	 * @return string The parsed content for the page given in the
 	 *  request to the Wikispeech API.
 	 */
-
 	private function getPageContent( $pageTitle ) {
 		// Get and validate Title
 		$title = Title::newFromText( $pageTitle );
@@ -131,7 +128,6 @@ class ApiWikispeech extends ApiBase {
 	 * @since 0.0.1
 	 * @return array
 	 */
-
 	public function getAllowedParams() {
 		global $wgWikispeechRemoveTags;
 		global $wgWikispeechSegmentBreakingTags;
@@ -171,7 +167,6 @@ class ApiWikispeech extends ApiBase {
 	 * @since 0.0.1
 	 * @return array
 	 */
-
 	public function getExamplesMessages() {
 		return [
 		// @codingStandardsIgnoreStart

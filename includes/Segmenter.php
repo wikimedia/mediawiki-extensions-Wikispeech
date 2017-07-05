@@ -61,7 +61,6 @@ class Segmenter {
 	 * @return array An array of segments, each containing the
 	 *  `CleanedText's in that segment.
 	 */
-
 	public function segmentSentences( $cleanedContent ) {
 		foreach ( $cleanedContent as $item ) {
 			if ( $item instanceof CleanedText ) {
@@ -87,7 +86,6 @@ class Segmenter {
 	 * @since 0.0.1
 	 * @param CleanedText $text The text to segment.
 	 */
-
 	private function addSegments( $text ) {
 		$nextStartOffset = 0;
 		do {
@@ -116,7 +114,6 @@ class Segmenter {
 	 *   sentence. If the sentence didn't end yet, this is the last
 	 *   character of $text.
 	 */
-
 	private function addSegment( $text, $startOffset=0 ) {
 		if ( $this->currentSegment['startOffset'] === null ) {
 			// Move the start offset ahead by the number of leading
@@ -173,7 +170,6 @@ class Segmenter {
 	 *  for.
 	 * @return int The number of whitespaces at the start of $string.
 	 */
-
 	private static function getLeadingWhitespacesLength( $string ) {
 		$trimmedString = ltrim( $string );
 		return mb_strlen( $string ) - mb_strlen( $trimmedString );
@@ -188,7 +184,6 @@ class Segmenter {
 	 * @return int The offset of the first sentence final character
 	 *  that was found, if any, else null.
 	 */
-
 	private static function getSentenceFinalOffset( $string, $offset ) {
 		// For every potentially sentence final character after the
 		// first one, we want to start looking from the character
@@ -221,7 +216,6 @@ class Segmenter {
 	 * @param int $index The the index in $string of the character to check.
 	 * @return bool True if the character is sentence final, else false.
 	 */
-
 	private static function isSentenceFinal( $string, $index ) {
 		$character = mb_substr( $string, $index, 1 );
 		$nextCharacter = null;
@@ -253,7 +247,6 @@ class Segmenter {
 	 * @param string $string The string to test.
 	 * @return bool true if the entire string is upper case, else false.
 	 */
-
 	private static function isUpper( $string ) {
 		return mb_strtoupper( $string ) == $string;
 	}
@@ -268,7 +261,6 @@ class Segmenter {
 	 *  finished one to.
 	 * @param array $currentCegments The finished segment to add.
 	 */
-
 	private function finishSegment() {
 		if ( count( $this->currentSegment['content'] ) ) {
 			array_push( $this->segments, $this->currentSegment );

@@ -38,6 +38,12 @@ class Cleaner {
 
 	private $cleanedContent;
 
+	/**
+	 * @param array|null $removeTags An array of tags that should be removed
+	 *  completely during cleaning.
+	 * @param array|null $segmentBreakingTags An array of `CleanedText`s and
+	 *  `SegmentBreak`s.
+	 */
 	function __construct( $removeTags, $segmentBreakingTags ) {
 		if ( $removeTags == null ) {
 			$removeTags = [];
@@ -60,7 +66,6 @@ class Cleaner {
 	 * @return array An array of `CleanedText`s and `SegmentBreak`s
 	 *  representing text nodes.
 	 */
-
 	public function cleanHtml( $markedUpText ) {
 		$dom = self::createDomDocument( $markedUpText );
 		$xpath = new DOMXPath( $dom );
@@ -93,7 +98,6 @@ class Cleaner {
 	 *  DOMDocument.
 	 * @return DOMDocument The created DOMDocument.
 	 */
-
 	private static function createDomDocument( $markedUpText ) {
 		$dom = new DOMDocument();
 		// Add encoding information and wrap the input text in a dummy
@@ -122,7 +126,6 @@ class Cleaner {
 	 * @since 0.0.1
 	 * @param DOMNode $node The top node to add from.
 	 */
-
 	private function addContent( $node ) {
 		if ( !$node instanceof DOMComment && !$this->matchesRemove( $node ) ) {
 			foreach ( $node->childNodes as $child ) {
@@ -178,7 +181,6 @@ class Cleaner {
 	 * @return bool true if the node match removal criteria, otherwise
 	 *  false.
 	 */
-
 	private function matchesRemove( $node ) {
 		if ( !array_key_exists( $node->nodeName, $this->removeTags ) ) {
 			// The node name isn't found in the removal list.
@@ -216,7 +218,6 @@ class Cleaner {
 	 * @return bool true if the node's class attribute contain
 	 *  $className, otherwise false.
 	 */
-
 	private static function nodeHasClass( $node, $className ) {
 		$classNode = $node->attributes->getNamedItem( 'class' );
 		if ( $classNode == null ) {
@@ -237,7 +238,6 @@ class Cleaner {
 	 * @param array $array The array to get the last element from.
 	 * @return The last element in the array, null if array is empty.
 	 */
-
 	private static function lastElement( $array ) {
 		if ( !count( $array ) ) {
 			return null;

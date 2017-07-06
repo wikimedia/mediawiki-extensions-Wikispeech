@@ -19,6 +19,7 @@
 		"SpecialWikispeech": "specials/SpecialWikispeech.php",
 		"WikispeechHooks": "Hooks.php",
 		"CleanedText": "includes/CleanedContent.php",
+		"SegmentBreak": "includes/CleanedContent.php",
 		"Cleaner": "includes/Cleaner.php",
 		"HtmlGenerator": "includes/HtmlGenerator.php",
 		"Segmenter": "includes/Segmenter.php"
@@ -76,10 +77,19 @@
 			"toc": true,
 			"table": true,
 			"sup": { "class": "reference" },
-			"div": { "class": "thumb" },
-			"ul": true,
-			"ol": true
+			"div": { "class": "thumb" }
 		},
+		"WikispeechSegmentBreakingTags": [
+			"h1",
+			"h2",
+			"h3",
+			"h4",
+			"h5",
+			"h6",
+			"p",
+			"br",
+			"li"
+		],
 		"WikispeechNamespaces": [ "NS_MAIN" ],
 		"WikispeechKeyboardShortcuts": {
 			"playStop": {

@@ -20,6 +20,11 @@ class CleanerTest extends MediaWikiTestCase {
 			'h2' => false,
 			'del' => true
 		];
+		global $wgWikispeechSegmentBreakingTags;
+		$wgWikispeechSegmentBreakingTags = [
+			'hr',
+			'a'
+		];
 	}
 
 	public function testCleanTags() {
@@ -246,6 +251,90 @@ class CleanerTest extends MediaWikiTestCase {
 			new CleanedText( 'Contents' )
 		];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+	}
+
+	public function testAddSegmentBreaksForTags() {
+		$markedUpText =
+			'prefix<a>content</a>suffix';
+		$expectedCleanedContents = [
+			new CleanedText( 'prefix' ),
+			new SegmentBreak(),
+			new CleanedText( 'content' ),
+			new SegmentBreak(),
+			new CleanedText( 'suffix' )
+		];
+		$this->assertContentsEqual(
+			$expectedCleanedContents,
+			Cleaner::cleanHtml( $markedUpText )
+		);
+	}
+
+	public function testAddSegmentBreaksForEmptyTags() {
+		$markedUpText =
+			'before<hr />after';
+		$expectedCleanedContents = [
+			new CleanedText( 'before' ),
+			new SegmentBreak(),
+			new CleanedText( 'after' )
+		];
+		$this->assertContentsEqual(
+			$expectedCleanedContents,
+			Cleaner::cleanHtml( $markedUpText )
+		);
+	}
+
+	public function testAddSegmentBreaksForNestedTags() {
+		$markedUpText =
+			'<a>before<hr />after</a>';
+		$expectedCleanedContents = [
+			new CleanedText( 'before' ),
+			new SegmentBreak(),
+			new CleanedText( 'after' )
+		];
+		$this->assertContentsEqual(
+			$expectedCleanedContents,
+			Cleaner::cleanHtml( $markedUpText )
+		);
+	}
+
+	public function testAddSegmentBreaksAfterNestedTags() {
+		$markedUpText =
+			'<a><hr />inside</a>after';
+		$expectedCleanedContents = [
+			new CleanedText( 'inside' ),
+			new SegmentBreak(),
+			new CleanedText( 'after' )
+		];
+		$this->assertContentsEqual(
+			$expectedCleanedContents,
+			Cleaner::cleanHtml( $markedUpText )
+		);
+	}
+
+	public function testDontAddMultipleConsecutiveSegmentBreaks() {
+		$markedUpText =
+			'before<hr /><hr />after';
+		$expectedCleanedContents = [
+			new CleanedText( 'before' ),
+			new SegmentBreak(),
+			new CleanedText( 'after' ),
+		];
+		$this->assertContentsEqual(
+			$expectedCleanedContents,
+			Cleaner::cleanHtml( $markedUpText )
+		);
+	}
+
+	public function testDontAddSegmentBreaksAtStartOrEnd() {
+		$markedUpText =
+			'<a>content</a>';
+		$expectedCleanedContents = [
+			new CleanedText( 'content' ),
+		];
+		$this->assertContentsEqual(
+			$expectedCleanedContents,
+			Cleaner::cleanHtml( $markedUpText )
+		);
 	}
 
 	public function testHandleMultipleClasses() {

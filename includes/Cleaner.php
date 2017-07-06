@@ -6,6 +6,13 @@
  * @license GPL-2.0+
  */
 
+/**
+ * Used for cleaning text with HTML markup. The cleaned text is used
+ * as input for `Segmenter`.
+ *
+ * @since 0.0.1
+ */
+
 class Cleaner {
 
 	/**
@@ -25,12 +32,23 @@ class Cleaner {
 		// Only add elements below the dummy element. These are the
 		// elements from the original HTML.
 		$top = $xpath->evaluate( '/meta/dummy' )->item( 0 );
-		$cleanedContents = [];
+		$cleanedContent = [];
 		self::addContent(
-			$cleanedContents,
+			$cleanedContent,
 			$top
 		);
-		return $cleanedContents;
+		// Remove any segment break at the start or end of the array,
+		// since they won't do anything.
+		if (
+			count( $cleanedContent ) &&
+			$cleanedContent[0] instanceof SegmentBreak
+		) {
+			array_shift( $cleanedContent );
+		}
+		if ( self::lastElement( $cleanedContent ) instanceof SegmentBreak ) {
+			array_pop( $cleanedContent );
+		}
+		return $cleanedContent;
 	}
 
 	/**
@@ -60,12 +78,14 @@ class Cleaner {
 	}
 
 	/**
-	 * Recursively add content as `CleanedText`s.
+	 * Recursively add items to the cleaned content.
 	 *
-	 * Goes through all the child nodes of $node and adds their content text.
+	 * Goes through all the child nodes of $node and adds their
+	 * content text. Adds segment breaks for appropriate tags.
 	 *
 	 * @since 0.0.1
-	 * @param array $content The resulting array of `CleanedText`s.
+	 * @param array $content The resulting array of `CleanedText`s
+	 *  and `SegmentBreak`s.
 	 * @param DOMNode $node The top node to add from.
 	 */
 
@@ -73,11 +93,24 @@ class Cleaner {
 		&$content,
 		$node
 	) {
+		global $wgWikispeechSegmentBreakingTags;
 		if ( !self::matchesRemove( $node ) ) {
 			foreach ( $node->childNodes as $child ) {
+				if (
+					!self::lastElement( $content ) instanceof SegmentBreak &&
+					in_array(
+						$child->nodeName,
+						$wgWikispeechSegmentBreakingTags
+					)
+				) {
+					// Add segment breaks for start tags specified in
+					// the config, unless the previous item is a
+					// break.
+					array_push( $content, new SegmentBreak() );
+				}
 				if ( $child->nodeType == XML_TEXT_NODE ) {
-					// Remove the path to the dummy node and instead add
-					// "." to match when used with context.
+					// Remove the path to the dummy node and instead
+					// add "." to match when used with context.
 					$path = preg_replace(
 						'!^/meta/dummy!',
 						'.',
@@ -90,6 +123,17 @@ class Cleaner {
 						$content,
 						$child
 					);
+				}
+				if (
+					!self::lastElement( $content ) instanceof SegmentBreak &&
+					in_array(
+						$child->nodeName,
+						$wgWikispeechSegmentBreakingTags
+					)
+				) {
+					// Add segment breaks for end tags specified in
+					// the config.
+					array_push( $content, new SegmentBreak() );
 				}
 			}
 		}
@@ -150,5 +194,21 @@ class Cleaner {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Get the last element in an array.
+	 *
+	 * @since 0.0.1
+	 * @param array $array The array to get the last element from.
+	 * @return The last element in the array, null if array is empty.
+	 */
+
+	private static function lastElement( $array ) {
+		if ( !count( $array ) ) {
+			return null;
+		} else {
+			return $array[count( $array ) - 1];
+		}
 	}
 }

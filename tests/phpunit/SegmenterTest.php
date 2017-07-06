@@ -192,6 +192,25 @@ class SegmenterTest extends MediaWikiTestCase {
 		);
 	}
 
+	public function testDontCreateEmptyTextForWhitespacesBetweenSegmentBreakingTags() {
+		$cleanedContent = [
+			new CleanedText( 'Text one' ),
+			new SegmentBreak(),
+			new CleanedText( ' ' ),
+			new SegmentBreak(),
+			new CleanedText( 'Text two' )
+		];
+		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$this->assertEquals(
+			'Text one',
+			$segments[0]['content'][0]->string
+		);
+		$this->assertEquals(
+			'Text two',
+			$segments[1]['content'][0]->string
+		);
+	}
+
 	public function testRemoveTextWithOnlyWhitespacesOutsideSegments() {
 		$cleanedContent = [
 			new CleanedText( ' ' ),
@@ -233,6 +252,29 @@ class SegmenterTest extends MediaWikiTestCase {
 		$this->assertEquals(
 			'Sentence two.',
 			$segments[1]['content'][0]->string
+		);
+	}
+
+	public function testSegmentSentencesByTags() {
+		$cleanedContent = [
+			new CleanedText( 'Header' ),
+			new SegmentBreak(),
+			new CleanedText( 'Paragraph one' ),
+			new SegmentBreak(),
+			new CleanedText( 'Paragraph two' )
+		];
+		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$this->assertEquals(
+			'Header',
+			$segments[0]['content'][0]->string
+		);
+		$this->assertEquals(
+			'Paragraph one',
+			$segments[1]['content'][0]->string
+		);
+		$this->assertEquals(
+			'Paragraph two',
+			$segments[2]['content'][0]->string
 		);
 	}
 }

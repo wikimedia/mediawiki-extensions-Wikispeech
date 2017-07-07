@@ -10,6 +10,11 @@ require_once __DIR__ . '/../../includes/Segmenter.php';
 require_once 'Util.php';
 
 class SegmenterTest extends MediaWikiTestCase {
+	protected function setUp() {
+		parent::setUp();
+		$this->segmenter = new Segmenter();
+	}
+
 	public function testSegmentSentences() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence 1. Sentence 2. Sentence 3.' )
@@ -31,7 +36,7 @@ class SegmenterTest extends MediaWikiTestCase {
 				'content' => [ new CleanedText( 'Sentence 3.' ) ]
 			]
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals( $expectedSegments, $segments );
 	}
 
@@ -39,7 +44,7 @@ class SegmenterTest extends MediaWikiTestCase {
 		$cleanedContent = [
 			new CleanedText( 'This is... one sentence.' )
 			];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( 'This is... one sentence.' ) ],
 			$segments[0]['content']
@@ -48,7 +53,7 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testDontSegmentByAbbreviations() {
 		$cleanedContent = [ new CleanedText( 'One sentence i.e. one segment.' ) ];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( 'One sentence i.e. one segment.' ) ],
 			$segments[0]['content']
@@ -57,7 +62,7 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testDontSegmentByDotDirectlyFollowedByComma() {
 		$cleanedContent = [ new CleanedText( 'As with etc., jr. and friends.' ) ];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( 'As with etc., jr. and friends.' ) ],
 			$segments[0]['content']
@@ -66,7 +71,7 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testDontSegmentByDecimalDot() {
 		$cleanedContent = [ new CleanedText( 'In numbers like 2.9.' ) ];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( 'In numbers like 2.9.' ) ],
 			$segments[0]['content']
@@ -75,7 +80,7 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testKeepLastSegmentEvenIfNotEndingWithSentenceFinalCharacter() {
 		$cleanedContent = [ new CleanedText( 'Sentence. No sentence final' ) ];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( 'No sentence final' ) ],
 			$segments[1]['content']
@@ -89,7 +94,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( 'by' ),
 			new CleanedText( ' tags.' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			0,
 			$segments[0]['startOffset']
@@ -117,7 +122,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( 'First sentence. Split' ),
 			new CleanedText( 'sentence. And other sentence.' ),
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			16,
 			$segments[1]['startOffset']
@@ -130,7 +135,7 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testTextOffset() {
 		$cleanedContent = [ new CleanedText( 'Sentence.' ) ];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals( 0, $segments[0]['startOffset'] );
 		$this->assertEquals( 8, $segments[0]['endOffset'] );
 	}
@@ -141,7 +146,7 @@ class SegmenterTest extends MediaWikiTestCase {
 				'Normal sentence. Utterance with å. Another normal sentence.'
 			)
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Utterance with å.',
 			$segments[1]['content'][0]->string
@@ -161,7 +166,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( 'Sentence one' ),
 			new CleanedText( '. Sentence two.' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Sentence one',
 			$segments[0]['content'][0]->string
@@ -181,7 +186,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( 'Sentence 1. ' ),
 			new CleanedText( 'Sentence 2.' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Sentence 1.',
 			$segments[0]['content'][0]->string
@@ -200,7 +205,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new SegmentBreak(),
 			new CleanedText( 'Text two' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Text one',
 			$segments[0]['content'][0]->string
@@ -216,7 +221,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( ' ' ),
 			new CleanedText( 'Sentence 1.' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Sentence 1.',
 			$segments[0]['content'][0]->string
@@ -225,7 +230,7 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	public function testRemoveLeadingAndTrailingWhitespaces() {
 		$cleanedContent = [ new CleanedText( ' Sentence. ' ) ];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Sentence.',
 			$segments[0]['content'][0]->string
@@ -234,13 +239,29 @@ class SegmenterTest extends MediaWikiTestCase {
 		$this->assertEquals( 9, $segments[0]['endOffset'] );
 	}
 
+	public function testDontAddOnlyNewlineItem() {
+		$cleanedContent = [
+			new CleanedText( 'text' ),
+			new CleanedText( "\n" )
+		];
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
+		$this->assertEquals(
+			1,
+			count( $segments[0]['content'] )
+		);
+		$this->assertEquals(
+			'text',
+			$segments[0]['content'][0]->string
+		);
+	}
+
 	public function testLastTextIsOnlySentenceFinalCharacter() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence one' ),
 			new CleanedText( '. ' ),
 			new CleanedText( 'Sentence two.' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Sentence one',
 			$segments[0]['content'][0]->string
@@ -263,7 +284,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new SegmentBreak(),
 			new CleanedText( 'Paragraph two' )
 		];
-		$segments = Segmenter::segmentSentences( $cleanedContent );
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			'Header',
 			$segments[0]['content'][0]->string

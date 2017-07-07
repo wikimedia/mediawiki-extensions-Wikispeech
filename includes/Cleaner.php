@@ -14,6 +14,40 @@
  */
 
 class Cleaner {
+	/**
+	 * An array of tags that should be removed completely during cleaning.
+	 *
+	 * @var array $removeTags
+	 */
+
+	private $removeTags;
+
+	/**
+	 * An array of tags that should add a segment break during cleaning.
+	 *
+	 * @var array $segmentBreakingTags
+	 */
+
+	private $segmentBreakingTags;
+
+	/**
+	 * An array of `CleanedText`s and `SegmentBreak`s.
+	 *
+	 * @var array $cleanedContent
+	 */
+
+	private $cleanedContent;
+
+	function __construct( $removeTags, $segmentBreakingTags ) {
+		if ( $removeTags == null ) {
+			$removeTags = [];
+		}
+		if ( $segmentBreakingTags == null ) {
+			$segmentBreakingTags = [];
+		}
+		$this->removeTags = $removeTags;
+		$this->segmentBreakingTags = $segmentBreakingTags;
+	}
 
 	/**
 	 * Clean HTML tags from a string.
@@ -23,32 +57,30 @@ class Cleaner {
 	 * @since 0.0.1
 	 * @param string $markedUpText Input text that may contain HTML
 	 *  tags.
-	 * @return array An array of `CleanedText`s representing text nodes.
+	 * @return array An array of `CleanedText`s and `SegmentBreak`s
+	 *  representing text nodes.
 	 */
 
-	public static function cleanHtml( $markedUpText ) {
+	public function cleanHtml( $markedUpText ) {
 		$dom = self::createDomDocument( $markedUpText );
 		$xpath = new DOMXPath( $dom );
 		// Only add elements below the dummy element. These are the
 		// elements from the original HTML.
 		$top = $xpath->evaluate( '/meta/dummy' )->item( 0 );
-		$cleanedContent = [];
-		self::addContent(
-			$cleanedContent,
-			$top
-		);
+		$this->cleanedContent = [];
+		$this->addContent( $top );
 		// Remove any segment break at the start or end of the array,
 		// since they won't do anything.
 		if (
-			count( $cleanedContent ) &&
-			$cleanedContent[0] instanceof SegmentBreak
+			count( $this->cleanedContent ) &&
+			$this->cleanedContent[0] instanceof SegmentBreak
 		) {
-			array_shift( $cleanedContent );
+			array_shift( $this->cleanedContent );
 		}
-		if ( self::lastElement( $cleanedContent ) instanceof SegmentBreak ) {
-			array_pop( $cleanedContent );
+		if ( self::lastElement( $this->cleanedContent ) instanceof SegmentBreak ) {
+			array_pop( $this->cleanedContent );
 		}
-		return $cleanedContent;
+		return $this->cleanedContent;
 	}
 
 	/**
@@ -84,29 +116,24 @@ class Cleaner {
 	 * content text. Adds segment breaks for appropriate tags.
 	 *
 	 * @since 0.0.1
-	 * @param array $content The resulting array of `CleanedText`s
-	 *  and `SegmentBreak`s.
 	 * @param DOMNode $node The top node to add from.
 	 */
 
-	private static function addContent(
-		&$content,
-		$node
-	) {
-		global $wgWikispeechSegmentBreakingTags;
-		if ( !self::matchesRemove( $node ) ) {
+	private function addContent( $node ) {
+		if ( !$node instanceof DOMComment && !$this->matchesRemove( $node ) ) {
 			foreach ( $node->childNodes as $child ) {
 				if (
-					!self::lastElement( $content ) instanceof SegmentBreak &&
+					!self::lastElement( $this->cleanedContent )
+						instanceof SegmentBreak &&
 					in_array(
 						$child->nodeName,
-						$wgWikispeechSegmentBreakingTags
+						$this->segmentBreakingTags
 					)
 				) {
 					// Add segment breaks for start tags specified in
-					// the config, unless the previous item is a
-					// break.
-					array_push( $content, new SegmentBreak() );
+					// the config, unless the previous item is a break
+					// or this is the first item.
+					array_push( $this->cleanedContent, new SegmentBreak() );
 				}
 				if ( $child->nodeType == XML_TEXT_NODE ) {
 					// Remove the path to the dummy node and instead
@@ -117,23 +144,20 @@ class Cleaner {
 						$child->getNodePath()
 					);
 					$text = new CleanedText( $child->textContent, $path );
-					array_push( $content, $text );
+					array_push( $this->cleanedContent, $text );
 				} else {
-					self::addContent(
-						$content,
-						$child
-					);
+					$this->addContent( $child );
 				}
 				if (
-					!self::lastElement( $content ) instanceof SegmentBreak &&
+					!self::lastElement( $this->cleanedContent ) instanceof SegmentBreak &&
 					in_array(
 						$child->nodeName,
-						$wgWikispeechSegmentBreakingTags
+						$this->segmentBreakingTags
 					)
 				) {
 					// Add segment breaks for end tags specified in
 					// the config.
-					array_push( $content, new SegmentBreak() );
+					array_push( $this->cleanedContent, new SegmentBreak() );
 				}
 			}
 		}
@@ -151,18 +175,17 @@ class Cleaner {
 	 *  false.
 	 */
 
-	private static function matchesRemove( $node ) {
-		global $wgWikispeechRemoveTags;
-		if ( !array_key_exists( $node->nodeName, $wgWikispeechRemoveTags ) ) {
+	private function matchesRemove( $node ) {
+		if ( !array_key_exists( $node->nodeName, $this->removeTags ) ) {
 			// The node name isn't found in the removal list.
 			return false;
 		}
-		$removeCriteria = $wgWikispeechRemoveTags[$node->nodeName];
+		$removeCriteria = $this->removeTags[$node->nodeName];
 		if ( $removeCriteria === true ) {
 			// Node name is found and there are no extra criteria.
 			return true;
 		}
-		if ( self::nodeHasClass( $node, $removeCriteria['class'] ) ) {
+		if ( self::nodeHasClass( $node, $removeCriteria ) ) {
 			// Node name and class name match.
 			return true;
 		}

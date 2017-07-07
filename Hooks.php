@@ -59,12 +59,19 @@ class WikispeechHooks {
 				'Wikispeech',
 				'HTML from onParserAfterTidy(): ' . $text
 			);
-			$cleanedContents = Cleaner::cleanHtml( $text );
+			global $wgWikispeechRemoveTags;
+			global $wgWikispeechSegmentBreakingTags;
+			$cleaner = new Cleaner(
+				$wgWikispeechRemoveTags,
+				$wgWikispeechSegmentBreakingTags
+			);
+			$cleanedContent = $cleaner->cleanHtml( $text );
 			wfDebugLog(
 				'Wikispeech',
-				'Cleaned text: ' . var_export( $cleanedContents, true )
+				'Cleaned text: ' . var_export( $cleanedContent, true )
 			);
-			$utterances = Segmenter::segmentSentences( $cleanedContents );
+			$segmenter = new Segmenter();
+			$utterances = $segmenter->segmentSentences( $cleanedContent );
 			wfDebugLog(
 				'Wikispeech',
 				'Utterances: ' . var_export( $utterances, true )

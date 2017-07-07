@@ -17,18 +17,43 @@
 class Segmenter {
 
 	/**
+	 * An array to which finished segments are added.
+	 *
+	 * @var array $segments
+	 */
+
+	private $segments;
+
+	/**
+	 * The segment that is currently being built.
+	 *
+	 * @var array $segments
+	 */
+
+	private $currentSegment;
+
+	function __construct() {
+		$this->segments = [];
+		$this->currentSegment = [
+			'content' => [],
+			'startOffset' => null,
+			'endOffset' => null
+		];
+	}
+
+	/**
 	 * Divide a cleaned content array into segments, one for each sentence.
 	 *
 	 * A segment is an array with the keys "content", "startOffset"
-	 * and "endOffset". "content" is an array of `CleanedText`s.
-	 * "startOffset" is the offset of the first character of the
-	 * segment, within the text node it appears. "endOffset" is the
-	 * offset of the last character of the segment, within the text
-	 * node it appears. These are used to determine start and end of a
-	 * segment in the original HTML.
+	 * and "endOffset". "content" is an array of `CleanedText`s and
+	 * `SegmentBreak`s. "startOffset" is the offset of the first
+	 * character of the segment, within the text node it
+	 * appears. "endOffset" is the offset of the last character of the
+	 * segment, within the text node it appears. These are used to
+	 * determine start and end of a segment in the original HTML.
 	 *
-	 * A sentence is here defined as a number of tokens ending with a
-	 * dot (full stop).
+	 * A sentence is here defined as a sequence of tokens ending with
+	 * a dot (full stop).
 	 *
 	 * @since 0.0.1
 	 * @param array $cleanedContent An array of items returned by
@@ -37,29 +62,19 @@ class Segmenter {
 	 *  `CleanedText's in that segment.
 	 */
 
-	public static function segmentSentences( $cleanedContent ) {
-		$segments = [];
-		$currentSegment = [
-			'content' => [],
-			'startOffset' => null,
-			'endOffset' => null
-		];
+	public function segmentSentences( $cleanedContent ) {
 		foreach ( $cleanedContent as $item ) {
 			if ( $item instanceof CleanedText ) {
-				self::addSegments(
-					$segments,
-					$currentSegment,
-					$item
-				);
+				$this->addSegments( $item );
 			} elseif ( $item instanceof SegmentBreak ) {
-				self::finishSegment( $segments, $currentSegment );
+				$this->finishSegment();
 			}
 		}
-		if ( $currentSegment['content'] ) {
+		if ( $this->currentSegment['content'] ) {
 			// Add the last segment, unless it's empty.
-			self::finishSegment( $segments, $currentSegment );
+			$this->finishSegment();
 		}
-		return $segments;
+		return $this->segments;
 	}
 
 	/**
@@ -70,24 +85,13 @@ class Segmenter {
 	 * added to the $currentSegment.
 	 *
 	 * @since 0.0.1
-	 * @param array $segments The segment array to add new segments to.
-	 * @param array $currentSegment The segment under construction.
 	 * @param CleanedText $text The text to segment.
 	 */
 
-	private static function addSegments(
-		&$segments,
-		&$currentSegment,
-		$text
-	) {
+	private function addSegments( $text ) {
 		$nextStartOffset = 0;
 		do {
-			$endOffset = self::addSegment(
-				$segments,
-				$currentSegment,
-				$text,
-				$nextStartOffset
-			);
+			$endOffset = $this->addSegment( $text, $nextStartOffset );
 			// The earliest the next segments can start is one after
 			// the end of the current one.
 			$nextStartOffset = $endOffset + 1;
@@ -104,24 +108,14 @@ class Segmenter {
 	 * offset when the last is.
 	 *
 	 * @since 0.0.1
-	 * @param array $segments The segment array to add new segments to.
-	 * @param array $currentSegment The segment under construction.
 	 * @param CleanedText $text The text to segment.
 	 * @param int $startOffset The offset where the next sentence can
 	 *  start, at the earliest. If the sentence has leading
 	 *  whitespaces, this will be moved forward.
-	 * @return int The offset of the last character in the
-	 *   sentence. If the sentence didn't end yet, this is the last
-	 *   character of $text.
 	 */
 
-	private static function addSegment(
-		&$segments,
-		&$currentSegment,
-		$text,
-		$startOffset=0
-	) {
-		if ( $currentSegment['startOffset'] === null ) {
+	private function addSegment( $text, $startOffset=0 ) {
+		if ( $this->currentSegment['startOffset'] === null ) {
 			// Move the start offset ahead by the number of leading
 			// whitespaces. This means that whitespaces before or
 			// between segments aren't included.
@@ -147,21 +141,22 @@ class Segmenter {
 			$startOffset,
 			$endOffset - $startOffset + 1
 		);
-		if ( $sentence !== '' ) {
-			// Don't add `CleanedText`s with the empty string.
+		if ( $sentence !== '' && $sentence !== "\n" ) {
+			// Don't add `CleanedText`s with the empty string or only
+			// newline.
 			$sentenceText = new CleanedText(
 				$sentence,
 				$text->path
 			);
-			array_push( $currentSegment['content'], $sentenceText );
-			if ( $currentSegment['startOffset'] === null ) {
+			array_push( $this->currentSegment['content'], $sentenceText );
+			if ( $this->currentSegment['startOffset'] === null ) {
 				// Record the start offset if this is the first text
 				// added to the segment.
-				$currentSegment['startOffset'] = $startOffset;
+				$this->currentSegment['startOffset'] = $startOffset;
 			}
-			$currentSegment['endOffset'] = $endOffset;
+			$this->currentSegment['endOffset'] = $endOffset;
 			if ( $ended ) {
-				self::finishSegment( $segments, $currentSegment );
+				$this->finishSegment();
 			}
 		}
 		return $endOffset;
@@ -271,12 +266,12 @@ class Segmenter {
 	 * @param array $currentCegments The finished segment to add.
 	 */
 
-	private static function finishSegment( &$segments, &$currentSegment ) {
-		if ( count( $currentSegment['content'] ) ) {
-			array_push( $segments, $currentSegment );
+	private function finishSegment() {
+		if ( count( $this->currentSegment['content'] ) ) {
+			array_push( $this->segments, $this->currentSegment );
 		}
 		// Create a fresh segment to add following text to.
-		$currentSegment = [
+		$this->currentSegment = [
 			'content' => [],
 			'startOffset' => null,
 			'endOffset' => null

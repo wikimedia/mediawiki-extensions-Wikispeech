@@ -22,7 +22,8 @@
 		"SegmentBreak": "includes/CleanedContent.php",
 		"Cleaner": "includes/Cleaner.php",
 		"HtmlGenerator": "includes/HtmlGenerator.php",
-		"Segmenter": "includes/Segmenter.php"
+		"Segmenter": "includes/Segmenter.php",
+		"WikispeechApi": "includes/WikispeechApi.php"
 	},
 	"ResourceModules": {
 		"ext.wikispeech": {
@@ -76,8 +77,8 @@
 			"editsection": true,
 			"toc": true,
 			"table": true,
-			"sup": { "class": "reference" },
-			"div": { "class": "thumb" }
+			"sup": "reference",
+			"div": "thumb"
 		},
 		"WikispeechSegmentBreakingTags": [
 			"h1",
@@ -117,5 +118,8 @@
 		"WikispeechHelpPage": "Help:Wikispeech",
 		"WikispeechFeedbackPage": "Wikispeech feedback",
 		"WikispeechContentWrapperClass": "mw-parser-output"
+	},
+	"APIModules": {
+		"wikispeech": "WikispeechApi"
 	}
 }

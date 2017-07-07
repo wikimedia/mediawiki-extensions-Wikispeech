@@ -12,19 +12,21 @@ require_once 'Util.php';
 class CleanerTest extends MediaWikiTestCase {
 	protected function setUp() {
 		parent::setUp();
-		global $wgWikispeechRemoveTags;
-		$wgWikispeechRemoveTags = [
+		$removeTags = [
 			'table' => true,
-			'sup' => [ 'class' => 'reference' ],
+			'sup' => 'reference',
 			'editsection' => true,
 			'h2' => false,
 			'del' => true
 		];
-		global $wgWikispeechSegmentBreakingTags;
-		$wgWikispeechSegmentBreakingTags = [
+		$segmentBreakingTags = [
 			'hr',
 			'a'
 		];
+		$this->cleaner = new Cleaner(
+			$removeTags,
+			$segmentBreakingTags
+		);
 	}
 
 	public function testCleanTags() {
@@ -60,7 +62,7 @@ class CleanerTest extends MediaWikiTestCase {
 	) {
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 		$this->assertWithPrefixAndSuffix(
 			$expectedCleanedContents,
@@ -149,7 +151,7 @@ class CleanerTest extends MediaWikiTestCase {
 		}
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( 'prefix' . $markedUpText . 'suffix' )
+			$this->cleaner->cleanHtml( 'prefix' . $markedUpText . 'suffix' )
 		);
 	}
 
@@ -187,7 +189,7 @@ class CleanerTest extends MediaWikiTestCase {
 		}
 		$this->assertContentsEqual(
 			array_merge( $firstContents, [ $infix ], $secondContents ),
-			Cleaner::cleanHtml( $markedUpText . 'infix' . $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText . 'infix' . $markedUpText )
 		);
 	}
 
@@ -198,7 +200,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContent,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -265,7 +267,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -279,7 +281,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -293,7 +295,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -307,7 +309,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -321,7 +323,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -333,7 +335,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -387,6 +389,12 @@ class CleanerTest extends MediaWikiTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
+	public function testIgnoreComments() {
+		$markedUpText = '<!-- A comment. -->';
+		$expectedCleanedContent = [];
+		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
+	}
+
 	public function testGeneratePaths() {
 		$markedUpText = '<i>level one<br /><b>level two</b></i>level zero';
 		$expectedCleanedContent = [
@@ -396,7 +404,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertEquals(
 			$expectedCleanedContent,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -408,7 +416,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertEquals(
 			$expectedCleanedContent,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 
@@ -420,7 +428,7 @@ class CleanerTest extends MediaWikiTestCase {
 		];
 		$this->assertEquals(
 			$expectedCleanedContent,
-			Cleaner::cleanHtml( $markedUpText )
+			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
 }

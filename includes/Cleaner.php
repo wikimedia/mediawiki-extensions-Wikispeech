@@ -98,8 +98,12 @@ class Cleaner {
 		$dom = new DOMDocument();
 		// Add encoding information and wrap the input text in a dummy
 		// tag to prevent p tags from being added for text nodes.
+		global $wgWikispeechContentWrapperTagName;
+		$contentTag = '<' . $wgWikispeechContentWrapperTagName . '>';
 		// @codingStandardsIgnoreStart
-		$wrappedText = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><dummy>' . $markedUpText . '</dummy></head>';
+		$wrappedText = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><dummy>' .
+			$markedUpText .
+			'</dummy></head>';
 		// @codingStandardsIgnoreEnd
 		libxml_use_internal_errors( true );
 		$dom->loadHTML(
@@ -139,7 +143,7 @@ class Cleaner {
 					// Remove the path to the dummy node and instead
 					// add "." to match when used with context.
 					$path = preg_replace(
-						'!^/meta/dummy!',
+						'!^/meta/dummy' . '!',
 						'.',
 						$child->getNodePath()
 					);
@@ -184,8 +188,15 @@ class Cleaner {
 		if ( $removeCriteria === true ) {
 			// Node name is found and there are no extra criteria.
 			return true;
-		}
-		if ( self::nodeHasClass( $node, $removeCriteria ) ) {
+		} elseif ( is_array( $removeCriteria ) ) {
+			// If there are multiple classes for a tag, check if any
+			// of them match.
+			foreach ( $removeCriteria as $class ) {
+				if ( self::nodeHasClass( $node, $class ) ) {
+					return true;
+				}
+			}
+		} elseif ( self::nodeHasClass( $node, $removeCriteria ) ) {
 			// Node name and class name match.
 			return true;
 		}

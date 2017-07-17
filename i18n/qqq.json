@@ -8,7 +8,6 @@
 	"wikispeech-desc": "{{desc|name=Wikispeech|url=https://www.mediawiki.org/wiki/Extension:Wikispeech}}",
 	"special-wikispeech-intro": "Description appearing on top of <tvar|1>Special:{{ll|Wikispeech}}</>.",
 	"special-wikispeech-title": "Title of the special page Special:Wikispeech",
-	"apihelp-wikispeech-description": "{{doc-apihelp-description|wikispeech}}",
 	"apihelp-wikispeech-summary": "{{doc-apihelp-summary|wikispeech}}",
 	"apihelp-wikispeech-param-page": "{{doc-apihelp-param|wikispeech|page}}",
 	"apihelp-wikispeech-param-output": "{{doc-apihelp-param|wikispeech|output}}",
@@ -18,6 +17,5 @@
 	"apihelp-wikispeech-param-removetags": "{{doc-apihelp-param|wikispeech|removetags}}",
 	"apihelp-wikispeech-param-segmentbreakingtags": "{{doc-apihelp-param|wikispeech|segmentbreakingtags}}",
 	"apihelp-wikispeech-example-1": "{{doc-apihelp-example|wikispeech}}",
-	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}",
-	"apierror-nooutput": "{{doc-apierror}}"
+	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}"
 }

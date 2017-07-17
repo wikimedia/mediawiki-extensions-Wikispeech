@@ -1,7 +1,52 @@
 ( function ( mw, $ ) {
 	function Wikispeech() {
-		var self = this;
-		self.$currentUtterance = $();
+		var self, currentUtterance;
+
+		self = this;
+		currentUtterance = null;
+		self.utterances = [];
+
+		/**
+		 * Check if Wikispeech is enabled for the current namespace.
+		 */
+
+		this.enabledForNamespace = function () {
+			var validNamespaces, namespace;
+			validNamespaces = mw.config.get( 'wgWikispeechNamespaces' );
+			namespace = mw.config.get( 'wgNamespaceNumber' );
+			return validNamespaces.indexOf( namespace ) >= 0;
+		};
+
+		/**
+		 * Load all utterances.
+		 *
+		 * Uses the API to get the segments of the text.
+		 */
+
+		this.loadUtterances = function () {
+			var api, page;
+			api = new mw.Api();
+			page = mw.config.get( 'wgPageName' );
+			api.post(
+				{
+					action: 'wikispeech',
+					page: [ page ],
+					output: 'segments'
+				},
+				{
+					beforeSend: function ( jqXHR, settings ) {
+						mw.log(
+							'Requesting segments:', settings.url + '?' +
+								settings.data
+						);
+					}
+				}
+			).done( function ( data ) {
+				mw.log( 'Segments received:', data );
+				self.utterances = data.wikispeech.segments;
+				self.prepareUtterance( self.utterances[ 0 ] );
+			} );
+		};
 
 		/**
 		 * Add a panel with controls for for Wikispeech.
@@ -15,7 +60,6 @@
 				.attr( 'id', 'ext-wikispeech-control-panel' )
 				.addClass( 'ext-wikispeech-control-panel' )
 				.appendTo( '#content' );
-			self.moveControlPanelWhenDebugging();
 			self.addButton(
 				'ext-wikispeech-skip-back-sentence',
 				self.skipBackUtterance
@@ -56,56 +100,6 @@
 							.first()
 					);
 			}
-		};
-
-		/**
-		* Make sure the control panel isn't covered by the debug panel.
-		*
-		* The debug panel is also added to the bottom of the page and
-		* covers the control panel. This function moves the control
-		* panel above the debug panel, when it is added or has
-		* children added (which changes the size).
-		*/
-
-		this.moveControlPanelWhenDebugging = function () {
-			var debugPanelChangedObserver, debugPanelAddedObserver;
-
-			debugPanelChangedObserver =
-				new MutationObserver( function ( ) {
-					// Move the control panel above the debug panel.
-					// jquery-foot-hovzer is the id of the debug
-					// panel.
-					$( '#ext-wikispeech-control-panel' ).css(
-						'bottom',
-						$( '#jquery-foot-hovzer' ).height()
-					);
-				} );
-			debugPanelAddedObserver =
-				new MutationObserver( function ( mutations ) {
-					mutations.forEach( function ( mutation ) {
-						mutation.addedNodes.forEach( function ( addedNode ) {
-							if ( addedNode.getAttribute( 'id' ) ===
-									'jquery-foot-hovzer' ) {
-								// Start observing changes to nodes in
-								// the debug panel. This needs to wait
-								// until the actual panel is added.
-								debugPanelChangedObserver.observe(
-									$( '#jquery-foot-hovzer' ).get( 0 ),
-									{ childList: true }
-								);
-								// We don't need to listen to this
-								// anymore, since we are just
-								// interested in when things are added
-								// to the debug panel.
-								debugPanelAddedObserver.disconnect();
-							}
-						} );
-					} );
-				} );
-			debugPanelAddedObserver.observe(
-				$( 'body' ).get( 0 ),
-				{ childList: true }
-			);
 		};
 
 		/**
@@ -177,7 +171,7 @@
 		 */
 
 		this.isPlaying = function () {
-			return self.$currentUtterance.length > 0;
+			return currentUtterance !== null;
 		};
 
 		/**
@@ -186,8 +180,10 @@
 
 		this.stop = function () {
 			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
-			self.stopUtterance( self.$currentUtterance );
-			self.$currentUtterance = $();
+			if ( self.isPlaying() ) {
+				self.stopUtterance( currentUtterance );
+			}
+			currentUtterance = null;
 			$playStopButton.removeClass( 'ext-wikispeech-stop' );
 			$playStopButton.addClass( 'ext-wikispeech-play' );
 		};
@@ -198,7 +194,7 @@
 
 		this.play = function () {
 			var $playStopButton = $( '#ext-wikispeech-play-stop-button' );
-			self.playUtterance( $( '#utterance-0' ) );
+			self.playUtterance( self.utterances[ 0 ] );
 			$playStopButton.removeClass( 'ext-wikispeech-play' );
 			$playStopButton.addClass( 'ext-wikispeech-stop' );
 		};
@@ -208,31 +204,30 @@
 		 *
 		 * This also stops any currently playing utterance.
 		 *
-		 * @param {jQuery} $utterance The utterance to play the audio
+		 * @param {Object} utterance The utterance to play the audio
 		 *  for.
 		 */
 
-		this.playUtterance = function ( $utterance ) {
-			self.stopUtterance( self.$currentUtterance );
-			self.$currentUtterance = $utterance;
-			$utterance.children( 'audio' ).get( 0 ).play();
-			mw.wikispeech.highlighter.highlightUtterance( $utterance );
+		this.playUtterance = function ( utterance ) {
+			if ( self.isPlaying() ) {
+				self.stopUtterance( currentUtterance );
+			}
+			currentUtterance = utterance;
+			utterance.audio.play();
+			mw.wikispeech.highlighter.highlightUtterance( utterance );
 		};
 
 		/**
 		 * Stop and rewind the audio for an utterance.
 		 *
-		 * @param {jQuery} $utterance The utterance to stop the audio
+		 * @param {Object} utterance The utterance to stop the audio
 		 *  for.
 		 */
 
-		this.stopUtterance = function ( $utterance ) {
-			var $audio = $utterance.children( 'audio' );
-			if ( $audio.length ) {
-				$audio.get( 0 ).pause();
-			}
+		this.stopUtterance = function ( utterance ) {
+			utterance.audio.pause();
 			// Rewind audio for next time it plays.
-			$audio.prop( 'currentTime', 0 );
+			utterance.audio.currentTime = 0;
 			// Remove sentence highlighting.
 			mw.wikispeech.highlighter.removeWrappers(
 				'.ext-wikispeech-highlight-sentence'
@@ -241,7 +236,7 @@
 			mw.wikispeech.highlighter.removeWrappers(
 				'.ext-wikispeech-highlight-word'
 			);
-			clearTimeout( mw.wikispeech.highlighter.highlightTokenTimer );
+			mw.wikispeech.highlighter.clearHighlightTokenTimer();
 		};
 
 		/**
@@ -251,10 +246,9 @@
 		 */
 
 		this.skipAheadUtterance = function () {
-			var $nextUtterance =
-				self.getNextUtterance( self.$currentUtterance );
-			if ( $nextUtterance.length ) {
-				self.playUtterance( $nextUtterance );
+			var nextUtterance = self.getNextUtterance( currentUtterance );
+			if ( nextUtterance ) {
+				self.playUtterance( nextUtterance );
 			} else {
 				self.stop();
 			}
@@ -263,41 +257,35 @@
 		/**
 		 * Get the utterance after the given utterance.
 		 *
-		 * @param {jQuery} $utterance The original utterance.
-		 * @return {jQuery} The utterance after the original
-		 *  utterance. Empty object if $utterance is the last one.
+		 * @param {Object} utterance The original utterance.
+		 * @return {Object} The utterance after the original
+		 *  utterance. null if utterance is the last one.
 		 */
 
-		this.getNextUtterance = function ( $utterance ) {
-			return self.getUtteranceByOffset( $utterance, 1 );
+		this.getNextUtterance = function ( utterance ) {
+			return self.getUtteranceByOffset( utterance, 1 );
 		};
 
 		/**
 		 * Get the utterance by offset from another utterance.
 		 *
-		 * @param {jQuery} $utterance The original utterance.
+		 * @param {Object} utterance The original utterance.
 		 * @param {number} offset The difference, in index, to the
 		 *  wanted utterance. Can be negative for preceding
 		 *  utterances.
-		 * @return {jQuery} The utterance after the original
-		 *  utterance. Empty object if $utterance isn't a valid
-		 *  utterance or if an utterance couldn't be found.
+		 * @return {Object} The utterance on the position before or
+		 *  after the original utterance, as specified by
+		 *  `offset`. null if the original utterance is null.
 		 */
 
-		this.getUtteranceByOffset = function ( $utterance, offset ) {
-			var utteranceIdParts, nextUtteranceIndex, nextUtteranceId;
+		this.getUtteranceByOffset = function ( utterance, offset ) {
+			var index;
 
-			if ( !$utterance.length ) {
-				return $();
+			if ( utterance === null ) {
+				return null;
 			}
-			// Utterance id's follow the pattern "utterance-x", where
-			// x is the index.
-			utteranceIdParts = $utterance.attr( 'id' ).split( '-' );
-			nextUtteranceIndex =
-				parseInt( utteranceIdParts[ 1 ], 10 ) + offset;
-			utteranceIdParts[ 1 ] = nextUtteranceIndex;
-			nextUtteranceId = utteranceIdParts.join( '-' );
-			return $( '#' + nextUtteranceId );
+			index = self.utterances.indexOf( utterance );
+			return self.utterances[ index + offset ];
 		};
 
 		/**
@@ -308,25 +296,25 @@
 		 */
 
 		this.skipBackUtterance = function () {
-			var previousUtterance, rewindThreshold, $audio, time;
+			var previousUtterance, rewindThreshold, time;
 
 			previousUtterance =
-				self.getPreviousUtterance( self.$currentUtterance );
-			if ( previousUtterance.length ) {
+				self.getPreviousUtterance( currentUtterance );
+			if ( previousUtterance ) {
 				// Only consider skipping back to previous if the
 				// current utterance isn't the first one.
 				rewindThreshold = mw.config.get(
-					'wgWikispeechSkipBackRewindsThreshold' );
-				$audio = self.$currentUtterance.children( 'audio' );
-				time = $audio.prop( 'currentTime' );
+					'wgWikispeechSkipBackRewindsThreshold'
+				);
+				time = currentUtterance.audio.currentTime;
 				if ( time > rewindThreshold ) {
-					$audio.prop( 'currentTime', 0.0 );
+					currentUtterance.audio.currentTime = 0.0;
 				} else {
 					self.playUtterance( previousUtterance );
 				}
 			} else if ( self.isPlaying() ) {
-				// Alwas skip to start of utterance if the current
-				// uterrance is the first.
+				// Always skip to start of utterance if the current
+				// utterance is the first.
 				self.play();
 			}
 		};
@@ -334,33 +322,35 @@
 		/**
 		 * Get the utterance before the given utterance.
 		 *
-		 * @param {jQuery} $utterance The original utterance.
-		 * @return {jQuery} The utterance before the original
-		 *  utterance. Empty object if $utterance is the first one.
+		 * @param {Object} utterance The original utterance.
+		 * @return {Object} The utterance before the original
+		 *  utterance. null if the original utterance is the
+		 *  first one.
 		 */
 
-		this.getPreviousUtterance = function ( $utterance ) {
-			return self.getUtteranceByOffset( $utterance, -1 );
+		this.getPreviousUtterance = function ( utterance ) {
+			return self.getUtteranceByOffset( utterance, -1 );
 		};
 
 		/**
-		 * Skip to the next token in the current utterance.
+		 * Skip to the next token.
+		 *
+		 * If there are no more tokens in the current utterance, skip
+		 * to the next utterance.
 		 */
 
 		this.skipAheadToken = function () {
-			var nextToken, $audio;
+			var nextToken;
 
 			if ( self.isPlaying() ) {
 				nextToken = self.getNextToken( self.getCurrentToken() );
 				if ( nextToken === null ) {
 					self.skipAheadUtterance();
 				} else {
-					$audio = self.$currentUtterance.children( 'audio' );
-					$audio.prop( 'currentTime', nextToken.startTime );
-					mw.wikispeech.highlighter.removeWrappers(
-						'.ext-wikispeech-highlight-word'
+					currentUtterance.audio.currentTime = nextToken.startTime;
+					mw.wikispeech.highlighter.startTokenHighlighting(
+						nextToken
 					);
-					mw.wikispeech.highlighter.highlightToken( nextToken );
 				}
 			}
 		};
@@ -368,66 +358,59 @@
 		/**
 		 * Get the token following a given token.
 		 *
-		 * @param {jQuery} $originalToken Find the next token element
-		 *  after this one.
-		 * @return {HTMLElement} The first token following
-		 *  $originalToken that has time greater than zero and a
-		 *  transcription. null if no such token is found. Will not
-		 *  look beyond the $originalToken's utterance.
+		 * @param {Object} originalToken Find the next token after
+		 *  this one.
+		 * @return {Object} The first token following originalToken
+		 *  that has time greater than zero and a transcription. null
+		 *  if no such token is found. Will not look beyond
+		 *  originalToken's utterance.
 		 */
 
-		this.getNextToken = function ( $originalToken ) {
-			var $succeedingTokens, nextToken;
+		this.getNextToken = function ( originalToken ) {
+			var index, succeedingTokens;
 
-			$succeedingTokens =
-				$originalToken.nextAll().filter( function () {
-					return !self.isSilent( this );
-				} );
-			if ( $succeedingTokens.length ) {
-				nextToken = $succeedingTokens.get( 0 );
-				return nextToken;
-			} else {
+			index = originalToken.utterance.tokens.indexOf( originalToken );
+			succeedingTokens =
+				originalToken.utterance.tokens.slice( index + 1 ).filter(
+					function ( token ) {
+						return !self.isSilent( token );
+					} );
+			if ( succeedingTokens.length === 0 ) {
 				return null;
+			} else {
+				return succeedingTokens[ 0 ];
 			}
 		};
 
 		/**
 		 * Get the token being played.
 		 *
-		 * @return {jQuery} The token being played.
+		 * @return {Object} The token being played.
 		 */
 
 		this.getCurrentToken = function () {
-			var $tokens, currentTime, $currentToken, $tokensWithDuration,
-				duration;
+			var tokens, currentTime, currentToken, tokensWithDuration,
+				duration, lastTokenWithDuration;
 
-			$currentToken = $();
-			$tokens = self.$currentUtterance.find( 'token' );
-			currentTime = self.$currentUtterance.children( 'audio' )
-				.prop( 'currentTime' );
-			$tokensWithDuration = $tokens.filter( function () {
-				duration = this.endTime - this.startTime;
+			currentToken = null;
+			tokens = currentUtterance.tokens;
+			currentTime = currentUtterance.audio.currentTime;
+			tokensWithDuration = tokens.filter( function ( token ) {
+				duration = token.endTime - token.startTime;
 				return duration > 0.0;
 			} );
-			if (
-				currentTime ===
-					parseFloat( $tokensWithDuration.last().prop( 'endTime' ) )
-			) {
+			lastTokenWithDuration = self.getLast( tokensWithDuration );
+			if ( currentTime === lastTokenWithDuration.endTime ) {
 				// If the current time is equal to the end time of the
 				// last token, the last token is the current.
-				$currentToken = $tokensWithDuration.last();
+				currentToken = lastTokenWithDuration;
 			} else {
-				$tokensWithDuration.each( function () {
-					if (
-						this.startTime <= currentTime &&
-							this.endTime > currentTime
-					) {
-						$currentToken = $( this );
-						return false;
-					}
+				currentToken = tokensWithDuration.find( function ( token ) {
+					return token.startTime <= currentTime &&
+						token.endTime > currentTime;
 				} );
 			}
-			return $currentToken;
+			return currentToken;
 		};
 
 		/**
@@ -437,76 +420,93 @@
 		 * (i.e. the empty string) or having no duration (i.e. start
 		 * and end time is the same.)
 		 *
-		 * @param {HTMLElement} tokenElement The token element to test.
+		 * @param {Object} token The token to test.
 		 * @return {boolean} true if the token is silent, else false.
 		 */
 
-		this.isSilent = function ( tokenElement ) {
-			var startTime, endTime;
-
-			startTime = tokenElement.startTime;
-			endTime = tokenElement.endTime;
-			return startTime === endTime || tokenElement.textContent === '';
+		this.isSilent = function ( token ) {
+			return token.startTime === token.endTime ||
+				token.string === '';
 		};
 
 		/**
 		 * Skip to the previous token.
+		 *
+		 * If there are no preceding tokens, skip to the last token of
+		 * the previous utterance.
 		 */
 
 		this.skipBackToken = function () {
-			var $previousToken, $utterance, $audio;
+			var previousToken;
 
 			if ( self.isPlaying() ) {
-				$previousToken =
+				previousToken =
 					self.getPreviousToken( self.getCurrentToken() );
-				$utterance =
-					$previousToken.parentsUntil( 'utterance' ).parent();
-				if ( $utterance.get( 0 ) !== self.$currentUtterance.get( 0 ) ) {
-					self.playUtterance( $utterance );
+				if ( previousToken === null ) {
+					self.skipBackUtterance();
+					previousToken = self.getLastToken( currentUtterance );
 				}
-				$audio = self.$currentUtterance.children( 'audio' );
-				$audio.prop(
-					'currentTime',
-					$previousToken.prop( 'startTime' )
+				currentUtterance.audio.currentTime = previousToken.startTime;
+				mw.wikispeech.highlighter.startTokenHighlighting(
+					previousToken
 				);
-				mw.wikispeech.highlighter.removeWrappers(
-					'.ext-wikispeech-highlight-word'
-				);
-				mw.wikispeech.highlighter.highlightToken( $previousToken.get( 0 ) );
 			}
 		};
 
 		/**
-		 * Get the token before a given token.
+		 * Get the token preceding a given token.
 		 *
-		 * Tokens that are "silent" i.e. have a duration of zero or have no
-		 * transcription, are ignored.
-		 *
-		 * @param {jQuery} $token Original token.
-		 * @return {jQuery} The token before $token, empty object if
-		 *  $token is the first token.
+		 * @param {Object} originalToken Find the token before this one.
+		 * @return {Object} The first token following originalToken
+		 *  that has time greater than zero and a transcription. null
+		 *  if no such token is found. Will not look beyond
+		 *  originalToken's utterance.
 		 */
 
-		this.getPreviousToken = function ( $token ) {
-			var $utterance, $followingToken, $tokens;
+		this.getPreviousToken = function ( originalToken ) {
+			var index, precedingTokens, previousToken;
 
-			$utterance = $token.parentsUntil( 'utterance' ).parent();
-			do {
-				$followingToken = $token;
-				$token = $token.prev();
-				if ( !$token.length ) {
-					$utterance = $utterance.prev();
-					if ( !$utterance.length ) {
-						return $();
-					}
-					$tokens = $utterance.find( 'token' );
-					$token = $( $utterance.find( 'token' )
-						.get( $tokens.length - 1 ) );
-				}
-				// Ignore tokens that either have a duration of zero
-				// or no text.
-			} while ( self.isSilent( $token.get( 0 ) ) );
-			return $token;
+			index = originalToken.utterance.tokens.indexOf( originalToken );
+			precedingTokens =
+				originalToken.utterance.tokens.slice( 0, index ).filter(
+					function ( token ) {
+						return !self.isSilent( token );
+					} );
+			if ( precedingTokens.length === 0 ) {
+				return null;
+			} else {
+				previousToken = self.getLast( precedingTokens );
+				return previousToken;
+			}
+		};
+
+		/**
+		 * Get the last item in an array.
+		 *
+		 * @param {Array} array The array to look in.
+		 * @return {Mixed} The last item in the array.
+		 */
+
+		this.getLast = function ( array ) {
+			return array[ array.length - 1 ];
+		};
+
+		/**
+		 * Get the last token from an utterance.
+		 *
+		 * @param {Object} utterance The utterance to get the last
+		 *  token from.
+		 * @return {Object} The last token from the utterance.
+		 */
+
+		self.getLastToken = function ( utterance ) {
+			var nonSilentTokens, lastToken;
+
+			nonSilentTokens = utterance.tokens.filter( function ( token ) {
+				return !self.isSilent( token );
+			} );
+			lastToken = self.getLast( nonSilentTokens );
+			return lastToken;
 		};
 
 		/**
@@ -568,7 +568,7 @@
 		 * configuration.
 		 *
 		 * @param {Event} event The event to compare.
-		 * @param {Object }shortcut The shortcut object from the
+		 * @param {Object} shortcut The shortcut object from the
 		 *  config to compare to.
 		 * @return {boolean} true if key and all the modifiers match
 		 *  with the shortcut, else false.
@@ -591,26 +591,23 @@
 		 * balance between not having to pause between utterance and
 		 * not requesting more than needed.
 
-		 * @param {jQuery} $utterance The utterance to prepare.
+		 * @param {Object} utterance The utterance to prepare.
 		 */
 
-		this.prepareUtterance = function ( $utterance ) {
-			var $audio, $nextUtterance;
+		this.prepareUtterance = function ( utterance ) {
+			var $audio, nextUtterance;
 
-			if ( !$utterance.children( 'audio' ).length ) {
+			if ( !utterance.hasOwnProperty( 'audio' ) ) {
 				// Make sure there is an audio element for this
 				// utterance.
-				$utterance.append( '<audio></audio>' );
+				utterance.audio = $( '<audio></audio>' ).get( 0 );
 			}
-			$audio = $utterance.children( 'audio' );
-			if (
-				!$audio.attr( 'src' ) &&
-					!$utterance.prop( 'waitingForResponse' )
-			) {
+			$audio = $( utterance.audio );
+			if ( !$audio.attr( 'src' ) && !utterance.waitingForResponse ) {
 				// Only load audio for an utterance if it isn't
 				// already loaded or waiting for response from server.
-				self.loadAudio( $utterance );
-				$nextUtterance = self.getNextUtterance( $utterance );
+				self.loadAudio( utterance );
+				nextUtterance = self.getNextUtterance( utterance );
 				$audio.on( {
 					playing: function () {
 						var firstToken;
@@ -619,27 +616,27 @@
 						// playing, since we need the token info from
 						// the response to know what to highlight.
 						if ( $audio.prop( 'currentTime' ) === 0 ) {
-							firstToken =
-								$utterance.find( 'token' ).get( 0 );
-							mw.wikispeech.highlighter.highlightToken(
-								firstToken
-							);
-							mw.wikispeech.highlighter.setHighlightTokenTimer(
+							firstToken = utterance.tokens[ 0 ];
+							mw.wikispeech.highlighter.startTokenHighlighting(
 								firstToken
 							);
 						}
 					}
 				} );
-				if ( !$nextUtterance.length ) {
-					// For last utterance, just stop the playback when
-					// done.
-					$audio.on( 'ended', self.stop );
-				} else {
+				if ( nextUtterance ) {
 					$audio.on( {
 						play: function () {
-							self.prepareUtterance( $nextUtterance );
+							self.prepareUtterance( nextUtterance );
 						},
-						ended: self.skipAheadUtterance
+						ended: function () {
+							self.skipAheadUtterance();
+						}
+					} );
+				} else {
+					// For last utterance, just stop the playback when
+					// done.
+					$audio.on( 'ended', function () {
+						self.stop();
 					} );
 				}
 			}
@@ -648,38 +645,31 @@
 		/**
 		 * Request audio for an utterance.
 		 *
-		 * Adds audio and token elements when the response is
-		 * received.
+		 * Adds audio and tokens when the response is received.
 		 *
-		 * @param {jQuery} $utterance The utterance to load audio for.
+		 * @param {Object} utterance The utterance to load audio for.
 		 */
 
-		this.loadAudio = function ( $utterance ) {
-			var $audio, text, audioUrl;
+		this.loadAudio = function ( utterance ) {
+			var text, audioUrl, utteranceIndex;
 
-			mw.log( 'Loading audio for: ' + $utterance.attr( 'id' ) );
-			// Get the combined string of the text nodes only,
-			// i.e. not from the cleaned tag.
-			text = $utterance.children( 'content' ).contents().filter(
-				function () {
-					// Filter text nodes. Not using Node.ELEMENT_NODE
-					// to support IE7.
-					if ( this.nodeType === 1 && this.tagName === 'TEXT' ) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			).text();
-			self.requestTts( text, $utterance, function ( response ) {
+			mw.log(
+				'Loading audio for: [' + self.utterances.indexOf( utterance ) + ']',
+				utterance
+			);
+			text = '';
+			utterance.content.forEach( function ( item ) {
+				text += item.string;
+			} );
+			self.requestTts( text, utterance, function ( response ) {
 				audioUrl = response.audio;
+				utteranceIndex = self.utterances.indexOf( utterance );
 				mw.log(
-					'Setting url for ' + $utterance.attr( 'id' ) + ': ' +
-						audioUrl
+					'Setting audio url for: [' + utteranceIndex + ']',
+					utterance, '=', audioUrl
 				);
-				$audio = $utterance.children( 'audio' );
-				$audio.attr( 'src', audioUrl );
-				self.addTokenElements( $utterance, response.tokens );
+				utterance.audio.setAttribute( 'src', audioUrl );
+				self.addTokens( utterance, response.tokens );
 			} );
 		};
 
@@ -696,12 +686,12 @@
 		 *
 		 * @param {string} text The utterance string to send in the
 		 *  request.
-		 * @param {jQuery} $utterance The utterance for this request.
+		 * @param {Object} utterance The utterance for this request.
 		 * @param {Function} callback Function to be called when a
 		 *  response is received.
 		 */
 
-		this.requestTts = function ( text, $utterance, callback ) {
+		this.requestTts = function ( text, utterance, callback ) {
 			var serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
 			$.ajax( {
 				url: serverUrl,
@@ -715,8 +705,11 @@
 				},
 				dataType: 'json',
 				beforeSend: function ( jqXHR, settings ) {
-					mw.log( 'Sending request: ' + settings.url + '?' + settings.data );
-					$utterance.prop( 'waitingForResponse', true );
+					mw.log(
+						'Sending TTS request: ' + settings.url + '?' +
+							settings.data
+					);
+					utterance.waitingForResponse = true;
 				}
 			} )
 				.done( function ( data ) {
@@ -730,33 +723,27 @@
 					);
 				} )
 				.always( function () {
-					$utterance.prop( 'waitingForResponse', false );
+					utterance.waitingForResponse = false;
 				} );
 		};
 
 		/**
-		 * Add token elements to an utterance element.
+		 * Add tokens to an utterance.
 		 *
-		 * Adds a tokens element and populate it with token elements.
-		 *
-		 * @param {jQuery} $utterance The jQuery object to add tokens to.
-		 * @param {Object[]} tokens Tokens from a server response,
+		 * @param {Object} utterance The utterance to add tokens to.
+		 * @param {Object[]} responseTokens Tokens from a server response,
 		 *  where each token is an object. For these objects, the
 		 *  property "orth" is the string used by the TTS to generate
 		 *  audio for the token.
 		 */
 
-		this.addTokenElements = function ( $utterance, tokens ) {
-			var $tokensElement, i, token, startTime, utteranceOffset,
-				searchOffset, lastEndOffset, $tokenElement;
+		this.addTokens = function ( utterance, responseTokens ) {
+			var i, token, startTime, searchOffset, responseToken;
 
-			$tokensElement = $( '<tokens></tokens>' ).appendTo( $utterance );
-			utteranceOffset =
-				parseInt( $utterance.attr( 'start-offset' ), 10 );
+			utterance.tokens = [];
 			searchOffset = 0;
-			lastEndOffset = 0;
-			for ( i = 0; i < tokens.length; i++ ) {
-				token = tokens[ i ];
+			for ( i = 0; i < responseTokens.length; i++ ) {
+				responseToken = responseTokens[ i ];
 				if ( i === 0 ) {
 					// The first token in an utterance always start on
 					// time zero.
@@ -765,15 +752,15 @@
 					// Since the response only contains end times for
 					// token, the start time for a token is set to the
 					// end time of the previous one.
-					startTime = tokens[ i - 1 ].endtime;
+					startTime = responseTokens[ i - 1 ].endtime;
 				}
-				$tokenElement = $( '<token></token>' )
-					.text( token.orth )
-					.prop( {
-						startTime: startTime,
-						endTime: token.endtime
-					} )
-					.appendTo( $tokensElement );
+				token = {
+					string: responseToken.orth,
+					startTime: startTime,
+					endTime: responseToken.endtime,
+					utterance: utterance
+				};
+				utterance.tokens.push( token );
 				if ( i > 0 ) {
 					// Start looking for the next token after the
 					// previous one, except for the first token, where
@@ -781,7 +768,7 @@
 					searchOffset += 1;
 				}
 				searchOffset = self.addOffsetsAndTextElements(
-					$tokenElement,
+					token,
 					searchOffset
 				);
 			}
@@ -797,77 +784,73 @@
 		 * The text elements are the element in which the token start,
 		 * the element in which it ends and any element in between.
 		 *
-		 * @param {jQuery} $tokenElement The token element to add
-		 *  properties to.
+		 * @param {Object} token The token to add properties to.
 		 * @param {number} searchOffset The offset to start searching
 		 *  from, in the concatenated string.
 		 * @return {number} The end offset in the concatenated string.
 		 */
 
 		this.addOffsetsAndTextElements = function (
-			$tokenElement,
+			token,
 			searchOffset
 		) {
-			var $utterance, utteranceOffset,
-				$textElementsForUtterance, textElements,
-				startOffsetInUtteranceString,
-				endOffsetInUtteranceString, endOffsetForTextElement,
-				firstElementIndex, elementsBeforeStart,
-				lastElementIndex, elementsBeforeEnd;
+			var utteranceOffset, startOffsetInUtteranceString,
+				endOffsetInUtteranceString, endOffsetForItem,
+				firstItemIndex, itemsBeforeStart, lastItemIndex,
+				itemsBeforeEnd, items, itemsBeforeStartLength,
+				itemsBeforeEndLength, utterance;
 
-			$utterance = $tokenElement.parentsUntil( 'utterance' ).parent();
-			utteranceOffset =
-				parseInt( $utterance.attr( 'start-offset' ), 10 );
-			$textElementsForUtterance = $utterance.find( 'content text' );
-			textElements = [];
+			utterance = token.utterance;
+			utteranceOffset = utterance.startOffset;
+			items = [];
 			startOffsetInUtteranceString =
 				self.getStartOffsetInUtteranceString(
-					$tokenElement.text(),
-					$textElementsForUtterance,
-					textElements,
+					token.string,
+					utterance.content,
+					items,
 					searchOffset
 				);
 			endOffsetInUtteranceString =
 				startOffsetInUtteranceString +
-				$tokenElement.text().length - 1;
-			// textElements now contains all the text elements in the
-			// utterance, from the first one to the last, that
-			// contains at least part of the token. To get only the
-			// ones that contain part of the token, the elements that
-			// appear before the token are removed.
-			endOffsetForTextElement = 0;
-			textElements =
-				$( textElements ).filter( function () {
-					endOffsetForTextElement += this.textContent.length;
-					return endOffsetForTextElement >
+				token.string.length - 1;
+
+			// `items` now contains all the items in the utterance,
+			// from the first one to the last, that contains at least
+			// part of the token. To get only the ones that contain
+			// part of the token, the items that appear before the
+			// token are removed.
+			endOffsetForItem = 0;
+			items =
+				items.filter( function ( item ) {
+					endOffsetForItem += item.string.length;
+					return endOffsetForItem >
 						startOffsetInUtteranceString;
-				} )
-				.get();
-			$tokenElement.prop( 'textElements', textElements, $tokenElement );
+				} );
+			token.items = items;
 
 			// Calculate start and end offset for the token, in the
 			// text nodes it appears in, and add them to the
 			// token.
-			firstElementIndex =
-				$textElementsForUtterance.index( textElements[ 0 ] );
-			elementsBeforeStart =
-				$textElementsForUtterance.slice( 0, firstElementIndex );
-			$tokenElement.prop(
-				'startOffset',
-				utteranceOffset - $( elementsBeforeStart ).text().length +
-					startOffsetInUtteranceString
-			);
-			lastElementIndex =
-				$textElementsForUtterance.index(
-					textElements[ textElements.length - 1 ]
-				);
-			elementsBeforeEnd =
-				$textElementsForUtterance.slice( 0, lastElementIndex );
-			$tokenElement.prop(
-				'endOffset',
-				utteranceOffset - $( elementsBeforeEnd ).text().length +
-					endOffsetInUtteranceString
-			);
+			firstItemIndex =
+				utterance.content.indexOf( items[ 0 ] );
+			itemsBeforeStart =
+				utterance.content.slice( 0, firstItemIndex );
+			itemsBeforeStartLength = 0;
+			itemsBeforeStart.forEach( function ( item ) {
+				itemsBeforeStartLength += item.string.length;
+			} );
+			token.startOffset =
+				utterance.startOffset - itemsBeforeStartLength +
+				startOffsetInUtteranceString;
+			lastItemIndex =
+				utterance.content.indexOf( self.getLast( items ) );
+			itemsBeforeEnd = utterance.content.slice( 0, lastItemIndex );
+			itemsBeforeEndLength = 0;
+			itemsBeforeEnd.forEach( function ( item ) {
+				itemsBeforeEndLength += item.string.length;
+			} );
+			token.endOffset = utteranceOffset - itemsBeforeEndLength +
+				endOffsetInUtteranceString;
 			return endOffsetInUtteranceString;
 		};
 
@@ -878,11 +861,11 @@
 		 * searchOffset.
 		 *
 		 * @param {string} token The token to search for.
-		 * @param {jQuery} $textElementsForUtterance The text elements
-		 *  of the utterance where the token appear.
-		 * @param {HTMLElement[]} textElements An array of text
-		 *  elements to which each element, up to and including the
-		 *  last one that contains part of the token, is added.
+		 * @param {Object[]} content The content of the utterance where
+		 *  the token appear.
+		 * @param {Object[]} items An array of items to which each
+		 *  item, up to and including the last one that contains
+		 *  part of the token, is added.
 		 * @param {number} searchOffset Where we want to start looking
 		 *  for the token in the utterance string.
 		 * @return {number} The offset where the first character of
@@ -891,21 +874,20 @@
 
 		this.getStartOffsetInUtteranceString = function (
 			token,
-			$textElementsForUtterance,
-			textElements,
+			content,
+			items,
 			searchOffset
 		) {
 			var concatenatedText, startOffsetInUtteranceString;
 
-			// The concatenation of the strings from text
-			// elements. Used to find tokens that span multiple text
-			// nodes.
+			// The concatenation of the strings from items. Used to
+			// find tokens that span multiple text nodes.
 			concatenatedText = '';
-			$textElementsForUtterance.each( function () {
-				// Look through the text elements until we find a
+			$.each( content, function () {
+				// Look through the items until we find a
 				// substring matching the token.
-				concatenatedText += this.textContent;
-				textElements.push( this );
+				concatenatedText += this.string;
+				items.push( this );
 				if ( searchOffset > concatenatedText.length ) {
 					// Don't look in text elements that end before
 					// where we start looking.
@@ -922,14 +904,16 @@
 		};
 	}
 
-	mw.wikispeech = mw.wikispeech || {};
-	mw.wikispeech.wikispeech = new Wikispeech();
+	mw.wikispeech = {};
 	mw.wikispeech.Wikispeech = Wikispeech;
+	mw.wikispeech.wikispeech = new mw.wikispeech.Wikispeech();
 
-	if ( $( 'utterances' ).length ) {
-		// Prepare the first utterance for playback.
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.addControlPanel();
-		mw.wikispeech.wikispeech.addKeyboardShortcuts();
-	}
+	mw.loader.using( 'mediawiki.api' ).done( function () {
+		if ( mw.wikispeech.wikispeech.enabledForNamespace() ) {
+			mw.wikispeech.wikispeech.loadUtterances();
+			// Prepare the first utterance for playback.
+			mw.wikispeech.wikispeech.addControlPanel();
+			mw.wikispeech.wikispeech.addKeyboardShortcuts();
+		}
+	} );
 }( mediaWiki, jQuery ) );

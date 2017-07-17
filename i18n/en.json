@@ -8,16 +8,14 @@
 	"wikispeech-desc": "A text-to-speech tool to make Wikimedia's projects more accessible for people that for different reasons have difficulties reading.",
 	"special-wikispeech-intro": "Wikispeech",
 	"special-wikispeech-title": "Special page introduction.",
-	"apihelp-wikispeech-description": "Process a page to be used by the Wikispeech extension.",
 	"apihelp-wikispeech-summary": "Process a page to be used by the Wikispeech extension.",
 	"apihelp-wikispeech-param-page": "The title of the page to process.",
 	"apihelp-wikispeech-param-output": "The formats of the output, can be a combination of the following:",
 	"apihelp-wikispeech-paramvalue-output-originalcontent": "The original HTML of the page. Intended as help when debugging.",
 	"apihelp-wikispeech-paramvalue-output-cleanedtext": "The page content with HTML tags removed.",
-	"apihelp-wikispeech-paramvalue-output-segments": "The page content segmented into sentence.",
+	"apihelp-wikispeech-paramvalue-output-segments": "The page content segmented into sentences.",
 	"apihelp-wikispeech-param-removetags": "The tags that should be removed completely during cleaning, as a JSON object of the format:\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\"\n}</pre>\nwhere <code>tagName1</code> is always removed and <code>tagName2</code> is only removed if it also has the CSS class <code>cssClass</code>.",
 	"apihelp-wikispeech-param-segmentbreakingtags": "The tag names for tags that should add segment breaks.",
 	"apihelp-wikispeech-example-1": "Get segments for the Wikispeech extension. The tag <code>sup</code> is removed and so is <code>div</code> when it has the class <code>toc</code>. The tags <code>h1</code> and <code>h2</code> break segments.",
-	"apihelp-wikispeech-example-2": "Get original HTML content and cleaned text.",
-	"apierror-nooutput": "Parameter <var>output</var> can't be empty."
+	"apihelp-wikispeech-example-2": "Get original HTML content and cleaned text."
 }

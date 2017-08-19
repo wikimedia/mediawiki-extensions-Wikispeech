@@ -26,12 +26,12 @@ module.exports = function ( grunt ) {
 			all: [
 				'*.json',
 				'**/*.json',
-				'!node_modules/**'
+				'!node_modules/**',
+				'!vendor/**'
 			]
 		},
 		stylelint: {
 			options: {
-				configFile: '.stylelintrc',
 				formatter: 'string',
 				ignoreDisables: false,
 				failOnError: true,
@@ -39,7 +39,7 @@ module.exports = function ( grunt ) {
 				reportNeedlessDisables: false,
 				syntax: ''
 			},
-			all: 'modules/**/*.css'
+			all: 'modules/**/*.{css,less}'
 		}
 	} );
 

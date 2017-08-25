@@ -6,7 +6,7 @@
  * @license GPL-2.0+
  */
 
-class WikispeechApi extends ApiBase {
+class ApiWikispeech extends ApiBase {
 
 	/**
 	 * Execute an API request.

@@ -112,6 +112,9 @@ class Segmenter {
 	 * @param int $startOffset The offset where the next sentence can
 	 *  start, at the earliest. If the sentence has leading
 	 *  whitespaces, this will be moved forward.
+	 * @return int The offset of the last character in the
+	 *   sentence. If the sentence didn't end yet, this is the last
+	 *   character of $text.
 	 */
 
 	private function addSegment( $text, $startOffset=0 ) {

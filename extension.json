@@ -61,9 +61,6 @@
 		"ResourceLoaderTestModules": [
 			"WikispeechHooks::onResourceLoaderTestModules"
 		],
-		"ParserAfterTidy": [
-			"WikispeechHooks::onParserAfterTidy"
-		],
 		"BeforePageDisplay": [
 			"WikispeechHooks::onBeforePageDisplay"
 		],
@@ -74,11 +71,10 @@
 	"config": {
 		"WikispeechServerUrl": "https://morf.se/wikispeech/",
 		"WikispeechRemoveTags": {
-			"editsection": true,
-			"toc": true,
+			"span": "mw-editsection",
 			"table": true,
 			"sup": "reference",
-			"div": "thumb"
+			"div": [ "thumb", "toc" ]
 		},
 		"WikispeechSegmentBreakingTags": [
 			"h1",
@@ -91,7 +87,7 @@
 			"br",
 			"li"
 		],
-		"WikispeechNamespaces": [ "NS_MAIN" ],
+		"WikispeechNamespaces": [ 0 ],
 		"WikispeechKeyboardShortcuts": {
 			"playStop": {
 				"key": 32,
@@ -117,7 +113,7 @@
 		"WikispeechSkipBackRewindsThreshold": 3.0,
 		"WikispeechHelpPage": "Help:Wikispeech",
 		"WikispeechFeedbackPage": "Wikispeech feedback",
-		"WikispeechContentWrapperClass": "mw-parser-output"
+		"WikispeechContentSelector": "#mw-content-text"
 	},
 	"APIModules": {
 		"wikispeech": "WikispeechApi"

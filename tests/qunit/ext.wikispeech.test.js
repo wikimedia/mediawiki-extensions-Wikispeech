@@ -1,17 +1,16 @@
 ( function ( mw, $ ) {
-	var server;
+	var server, utterances;
 
 	QUnit.module( 'ext.wikispeech', {
 		setup: function () {
-			var $utterances;
-
 			mw.wikispeech.wikispeech = new mw.wikispeech.Wikispeech();
 			// Mock highlighter for methods that are called as side
 			// effects.
 			mw.wikispeech.highlighter = {
 				removeWrappers: sinon.spy(),
 				highlightUtterance: function () {},
-				highlightToken: function () {}
+				clearHighlightTokenTimer: function () {},
+				startTokenHighlighting: sinon.spy()
 			};
 			server = sinon.fakeServer.create();
 			// overrideMimeType() isn't defined by default.
@@ -19,18 +18,15 @@
 			$( '#qunit-fixture' ).append(
 				$( '<div></div>' ).attr( 'id', 'content' )
 			);
-			$utterances = $( '#qunit-fixture' ).append(
-				$( '<utterances></utterances>' )
-			);
-			$( '<utterance></utterance>' )
-				.attr( {
-					id: 'utterance-0',
-					'start-offset': '0'
-				} )
-				.appendTo( $utterances );
-			$( '<utterance></utterance>' )
-				.attr( 'id', 'utterance-1' )
-				.appendTo( $utterances );
+			utterances = [
+				{
+					startOffset: 0,
+					endOffset: 14,
+					content: [ { string: 'Utterance zero.' } ]
+				},
+				{ content: [ { string: 'Utterance one.' } ] }
+			];
+			mw.wikispeech.wikispeech.utterances = utterances;
 			mw.config.set(
 				'wgWikispeechKeyboardShortcuts', {
 					playStop: {
@@ -69,14 +65,51 @@
 		}
 	} );
 
+	QUnit.test( 'enabledForNamespace()', function ( assert ) {
+		assert.expect( 1 );
+
+		mw.config.set( 'wgWikispeechNamespaces', [ 1, 2 ] );
+		mw.config.set( 'wgNamespaceNumber', 1 );
+
+		assert.strictEqual(
+			mw.wikispeech.wikispeech.enabledForNamespace(),
+			true
+		);
+	} );
+
+	QUnit.test( 'enabledForNamespace(): false if invalid namespace', function ( assert ) {
+		assert.expect( 1 );
+
+		mw.config.set( 'wgWikispeechNamespaces', [ 1 ] );
+		mw.config.set( 'wgNamespaceNumber', 2 );
+
+		assert.strictEqual(
+			mw.wikispeech.wikispeech.enabledForNamespace(),
+			false
+		);
+	} );
+
+	QUnit.test( 'loadUtterances()', function ( assert ) {
+		assert.expect( 1 );
+
+		mw.config.set( 'wgPageName', 'Page' );
+
+		mw.wikispeech.wikispeech.loadUtterances();
+
+		assert.strictEqual(
+			decodeURIComponent( server.requests[ 0 ].requestBody ),
+			'action=wikispeech&format=json&page=Page&output=segments'
+		);
+	} );
+
 	QUnit.test( 'prepareUtterance()', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'loadAudio' );
 
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
 
 		assert.strictEqual(
-			mw.wikispeech.wikispeech.loadAudio.calledWith( $( '#utterance-0' ) ),
+			mw.wikispeech.wikispeech.loadAudio.calledWith( utterances[ 0 ] ),
 			true
 		);
 	} );
@@ -86,41 +119,42 @@
 		// jscs:enable validateQuoteMarks
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'loadAudio' );
-		$( '#utterance-0' ).prop( 'waitingForResponse', true );
+		utterances[ 0 ].waitingForResponse = true;
 
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
 
-		assert.strictEqual( mw.wikispeech.wikispeech.loadAudio.notCalled, true );
+		assert.strictEqual(
+			mw.wikispeech.wikispeech.loadAudio.notCalled,
+			true
+		);
 	} );
 
 	// jscs:disable validateQuoteMarks
 	QUnit.test( "prepareUtterance(): don't load audio if already loaded", function ( assert ) {
 		// jscs:enable validateQuoteMarks
 		assert.expect( 1 );
-		$( '<content></content>' )
-			.append( $( '<text></text>' ).text( 'An utterance.' ) )
-			.appendTo( '#utterance-0' );
-		$( '<audio></audio>' )
-			.attr( 'src', 'http://server.url/audio' )
-			.appendTo( '#utterance-0' );
+		utterances[ 0 ].audio = $( '<audio></audio>' )
+			.attr( 'src', 'http://server.url/audio' );
 		sinon.spy( mw.wikispeech.wikispeech, 'loadAudio' );
 
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
 
-		assert.strictEqual( mw.wikispeech.wikispeech.loadAudio.notCalled, true );
+		assert.strictEqual(
+			mw.wikispeech.wikispeech.loadAudio.notCalled,
+			true
+		);
 	} );
 
 	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', function ( assert ) {
-		var $nextUtterance = $( '#utterance-1' );
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
 		sinon.spy( mw.wikispeech.wikispeech, 'prepareUtterance' );
 
-		$( '#utterance-0 audio' ).trigger( 'play' );
+		$( utterances[ 0 ].audio ).trigger( 'play' );
 
 		assert.strictEqual(
 			mw.wikispeech.wikispeech.prepareUtterance.calledWith(
-				$nextUtterance
+				utterances[ 1 ]
 			),
 			true
 		);
@@ -131,117 +165,105 @@
 		// jscs:enable validateQuoteMarks
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'prepareUtterance' );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-1' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
 
-		$( '#utterance-1 audio' ).trigger( 'play' );
+		$( utterances[ 1 ].audio ).trigger( 'play' );
 
 		assert.strictEqual(
-			mw.wikispeech.wikispeech.prepareUtterance.calledWith(
-				$( '#utterance-2' )
-			),
-			false
+			mw.wikispeech.wikispeech.prepareUtterance.calledOnce,
+			true
 		);
 	} );
 
 	QUnit.test( 'prepareUtterance(): play next utterance when ended', function ( assert ) {
-		var $nextAudio;
+		var nextAudio;
 
 		assert.expect( 1 );
 		// Assume that both utterances are prepared.
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-1' ) );
-		$nextAudio = $( '#utterance-1' ).children( 'audio' ).get( 0 );
-		sinon.spy( $nextAudio, 'play' );
-		mw.wikispeech.wikispeech.playUtterance( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
+		nextAudio = utterances[ 1 ].audio;
+		sinon.spy( nextAudio, 'play' );
+		mw.wikispeech.wikispeech.playUtterance( utterances[ 0 ] );
 
-		$( '#utterance-0 audio' ).trigger( 'ended' );
+		$( utterances[ 0 ].audio ).trigger( 'ended' );
 
-		assert.strictEqual( $nextAudio.play.called, true );
+		assert.strictEqual( nextAudio.play.called, true );
 	} );
 
 	QUnit.test( 'prepareUtterance(): stop when end of text is reached', function ( assert ) {
-		var $lastUtterance = $( '#utterance-1' );
+		var lastUtterance = utterances[ 1 ];
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'stop' );
-		mw.wikispeech.wikispeech.prepareUtterance( $lastUtterance );
-		mw.wikispeech.wikispeech.playUtterance( $lastUtterance );
+		mw.wikispeech.wikispeech.prepareUtterance( lastUtterance );
+		mw.wikispeech.wikispeech.playUtterance( lastUtterance );
 
-		$lastUtterance.children( 'audio' ).trigger( 'ended' );
+		$( lastUtterance.audio ).trigger( 'ended' );
 
 		assert.strictEqual( mw.wikispeech.wikispeech.stop.called, true );
 	} );
 
 	QUnit.test( 'loadAudio()', function ( assert ) {
 		assert.expect( 2 );
-		$( '<content></content>' )
-			.append( $( '<text></text>' ).text( 'An utterance.' ) )
-			.appendTo( '#utterance-0' );
 		sinon.spy( mw.wikispeech.wikispeech, 'requestTts' );
 
-		mw.wikispeech.wikispeech.loadAudio( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.loadAudio( utterances[ 0 ] );
 
 		assert.strictEqual( mw.wikispeech.wikispeech.requestTts.called, true );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'lang=en&input_type=text&input=An+utterance.'
+			'lang=en&input_type=text&input=Utterance+zero.'
 		);
 	} );
 
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
 		assert.expect( 3 );
-		$( '<content></content>' )
-			.append( $( '<text></text>' ).text( 'An utterance.' ) )
-			.appendTo( '#utterance-0' );
-		$( '<audio></audio>' ).appendTo( '#utterance-0' );
-		$( '#utterance-0' ).prop( 'waitingForResponse', true );
+		utterances[ 0 ].audio = $( '<audio></audio>' ).get( 0 );
+		utterances[ 0 ].waitingForResponse = true;
 		server.respondWith(
-			'{"audio": "http://server.url/audio", "tokens": [{"orth": "An"}, {"orth": "utterance"}, {"orth": "."}]}'
+			'{"audio": "http://server.url/audio", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}'
 		);
-		sinon.spy( mw.wikispeech.wikispeech, 'addTokenElements' );
-
-		mw.wikispeech.wikispeech.loadAudio( $( '#utterance-0' ) );
+		sinon.stub( mw.wikispeech.wikispeech, 'addTokens' );
+		mw.wikispeech.wikispeech.loadAudio( utterances[ 0 ] );
 
 		server.respond();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).attr( 'src' ),
+			utterances[ 0 ].audio.src,
 			'http://server.url/audio'
 		);
 		assert.strictEqual(
-			mw.wikispeech.wikispeech.addTokenElements.calledWith(
-				$( '#utterance-0' ),
-				[ { orth: 'An' }, { orth: 'utterance' }, { orth: '.' } ]
+			mw.wikispeech.wikispeech.addTokens.calledWith(
+				utterances[ 0 ],
+				[ { orth: 'Utterance' }, { orth: 'zero' }, { orth: '.' } ]
 			),
 			true
 		);
 		assert.strictEqual(
-			$( '#utterance-0' ).prop( 'waitingForResponse' ),
+			utterances[ 0 ].waitingForResponse,
 			false
 		);
 	} );
 
 	QUnit.test( 'loadAudio(): request failed', function ( assert ) {
 		assert.expect( 3 );
-		$( '<content></content>' )
-			.append( $( '<text></text>' ).text( 'An utterance.' ) )
-			.appendTo( '#utterance-0' );
-		$( '<audio></audio>' ).appendTo( '#utterance-0' );
-		$( '#utterance-0' ).prop( 'waitingForResponse', true );
+		utterances[ 0 ].audio = $( '<audio></audio>' ).get( 0 );
+		utterances[ 0 ].waitingForResponse = true;
 		server.respondWith( [ 404, {}, '' ] );
-		sinon.spy( mw.wikispeech.wikispeech, 'addTokenElements' );
-		mw.wikispeech.wikispeech.loadAudio( $( '#utterance-0' ) );
+		sinon.spy( mw.wikispeech.wikispeech, 'addTokens' );
+		mw.wikispeech.wikispeech.loadAudio( utterances[ 0 ] );
 
 		server.respond();
 
-		assert.strictEqual( mw.wikispeech.wikispeech.addTokenElements.notCalled, true );
 		assert.strictEqual(
-			$( '#utterance-0' ).prop( 'waitingForResponse' ),
+			mw.wikispeech.wikispeech.addTokens.notCalled,
+			true
+		);
+		assert.strictEqual(
+			utterances[ 0 ].waitingForResponse,
 			false
 		);
-		assert.strictEqual(
-			$( '#utterance-0 audio' ).attr( 'src' ),
-			undefined
-		);
+		assert.strictEqual( utterances[ 0 ].audio.src, '' );
 	} );
 
 	QUnit.test( 'addControlPanel()', function ( assert ) {
@@ -291,10 +313,8 @@
 
 	QUnit.test( 'addControlPanel(): do not add help button if page is not set', function ( assert ) {
 		assert.expect( 1 );
-		mw.config.set(
-			'wgWikispeechHelpPage',
-			null
-		);
+		mw.config.set( 'wgWikispeechHelpPage', null );
+
 		mw.wikispeech.wikispeech.addControlPanel();
 
 		assert.strictEqual(
@@ -360,7 +380,10 @@
 
 		$( buttonSelector ).click();
 
-		assert.strictEqual( mw.wikispeech.wikispeech[ functionName ].called, true );
+		assert.strictEqual(
+			mw.wikispeech.wikispeech[ functionName ].called,
+			true
+		);
 	}
 
 	QUnit.test( 'Clicking skip ahead sentence button', function ( assert ) {
@@ -389,7 +412,8 @@
 
 	QUnit.test( 'playOrStop(): play', function ( assert ) {
 		assert.expect( 1 );
-		sinon.stub( mw.wikispeech.wikispeech, 'play' );
+		utterances[ 0 ].audio = $( '<audio></audio>' ).get( 0 );
+		sinon.spy( mw.wikispeech.wikispeech, 'play' );
 
 		mw.wikispeech.wikispeech.playOrStop();
 
@@ -398,8 +422,9 @@
 
 	QUnit.test( 'playOrStop(): stop', function ( assert ) {
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.$currentUtterance = $( '#utterance-0' );
-		sinon.stub( mw.wikispeech.wikispeech, 'stop' );
+		utterances[ 0 ].audio = $( '<audio></audio>' ).get( 0 );
+		mw.wikispeech.wikispeech.play();
+		sinon.spy( mw.wikispeech.wikispeech, 'stop' );
 
 		mw.wikispeech.wikispeech.playOrStop();
 
@@ -424,8 +449,12 @@
 
 	function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.addKeyboardShortcuts();
+		utterances[ 0 ].audio = $( '<audio></audio>' ).get( 0 );
+		utterances[ 0 ].tokens = [];
+		utterances[ 1 ].audio = $( '<audio></audio>' ).get( 0 );
+
 		sinon.stub( mw.wikispeech.wikispeech, functionName );
+		mw.wikispeech.wikispeech.addKeyboardShortcuts();
 
 		$( document ).trigger( createKeydownEvent( keyCode, modifiers ) );
 
@@ -470,15 +499,15 @@
 	QUnit.test( 'stop()', function ( assert ) {
 		assert.expect( 4 );
 		mw.wikispeech.wikispeech.addControlPanel();
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
 		mw.wikispeech.wikispeech.play();
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
+		utterances[ 0 ].audio.currentTime = 1.0;
 
 		mw.wikispeech.wikispeech.stop();
 
-		assert.strictEqual( $( '#utterance-0 audio' ).prop( 'paused' ), true );
+		assert.strictEqual( utterances[ 0 ].audio.paused, true );
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			0.0
 		);
 		assert.strictEqual(
@@ -494,17 +523,14 @@
 	} );
 
 	QUnit.test( 'play()', function ( assert ) {
-		var $firstUtterance = $( '#utterance-0' );
+		var firstUtterance = utterances[ 0 ];
 		assert.expect( 3 );
 		mw.wikispeech.wikispeech.addControlPanel();
-		mw.wikispeech.wikispeech.prepareUtterance( $firstUtterance );
+		mw.wikispeech.wikispeech.prepareUtterance( firstUtterance );
 
 		mw.wikispeech.wikispeech.play();
 
-		assert.strictEqual(
-			$firstUtterance.children( 'audio' ).prop( 'paused' ),
-			false
-		);
+		assert.strictEqual( firstUtterance.audio.paused, false );
 		assert.strictEqual(
 			$( '#ext-wikispeech-play-stop-button' )
 				.hasClass( 'ext-wikispeech-stop' ),
@@ -519,23 +545,21 @@
 
 	QUnit.test( 'skipAheadUtterance()', function ( assert ) {
 		assert.expect( 2 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-1' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
 		mw.wikispeech.wikispeech.play();
 
 		mw.wikispeech.wikispeech.skipAheadUtterance();
 
-		assert.strictEqual( $( '#utterance-0 audio' ).prop( 'paused' ), true );
-		assert.strictEqual(
-			$( '#utterance-1 audio' ).prop( 'paused' ),
-			false
-		);
+		assert.strictEqual( utterances[ 0 ].audio.paused, true );
+		assert.strictEqual( utterances[ 1 ].audio.paused, false );
 	} );
 
 	QUnit.test( 'skipAheadUtterance(): stop if no next utterance', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'stop' );
-		mw.wikispeech.wikispeech.$currentUtterance = $( '#utterance-1' );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
+		mw.wikispeech.wikispeech.playUtterance( utterances[ 1 ] );
 
 		mw.wikispeech.wikispeech.skipAheadUtterance();
 
@@ -544,101 +568,90 @@
 
 	QUnit.test( 'skipBackUtterance()', function ( assert ) {
 		assert.expect( 2 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-1' ) );
-		mw.wikispeech.wikispeech.playUtterance( $( '#utterance-1' ) );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
+		mw.wikispeech.wikispeech.playUtterance( utterances[ 1 ] );
 
 		mw.wikispeech.wikispeech.skipBackUtterance();
 
-		assert.strictEqual( $( '#utterance-1 audio' ).prop( 'paused' ), true );
-		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'paused' ),
-			false
-		);
+		assert.strictEqual( utterances[ 1 ].audio.paused, true );
+		assert.strictEqual( utterances[ 0 ].audio.paused, false );
 	} );
 
 	QUnit.test( 'skipBackUtterance(): restart if first utterance', function ( assert ) {
 		assert.expect( 2 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.playUtterance( $( '#utterance-0' ) );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.0 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		mw.wikispeech.wikispeech.playUtterance( utterances[ 0 ] );
+		utterances[ 0 ].audio.currentTime = 1.0;
 
 		mw.wikispeech.wikispeech.skipBackUtterance();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'paused' ),
+			utterances[ 0 ].audio.paused,
 			false
 		);
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			0.0
 		);
 	} );
 
 	QUnit.test( 'skipBackUtterance(): restart if played long enough', function ( assert ) {
 		assert.expect( 3 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-1' ) );
-		mw.wikispeech.wikispeech.playUtterance( $( '#utterance-1' ) );
-		$( '#utterance-1 audio' ).prop( 'currentTime', 3.1 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
+		mw.wikispeech.wikispeech.playUtterance( utterances[ 1 ] );
+		utterances[ 1 ].audio.currentTime = 3.1;
 
 		mw.wikispeech.wikispeech.skipBackUtterance();
 
 		assert.strictEqual(
-			$( '#utterance-1 audio' ).prop( 'paused' ),
+			utterances[ 1 ].audio.paused,
 			false
 		);
 		assert.strictEqual(
-			$( '#utterance-1 audio' ).prop( 'currentTime' ),
+			utterances[ 1 ].audio.currentTime,
 			0.0
 		);
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'paused' ),
+			utterances[ 0 ].audio.paused,
 			true
 		);
 	} );
 
 	QUnit.test( 'getNextUtterance()', function ( assert ) {
-		var $nextUtterance;
+		var nextUtterance;
 
 		assert.expect( 1 );
 
-		$nextUtterance = mw.wikispeech.wikispeech.getNextUtterance( $( '#utterance-0' ) );
+		nextUtterance =
+			mw.wikispeech.wikispeech.getNextUtterance( utterances[ 0 ] );
 
-		assert.strictEqual(
-			$nextUtterance.get( 0 ),
-			$( '#utterance-1' ).get( 0 )
-		);
+		assert.strictEqual( nextUtterance, utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getNextUtterance(): return the empty object if no current utterance', function ( assert ) {
-		var $nextUtterance;
+	QUnit.test( 'getNextUtterance(): return null if no current utterance', function ( assert ) {
+		var nextUtterance;
 
 		assert.expect( 1 );
 
-		$nextUtterance = mw.wikispeech.wikispeech.getNextUtterance( $() );
+		nextUtterance = mw.wikispeech.wikispeech.getNextUtterance( null );
 
-		assert.strictEqual( $nextUtterance.length, 0 );
+		assert.strictEqual( nextUtterance, null );
 	} );
 
-	QUnit.test( 'addTokenElements()', function ( assert ) {
-		var tokens, $tokensElement, $content, textElement;
+	QUnit.test( 'addTokens()', function ( assert ) {
+		var tokens;
 
-		assert.expect( 9 );
-		addContentText( 'An utterance.' );
-		$content = $( '<content></content>' )
-			.appendTo( '#utterance-0' );
-		textElement = $( '<text></text>' )
-			.text( 'An utterance.' )
-			.appendTo( $content )
-			.get( 0 );
+		assert.expect( 1 );
+		addContentText( 'Utterance zero.' );
 		tokens = [
 			{
-				orth: 'An',
+				orth: 'Utterance',
 				endtime: 1.0
 			},
 			{
-				orth: 'utterance',
+				orth: 'zero',
 				endtime: 2.0
 			},
 			{
@@ -647,47 +660,39 @@
 			}
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements(
-			$( '#utterance-0' ),
-			tokens
-		);
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
 		assert.deepEqual(
-			$tokensElement.children().get( 0 ).textElements,
-			[ textElement ]
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 0 ).startOffset,
-			0
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 0 ).endOffset,
-			1
-		);
-		assert.deepEqual(
-			$tokensElement.children().get( 1 ).textElements,
-			[ textElement ]
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).startOffset,
-			3
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).endOffset,
-			11
-		);
-		assert.deepEqual(
-			$tokensElement.children().get( 2 ).textElements,
-			[ textElement ]
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).startOffset,
-			12
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).endOffset,
-			12
+			[
+				{
+					string: 'Utterance',
+					utterance: utterances[ 0 ],
+					startTime: 0.0,
+					endTime: 1.0,
+					items: [ utterances[ 0 ].content[ 0 ] ],
+					startOffset: 0,
+					endOffset: 8
+				},
+				{
+					string: 'zero',
+					utterance: utterances[ 0 ],
+					startTime: 1.0,
+					endTime: 2.0,
+					items: [ utterances[ 0 ].content[ 0 ] ],
+					startOffset: 10,
+					endOffset: 13
+				},
+				{
+					string: '.',
+					utterance: utterances[ 0 ],
+					startTime: 2.0,
+					endTime: 3.0,
+					items: [ utterances[ 0 ].content[ 0 ] ],
+					startOffset: 14,
+					endOffset: 14
+				}
+			],
+			utterances[ 0 ].tokens
 		);
 	} );
 
@@ -705,26 +710,14 @@
 		);
 	}
 
-	QUnit.test( 'addTokenElements(): handle tag', function ( assert ) {
-		var tokens, $tokensElement, $content, textElement1,
-			textElement2, textElement3;
+	QUnit.test( 'addTokens(): handle tag', function ( assert ) {
+		var tokens;
 
 		assert.expect( 12 );
 		addContentText( 'Utterance with <b>tag</b>.' );
-		$content = $( '<content></content>' )
-			.appendTo( '#utterance-0' );
-		textElement1 = $( '<text></text>' )
-			.text( 'Utterance with ' )
-			.appendTo( $content )
-			.get( 0 );
-		textElement2 = $( '<text></text>' )
-			.text( 'tag' )
-			.appendTo( $content )
-			.get( 0 );
-		textElement3 = $( '<text></text>' )
-			.text( '.' )
-			.appendTo( $content )
-			.get( 0 );
+		utterances[ 0 ].content[ 0 ].string = 'Utterance with ';
+		utterances[ 0 ].content[ 1 ] = { string: 'tag' };
+		utterances[ 0 ].content[ 2 ] = { string: '.' };
 		tokens = [
 			{
 				orth: 'Utterance',
@@ -744,71 +737,42 @@
 			}
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
 		assert.deepEqual(
-			$tokensElement.children().get( 0 ).textElements,
-			[ textElement1 ]
+			utterances[ 0 ].tokens[ 0 ].items,
+			[ utterances[ 0 ].content[ 0 ] ]
 		);
-		assert.strictEqual(
-			$tokensElement.children().get( 0 ).startOffset,
-			0
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 0 ).endOffset,
-			8
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 0 ].startOffset, 0 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 0 ].endOffset, 8 );
 		assert.deepEqual(
-			$tokensElement.children().get( 1 ).textElements,
-			[ textElement1 ]
+			utterances[ 0 ].tokens[ 1 ].items
+			[ utterances[ 0 ].content[ 0 ] ]
 		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).startOffset,
-			10
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).endOffset,
-			13
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 1 ].startOffset, 10 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 1 ].endOffset, 13 );
 		assert.deepEqual(
-			$tokensElement.children().get( 2 ).textElements,
-			[ textElement2 ]
+			utterances[ 0 ].tokens[ 2 ].items,
+			[ utterances[ 0 ].content[ 1 ] ]
 		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).startOffset,
-			0
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).endOffset,
-			2
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 2 ].startOffset, 0 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 2 ].endOffset, 2 );
 		assert.deepEqual(
-			$tokensElement.children().get( 3 ).textElements,
-			[ textElement3 ]
+			utterances[ 0 ].tokens[ 3 ].items,
+			[ utterances[ 0 ].content[ 2 ] ]
 		);
-		assert.strictEqual(
-			$tokensElement.children().get( 3 ).startOffset,
-			0
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 3 ).endOffset,
-			0
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 3 ].startOffset, 0 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 3 ].endOffset, 0 );
 	} );
 
-	QUnit.test( 'addTokenElements(): handle removed element', function ( assert ) {
-		var tokens, $tokensElement, $content, textElement;
+	QUnit.test( 'addTokens(): handle removed element', function ( assert ) {
+		var tokens;
 
 		assert.expect( 3 );
 		addContentText( 'Utterance with <del>removed tag</del>.' );
-		$content = $( '<content></content>' )
-			.append( $( '<text></text>' ).text( 'Utterance with ' ) )
-			.appendTo( '#utterance-0' );
-		textElement = $( '<text></text>' )
-			.text( '.' )
-			.appendTo( $content )
-			.get( 0 );
+		utterances[ 0 ].content[ 0 ].string = 'Utterance with ';
+		utterances[ 0 ].content[ 1 ] = { string: 'removed tag' };
+		utterances[ 0 ].content[ 2 ] = { string: '.' };
 		tokens = [
 			{
 				orth: 'Utterance',
@@ -824,44 +788,24 @@
 			}
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0 tokens' );
 		assert.deepEqual(
-			$tokensElement.children().get( 2 ).textElements,
-			[ textElement ]
+			utterances[ 0 ].tokens[ 2 ].items,
+			[ utterances[ 0 ].content[ 2 ] ]
 		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).startOffset,
-			0
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).endOffset,
-			0
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 2 ].startOffset, 0 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 2 ].endOffset, 0 );
 	} );
 
-	QUnit.test( 'addTokenElements(): divided tokens', function ( assert ) {
-		var tokens, $tokensElement, $content, textElement1,
-			textElement2, textElement3;
+	QUnit.test( 'addTokens(): divided tokens', function ( assert ) {
+		var tokens;
 
 		assert.expect( 3 );
 		addContentText( 'Utterance with divided to<b>k</b>en.' );
-		$content = $( '<content></content>' )
-			.appendTo( '#utterance-0' );
-		textElement1 = $( '<text></text>' )
-			.text( 'Utterance with divided to' )
-			.appendTo( $content )
-			.get( 0 );
-		textElement2 = $( '<text></text>' )
-			.text( 'k' )
-			.appendTo( $content )
-			.get( 0 );
-		textElement3 = $( '<text></text>' )
-			.text( 'en.' )
-			.appendTo( $content )
-			.get( 0 );
-		$( '#utterance-0' ).append( $content );
+		utterances[ 0 ].content[ 0 ].string = 'Utterance with divided to';
+		utterances[ 0 ].content[ 1 ] = { string: 'k' };
+		utterances[ 0 ].content[ 2 ] = { string: 'en.' };
 		tokens = [
 			{ orth: 'Utterance' },
 			{ orth: 'with' },
@@ -870,34 +814,26 @@
 			{ orth: '.' }
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
 		assert.deepEqual(
-			$tokensElement.children().get( 3 ).textElements,
-			[ textElement1, textElement2, textElement3 ]
+			utterances[ 0 ].tokens[ 3 ].items,
+			[
+				utterances[ 0 ].content[ 0 ],
+				utterances[ 0 ].content[ 1 ],
+				utterances[ 0 ].content[ 2 ]
+			]
 		);
-		assert.strictEqual(
-			$tokensElement.children().get( 3 ).startOffset,
-			23
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 3 ).endOffset,
-			1
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 3 ].startOffset, 23 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 3 ].endOffset, 1 );
 	} );
 
-	QUnit.test( 'addTokenElements(): ambiguous tokens', function ( assert ) {
-		var tokens, $tokensElement;
+	QUnit.test( 'addTokens(): ambiguous tokens', function ( assert ) {
+		var tokens;
 
 		assert.expect( 4 );
 		addContentText( 'A word and the same word.' );
-		$( '<content></content>' )
-			.append(
-				$( '<text></text>' )
-					.text( 'A word and the same word.' )
-			)
-			.appendTo( '#utterance-0' );
+		utterances[ 0 ].content[ 0 ].string = 'A word and the same word.';
 		tokens = [
 			{ orth: 'A' },
 			{ orth: 'word' },
@@ -908,37 +844,22 @@
 			{ orth: '.' }
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).startOffset,
-			2
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).endOffset,
-			5
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 5 ).startOffset,
-			20
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 5 ).endOffset,
-			23
-		);
+		assert.deepEqual( utterances[ 0 ].tokens[ 1 ].startOffset, 2 );
+		assert.deepEqual( utterances[ 0 ].tokens[ 1 ].endOffset, 5 );
+		assert.deepEqual( utterances[ 0 ].tokens[ 5 ].startOffset, 20 );
+		assert.deepEqual( utterances[ 0 ].tokens[ 5 ].endOffset, 23 );
 	} );
 
-	QUnit.test( 'addTokenElements(): ambiguous tokens in tag', function ( assert ) {
-		var tokens, $tokensElement;
+	QUnit.test( 'addTokens(): ambiguous tokens in tag', function ( assert ) {
+		var tokens;
 
 		assert.expect( 2 );
 		addContentText( 'Utterance with <b>word and word</b>.' );
-		$( '<content></content>' )
-			.append( $( '<text></text>' ).text( 'Utterance with ' ) )
-			.append( $( '<text></text>' ).text( 'word and word' ) )
-			.append( $( '<text></text>' ).text( '.' ) )
-			.appendTo( '#utterance-0' );
+		utterances[ 0 ].content[ 0 ].string = 'Utterance with ';
+		utterances[ 0 ].content[ 1 ] = { string: 'word and word' };
+		utterances[ 0 ].content[ 2 ] = { string: '.' };
 		tokens = [
 			{ orth: 'Utterance' },
 			{ orth: 'with' },
@@ -948,86 +869,42 @@
 			{ orth: '.' }
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		assert.strictEqual(
-			$tokensElement.children().get( 4 ).startOffset,
-			9
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 4 ).endOffset,
-			12
-		);
+		assert.deepEqual( utterances[ 0 ].tokens[ 4 ].startOffset, 9 );
+		assert.deepEqual( utterances[ 0 ].tokens[ 4 ].endOffset, 12 );
 	} );
 
-	QUnit.test( 'addTokenElements(): multiple utterances', function ( assert ) {
-		var tokens, $tokensElement;
+	QUnit.test( 'addTokens(): multiple utterances', function ( assert ) {
+		var tokens;
 
 		assert.expect( 6 );
 		addContentText( 'An utterance. Another utterance.' );
-		$( '#utterance-1' ).attr( 'start-offset', '14' );
-		$( '<content></content>' )
-			.append(
-				$( '<text></text>' )
-					.text( 'An utterance.' )
-			)
-			.appendTo( '#utterance-0' );
-		$( '<content></content>' )
-			.append(
-				$( '<text></text>' )
-					.text( 'Another utterance.' )
-			)
-			.appendTo( '#utterance-1' );
+		utterances[ 1 ].content[ 0 ].string =
+			'Another utterance.';
+		utterances[ 1 ].startOffset = 14;
 		tokens = [
 			{ orth: 'Another' },
 			{ orth: 'utterance' },
 			{ orth: '.' }
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements(
-			$( '#utterance-1' ),
-			tokens
-		);
+		mw.wikispeech.wikispeech.addTokens( utterances[ 1 ], tokens );
 
-		$tokensElement = $( '#utterance-1' ).children( 'tokens' );
-		assert.strictEqual(
-			$tokensElement.children().get( 0 ).startOffset,
-			14
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 0 ).endOffset,
-			20
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).startOffset,
-			22
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 1 ).endOffset,
-			30
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).startOffset,
-			31
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).endOffset,
-			31
-		);
+		assert.deepEqual( utterances[ 1 ].tokens[ 0 ].startOffset, 14 );
+		assert.deepEqual( utterances[ 1 ].tokens[ 0 ].endOffset, 20 );
+		assert.deepEqual( utterances[ 1 ].tokens[ 1 ].startOffset, 22 );
+		assert.deepEqual( utterances[ 1 ].tokens[ 1 ].endOffset, 30 );
+		assert.deepEqual( utterances[ 1 ].tokens[ 2 ].startOffset, 31 );
+		assert.deepEqual( utterances[ 1 ].tokens[ 2 ].endOffset, 31 );
 	} );
 
-	QUnit.test( 'addTokenElements(): ambiguous, one character long tokens', function ( assert ) {
-		var tokens, $tokensElement;
+	QUnit.test( 'addTokens(): ambiguous, one character long tokens', function ( assert ) {
+		var tokens;
 
 		assert.expect( 2 );
 		addContentText( 'a a a.' );
-		$( '<content></content>' )
-			.append(
-				$( '<text></text>' )
-					.text( 'a a a.' )
-			)
-			.appendTo( '#utterance-0' );
+		utterances[ 0 ].content[ 0 ].string = 'a a a.';
 		tokens = [
 			{ orth: 'a' },
 			{ orth: 'a' },
@@ -1035,286 +912,394 @@
 			{ orth: '.' }
 		];
 
-		mw.wikispeech.wikispeech.addTokenElements( $( '#utterance-0' ), tokens );
+		mw.wikispeech.wikispeech.addTokens( utterances[ 0 ], tokens );
 
-		$tokensElement = $( '#utterance-0' ).children( 'tokens' );
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).startOffset,
-			4
-		);
-		assert.strictEqual(
-			$tokensElement.children().get( 2 ).endOffset,
-			4
-		);
+		assert.strictEqual( utterances[ 0 ].tokens[ 2 ].startOffset, 4 );
+		assert.strictEqual( utterances[ 0 ].tokens[ 2 ].endOffset, 4 );
 	} );
 
 	QUnit.test( 'getCurrentToken()', function ( assert ) {
-		var $tokens, token, expectedToken;
+		var token;
 
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, '', 0.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
-		addToken( $tokens, '', 2.0, 3.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 2.0
+			},
+			{
+				startTime: 2.0,
+				endTime: 3.0
+			}
+		];
+		utterances[ 0 ].audio.currentTime = 1.1;
 		mw.wikispeech.wikispeech.play();
 
-		token = mw.wikispeech.wikispeech.getCurrentToken().get( 0 );
+		token = mw.wikispeech.wikispeech.getCurrentToken();
 
-		assert.strictEqual( token, expectedToken );
+		assert.strictEqual( token, utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	/**
-	 * Add a token element.
-	 *
-	 * @param {jQuery} $parent The jQuery to add the element to.
-	 * @param {string} string The token string.
-	 * @param {number} startTime The start time of the token.
-	 * @param {number} endTime The end time of the token.
-	 * @return {HTMLElement} The added token element.
-	 */
-
-	function addToken(
-		$parent,
-		string,
-		startTime,
-		endTime,
-		textNodes,
-		startOffset,
-		endOffset
-	) {
-		var $token = $( '<token></token>' )
-			.text( string )
-			.prop( {
-				startTime: startTime,
-				endTime: endTime,
-				textNodes: textNodes,
-				startOffset: startOffset,
-				endOffset: endOffset
-			} );
-		$parent.append( $token );
-		return $token.get( 0 );
-	}
-
 	QUnit.test( 'getCurrentToken(): get first token', function ( assert ) {
-		var $tokens, token, expectedToken;
+		var token;
 
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		expectedToken = addToken( $tokens, '', 0.0, 1.0 );
-		addToken( $tokens, '', 1.0, 2.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 0.1 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 2.0
+			},
+			{
+				startTime: 2.0,
+				endTime: 3.0
+			}
+		];
+		utterances[ 0 ].audio.currentTime = 0.1;
 		mw.wikispeech.wikispeech.play();
 
-		token = mw.wikispeech.wikispeech.getCurrentToken().get( 0 );
+		token = mw.wikispeech.wikispeech.getCurrentToken();
 
-		assert.strictEqual( token, expectedToken );
+		assert.strictEqual( token, utterances[ 0 ].tokens[ 0 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): get the last token', function ( assert ) {
-		var token, $tokens, expectedToken;
+		var token;
 
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, '', 0.0, 1.0 );
-		addToken( $tokens, '', 1.0, 2.0 );
-		expectedToken = addToken( $tokens, '', 2.0, 3.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 2.1 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 2.0
+			},
+			{
+				startTime: 2.0,
+				endTime: 3.0
+			}
+		];
+		utterances[ 0 ].audio.currentTime = 2.1;
 		mw.wikispeech.wikispeech.play();
 
-		token = mw.wikispeech.wikispeech.getCurrentToken().get( 0 );
+		token = mw.wikispeech.wikispeech.getCurrentToken();
 
-		assert.strictEqual( token, expectedToken );
+		assert.strictEqual( token, utterances[ 0 ].tokens[ 2 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): get the last token when current time is equal to last tokens end time', function ( assert ) {
-		var token, $tokens, expectedToken;
+		var token;
 
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, '', 0.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 2.0 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 2.0
+			}
+		];
+		utterances[ 0 ].audio.currentTime = 2.0;
 		mw.wikispeech.wikispeech.play();
 
-		token = mw.wikispeech.wikispeech.getCurrentToken().get( 0 );
+		token = mw.wikispeech.wikispeech.getCurrentToken();
 
-		assert.strictEqual( token, expectedToken );
+		assert.strictEqual( token, utterances[ 0 ].tokens[ 1 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): ignore tokens with no duration', function ( assert ) {
-		var token, $tokens, expectedToken;
+		var token;
 
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, '', 0.0, 1.0 );
-		addToken( $tokens, '', 1.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 2.0
+			}
+		];
+		utterances[ 0 ].audio.currentTime = 1.0;
 		mw.wikispeech.wikispeech.play();
 
-		token = mw.wikispeech.wikispeech.getCurrentToken().get( 0 );
+		token = mw.wikispeech.wikispeech.getCurrentToken();
 
-		assert.strictEqual( token, expectedToken );
+		assert.strictEqual(
+			token,
+			utterances[ 0 ].tokens[ 2 ]
+		);
 	} );
 
 	QUnit.test( 'getCurrentToken(): give correct token if there are tokens with no duration', function ( assert ) {
-		var token, $tokens, expectedToken;
+		var token;
 
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, '', 0.0, 1.0 );
-		addToken( $tokens, '', 1.0, 1.0 );
-		expectedToken = addToken( $tokens, '', 1.0, 2.0 );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 1.0
+			},
+			{
+				startTime: 1.0,
+				endTime: 2.0
+			}
+		];
+		utterances[ 0 ].audio.currentTime = 1.1;
 		mw.wikispeech.wikispeech.play();
 
-		token = mw.wikispeech.wikispeech.getCurrentToken().get( 0 );
+		token = mw.wikispeech.wikispeech.getCurrentToken();
 
-		assert.strictEqual( token, expectedToken );
+		assert.strictEqual( token, utterances[ 0 ].tokens[ 2 ] );
 	} );
 
 	QUnit.test( 'skipAheadToken()', function ( assert ) {
-		var $tokens;
-
 		assert.expect( 2 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'one', 0.0, 1.0 );
-		addToken( $tokens, 'two', 1.0, 2.0 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				string: 'one',
+				utterance: utterances[ 0 ],
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				string: 'two',
+				utterance: utterances[ 0 ],
+				startTime: 1.0,
+				endTime: 2.0
+			}
+		];
 		mw.wikispeech.wikispeech.play();
 
 		mw.wikispeech.wikispeech.skipAheadToken();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			1.0
 		);
 		assert.strictEqual(
-			mw.wikispeech.highlighter.removeWrappers.calledWith(
-				'.ext-wikispeech-highlight-word'
+			mw.wikispeech.highlighter.startTokenHighlighting.calledWith(
+				utterances[ 0 ].tokens[ 1 ]
 			),
 			true
 		);
 	} );
 
 	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', function ( assert ) {
-		var $tokens;
-
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( $( '#utterance-0' ) );
-		addToken( $tokens, 'first', 0.0, 1.0 );
-		addToken( $tokens, 'last', 1.0, 2.0 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				string: 'first',
+				utterance: utterances[ 0 ],
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				string: 'last',
+				utterance: utterances[ 0 ],
+				startTime: 1.0,
+				endTime: 2.0
+			}
+		];
 		mw.wikispeech.wikispeech.play();
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		utterances[ 0 ].audio.currentTime = 1.1;
 		sinon.stub( mw.wikispeech.wikispeech, 'skipAheadUtterance' );
 
 		mw.wikispeech.wikispeech.skipAheadToken();
 
-		assert.strictEqual(
-			mw.wikispeech.wikispeech.skipAheadUtterance.called,
-			true
-		);
+		assert.strictEqual( mw.wikispeech.wikispeech.skipAheadUtterance.called, true );
 	} );
 
 	QUnit.test( 'skipAheadToken(): ignore silent tokens', function ( assert ) {
-		var $tokens;
-
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, 'starting word', 0.0, 1.0 );
-		addToken( $tokens, 'no duration', 1.0, 1.0 );
-		addToken( $tokens, '', 1.0, 2.0 );
-		addToken( $tokens, 'goal', 2.0, 3.0 );
+		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 0 ] );
+		utterances[ 0 ].tokens = [
+			{
+				string: 'starting word',
+				utterance: utterances[ 0 ],
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				string: 'no duration',
+				utterance: utterances[ 0 ],
+				startTime: 1.0,
+				endTime: 1.0
+			},
+			{
+				string: '',
+				utterance: utterances[ 0 ],
+				startTime: 1.0,
+				endTime: 2.0
+			},
+			{
+				string: 'goal',
+				utterance: utterances[ 0 ],
+				startTime: 2.0,
+				endTime: 3.0
+			}
+		];
 		mw.wikispeech.wikispeech.play();
 
 		mw.wikispeech.wikispeech.skipAheadToken();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			2.0
 		);
 	} );
 
 	QUnit.test( 'skipBackToken()', function ( assert ) {
-		var $tokens;
-
 		assert.expect( 2 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, 'one', 0.0, 1.0 );
-		addToken( $tokens, 'two', 1.0, 2.0 );
+		mw.wikispeech.wikispeech.prepareUtterance(
+			utterances[ 0 ]
+		);
+		utterances[ 0 ].tokens = [
+			{
+				string: 'one',
+				startTime: 0.0,
+				endTime: 1.0,
+				utterance: utterances[ 0 ]
+			},
+			{
+				string: 'two',
+				startTime: 1.0,
+				endTime: 2.0,
+				utterance: utterances[ 0 ]
+			}
+		];
 		mw.wikispeech.wikispeech.play();
-		$( '#utterance-0 audio' ).prop( 'currentTime', 1.1 );
+		utterances[ 0 ].audio.currentTime = 1.1;
 
 		mw.wikispeech.wikispeech.skipBackToken();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			0.0
 		);
 		assert.strictEqual(
-			mw.wikispeech.highlighter.removeWrappers.calledWith(
-				'.ext-wikispeech-highlight-word'
+			mw.wikispeech.highlighter.startTokenHighlighting.calledWith(
+				utterances[ 0 ].tokens[ 0 ]
 			),
 			true
 		);
 	} );
 
 	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', function ( assert ) {
-		var $tokens, $tokens2;
-
 		assert.expect( 3 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-1' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, 'one', 0.0, 1.0 );
-		addToken( $tokens, 'two', 1.0, 2.0 );
-		$tokens2 = $( '<tokens></tokens>' ).appendTo( '#utterance-1' );
-		addToken( $tokens2, 'three', 0.0, 1.0 );
-		mw.wikispeech.wikispeech.playUtterance( $( '#utterance-1' ) );
+		mw.wikispeech.wikispeech.prepareUtterance(
+			utterances[ 0 ]
+		);
+		utterances[ 0 ].tokens = [
+			{
+				string: 'one',
+				startTime: 0.0,
+				endTime: 1.0
+			},
+			{
+				string: 'two',
+				startTime: 1.0,
+				endTime: 2.0,
+				utterance: utterances[ 0 ]
+			}
+		];
+		mw.wikispeech.wikispeech.prepareUtterance(
+			utterances[ 1 ]
+		);
+		utterances[ 1 ].tokens = [
+			{
+				string: 'three',
+				startTime: 0.0,
+				endTime: 1.0,
+				utterance: utterances[ 1 ]
+			}
+		];
+		mw.wikispeech.wikispeech.playUtterance(
+			utterances[ 1 ]
+		);
 
 		mw.wikispeech.wikispeech.skipBackToken();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'paused' ),
+			utterances[ 0 ].audio.paused,
 			false
 		);
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			1.0
 		);
 		assert.strictEqual(
-			$( '#utterance-1 audio' ).prop( 'paused' ),
+			utterances[ 1 ].audio.paused,
 			true
 		);
 	} );
 
 	QUnit.test( 'skipBackToken(): ignore silent tokens', function ( assert ) {
-		var $tokens;
-
 		assert.expect( 1 );
-		mw.wikispeech.wikispeech.prepareUtterance( $( '#utterance-0' ) );
-		$tokens = $( '<tokens></tokens>' ).appendTo( '#utterance-0' );
-		addToken( $tokens, 'goal', 0.0, 1.0 );
-		addToken( $tokens, 'no duration', 1.0, 1.0 );
-		addToken( $tokens, '', 1.0, 2.0 );
-		addToken( $tokens, 'starting word', 2.0, 3.0 );
-		mw.wikispeech.wikispeech.playUtterance( $( '#utterance-0' ) );
-		$( '#utterance-0 audio' ).prop( 'currentTime', 2.1 );
+		mw.wikispeech.wikispeech.prepareUtterance(
+			utterances[ 0 ]
+		);
+		utterances[ 0 ].tokens = [
+			{
+				string: 'goal',
+				startTime: 0.0,
+				endTime: 1.0,
+				utterance: utterances[ 0 ]
+			},
+			{
+				string: 'no duration',
+				startTime: 1.0,
+				endTime: 1.0
+			},
+			{
+				string: '',
+				startTime: 1.0,
+				endTime: 2.0
+			},
+			{
+				string: 'starting word',
+				startTime: 2.0,
+				endTime: 3.0,
+				utterance: utterances[ 0 ]
+			}
+		];
+		mw.wikispeech.wikispeech.playUtterance(
+			utterances[ 0 ]
+		);
+		utterances[ 0 ].audio.currentTime = 2.1;
 
 		mw.wikispeech.wikispeech.skipBackToken();
 
 		assert.strictEqual(
-			$( '#utterance-0 audio' ).prop( 'currentTime' ),
+			utterances[ 0 ].audio.currentTime,
 			0.0
 		);
 	} );

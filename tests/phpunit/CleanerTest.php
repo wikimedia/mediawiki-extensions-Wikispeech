@@ -13,11 +13,10 @@ class CleanerTest extends MediaWikiTestCase {
 	protected function setUp() {
 		parent::setUp();
 		$removeTags = [
-			'table' => true,
 			'sup' => 'reference',
-			'editsection' => true,
 			'h2' => false,
-			'del' => true
+			'del' => true,
+			'div' => [ 'toc', 'thumb' ]
 		];
 		$segmentBreakingTags = [
 			'hr',
@@ -234,6 +233,11 @@ class CleanerTest extends MediaWikiTestCase {
 
 	public function testRemoveTagsWithCertainClass() {
 		$markedUpText = '<sup class="reference">Remove this.</sup>';
+		$this->assertTextCleaned( [], $markedUpText );
+	}
+
+	public function testRemoveTagsWithOneOfClasses() {
+		$markedUpText = '<div class="toc">Remove this.</div><div class="thumb">Also this.</div>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 

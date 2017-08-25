@@ -15,32 +15,16 @@ class WikispeechApi extends ApiBase {
 	 */
 
 	function execute() {
-		if ( $this->getMain()->getVal( 'output' ) == '' ) {
-			$this->dieWithError( 'apierror-nooutput' );
+		$parameters = $this->extractRequestParams();
+		if ( empty( $parameters['output'] ) ) {
+			$this->dieWithError( [ 'apierror-paramempty', 'output' ] );
 		}
-		$outputFormats = $this->parseMultiValue(
-			'output',
-			$this->getMain()->getVal( 'output' ),
-			true,
-			[ 'originalcontent', 'cleanedtext', 'segments' ]
-		);
-		$pageTitle = $this->getMain()->getVal( 'page' );
-		$pageContent = $this->getPageContent( $pageTitle );
-		$removeTags = json_decode(
-			$this->getMain()->getVal( 'removetags' ),
-			true
-		);
-		$segmentBreakingTags = $this->parseMultiValue(
-			'segmentbreakingtags',
-			$this->getMain()->getVal( 'segmentbreakingtags' ),
-			true,
-			null
-		);
+		$pageContent = $this->getPageContent( $parameters['page'] );
 		$this->processPageContent(
 			$pageContent,
-			$outputFormats,
-			$removeTags,
-			$segmentBreakingTags
+			$parameters['output'],
+			json_decode( $parameters['removetags'], true ),
+			$parameters['segmentbreakingtags']
 		);
 	}
 
@@ -72,6 +56,7 @@ class WikispeechApi extends ApiBase {
 		if ( in_array( 'originalcontent', $outputFormats ) ) {
 			$values['originalcontent'] = $pageContent;
 		}
+
 		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
 		$cleanedText = null;
 		if ( in_array( 'cleanedtext', $outputFormats ) ) {
@@ -88,14 +73,16 @@ class WikispeechApi extends ApiBase {
 			}
 			$values['cleanedtext'] = trim( $cleanedTextString );
 		}
-		$segmenter = new Segmenter();
+
 		if ( in_array( 'segments', $outputFormats ) ) {
+			$segmenter = new Segmenter();
 			if ( $cleanedText == null ) {
 				$cleanedText = $cleaner->cleanHtml( $pageContent );
 			}
 			$segments = $segmenter->segmentSentences( $cleanedText );
 			$values['segments'] = $segments;
 		}
+
 		$this->getResult()->addValue(
 			null,
 			$this->getModuleName(),
@@ -104,7 +91,7 @@ class WikispeechApi extends ApiBase {
 	}
 
 	/**
-	 * Request the parsed content from the main API.
+	 * Get the parsed content of the named page.
 	 *
 	 * @since 0.0.1
 	 * @param string $pageTitle The title of the page to get content
@@ -114,14 +101,28 @@ class WikispeechApi extends ApiBase {
 	 */
 
 	private function getPageContent( $pageTitle ) {
-		$request = new FauxRequest( [
-			'action' => 'parse',
-			'page' => $pageTitle
-		] );
-		$api = new ApiMain( $request );
-		$api->execute();
-		$pageContent = $api->getResult()->getResultData( [ 'parse', 'text' ] );
-		return $pageContent;
+		// Get and validate Title
+		$title = Title::newFromText( $pageTitle );
+		if ( !$title || $title->isExternal() ) {
+			$this->dieWithError( [
+				'apierror-invalidtitle',
+				wfEscapeWikiText( $pageTitle )
+			] );
+		}
+		if ( !$title->canExist() ) {
+			$this->dieWithError( 'apierror-pagecannotexist' );
+		}
+
+		// Parse latest revision, using parser cache
+		$page = WikiPage::factory( $title );
+		$popts = $page->makeParserOptions( $this->getContext() );
+		$pout = $page->getParserOutput( $popts );
+		if ( !$pout ) {
+			$this->dieWithError( [ 'apierror-nosuchrevid', $page->getLatest() ] );
+		}
+
+		// Return HTML
+		return $pout->getText();
 	}
 
 	/**
@@ -132,6 +133,8 @@ class WikispeechApi extends ApiBase {
 	 */
 
 	public function getAllowedParams() {
+		global $wgWikispeechRemoveTags;
+		global $wgWikispeechSegmentBreakingTags;
 		return array_merge(
 			parent::getAllowedParams(),
 			[
@@ -150,11 +153,13 @@ class WikispeechApi extends ApiBase {
 					ApiBase::PARAM_HELP_MSG_PER_VALUE => []
 				],
 				'removetags' => [
-					ApiBase::PARAM_TYPE => 'string'
+					ApiBase::PARAM_TYPE => 'string',
+					ApiBase::PARAM_DFLT => json_encode( $wgWikispeechRemoveTags )
 				],
 				'segmentbreakingtags' => [
 					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_ISMULTI => true
+					ApiBase::PARAM_ISMULTI => true,
+					ApiBase::PARAM_DFLT => implode( $wgWikispeechSegmentBreakingTags, '|' )
 				]
 			]
 		);

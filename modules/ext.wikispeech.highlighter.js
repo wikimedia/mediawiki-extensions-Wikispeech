@@ -11,33 +11,29 @@
 		 * Highlight text associated with an utterance.
 		 *
 		 * Adds highlight spans to the text nodes from which the
-		 * tokens of $utterance were created. For first and last node,
+		 * tokens of the utterance were created. For first and last node,
 		 * it's possible that only part of the text is highlighted,
 		 * since they may contain start/end of next/previous
 		 * utterance.
 		 *
-		 * @param {jQuery} $utterance The utterance to add
+		 * @param {Object} utterance The utterance to add
 		 *  highlighting to.
 		 */
 
-		this.highlightUtterance = function ( $utterance ) {
-			var startOffset, endOffset, span, textNodes;
+		this.highlightUtterance = function ( utterance ) {
+			var textNodes, span;
 
-			startOffset =
-				parseInt( $utterance.attr( 'start-offset' ), 10 );
-			endOffset =
-				parseInt( $utterance.attr( 'end-offset' ), 10 );
-			textNodes = $utterance.find( 'text' ).map( function () {
-				return self.getNodeForTextElement( this );
-			} ).get();
+			textNodes = utterance.content.map( function ( item ) {
+				return self.getNodeForItem( item );
+			} );
 			span = $( '<span></span>' )
 				.addClass( self.utteranceHighlightingClass )
 				.get( 0 );
 			self.wrapTextNodes(
 				span,
 				textNodes,
-				startOffset,
-				endOffset
+				utterance.startOffset,
+				utterance.endOffset
 			);
 			$( self.utteranceHighlightingSelector ).each( function ( i ) {
 				// Save the path to the text node, as it was before
@@ -45,35 +41,29 @@
 				// path, once the span is added. This enables adding
 				// token highlighting within the utterance
 				// highlighting.
-				this.textPath = $utterance
-					.find( 'text' )
-					.get( i )
-					.getAttribute( 'path' );
+				this.textPath = utterance.content[ i ].path;
 			} );
 		};
 
 		/**
-		 * Find the text node from which a `<text>` element was created.
+		 * Find the text node from which a content item was created.
 		 *
-		 * The path attribute of textElement is an XPath expression
-		 * and is used to traverse the DOM tree.
+		 * The path property of the item is an XPath expression
+		 * that is used to traverse the DOM tree.
 		 *
-		 * @param {HTMLElement} textElement The `<text>` element to find
-		 *  the text node for.
-		 * @return {TextNode} The text node associated with textElement.
+		 * @param {Object} item The item to find the text node for.
+		 * @return {TextNode} The text node associated with the item.
 		 */
 
-		this.getNodeForTextElement = function ( textElement ) {
-			var path, node, result, contentWrapperSelector;
+		this.getNodeForItem = function ( item ) {
+			var node, result, contentSelector;
 
-			path = textElement.getAttribute( 'path' );
-			contentWrapperSelector =
-				'.' + mw.config.get( 'wgWikispeechContentWrapperClass' );
 			// The path should be unambiguous, so just get the first
 			// matching node.
+			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
 			result = document.evaluate(
-				path,
-				$( contentWrapperSelector ).get( 0 ),
+				item.path,
+				$( contentSelector ).get( 0 ),
 				null,
 				XPathResult.FIRST_ORDERED_NODE_TYPE,
 				null
@@ -137,65 +127,73 @@
 		/**
 		 * Highlight a token in the original HTML.
 		 *
-		 * What part of the HTML to wrap is calculated from a token
-		 * element.
+		 * What part of the HTML to wrap is calculated from a token.
 		 *
-		 * @param {HTMLElement} tokenElement The token element used to
-		 *  calculate what part to highlight.
+		 * @param {Object} token The token used to calculate what part
+		 *  to highlight.
 		 */
 
-		this.highlightToken = function ( tokenElement ) {
-			var span, textNodes, $utterance, utteranceOffset;
+		this.startTokenHighlighting = function ( token ) {
+			self.removeWrappers( '.ext-wikispeech-highlight-word' );
+			self.clearHighlightTokenTimer();
+			self.highlightToken( token );
+			self.setHighlightTokenTimer( token );
+		};
+
+		/**
+		 * Highlight a token in the original HTML.
+		 *
+		 * What part of the HTML to wrap is calculated from a token.
+		 *
+		 * @param {Object} token The token used to calculate what part
+		 *  to highlight.
+		 */
+
+		this.highlightToken = function ( token ) {
+			var span, textNodes, utteranceOffset;
 
 			span = $( '<span></span>' )
 				.addClass( 'ext-wikispeech-highlight-word' )
 				.get( 0 );
-			textNodes = tokenElement.textElements.map(
-				function ( textElement ) {
-					var textNode;
+			textNodes = token.items.map( function ( item ) {
+				var textNode;
 
-					if ( $( self.utteranceHighlightingSelector ).length ) {
-						// Add the the token highlighting within the
-						// utterance highlightings, if there are any.
-						textNode = self.getNodeInUtteranceHighlighting(
-							textElement
-						);
-					} else {
-						textNode = self.getNodeForTextElement( textElement );
-					}
-					return textNode;
+				if ( $( self.utteranceHighlightingSelector ).length ) {
+					// Add the the token highlighting within the
+					// utterance highlightings, if there are any.
+					textNode = self.getNodeInUtteranceHighlighting(
+						item
+					);
+				} else {
+					textNode = self.getNodeForItem( item );
 				}
-			);
-			$utterance =
-				$( tokenElement ).parentsUntil( 'utterance' ).parent();
+				return textNode;
+			} );
 			utteranceOffset = 0;
 			if ( $( self.utteranceHighlightingSelector ).length ) {
-				utteranceOffset =
-					parseInt( $utterance.attr( 'start-offset' ), 10 );
+				utteranceOffset = token.utterance.startOffset;
 			}
 			self.wrapTextNodes(
 				span,
 				textNodes,
-				tokenElement.startOffset - utteranceOffset,
-				tokenElement.endOffset - utteranceOffset
+				token.startOffset - utteranceOffset,
+				token.endOffset - utteranceOffset
 			);
-			self.setHighlightTokenTimer( tokenElement );
 		};
 
 		/**
-		 * Get text node, within utterance highlighting, for a text element.
+		 * Get text node, within utterance highlighting, for an item.
 		 *
-		 * @param {HTMLElement} textElement The text element to get
-		 *  text node for.
+		 * @param {Object} item The item to get text node for.
 		 */
 
-		this.getNodeInUtteranceHighlighting = function ( textElement ) {
+		this.getNodeInUtteranceHighlighting = function ( item ) {
 			// Get the text node from the utterance highlighting that
 			// wrapped the node for `textElement`.
 			var textNode = $( self.utteranceHighlightingSelector )
 				.filter( function () {
 					return this.textPath ===
-						textElement.getAttribute( 'path' );
+						item.path;
 				} )
 				.contents()
 				.get( 0 );
@@ -205,34 +203,29 @@
 		/**
 		 * Set a timer for when the next token should be highlighted.
 		 *
-		 * @param {HTMLElement} tokenElement The original token
-		 *  element. The timer is set for the token element following
-		 *  this one.
+		 * @param {Object} token The original token. The timer is set
+		 *  for the token following this one.
 		 */
 
-		this.setHighlightTokenTimer = function ( tokenElement ) {
-			var $utterance, currentTime, duration, nextTokenElement;
+		this.setHighlightTokenTimer = function ( token ) {
+			var currentTime, duration, nextToken;
 
-			// Make sure there is only one timer running.
-			window.clearTimeout( self.highlightTokenTimer );
-			$utterance =
-				$( tokenElement ).parentsUntil( 'utterance' ).parent();
-			currentTime = $utterance.children( 'audio' ).prop( 'currentTime' );
+			currentTime = token.utterance.audio.currentTime;
 			// The duration of the timer is the duration of the
 			// current token.
-			duration = tokenElement.endTime - currentTime;
-			nextTokenElement =
-				mw.wikispeech.wikispeech.getNextToken( $( tokenElement ) );
-			if ( nextTokenElement ) {
+			duration = token.endTime - currentTime;
+			nextToken =
+				mw.wikispeech.wikispeech.getNextToken( token );
+			if ( nextToken ) {
 				self.highlightTokenTimer = window.setTimeout(
 					function () {
 						self.removeWrappers(
 							'.ext-wikispeech-highlight-word'
 						);
-						self.highlightToken( nextTokenElement );
+						self.highlightToken( nextToken );
 						// Add a new timer for the next token, when it
 						// starts playing.
-						self.setHighlightTokenTimer( nextTokenElement );
+						self.setHighlightTokenTimer( nextToken );
 					},
 					duration * 1000
 				);
@@ -264,6 +257,14 @@
 				parents[ 0 ].normalize();
 				parents[ parents.length - 1 ].normalize();
 			}
+		};
+
+		/**
+		 * Clear the timer for highlighting tokens.
+		 */
+
+		this.clearHighlightTokenTimer = function () {
+			clearTimeout( self.highlightTokenTimer );
 		};
 	}
 

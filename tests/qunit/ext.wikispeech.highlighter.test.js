@@ -356,4 +356,4 @@
 			'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence"><span class="ext-wikispeech-highlight-word">Utterance</span> one.</span>'
 		);
 	} );
-} )( mediaWiki, jQuery );
+}( mediaWiki, jQuery ) );

@@ -270,7 +270,7 @@
 			$audio = $( currentUtterance.audio );
 			utterance.audio.play();
 			mw.wikispeech.highlighter.highlightUtterance( utterance );
-			if (  self.audioIsReady( $audio ) ) {
+			if ( self.audioIsReady( $audio ) ) {
 				$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
 			} else {
 				self.addCanPlayListener( $audio );
@@ -786,11 +786,10 @@
 				url: serverUrl,
 				method: 'POST',
 				data: {
-					// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 					lang: mw.config.get( 'wgPageContentLanguage' ),
+					// eslint-disable-next-line camelcase
 					input_type: 'text',
 					input: text
-					// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 				},
 				dataType: 'json',
 				beforeSend: function ( jqXHR, settings ) {

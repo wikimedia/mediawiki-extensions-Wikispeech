@@ -114,9 +114,7 @@
 		);
 	} );
 
-	// jscs:disable validateQuoteMarks
-	QUnit.test( "prepareUtterance(): don't request if waiting for response", function ( assert ) {
-		// jscs:enable validateQuoteMarks
+	QUnit.test( 'prepareUtterance(): do not request if waiting for response', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'loadAudio' );
 		utterances[ 0 ].waitingForResponse = true;
@@ -129,9 +127,7 @@
 		);
 	} );
 
-	// jscs:disable validateQuoteMarks
-	QUnit.test( "prepareUtterance(): don't load audio if already loaded", function ( assert ) {
-		// jscs:enable validateQuoteMarks
+	QUnit.test( 'prepareUtterance(): do not load audio if already loaded', function ( assert ) {
 		assert.expect( 1 );
 		utterances[ 0 ].audio = $( '<audio></audio>' )
 			.attr( 'src', 'http://server.url/audio' );
@@ -160,9 +156,7 @@
 		);
 	} );
 
-	// jscs:disable validateQuoteMarks
-	QUnit.test( "prepareUtterance(): don't prepare next audio if it doesn't exist", function ( assert ) {
-		// jscs:enable validateQuoteMarks
+	QUnit.test( 'prepareUtterance(): do not prepare next audio if it does not exist', function ( assert ) {
 		assert.expect( 1 );
 		sinon.spy( mw.wikispeech.wikispeech, 'prepareUtterance' );
 		mw.wikispeech.wikispeech.prepareUtterance( utterances[ 1 ] );
@@ -361,23 +355,14 @@
 		);
 	} );
 
-	QUnit.test( 'Clicking play/stop button', function ( assert ) {
-		testClickButton(
-			assert,
-			'playOrStop',
-			'#ext-wikispeech-play-stop-button'
-		);
-	} );
-
 	/**
 	 * Test that clicking a button calls the correct function.
 	 *
 	 * @param {QUnit.assert} assert
 	 * @param {string} functionName Name of the function that should
 	 *  be called.
-	 * @param {string} buttonId Id of the button that is clicked.
+	 * @param {string} buttonSelector Id of the button that is clicked.
 	 */
-
 	function testClickButton( assert, functionName, buttonSelector ) {
 		assert.expect( 1 );
 		sinon.stub( mw.wikispeech.wikispeech, functionName );
@@ -390,6 +375,14 @@
 			true
 		);
 	}
+
+	QUnit.test( 'Clicking play/stop button', function ( assert ) {
+		testClickButton(
+			assert,
+			'playOrStop',
+			'#ext-wikispeech-play-stop-button'
+		);
+	} );
 
 	QUnit.test( 'Clicking skip ahead sentence button', function ( assert ) {
 		testClickButton(
@@ -436,9 +429,23 @@
 		assert.strictEqual( mw.wikispeech.wikispeech.stop.called, true );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for play/stop', function ( assert ) {
-		testKeyboardShortcut( assert, 'playOrStop', 32, 'c' );
-	} );
+	/**
+	 * Create a keydown event.
+	 *
+	 * @param {number} keyCode The key code for the event.
+	 * @param {string} modifiers A string that defines the
+	 *  modifiers. The characters c, a and s triggers the modifiers
+	 *  for ctrl, alt and shift, respectively.
+	 * @return {jQuery} The created keydown event.
+	 */
+	function createKeydownEvent( keyCode, modifiers ) {
+		var event = $.Event( 'keydown' );
+		event.which = keyCode;
+		event.ctrlKey = modifiers.indexOf( 'c' ) >= 0;
+		event.altKey = modifiers.indexOf( 'a' ) >= 0;
+		event.shiftKey = modifiers.indexOf( 's' ) >= 0;
+		return event;
+	}
 
 	/**
 	 * Test that a keyboard event triggers the correct function.
@@ -451,7 +458,6 @@
 	 *  modifiers. The characters c, a and s triggers the modifiers
 	 *  for ctrl, alt and shift, respectively.
 	 */
-
 	function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
 		assert.expect( 1 );
 		utterances[ 0 ].audio = $( '<audio></audio>' ).get( 0 );
@@ -466,24 +472,9 @@
 		assert.strictEqual( mw.wikispeech.wikispeech[ functionName ].called, true );
 	}
 
-	/**
-	 * Create a keydown event.
-	 *
-	 * @param {number} keyCode The key code for the event.
-	 * @param {string} modifiers A string that defines the
-	 *  modifiers. The characters c, a and s triggers the modifiers
-	 *  for ctrl, alt and shift, respectively.
-	 * @return {jQuery} The created keydown event.
-	 */
-
-	function createKeydownEvent( keyCode, modifiers ) {
-		var event = $.Event( 'keydown' );
-		event.which = keyCode;
-		event.ctrlKey = modifiers.indexOf( 'c' ) >= 0;
-		event.altKey = modifiers.indexOf( 'a' ) >= 0;
-		event.shiftKey = modifiers.indexOf( 's' ) >= 0;
-		return event;
-	}
+	QUnit.test( 'Pressing keyboard shortcut for play/stop', function ( assert ) {
+		testKeyboardShortcut( assert, 'playOrStop', 32, 'c' );
+	} );
 
 	// TODO: T174799
 	// QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
@@ -646,6 +637,20 @@
 		assert.strictEqual( nextUtterance, null );
 	} );
 
+	/**
+	 * Add a mw-content-text div element to the QUnit fixture.
+	 *
+	 * @param {string} html The HTML added to the div element.
+	 */
+
+	function addContentText( html ) {
+		$( '#qunit-fixture' ).append(
+			$( '<div></div>' )
+				.attr( 'id', 'mw-content-text' )
+				.html( html )
+		);
+	}
+
 	QUnit.test( 'addTokens()', function ( assert ) {
 		var tokens;
 
@@ -702,20 +707,6 @@
 		);
 	} );
 
-	/**
-	 * Add a mw-content-text div element to the QUnit fixture.
-	 *
-	 * @param {string} html The HTML added to the div element.
-	 */
-
-	function addContentText( html ) {
-		$( '#qunit-fixture' ).append(
-			$( '<div></div>' )
-				.attr( 'id', 'mw-content-text' )
-				.html( html )
-		);
-	}
-
 	QUnit.test( 'addTokens(): handle tag', function ( assert ) {
 		var tokens;
 
@@ -752,7 +743,7 @@
 		assert.strictEqual( utterances[ 0 ].tokens[ 0 ].startOffset, 0 );
 		assert.strictEqual( utterances[ 0 ].tokens[ 0 ].endOffset, 8 );
 		assert.deepEqual(
-			utterances[ 0 ].tokens[ 1 ].items
+			utterances[ 0 ].tokens[ 1 ].items,
 			[ utterances[ 0 ].content[ 0 ] ]
 		);
 		assert.strictEqual( utterances[ 0 ].tokens[ 1 ].startOffset, 10 );
@@ -1326,8 +1317,8 @@
 	}
 
 	QUnit.test( 'playUtterance(): audio element is not ready and the spinner is displayed', function ( assert ) {
-		var $audio;
-		$audio = utterances[ 0 ].audio;
+		// var $audio;
+		// $audio = utterances[ 0 ].audio;
 		assert.expect( 1 );
 		setUpSpinner( false );
 		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'visible' );
@@ -1361,4 +1352,4 @@
 		assert.deepEqual( $( '#ext-wikispeech-loader' ).css( 'visibility' ), 'visible' );
 	} );
 
-} )( mediaWiki, jQuery );
+}( mediaWiki, jQuery ) );

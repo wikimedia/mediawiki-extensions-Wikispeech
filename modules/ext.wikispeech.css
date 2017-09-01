@@ -22,6 +22,12 @@
 	content: '\f04d';
 }
 
+.ext-wikispeech-spinner:after {
+	font-family: 'Fontawesome';
+	content: '\f110';
+	color: #ff0;
+}
+
 .ext-wikispeech-skip-ahead-word:after {
 	font-family: 'Fontawesome';
 	content: '\f051';

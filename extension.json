@@ -23,7 +23,7 @@
 		"Cleaner": "includes/Cleaner.php",
 		"HtmlGenerator": "includes/HtmlGenerator.php",
 		"Segmenter": "includes/Segmenter.php",
-		"WikispeechApi": "includes/WikispeechApi.php"
+		"ApiWikispeech": "includes/ApiWikispeech.php"
 	},
 	"ResourceModules": {
 		"ext.wikispeech": {
@@ -116,6 +116,6 @@
 		"WikispeechContentSelector": "#mw-content-text"
 	},
 	"APIModules": {
-		"wikispeech": "WikispeechApi"
+		"wikispeech": "ApiWikispeech"
 	}
 }

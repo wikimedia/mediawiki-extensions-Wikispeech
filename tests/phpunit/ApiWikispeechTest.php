@@ -8,12 +8,12 @@
  * @license GPL-2.0+
  */
 
-require_once __DIR__ . '/../../includes/WikispeechApi.php';
+require_once __DIR__ . '/../../includes/ApiWikispeech.php';
 require_once 'Util.php';
 
 define( 'TITLE', 'Talk:Page' );
 
-class WikispeechApiTest extends ApiTestCase {
+class ApiWikispeechTest extends ApiTestCase {
 	public function addDBDataOnce() {
 		$content = "Text ''italic'' '''bold'''";
 		$this->addPage( TITLE, $content );

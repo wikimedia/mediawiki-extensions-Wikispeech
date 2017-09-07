@@ -19,12 +19,66 @@ class ApiWikispeech extends ApiBase {
 			$this->dieWithError( [ 'apierror-paramempty', 'output' ] );
 		}
 		$pageContent = $this->getPageContent( $parameters['page'] );
+		$result = FormatJson::parse(
+			$parameters['removetags'],
+			FormatJson::FORCE_ASSOC
+		);
+		if ( !$result->isGood() ) {
+			$this->dieWithError( [
+				'apierror-wikispeech-removetagsinvalidjson',
+				''
+			] );
+		}
+		$removeTags = $result->getValue();
+		if ( !$this->isValidRemoveTags( $removeTags ) ) {
+			$this->dieWithError( [
+				'apierror-wikispeech-removetagsinvalid',
+				''
+			] );
+		}
 		$this->processPageContent(
 			$pageContent,
 			$parameters['output'],
-			json_decode( $parameters['removetags'], true ),
+			$removeTags,
 			$parameters['segmentbreakingtags']
 		);
+	}
+
+	/**
+	 * Tests if a variable is valid as "remove tags".
+	 *
+	 * The variable should be an associative array. Keys should be
+	 * strings and values should be either booleans, strings or
+	 * sequential arrays containing strings.
+	 *
+	 * @since 0.0.1
+	 * @param mixed $removeTags The variable to test.
+	 * @return bool true if $removeTags is valid, else false.
+	 */
+	public function isValidRemoveTags( $removeTags ) {
+		if ( !is_array( $removeTags ) ) {
+			return false;
+		}
+		foreach ( $removeTags as $tagName => $rule ) {
+			if ( !is_string( $tagName ) ) {
+				// A key isn't a string.
+				return false;
+			}
+			if ( is_array( $rule ) ) {
+				// Rule is a list of class names.
+				foreach ( $rule as $className ) {
+					if ( !is_string( $className ) ) {
+						// Only strings are valid if the rule is
+						// an array.
+						return false;
+					}
+				}
+			} elseif ( !is_bool( $rule ) && !is_string( $rule ) ) {
+				// Rule is not array, string or boolean.
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -115,7 +169,10 @@ class ApiWikispeech extends ApiBase {
 		$popts = $page->makeParserOptions( $this->getContext() );
 		$pout = $page->getParserOutput( $popts );
 		if ( !$pout ) {
-			$this->dieWithError( [ 'apierror-nosuchrevid', $page->getLatest() ] );
+			$this->dieWithError( [
+				'apierror-nosuchrevid',
+				$page->getLatest()
+			] );
 		}
 
 		// Return HTML
@@ -150,12 +207,17 @@ class ApiWikispeech extends ApiBase {
 				],
 				'removetags' => [
 					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_DFLT => json_encode( $wgWikispeechRemoveTags )
+					ApiBase::PARAM_DFLT => json_encode(
+						$wgWikispeechRemoveTags
+					)
 				],
 				'segmentbreakingtags' => [
 					ApiBase::PARAM_TYPE => 'string',
 					ApiBase::PARAM_ISMULTI => true,
-					ApiBase::PARAM_DFLT => implode( $wgWikispeechSegmentBreakingTags, '|' )
+					ApiBase::PARAM_DFLT => implode(
+						$wgWikispeechSegmentBreakingTags,
+						'|'
+					)
 				]
 			]
 		);

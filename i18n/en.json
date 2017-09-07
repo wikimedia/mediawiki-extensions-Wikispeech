@@ -14,8 +14,10 @@
 	"apihelp-wikispeech-paramvalue-output-originalcontent": "The original HTML of the page. Intended as help when debugging.",
 	"apihelp-wikispeech-paramvalue-output-cleanedtext": "The page content with HTML tags removed.",
 	"apihelp-wikispeech-paramvalue-output-segments": "The page content segmented into sentences.",
-	"apihelp-wikispeech-param-removetags": "The tags that should be removed completely during cleaning, as a JSON object of the format:\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\"\n}</pre>\nwhere <code>tagName1</code> is always removed and <code>tagName2</code> is only removed if it also has the CSS class <code>cssClass</code>.",
+	"apihelp-wikispeech-param-removetags": "The tags that should be removed completely during cleaning, as a JSON object of the format:\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\",\n  \"tagName3\": [\"cssClass1\", \"cssClass2\"]\n}</pre>\nwhere <code>tagName1</code> is always removed, <code>tagName2</code> is only removed if it also has the CSS class <code>cssClass</code> and <code>tagName3</code> is only removed if it also has the CSS class <code>cssClass2</code> or <code>cssClass1</code>.",
 	"apihelp-wikispeech-param-segmentbreakingtags": "The tag names for tags that should add segment breaks.",
 	"apihelp-wikispeech-example-1": "Get segments for the Wikispeech extension. The tag <code>sup</code> is removed and so is <code>div</code> when it has the class <code>toc</code>. The tags <code>h1</code> and <code>h2</code> break segments.",
-	"apihelp-wikispeech-example-2": "Get original HTML content and cleaned text."
+	"apihelp-wikispeech-example-2": "Get original HTML content and cleaned text.",
+	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> is not a valid JSON string.",
+	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>."
 }

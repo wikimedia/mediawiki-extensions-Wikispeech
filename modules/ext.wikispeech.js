@@ -262,19 +262,17 @@
 		 */
 
 		this.playUtterance = function ( utterance ) {
-			var $audio;
 			if ( self.isPlaying() ) {
 				self.stopUtterance( currentUtterance );
 			}
 			currentUtterance = utterance;
-			$audio = $( currentUtterance.audio );
 			utterance.audio.play();
 			mw.wikispeech.highlighter.highlightUtterance( utterance );
-			if ( self.audioIsReady( $audio ) ) {
+			if ( self.audioIsReady( $( utterance.audio ) ) ) {
 				$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
 			} else {
-				self.addCanPlayListener( $audio );
 				$( '#ext-wikispeech-loader' ).css( 'visibility', 'visible' );
+				self.addCanPlayListener( $( utterance.audio ) );
 			}
 		};
 
@@ -326,6 +324,8 @@
 				'.ext-wikispeech-highlight-word'
 			);
 			mw.wikispeech.highlighter.clearHighlightTokenTimer();
+			// Remove canplay listener from audio
+			$( utterance.audio ).off( 'canplay' );
 		};
 
 		/**

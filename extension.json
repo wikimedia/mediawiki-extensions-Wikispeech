@@ -17,6 +17,7 @@
 	},
 	"AutoloadClasses": {
 		"SpecialWikispeech": "specials/SpecialWikispeech.php",
+		"SpecialWikispeechLexiconTool": "specials/SpecialWikispeechLexiconTool.php",
 		"WikispeechHooks": "Hooks.php",
 		"CleanedText": "includes/CleanedContent.php",
 		"SegmentBreak": "includes/CleanedContent.php",
@@ -52,7 +53,8 @@
 		"remoteExtPath": "Wikispeech/modules"
 	},
 	"SpecialPages": {
-		"Wikispeech": "SpecialWikispeech"
+		"Wikispeech": "SpecialWikispeech",
+		"WikispeechLexiconTool": "SpecialWikispeechLexiconTool"
 	},
 	"ExtensionMessagesFiles": {
 		"WikispeechAlias": "Wikispeech.alias.php"

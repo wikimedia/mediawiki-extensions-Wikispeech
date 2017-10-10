@@ -6,8 +6,6 @@
 	},
 	"wikispeech": "The name of the extension",
 	"wikispeech-desc": "{{desc|name=Wikispeech|url=https://www.mediawiki.org/wiki/Extension:Wikispeech}}",
-	"special-wikispeech-intro": "Description appearing on top of <tvar|1>Special:{{ll|Wikispeech}}</>.",
-	"special-wikispeech-title": "Title of the special page Special:Wikispeech",
 	"apihelp-wikispeech-summary": "{{doc-apihelp-summary|wikispeech}}",
 	"apihelp-wikispeech-param-page": "{{doc-apihelp-param|wikispeech|page}}",
 	"apihelp-wikispeech-param-output": "{{doc-apihelp-param|wikispeech|output}}",
@@ -19,5 +17,7 @@
 	"apihelp-wikispeech-example-1": "{{doc-apihelp-example|wikispeech}}",
 	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}",
 	"apierror-wikispeech-removetagsinvalidjson": "{{doc-apierror}}",
-	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}"
+	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}",
+	"prefs-wikispeech": "Used in user preferences as a tab heading.\n{{Identical|wikispeech}}",
+	"prefs-voice": "Used in user preferences as a section heading for voice selection."
 }

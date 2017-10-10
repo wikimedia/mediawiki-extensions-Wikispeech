@@ -23,11 +23,13 @@ class WikispeechHooks {
 	) {
 		$testModules['qunit']['ext.wikispeech.test'] = [
 			'scripts' => [
-				'tests/qunit/ext.wikispeech.test.js',
 				'tests/qunit/ext.wikispeech.highlighter.test.js',
-				'tests/qunit/ext.wikispeech.util.test.js',
+				'tests/qunit/ext.wikispeech.main.test.js',
+				'tests/qunit/ext.wikispeech.player.test.js',
 				'tests/qunit/ext.wikispeech.selectionPlayer.test.js',
-				'tests/qunit/ext.wikispeech.test.util.js'
+				'tests/qunit/ext.wikispeech.storage.test.js',
+				'tests/qunit/ext.wikispeech.test.util.js',
+				'tests/qunit/ext.wikispeech.ui.test.js'
 			],
 			'dependencies' => [
 				// Despite what it says at
@@ -153,5 +155,41 @@ class WikispeechHooks {
 		$vars['wgWikispeechContentSelector'] =
 			$wgWikispeechContentSelector;
 		return true;
+	}
+
+	/**
+	 * Add Wikispeech options to Special:Preferences.
+	 *
+	 * @param User $user current User object.
+	 * @param array &$preferences Preferences array.
+	 * @return bool true
+	 */
+	static function onGetPreferences( $user, &$preferences ) {
+		self::addVoicePreferences( $preferences );
+		return true;
+	}
+
+	/**
+	 * Add preferences for selecting voices per language.
+	 *
+	 * @param array &$preferences Preferences array.
+	 */
+	static function addVoicePreferences( &$preferences ) {
+		global $wgWikispeechVoices;
+		foreach ( $wgWikispeechVoices as $language => $voices ) {
+			$languageKey = 'wikispeechVoice' . ucfirst( $language );
+			$mwLanguage = new Language();
+			$languageName = $mwLanguage->getVariantname( $language );
+			$options = [ 'Default' => '' ];
+			foreach ( $voices as $voice ) {
+				$options[$voice] = $voice;
+			}
+			$preferences[$languageKey] = [
+				'type' => 'select',
+				'label' => $languageName,
+				'section' => 'wikispeech/voice',
+				'options' => $options
+			];
+		}
 	}
 }

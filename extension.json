@@ -16,7 +16,6 @@
 		]
 	},
 	"AutoloadClasses": {
-		"SpecialWikispeech": "specials/SpecialWikispeech.php",
 		"WikispeechHooks": "WikispeechHooks.php",
 		"CleanedText": "includes/CleanedText.php",
 		"SegmentBreak": "includes/SegmentBreak.php",
@@ -28,10 +27,13 @@
 	"ResourceModules": {
 		"ext.wikispeech": {
 			"scripts": [
-				"ext.wikispeech.js",
 				"ext.wikispeech.highlighter.js",
-				"ext.wikispeech.util.js",
-				"ext.wikispeech.selectionPlayer.js"
+				"ext.wikispeech.main.js",
+				"ext.wikispeech.player.js",
+				"ext.wikispeech.selectionPlayer.js",
+				"ext.wikispeech.storage.js",
+				"ext.wikispeech.ui.js",
+				"ext.wikispeech.util.js"
 			],
 			"styles": [
 				"ext.wikispeech.css"
@@ -53,12 +55,6 @@
 		"localBasePath": "modules",
 		"remoteExtPath": "Wikispeech/modules"
 	},
-	"SpecialPages": {
-		"Wikispeech": "SpecialWikispeech"
-	},
-	"ExtensionMessagesFiles": {
-		"WikispeechAlias": "Wikispeech.alias.php"
-	},
 	"Hooks": {
 		"ResourceLoaderTestModules": [
 			"WikispeechHooks::onResourceLoaderTestModules"
@@ -68,10 +64,13 @@
 		],
 		"ResourceLoaderGetConfigVars": [
 			"WikispeechHooks::onResourceLoaderGetConfigVars"
+		],
+		"GetPreferences": [
+			"WikispeechHooks::onGetPreferences"
 		]
 	},
 	"config": {
-		"WikispeechServerUrl": "https://morf.se/wikispeech/",
+		"WikispeechServerUrl": "",
 		"WikispeechRemoveTags": {
 			"span": "mw-editsection",
 			"table": true,
@@ -115,7 +114,20 @@
 		"WikispeechSkipBackRewindsThreshold": 3.0,
 		"WikispeechHelpPage": "Help:Wikispeech",
 		"WikispeechFeedbackPage": "Wikispeech feedback",
-		"WikispeechContentSelector": "#mw-content-text"
+		"WikispeechContentSelector": "#mw-content-text",
+		"WikispeechVoices": {
+			"ar": [ "ar-nah-hsmm" ],
+			"en": [
+				"dfki-spike-hsmm",
+				"cmu-slt-flite"
+			],
+			"sv": [ "stts_sv_nst-hsmm" ]
+		}
+	},
+	"DefaultUserOptions": {
+		"wikispeechVoiceAr": "",
+		"wikispeechVoiceEn": "",
+		"wikispeechVoiceSv": ""
 	},
 	"APIModules": {
 		"wikispeech": "ApiWikispeech"

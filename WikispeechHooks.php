@@ -154,4 +154,39 @@ class WikispeechHooks {
 			$wgWikispeechContentSelector;
 		return true;
 	}
+
+	/**
+	 * Add Wikispeech options to Special:Preferences.
+	 *
+	 * @param User $user current User object.
+	 * @param array &$preferences Preferences array.
+	 * @return bool true
+	 */
+	static function onGetPreferences( $user, &$preferences ) {
+		self::addVoicePreferences( $preferences );
+		return true;
+	}
+
+	/**
+	 * Add preferences for selecting voices per language.
+	 *
+	 * @param array &$preferences Preferences array.
+	 */
+	static function addVoicePreferences( &$preferences ) {
+		global $wgWikispeechVoices;
+		foreach ( $wgWikispeechVoices as $language => $voices ) {
+			$languageKey = 'wikispeechVoice' . ucfirst( $language );
+			$languageName = Language::getVariantname( $language );
+			$options = [ 'Default' => '' ];
+			foreach ( $voices as $voice ) {
+				$options[$voice] = $voice;
+			}
+			$preferences[$languageKey] = [
+				'type' => 'select',
+				'label' => $languageName,
+				'section' => 'wikispeech/voice',
+				'options' => $options
+			];
+		}
+	}
 }

@@ -263,6 +263,21 @@
 		assert.strictEqual( utterances[ 0 ].audio.src, '' );
 	} );
 
+	QUnit.test( 'loadAudio(): non default voice', function ( assert ) {
+		assert.expect( 2 );
+		sinon.spy( mw.wikispeech.wikispeech, 'requestTts' );
+		mw.user.options.set( 'wikispeechVoiceEn', 'en-voice' );
+		mw.config.set( 'wgPageContentLanguage', 'en' );
+
+		mw.wikispeech.wikispeech.loadAudio( utterances[ 0 ] );
+
+		assert.strictEqual( mw.wikispeech.wikispeech.requestTts.called, true );
+		assert.strictEqual(
+			server.requests[ 0 ].requestBody,
+			'lang=en&input_type=text&input=Utterance+zero.&voice=en-voice'
+		);
+	} );
+
 	QUnit.test( 'addControlPanel()', function ( assert ) {
 		assert.expect( 5 );
 		sinon.stub( mw.wikispeech.wikispeech, 'addStackToPlayStopButton' );

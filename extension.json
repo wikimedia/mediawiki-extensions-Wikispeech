@@ -68,6 +68,9 @@
 		],
 		"ResourceLoaderGetConfigVars": [
 			"WikispeechHooks::onResourceLoaderGetConfigVars"
+		],
+		"GetPreferences": [
+			"WikispeechHooks::onGetPreferences"
 		]
 	},
 	"config": {
@@ -115,7 +118,20 @@
 		"WikispeechSkipBackRewindsThreshold": 3.0,
 		"WikispeechHelpPage": "Help:Wikispeech",
 		"WikispeechFeedbackPage": "Wikispeech feedback",
-		"WikispeechContentSelector": "#mw-content-text"
+		"WikispeechContentSelector": "#mw-content-text",
+		"WikispeechVoices": {
+			"ar": [ "ar-nah-hsmm" ],
+			"en": [
+				"dfki-spike-hsmm",
+				"cmu-slt-flite"
+			],
+			"sv": [ "stts_sv_nst-hsmm" ]
+		}
+	},
+	"DefaultUserOptions": {
+		"wikispeechVoiceAr": "",
+		"wikispeechVoiceEn": "",
+		"wikispeechVoiceSv": ""
 	},
 	"APIModules": {
 		"wikispeech": "ApiWikispeech"

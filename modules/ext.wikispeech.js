@@ -799,18 +799,29 @@
 		 */
 
 		this.requestTts = function ( text ) {
-			var serverUrl, request;
+			var serverUrl, language, voiceKey, voice, data, request;
 
 			serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
+			language = mw.config.get( 'wgPageContentLanguage' );
+			// Capitalize first letter in language code.
+			voiceKey = 'wikispeechVoice' +
+				language[ 0 ].toUpperCase() +
+				language.slice( 1 );
+			voice = mw.user.options.get( voiceKey );
+			data = {
+				lang: language,
+				// eslint-disable-next-line camelcase
+				input_type: 'text',
+				input: text
+			};
+			if ( voice !== '' ) {
+				// Set voice if not default.
+				data.voice = voice;
+			}
 			request = $.ajax( {
 				url: serverUrl,
 				method: 'POST',
-				data: {
-					lang: mw.config.get( 'wgPageContentLanguage' ),
-					// eslint-disable-next-line camelcase
-					input_type: 'text',
-					input: text
-				},
+				data: data,
 				dataType: 'json',
 				beforeSend: function ( jqXHR, settings ) {
 					mw.log(

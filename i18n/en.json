@@ -19,5 +19,7 @@
 	"apihelp-wikispeech-example-1": "Get segments for the Wikispeech extension. The tag <code>sup</code> is removed and so is <code>div</code> when it has the class <code>toc</code>. The tags <code>h1</code> and <code>h2</code> break segments.",
 	"apihelp-wikispeech-example-2": "Get original HTML content and cleaned text.",
 	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> is not a valid JSON string.",
-	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>."
+	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>.",
+	"prefs-wikispeech": "Wikispeech",
+	"prefs-voice": "Voice"
 }

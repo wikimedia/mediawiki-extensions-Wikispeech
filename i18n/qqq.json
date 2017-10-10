@@ -19,5 +19,7 @@
 	"apihelp-wikispeech-example-1": "{{doc-apihelp-example|wikispeech}}",
 	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}",
 	"apierror-wikispeech-removetagsinvalidjson": "{{doc-apierror}}",
-	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}"
+	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}",
+	"prefs-wikispeech": "Used in user preferences as a tab heading.\n{{Identical|wikispeech}}",
+	"prefs-voice": "Used in user preferences as a section heading for voice selection."
 }

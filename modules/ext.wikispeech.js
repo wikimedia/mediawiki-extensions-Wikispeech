@@ -1,10 +1,21 @@
 ( function ( mw, $ ) {
+
+	/**
+	 * Main class for the Wikipseech extension.
+	 *
+	 * Handles setup of various components and general functionality.
+	 *
+	 * @class ext.wikispeech.Wikispeech
+	 * @constructor
+	 */
+
 	function Wikispeech() {
 		var self, currentUtterance;
 
 		self = this;
 		currentUtterance = null;
 		self.utterances = [];
+		self.playingSelection = false;
 
 		/**
 		 * Check if Wikispeech is enabled for the current namespace.
@@ -25,6 +36,7 @@
 
 		this.loadUtterances = function () {
 			var api, page;
+
 			api = new mw.Api();
 			page = mw.config.get( 'wgPageName' );
 			api.post(
@@ -42,8 +54,14 @@
 					}
 				}
 			).done( function ( data ) {
+				var utterance, i;
+
 				mw.log( 'Segments received:', data );
 				self.utterances = data.wikispeech.segments;
+				for ( i = 0; i < self.utterances.length; i++ ) {
+					utterance = self.utterances[ i ];
+					utterance.audio = $( '<audio></audio>' ).get( 0 );
+				}
 				self.prepareUtterance( self.utterances[ 0 ] );
 			} );
 		};
@@ -69,11 +87,9 @@
 				self.skipBackToken
 			);
 			self.addButton(
-				null,
-				self.playOrStop,
-				'ext-wikispeech-play-stop-button'
+				'ext-wikispeech-play-stop-button',
+				self.playOrStop
 			);
-			self.addStackToPlayStopButton();
 			self.addButton(
 				'ext-wikispeech-skip-ahead-word',
 				self.skipAheadToken
@@ -110,63 +126,53 @@
 		*  the button.
 		* @param {string} onClickFunction The name of the function to
 		*  call when the button is clicked.
-		* @param {string} id The id of the button.
 		*/
 
-		this.addButton = function ( cssClass, onClickFunction, id ) {
+		this.addButton = function ( cssClass, onClickFunction ) {
 			var $button = $( '<button></button>' )
 				.addClass( cssClass )
-				.attr( 'id', id )
 				.appendTo( '#ext-wikispeech-control-panel' );
 			$button.click( onClickFunction );
 			return $button;
 		};
 
 		/**
-		 * Add the stack which contains the spinner to the playStopButton.
+		 * Add a stack which contains the buffering icon to `playStopButton`s.
 		 */
 
 		this.addStackToPlayStopButton = function () {
-			this.addSpanToPlayStopButton(
-				'ext-wikispeech-play-stop-stack', 'fa-stack' );
+			this.addSpanToPlayStopButton();
 			this.addElementToPlayStopButtonStack(
-				'ext-wikispeech-play-stop',
-				'fa fa-stack-2x ext-wikispeech-play' );
+				'ext-wikispeech-play-stop ext-wikispeech-play fa-stack-2x'
+			);
 			this.addElementToPlayStopButtonStack(
-				'ext-wikispeech-loader',
-				'fa fa-stack-2x fa-spin ext-wikispeech-spinner' );
-			$( '#ext-wikispeech-play-stop-stack' ).css( 'font-size', '50%' );
-			$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+				'ext-wikispeech-buffering-icon fa-stack-2x fa-spin'
+			);
+			$( '.ext-wikispeech-play-stop-stack' ).css( 'font-size', '50%' );
+			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'hidden' );
 		};
 
 		/**
-		 * Add a span to the play button.
-		 *
-		 * @param id The id of the item.
-		 * @param cssClass The name of the CSS class to add the item.
+		 * Add a Font Awesome stack to the play button.
 		 */
 
-		this.addSpanToPlayStopButton = function ( id, cssClass ) {
-			var $span, $button;
-			$button = $( '#ext-wikispeech-play-stop-button' );
-			$span = $( '<span></span>' )
-				.attr( 'id', id )
-				.addClass( cssClass );
-			$button.append( $span );
+		this.addSpanToPlayStopButton = function () {
+			$( '<span></span>' )
+				.addClass( 'ext-wikispeech-play-stop-stack fa-stack fa-lg' )
+				.appendTo( '.ext-wikispeech-play-stop-button' );
 		};
 
 		/**
 		 * Add an element to the stack on the playStop button.
 		 *
-		 * @param id id The id of the item.
-		 * @param cssClass The name of the CSS class to add the item.
+		 * @param {string} cssClass The name of the CSS class to add
+		 *  the item.
 		 */
 
-		this.addElementToPlayStopButtonStack = function ( id, cssClass ) {
-			var $i = $( '<i></i>' )
-				.attr( 'id', id )
-				.addClass( cssClass );
-			$( '#ext-wikispeech-play-stop-stack' ).append( $i );
+		this.addElementToPlayStopButtonStack = function ( cssClass ) {
+			$( '<i></i>' )
+				.addClass( 'fa ' + cssClass )
+				.appendTo( '.ext-wikispeech-play-stop-stack' );
 		};
 
 		/**
@@ -227,27 +233,30 @@
 		 */
 
 		this.stop = function () {
-			var $audio, $playStopButton;
-			$playStopButton = $( '#ext-wikispeech-play-stop' );
-			$audio = $( currentUtterance.audio );
+			var $playStopButton;
 
 			if ( self.isPlaying() ) {
 				self.stopUtterance( currentUtterance );
 			}
 			currentUtterance = null;
-			$audio.off( 'canplay' );
-			$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'hidden' );
+			$playStopButton = $( '.ext-wikispeech-play-stop' );
 			$playStopButton.removeClass( 'ext-wikispeech-stop' );
 			$playStopButton.addClass( 'ext-wikispeech-play' );
+			self.playingSelection = false;
 		};
 
 		/**
-		 * Start playing the first utterance.
+		 * Start playing the first utterance or selected text, if any.
 		 */
 
 		this.play = function () {
-			var $playStopButton = $( '#ext-wikispeech-play-stop' );
-			self.playUtterance( self.utterances[ 0 ] );
+			var $playStopButton;
+
+			if ( !mw.wikispeech.selectionPlayer.playSelectionIfValid() ) {
+				self.playUtterance( self.utterances[ 0 ] );
+			}
+			$playStopButton = $( '.ext-wikispeech-play-stop' );
 			$playStopButton.removeClass( 'ext-wikispeech-play' );
 			$playStopButton.addClass( 'ext-wikispeech-stop' );
 		};
@@ -266,41 +275,45 @@
 				self.stopUtterance( currentUtterance );
 			}
 			currentUtterance = utterance;
+			if ( !self.playingSelection ) {
+				mw.wikispeech.highlighter.highlightUtterance( utterance );
+			}
 			utterance.audio.play();
-			mw.wikispeech.highlighter.highlightUtterance( utterance );
-			if ( self.audioIsReady( $( utterance.audio ) ) ) {
-				$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+			if ( self.audioIsReady( utterance.audio ) ) {
+				$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'hidden' );
 			} else {
-				$( '#ext-wikispeech-loader' ).css( 'visibility', 'visible' );
 				self.addCanPlayListener( $( utterance.audio ) );
+				$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'visible' );
 			}
 		};
 
 		/**
 		 * Check if the current audio is ready to play.
 		 *
-		 * The audio is deemed ready to play as soon as any playable data is
-		 * available.
+		 * The audio is deemed ready to play as soon as any playable
+		 * data is available.
 		 *
-		 * @param {jQuery} $audio The audio element to test.
+		 * @param {HTMLElement} audio The audio element to test.
 		 * @return {boolean} True if the audio is ready to play else false.
 		 */
 
-		this.audioIsReady = function ( $audio ) {
-			var $readyState = $audio.prop( 'readyState' );
-			return $readyState >= 2;
+		this.audioIsReady = function ( audio ) {
+			return audio.readyState >= 2;
 		};
 
 		/**
-		 * Add canplay listener for the audio to hide spinner.
-		 * Canplaythrough will be caught implicitly as it occurs after canplay.
+		 * Add canplay listener for the audio to hide buffering icon.
 		 *
-		 * @param {jQuery} $audioElement Audio element to which the listener is added.
+		 * Canplaythrough will be caught implicitly as it occurs after
+		 * canplay.
+		 *
+		 * @param {jQuery} $audioElement Audio element to which the
+		 *  listener is added.
 		 */
 
 		this.addCanPlayListener = function ( $audioElement ) {
 			$audioElement.on( 'canplay', function () {
-				$( '#ext-wikispeech-loader' ).css( 'visibility', 'hidden' );
+				$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'hidden' );
 			} );
 		};
 
@@ -314,7 +327,10 @@
 		this.stopUtterance = function ( utterance ) {
 			utterance.audio.pause();
 			// Rewind audio for next time it plays.
-			utterance.audio.currentTime = 0;
+			utterance.audio.currentTime = 0.0;
+			$( utterance.audio ).off( 'canplay' );
+			window.clearTimeout( utterance.stopTimeout );
+			utterance.stopTimeout = null;
 			// Remove sentence highlighting.
 			mw.wikispeech.highlighter.removeWrappers(
 				'.ext-wikispeech-highlight-sentence'
@@ -324,8 +340,6 @@
 				'.ext-wikispeech-highlight-word'
 			);
 			mw.wikispeech.highlighter.clearHighlightTokenTimer();
-			// Remove canplay listener from audio
-			$( utterance.audio ).off( 'canplay' );
 		};
 
 		/**
@@ -380,8 +394,8 @@
 		/**
 		 * Skip to the previous utterance.
 		 *
-		 * Stop the current utterance and start playing the previous one. If
-		 * the first utterance is playing, restart it.
+		 * Stop the current utterance and start playing the previous
+		 * one. If the first utterance is playing, restart it.
 		 */
 
 		this.skipBackUtterance = function () {
@@ -488,7 +502,8 @@
 				duration = token.endTime - token.startTime;
 				return duration > 0.0;
 			} );
-			lastTokenWithDuration = self.getLast( tokensWithDuration );
+			lastTokenWithDuration =
+				mw.wikispeech.util.getLast( tokensWithDuration );
 			if ( currentTime === lastTokenWithDuration.endTime ) {
 				// If the current time is equal to the end time of the
 				// last token, the last token is the current.
@@ -564,20 +579,9 @@
 			if ( precedingTokens.length === 0 ) {
 				return null;
 			} else {
-				previousToken = self.getLast( precedingTokens );
+				previousToken = mw.wikispeech.util.getLast( precedingTokens );
 				return previousToken;
 			}
-		};
-
-		/**
-		 * Get the last item in an array.
-		 *
-		 * @param {Array} array The array to look in.
-		 * @return {Mixed} The last item in the array.
-		 */
-
-		this.getLast = function ( array ) {
-			return array[ array.length - 1 ];
 		};
 
 		/**
@@ -588,13 +592,13 @@
 		 * @return {Object} The last token from the utterance.
 		 */
 
-		self.getLastToken = function ( utterance ) {
+		this.getLastToken = function ( utterance ) {
 			var nonSilentTokens, lastToken;
 
 			nonSilentTokens = utterance.tokens.filter( function ( token ) {
 				return !self.isSilent( token );
 			} );
-			lastToken = self.getLast( nonSilentTokens );
+			lastToken = mw.wikispeech.util.getLast( nonSilentTokens );
 			return lastToken;
 		};
 
@@ -681,21 +685,29 @@
 		 * not requesting more than needed.
 
 		 * @param {Object} utterance The utterance to prepare.
+		 * @param {Function} callback A function to call when the
+		 *  utterance is ready to play. Fires immediately if the
+		 *  utterance has already been prepared.
 		 */
 
-		this.prepareUtterance = function ( utterance ) {
+		this.prepareUtterance = function ( utterance, callback ) {
 			var $audio, nextUtterance;
 
-			if ( !utterance.hasOwnProperty( 'audio' ) ) {
-				// Make sure there is an audio element for this
-				// utterance.
-				utterance.audio = $( '<audio></audio>' ).get( 0 );
-			}
 			$audio = $( utterance.audio );
-			if ( !$audio.attr( 'src' ) && !utterance.waitingForResponse ) {
+			if ( $audio.attr( 'src' ) ) {
+				if ( callback ) {
+					// Audio already loaded, call callback, if any.
+					callback();
+				}
+			} else if ( utterance.request ) {
+				// Request is ongoing, add callback to fire when it's
+				// done.
+				utterance.request.done( callback );
+			} else {
 				// Only load audio for an utterance if it isn't
 				// already loaded or waiting for response from server.
 				self.loadAudio( utterance );
+				utterance.request.done( callback );
 				nextUtterance = self.getNextUtterance( utterance );
 				$audio.on( {
 					playing: function () {
@@ -704,7 +716,10 @@
 						// Highlight token only when the audio starts
 						// playing, since we need the token info from
 						// the response to know what to highlight.
-						if ( $audio.prop( 'currentTime' ) === 0 ) {
+						if (
+							!self.playingSelection &&
+								$audio.prop( 'currentTime' ) === 0
+						) {
 							firstToken = utterance.tokens[ 0 ];
 							mw.wikispeech.highlighter.startTokenHighlighting(
 								firstToken
@@ -750,7 +765,13 @@
 			utterance.content.forEach( function ( item ) {
 				text += item.string;
 			} );
-			self.requestTts( text, utterance, function ( response ) {
+			utterance.request = self.requestTts( text );
+			// Remove request on success or failure, to allow new
+			// requests if this one fails.
+			utterance.request.always( function () {
+				utterance.request = null;
+			} );
+			utterance.request.done( function ( response ) {
 				audioUrl = response.audio;
 				utteranceIndex = self.utterances.indexOf( utterance );
 				mw.log(
@@ -775,14 +796,13 @@
 		 *
 		 * @param {string} text The utterance string to send in the
 		 *  request.
-		 * @param {Object} utterance The utterance for this request.
-		 * @param {Function} callback Function to be called when a
-		 *  response is received.
 		 */
 
-		this.requestTts = function ( text, utterance, callback ) {
-			var serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
-			$.ajax( {
+		this.requestTts = function ( text ) {
+			var serverUrl, request;
+
+			serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
+			request = $.ajax( {
 				url: serverUrl,
 				method: 'POST',
 				data: {
@@ -797,22 +817,18 @@
 						'Sending TTS request: ' + settings.url + '?' +
 							settings.data
 					);
-					utterance.waitingForResponse = true;
 				}
 			} )
 				.done( function ( data ) {
 					mw.log( 'Response received:', data );
-					callback( data );
 				} )
 				.fail( function ( jqXHR, textStatus ) {
 					mw.log.warn(
 						'Request failed, error type "' + textStatus + '":',
 						this.url + '?' + this.data
 					);
-				} )
-				.always( function () {
-					utterance.waitingForResponse = false;
 				} );
+			return request;
 		};
 
 		/**
@@ -855,7 +871,7 @@
 					// we want to start on zero.
 					searchOffset += 1;
 				}
-				searchOffset = self.addOffsetsAndTextElements(
+				searchOffset = self.addOffsetsAndItems(
 					token,
 					searchOffset
 				);
@@ -863,14 +879,14 @@
 		};
 
 		/**
-		 * Add properties for offsets and text elements to an token element.
+		 * Add properties for offsets and items to a token.
 		 *
 		 * The offsets are for the start and end of the token in the
 		 * text node which they appear. These text nodes are not
 		 * necessary the same.
 		 *
-		 * The text elements are the element in which the token start,
-		 * the element in which it ends and any element in between.
+		 * The items store information used to get the text nodes in
+		 * which the token starts, ends and any text nodes in between.
 		 *
 		 * @param {Object} token The token to add properties to.
 		 * @param {number} searchOffset The offset to start searching
@@ -878,18 +894,17 @@
 		 * @return {number} The end offset in the concatenated string.
 		 */
 
-		this.addOffsetsAndTextElements = function (
+		this.addOffsetsAndItems = function (
 			token,
 			searchOffset
 		) {
-			var utteranceOffset, startOffsetInUtteranceString,
+			var startOffsetInUtteranceString,
 				endOffsetInUtteranceString, endOffsetForItem,
 				firstItemIndex, itemsBeforeStart, lastItemIndex,
 				itemsBeforeEnd, items, itemsBeforeStartLength,
 				itemsBeforeEndLength, utterance;
 
 			utterance = token.utterance;
-			utteranceOffset = utterance.startOffset;
 			items = [];
 			startOffsetInUtteranceString =
 				self.getStartOffsetInUtteranceString(
@@ -928,17 +943,28 @@
 				itemsBeforeStartLength += item.string.length;
 			} );
 			token.startOffset =
-				utterance.startOffset - itemsBeforeStartLength +
-				startOffsetInUtteranceString;
+				startOffsetInUtteranceString -
+				itemsBeforeStartLength;
+			if ( token.items[ 0 ] === utterance.content[ 0 ] ) {
+				token.startOffset += utterance.startOffset;
+			}
 			lastItemIndex =
-				utterance.content.indexOf( self.getLast( items ) );
+				utterance.content.indexOf(
+					mw.wikispeech.util.getLast( items )
+				);
 			itemsBeforeEnd = utterance.content.slice( 0, lastItemIndex );
 			itemsBeforeEndLength = 0;
 			itemsBeforeEnd.forEach( function ( item ) {
 				itemsBeforeEndLength += item.string.length;
 			} );
-			token.endOffset = utteranceOffset - itemsBeforeEndLength +
-				endOffsetInUtteranceString;
+			token.endOffset =
+				endOffsetInUtteranceString - itemsBeforeEndLength;
+			if (
+				mw.wikispeech.util.getLast( token.items ) ===
+					utterance.content[ 0 ]
+			) {
+				token.endOffset += utterance.startOffset;
+			}
 			return endOffsetInUtteranceString;
 		};
 
@@ -984,7 +1010,7 @@
 				startOffsetInUtteranceString = concatenatedText.indexOf(
 					token, searchOffset
 				);
-				if ( startOffsetInUtteranceString !== -1 ) {
+				if ( startOffsetInUtteranceString >= 0 ) {
 					return false;
 				}
 			} );
@@ -996,12 +1022,16 @@
 	mw.wikispeech.Wikispeech = Wikispeech;
 	mw.wikispeech.wikispeech = new mw.wikispeech.Wikispeech();
 
-	mw.loader.using( 'mediawiki.api' ).done( function () {
-		if ( mw.wikispeech.wikispeech.enabledForNamespace() ) {
-			mw.wikispeech.wikispeech.loadUtterances();
-			// Prepare the first utterance for playback.
-			mw.wikispeech.wikispeech.addControlPanel();
-			mw.wikispeech.wikispeech.addKeyboardShortcuts();
+	mw.loader.using( [ 'mediawiki.api', 'ext.wikispeech' ] ).done(
+		function () {
+			if ( mw.wikispeech.wikispeech.enabledForNamespace() ) {
+				mw.wikispeech.wikispeech.loadUtterances();
+				// Prepare the first utterance for playback.
+				mw.wikispeech.wikispeech.addControlPanel();
+				mw.wikispeech.selectionPlayer.addSelectionPlayer();
+				mw.wikispeech.wikispeech.addStackToPlayStopButton();
+				mw.wikispeech.wikispeech.addKeyboardShortcuts();
+			}
 		}
-	} );
+	);
 }( mediaWiki, jQuery ) );

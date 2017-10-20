@@ -29,7 +29,9 @@
 		"ext.wikispeech": {
 			"scripts": [
 				"ext.wikispeech.js",
-				"ext.wikispeech.highlighter.js"
+				"ext.wikispeech.highlighter.js",
+				"ext.wikispeech.util.js",
+				"ext.wikispeech.selectionPlayer.js"
 			],
 			"styles": [
 				"ext.wikispeech.css"

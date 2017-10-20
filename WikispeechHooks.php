@@ -24,13 +24,16 @@ class WikispeechHooks {
 		$testModules['qunit']['ext.wikispeech.test'] = [
 			'scripts' => [
 				'tests/qunit/ext.wikispeech.test.js',
-				'tests/qunit/ext.wikispeech.highlighter.test.js'
+				'tests/qunit/ext.wikispeech.highlighter.test.js',
+				'tests/qunit/ext.wikispeech.util.test.js',
+				'tests/qunit/ext.wikispeech.selectionPlayer.test.js',
+				'tests/qunit/ext.wikispeech.test.util.js'
 			],
 			'dependencies' => [
 				// Despite what it says at
 				// https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderTestModules,
-				// adding 'ext.wikispeech.highlighter' isn't needed
-				// and in fact breaks the testing.
+				// adding 'ext.wikispeech.highlighter' etc. isn't
+				// needed and in fact breaks the testing.
 				'ext.wikispeech'
 			],
 			'localBasePath' => __DIR__,

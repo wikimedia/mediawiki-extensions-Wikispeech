@@ -22,7 +22,7 @@
 	content: '\f04d';
 }
 
-.ext-wikispeech-spinner:after {
+.ext-wikispeech-buffering-icon:after {
 	font-family: 'Fontawesome';
 	content: '\f110';
 	color: #ff0;
@@ -69,4 +69,11 @@
 
 .ext-wikispeech-highlight-word {
 	background-color: rgb( 255, 200, 140 );
+}
+
+.ext-wikispeech-selection-player {
+	visibility: hidden;
+	background-color: rgb( 200, 200, 200 );
+	border: solid 1px rgb( 150, 150, 150 );
+	position: absolute;
 }

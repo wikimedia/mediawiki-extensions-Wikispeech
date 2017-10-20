@@ -12,8 +12,8 @@
 	],
 	"--output": "js-docs",
 	"--tags": "../../maintenance/jsduck/custom_tags.rb",
+	"--categories": "jsduck-categories.json",
 	"--": [
-		"modules",
-		"tests/qunit"
+		"modules"
 	]
 }

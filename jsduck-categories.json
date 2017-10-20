@@ -1,0 +1,11 @@
+[
+	{
+		"name": "Wikispeech",
+		"groups": [
+			{
+				"name": "Base",
+				"classes": [ "ext.wikispeech.*" ]
+			}
+		]
+	}
+]

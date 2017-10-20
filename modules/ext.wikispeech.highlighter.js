@@ -1,4 +1,12 @@
 ( function ( mw, $ ) {
+
+	/**
+	 * Handles highlighting parts of the page when reciting.
+	 *
+	 * @class ext.wikispeech.Highlighter
+	 * @constructor
+	 */
+
 	function Highlighter() {
 		var self = this;
 		self.highlightTokenTimer = null;
@@ -24,7 +32,7 @@
 			var textNodes, span;
 
 			textNodes = utterance.content.map( function ( item ) {
-				return self.getNodeForItem( item );
+				return mw.wikispeech.util.getNodeForItem( item );
 			} );
 			span = $( '<span></span>' )
 				.addClass( self.utteranceHighlightingClass )
@@ -43,33 +51,6 @@
 				// highlighting.
 				this.textPath = utterance.content[ i ].path;
 			} );
-		};
-
-		/**
-		 * Find the text node from which a content item was created.
-		 *
-		 * The path property of the item is an XPath expression
-		 * that is used to traverse the DOM tree.
-		 *
-		 * @param {Object} item The item to find the text node for.
-		 * @return {TextNode} The text node associated with the item.
-		 */
-
-		this.getNodeForItem = function ( item ) {
-			var node, result, contentSelector;
-
-			// The path should be unambiguous, so just get the first
-			// matching node.
-			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
-			result = document.evaluate(
-				item.path,
-				$( contentSelector ).get( 0 ),
-				null,
-				XPathResult.FIRST_ORDERED_NODE_TYPE,
-				null
-			);
-			node = result.singleNodeValue;
-			return node;
 		};
 
 		/**
@@ -150,7 +131,7 @@
 		 */
 
 		this.highlightToken = function ( token ) {
-			var span, textNodes, utteranceOffset;
+			var span, textNodes, startOffset, endOffset;
 
 			span = $( '<span></span>' )
 				.addClass( 'ext-wikispeech-highlight-word' )
@@ -165,19 +146,28 @@
 						item
 					);
 				} else {
-					textNode = self.getNodeForItem( item );
+					textNode = mw.wikispeech.util.getNodeForItem( item );
 				}
 				return textNode;
 			} );
-			utteranceOffset = 0;
-			if ( $( self.utteranceHighlightingSelector ).length ) {
-				utteranceOffset = token.utterance.startOffset;
+			startOffset = token.startOffset;
+			endOffset = token.endOffset;
+			if (
+				$( self.utteranceHighlightingSelector ).length &&
+					token.items[ 0 ] === token.utterance.content[ 0 ]
+			) {
+				// Modify the offset if the token is the first in the
+				// utterance and there is an utterance
+				// highlighting. The text node may have been split
+				// when the utterance highlighting was applied.
+				startOffset -= token.utterance.startOffset;
+				endOffset -= token.utterance.startOffset;
 			}
 			self.wrapTextNodes(
 				span,
 				textNodes,
-				token.startOffset - utteranceOffset,
-				token.endOffset - utteranceOffset
+				startOffset,
+				endOffset
 			);
 		};
 

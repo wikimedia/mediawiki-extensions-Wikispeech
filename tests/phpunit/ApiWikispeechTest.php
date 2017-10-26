@@ -96,4 +96,102 @@ class ApiWikispeechTest extends ApiTestCase {
 			$res[0]['wikispeech']['segments'][0]
 		);
 	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage "removetags" is not a valid JSON string.
+	 */
+
+	public function testRemoveTagsInvalidJsonThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => 'cleanedtext',
+			'removetags' => 'not a JSON string'
+		] );
+	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage "removetags" is not of a valid format.
+	 */
+
+	public function testRemoveTagsNotAnObjectThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => 'cleanedtext',
+			'removetags' => '"not a JSON object"'
+		] );
+	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage "removetags" is not of a valid format.
+	 */
+
+	public function testRemoveTagsInvalidValueThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => 'cleanedtext',
+			'removetags' => '{"tag": null}'
+		] );
+	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage "removetags" is not of a valid format.
+	 */
+
+	public function testRemoveTagsJsonArrayThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => 'cleanedtext',
+			'removetags' => '[true]'
+		] );
+	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage "removetags" is not of a valid format.
+	 */
+
+	public function testRemoveTagsInvalidRuleThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => 'cleanedtext',
+			'removetags' => '{"tag": ["valid", false]}'
+		] );
+	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage There is no revision with ID
+	 */
+
+	public function testInvalidPageThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => 'Not a page',
+			'output' => 'cleanedtext',
+			'removetags' => '{}'
+		] );
+	}
+
+	/**
+	 * @expectedException ApiUsageException
+	 * @expectedExceptionMessage The parameter "output" may not be empty.
+	 */
+
+	public function testNoOutputFormatThrowsException() {
+		$this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => '',
+			'removetags' => '{}'
+		] );
+	}
 }

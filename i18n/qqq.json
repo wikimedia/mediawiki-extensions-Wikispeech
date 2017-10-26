@@ -21,5 +21,7 @@
 	"apihelp-wikispeech-param-removetags": "{{doc-apihelp-param|wikispeech|removetags}}",
 	"apihelp-wikispeech-param-segmentbreakingtags": "{{doc-apihelp-param|wikispeech|segmentbreakingtags}}",
 	"apihelp-wikispeech-example-1": "{{doc-apihelp-example|wikispeech}}",
-	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}"
+	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}",
+	"apierror-wikispeech-removetagsinvalidjson": "{{doc-apierror}}",
+	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}"
 }

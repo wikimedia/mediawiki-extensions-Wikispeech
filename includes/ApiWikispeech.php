@@ -18,7 +18,10 @@ class ApiWikispeech extends ApiBase {
 		if ( empty( $parameters['output'] ) ) {
 			$this->dieWithError( [ 'apierror-paramempty', 'output' ] );
 		}
-		$pageContent = $this->getPageContent( $parameters['page'] );
+		$titleAndContent =
+			$this->getTitleAndContent( $parameters['page'] );
+		$displayTitle = $titleAndContent[ 0 ];
+		$pageContent = $titleAndContent[ 1 ];
 		$result = FormatJson::parse(
 			$parameters['removetags'],
 			FormatJson::FORCE_ASSOC
@@ -37,11 +40,50 @@ class ApiWikispeech extends ApiBase {
 			] );
 		}
 		$this->processPageContent(
+			$displayTitle,
 			$pageContent,
 			$parameters['output'],
 			$removeTags,
 			$parameters['segmentbreakingtags']
 		);
+	}
+
+	/**
+	 * Get the title and parsed content of the named page.
+	 *
+	 * @since 0.0.1
+	 * @param string $pageTitle The title of the page to get content
+	 *  from.
+	 * @return array An array containing the displayed title HTML and
+	 *  the parsed content for the page given in the request to the
+	 *  Wikispeech API.
+	 */
+	private function getTitleAndContent( $pageTitle ) {
+		// Get and validate Title
+		$title = Title::newFromText( $pageTitle );
+		if ( !$title || $title->isExternal() ) {
+			$this->dieWithError( [
+				'apierror-invalidtitle',
+				wfEscapeWikiText( $pageTitle )
+			] );
+		}
+		if ( !$title->canExist() ) {
+			$this->dieWithError( 'apierror-pagecannotexist' );
+		}
+
+		// Parse latest revision, using parser cache
+		$page = WikiPage::factory( $title );
+		$popts = $page->makeParserOptions( $this->getContext() );
+		$pout = $page->getParserOutput( $popts );
+		if ( !$pout ) {
+			$this->dieWithError( [
+				'apierror-nosuchrevid',
+				$page->getLatest()
+			] );
+		}
+
+		// Return title and content HTML.
+		return [ $pout->getDisplayTitle(), $pout->getText() ];
 	}
 
 	/**
@@ -85,6 +127,7 @@ class ApiWikispeech extends ApiBase {
 	 * Process HTML and return it as original, cleaned and/or segmented.
 	 *
 	 * @since 0.0.1
+	 * @param string $displayTitle The title HTML as displayed on the page.
 	 * @param string $pageContent The HTML string to process.
 	 * @param array $outputFormats Specifies what output formats to
 	 *  return. Can be any combination of: "originalcontent",
@@ -99,6 +142,7 @@ class ApiWikispeech extends ApiBase {
 	 *  * "segments": Cleaned and segmented HTML as an array.
 	 */
 	public function processPageContent(
+		$displayTitle,
 		$pageContent,
 		$outputFormats,
 		$removeTags,
@@ -109,12 +153,17 @@ class ApiWikispeech extends ApiBase {
 			$values['originalcontent'] = $pageContent;
 		}
 
-		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
 		$cleanedText = null;
 		if ( in_array( 'cleanedtext', $outputFormats ) ) {
-			$cleanedText = $cleaner->cleanHtml( $pageContent );
-			// Make a string of all the cleaned text.
+			// Make a string of all the cleaned text, starting with
+			// the title.
 			$cleanedTextString = '';
+			$cleanedText = $this->getCleanedText(
+				$displayTitle,
+				$pageContent,
+				$removeTags,
+				$segmentBreakingTags
+			);
 			foreach ( $cleanedText as $item ) {
 				if ( $item instanceof SegmentBreak ) {
 					$cleanedTextString .= "\n";
@@ -129,7 +178,12 @@ class ApiWikispeech extends ApiBase {
 		if ( in_array( 'segments', $outputFormats ) ) {
 			$segmenter = new Segmenter();
 			if ( $cleanedText == null ) {
-				$cleanedText = $cleaner->cleanHtml( $pageContent );
+				$cleanedText = $this->getCleanedText(
+					$displayTitle,
+					$pageContent,
+					$removeTags,
+					$segmentBreakingTags
+				);
 			}
 			$segments = $segmenter->segmentSentences( $cleanedText );
 			$values['segments'] = $segments;
@@ -143,40 +197,30 @@ class ApiWikispeech extends ApiBase {
 	}
 
 	/**
-	 * Get the parsed content of the named page.
+	 * Clean content text and title.
 	 *
+	 * @param string $displayTitle The title HTML as displayed on the page.
+	 * @param string $pageContent The HTML string to process.
+	 * @param string $removeTags Used by `Cleaner` to remove tags.
+	 * @param array $segmentBreakingTags Used by `Segmenter` to break
+	 *  segments.
 	 * @since 0.0.1
-	 * @param string $pageTitle The title of the page to get content
-	 *  from.
-	 * @return string The parsed content for the page given in the
-	 *  request to the Wikispeech API.
+	 * @return array Title and content represented as `CleanedText`s
+	 *  and `SegmentBreak`s
 	 */
-	private function getPageContent( $pageTitle ) {
-		// Get and validate Title
-		$title = Title::newFromText( $pageTitle );
-		if ( !$title || $title->isExternal() ) {
-			$this->dieWithError( [
-				'apierror-invalidtitle',
-				wfEscapeWikiText( $pageTitle )
-			] );
-		}
-		if ( !$title->canExist() ) {
-			$this->dieWithError( 'apierror-pagecannotexist' );
-		}
-
-		// Parse latest revision, using parser cache
-		$page = WikiPage::factory( $title );
-		$popts = $page->makeParserOptions( $this->getContext() );
-		$pout = $page->getParserOutput( $popts );
-		if ( !$pout ) {
-			$this->dieWithError( [
-				'apierror-nosuchrevid',
-				$page->getLatest()
-			] );
-		}
-
-		// Return HTML
-		return $pout->getText();
+	public function getCleanedText(
+		$displayTitle,
+		$pageContent,
+		$removeTags,
+		$segmentBreakingTags
+	) {
+		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
+		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
+		$titleSegment->path = '//h1[@id="firstHeading"]//text()';
+		$cleanedText = $cleaner->cleanHtml( $pageContent );
+		// Add the title as a separate utterance to the start.
+		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
+		return $cleanedText;
 	}
 
 	/**

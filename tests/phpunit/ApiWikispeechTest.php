@@ -11,16 +11,18 @@
 require_once __DIR__ . '/../../includes/ApiWikispeech.php';
 require_once 'Util.php';
 
-define( 'TITLE', 'Talk:Page' );
+define( 'TITLE', 'Test_Page' );
 
 class ApiWikispeechTest extends ApiTestCase {
 	public function addDBDataOnce() {
 		$content = "Text ''italic'' '''bold'''";
 		$this->addPage( TITLE, $content );
+		$talkContent = "Talking about ''italic'' '''bold'''";
+		$this->addPage( TITLE, $talkContent, NS_TALK );
 	}
 
-	private function addPage( $titleString, $content ) {
-		$title = Title::newFromText( $titleString );
+	private function addPage( $titleString, $content, $namespace=NS_MAIN ) {
+		$title = Title::newFromText( $titleString, $namespace );
 		$page = WikiPage::factory( $title );
 		$status = $page->doEditContent(
 			ContentHandler::makeContent(
@@ -42,13 +44,13 @@ class ApiWikispeechTest extends ApiTestCase {
 			'output' => 'cleanedtext'
 		] );
 		$this->assertEquals(
-			'Text italic bold',
+			"Test Page\nText italic bold",
 			$res[0]['wikispeech']['cleanedtext']
 		);
 	}
 
 	public function testCleanTextHandleSegmentBreaks() {
-		$title = 'Talk:Break';
+		$title = 'Break';
 		$content = 'Text with<br/ >break.';
 		$this->addPage( $title, $content );
 		$res = $this->doApiRequest( [
@@ -58,7 +60,7 @@ class ApiWikispeechTest extends ApiTestCase {
 			'segmentbreakingtags' => 'br'
 		] );
 		$this->assertEquals(
-			"Text with\nbreak.",
+			"Break\nText with\nbreak.",
 			$res[0]['wikispeech']['cleanedtext']
 		);
 	}
@@ -66,17 +68,30 @@ class ApiWikispeechTest extends ApiTestCase {
 	public function testSegmentText() {
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech',
-			'page' => TITLE,
+			'page' => 'Talk:' . TITLE,
 			'output' => 'segments'
 		] );
-		$this->assertEquals( 1, count( $res[0]['wikispeech']['segments'] ) );
+		$this->assertEquals( 2, count( $res[0]['wikispeech']['segments'] ) );
+		$this->assertEquals(
+			[
+				'startOffset' => 0,
+				'endOffset' => 13,
+				'content' => [
+					[
+						'string' => 'Talk:Test Page',
+						'path' => '//h1[@id="firstHeading"]//text()'
+					]
+				]
+			],
+			$res[0]['wikispeech']['segments'][0]
+		);
 		$this->assertEquals(
 			[
 				'startOffset' => 0,
 				'endOffset' => 3,
 				'content' => [
 					[
-						'string' => 'Text ',
+						'string' => 'Talking about ',
 						'path' => './div/p/text()[1]'
 					],
 					[
@@ -93,7 +108,7 @@ class ApiWikispeechTest extends ApiTestCase {
 					]
 				]
 			],
-			$res[0]['wikispeech']['segments'][0]
+			$res[0]['wikispeech']['segments'][1]
 		);
 	}
 
@@ -193,5 +208,43 @@ class ApiWikispeechTest extends ApiTestCase {
 			'output' => '',
 			'removetags' => '{}'
 		] );
+	}
+
+	public function testSegmentTextHandleDisplayTitle() {
+		$title = 'Title';
+		$content = '{{DISPLAYTITLE:title}}Some content text.';
+		$this->addPage( $title, $content );
+		$res = $this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => $title,
+			'output' => 'segments'
+		] );
+		$this->assertEquals( 2, count( $res[0]['wikispeech']['segments'] ) );
+		$this->assertEquals(
+			[
+				'startOffset' => 0,
+				'endOffset' => 4,
+				'content' => [
+					[
+						'string' => 'title',
+						'path' => '//h1[@id="firstHeading"]//text()'
+					]
+				]
+			],
+			$res[0]['wikispeech']['segments'][0]
+		);
+		$this->assertEquals(
+			[
+				'startOffset' => 0,
+				'endOffset' => 17,
+				'content' => [
+					[
+						'string' => 'Some content text.',
+						'path' => './div/p/text()'
+					]
+				]
+			],
+			$res[0]['wikispeech']['segments'][1]
+		);
 	}
 }

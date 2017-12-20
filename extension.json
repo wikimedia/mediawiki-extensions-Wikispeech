@@ -16,6 +16,7 @@
 		]
 	},
 	"AutoloadClasses": {
+		"SpecialWikispeechLexiconTool": "specials/SpecialWikispeechLexiconTool.php",
 		"WikispeechHooks": "WikispeechHooks.php",
 		"CleanedText": "includes/CleanedText.php",
 		"SegmentBreak": "includes/SegmentBreak.php",
@@ -54,6 +55,12 @@
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules",
 		"remoteExtPath": "Wikispeech/modules"
+	},
+	"SpecialPages": {
+		"WikispeechLexiconTool": "SpecialWikispeechLexiconTool"
+	},
+	"ExtensionMessagesFiles": {
+		"WikispeechAlias": "Wikispeech.alias.php"
 	},
 	"Hooks": {
 		"ResourceLoaderTestModules": [

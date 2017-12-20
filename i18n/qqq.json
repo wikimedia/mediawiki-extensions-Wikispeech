@@ -1,17 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sebastian Berlin",
-			"Egbe Eugene"
+			"Sebastian Berlin"
 		]
 	},
 	"wikispeech": "The name of the extension",
 	"wikispeech-desc": "{{desc|name=Wikispeech|url=https://www.mediawiki.org/wiki/Extension:Wikispeech}}",
 	"special-wikispeech-intro": "Description appearing on top of <tvar|1>Special:{{ll|Wikispeech}}</>.",
 	"special-wikispeech-title": "Title of the special page Special:Wikispeech",
-	"wikispeechlexicontool": "The name of the tool which suggests words about an article not found in the lexicon and adds them",
-	"special-wikispeech-lexicon-tool-intro": "Description appearing on top of <tvar|1>Special:{{ll|WikispeechLexiconTool}}</>.",
-	"special-wikispeech-lexicon-tool-title": "Title of the special page Special:WikispeechLexiconTool",
 	"apihelp-wikispeech-summary": "{{doc-apihelp-summary|wikispeech}}",
 	"apihelp-wikispeech-param-page": "{{doc-apihelp-param|wikispeech|page}}",
 	"apihelp-wikispeech-param-output": "{{doc-apihelp-param|wikispeech|output}}",

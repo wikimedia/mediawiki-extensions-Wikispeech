@@ -9,5 +9,4 @@ $specialPageAliases = array();
 /** English (English) */
 $specialPageAliases['en'] = array(
 	'Wikispeech' => array( 'Wikispeech' ),
-	'WikispeechLexiconTool' => array( 'WikispeechLexiconTool' ),
 );

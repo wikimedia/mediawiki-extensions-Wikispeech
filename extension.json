@@ -17,7 +17,7 @@
 	},
 	"AutoloadClasses": {
 		"SpecialWikispeech": "specials/SpecialWikispeech.php",
-		"WikispeechHooks": "Hooks.php",
+		"WikispeechHooks": "WikispeechHooks.php",
 		"CleanedText": "includes/CleanedText.php",
 		"SegmentBreak": "includes/SegmentBreak.php",
 		"Cleaner": "includes/Cleaner.php",

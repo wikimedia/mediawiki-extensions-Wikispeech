@@ -5,7 +5,7 @@
  * @ingroup Extensions
  * @group Database
  * @group medium
- * @license GPL-2.0+
+ * @license GPL-2.0-or-later
  */
 
 require_once __DIR__ . '/../../includes/ApiWikispeech.php';

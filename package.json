@@ -2,7 +2,7 @@
 	"name": "wikispeech",
 	"version": "0.0.1",
 	"private": true,
-	"license": "GPL-2.0+",
+	"license": "GPL-2.0-or-later",
 	"scripts": {
 		"test": "grunt test"
 	},

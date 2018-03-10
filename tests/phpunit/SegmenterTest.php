@@ -9,6 +9,9 @@
 require_once __DIR__ . '/../../includes/Segmenter.php';
 require_once 'Util.php';
 
+/**
+ * @covers Segmenter
+ */
 class SegmenterTest extends MediaWikiTestCase {
 	protected function setUp() {
 		parent::setUp();

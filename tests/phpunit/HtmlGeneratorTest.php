@@ -9,6 +9,9 @@
 require_once __DIR__ . '/../../includes/HtmlGenerator.php';
 require_once 'Util.php';
 
+/**
+ * @covers HtmlGenerator
+ */
 class HtmlGeneratorTest extends MediaWikiTestCase {
 	public function testCreateUtteranceElement() {
 		$segment = [
@@ -55,7 +58,6 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 	 * @param DOMElement $element Element to create the XPath for.
 	 * @return DOMXPath The created XPath.
 	 */
-
 	private function getXpath( $element ) {
 		// Appending the node is needed for XPath functions to work.
 		$element->ownerDocument->appendChild( $element );

@@ -3,8 +3,6 @@
 /**
  * @file
  * @ingroup Extensions
- * @group Database
- * @group medium
  * @license GPL-2.0-or-later
  */
 
@@ -13,6 +11,11 @@ require_once 'Util.php';
 
 define( 'TITLE', 'Test_Page' );
 
+/**
+ * @group Database
+ * @group medium
+ * @covers ApiWikispeech
+ */
 class ApiWikispeechTest extends ApiTestCase {
 	public function addDBDataOnce() {
 		$content = "Text ''italic'' '''bold'''";
@@ -116,7 +119,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage "removetags" is not a valid JSON string.
 	 */
-
 	public function testRemoveTagsInvalidJsonThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
@@ -130,7 +132,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage "removetags" is not of a valid format.
 	 */
-
 	public function testRemoveTagsNotAnObjectThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
@@ -144,7 +145,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage "removetags" is not of a valid format.
 	 */
-
 	public function testRemoveTagsInvalidValueThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
@@ -158,7 +158,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage "removetags" is not of a valid format.
 	 */
-
 	public function testRemoveTagsJsonArrayThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
@@ -172,7 +171,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage "removetags" is not of a valid format.
 	 */
-
 	public function testRemoveTagsInvalidRuleThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
@@ -186,7 +184,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage There is no revision with ID
 	 */
-
 	public function testInvalidPageThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
@@ -200,7 +197,6 @@ class ApiWikispeechTest extends ApiTestCase {
 	 * @expectedException ApiUsageException
 	 * @expectedExceptionMessage The parameter "output" may not be empty.
 	 */
-
 	public function testNoOutputFormatThrowsException() {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',

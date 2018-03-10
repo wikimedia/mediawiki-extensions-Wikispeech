@@ -9,6 +9,9 @@
 require_once __DIR__ . '/../../includes/Cleaner.php';
 require_once 'Util.php';
 
+/**
+ * @covers Cleaner
+ */
 class CleanerTest extends MediaWikiTestCase {
 	protected function setUp() {
 		parent::setUp();
@@ -54,7 +57,6 @@ class CleanerTest extends MediaWikiTestCase {
 	 * @param string $markedUpText The string that contains the markup
 	 *  that should be cleaned
 	 */
-
 	private function assertTextCleaned(
 		$expectedCleanedContents,
 		$markedUpText
@@ -84,7 +86,6 @@ class CleanerTest extends MediaWikiTestCase {
 	 *  the expected output.
 	 * @param array $cleanedContents The content array to test.
 	 */
-
 	private function assertContentsEqual(
 		$expectedCleanedContents,
 		$cleanedContents
@@ -118,7 +119,6 @@ class CleanerTest extends MediaWikiTestCase {
 	 * @param string $markedUpText The string that contains the markup
 	 *  that should be cleaned
 	 */
-
 	private function assertWithPrefixAndSuffix(
 		$expectedCleanedContents,
 		$markedUpText
@@ -169,7 +169,6 @@ class CleanerTest extends MediaWikiTestCase {
 	 * @param string $markedUpText The string that contains the markup
 	 *  that should be cleaned
 	 */
-
 	private function assertWithInfix(
 		$expectedCleanedContents,
 		$markedUpText

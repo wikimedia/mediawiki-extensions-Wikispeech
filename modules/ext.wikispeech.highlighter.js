@@ -32,7 +32,7 @@
 			var textNodes, span;
 
 			textNodes = utterance.content.map( function ( item ) {
-				return mw.wikispeech.util.getNodeForItem( item );
+				return mw.wikispeech.storage.getNodeForItem( item );
 			} );
 			span = $( '<span></span>' )
 				.addClass( self.utteranceHighlightingClass )
@@ -146,7 +146,7 @@
 						item
 					);
 				} else {
-					textNode = mw.wikispeech.util.getNodeForItem( item );
+					textNode = mw.wikispeech.storage.getNodeForItem( item );
 				}
 				return textNode;
 			} );
@@ -204,8 +204,7 @@
 			// The duration of the timer is the duration of the
 			// current token.
 			duration = token.endTime - currentTime;
-			nextToken =
-				mw.wikispeech.wikispeech.getNextToken( token );
+			nextToken = mw.wikispeech.storage.getNextToken( token );
 			if ( nextToken ) {
 				self.highlightTokenTimer = window.setTimeout(
 					function () {
@@ -247,6 +246,18 @@
 				parents[ 0 ].normalize();
 				parents[ parents.length - 1 ].normalize();
 			}
+		};
+
+		/**
+		 * Remove any sentence and word highlighting.
+		 */
+
+		this.clearHighlighting = function () {
+			// Remove sentence highlighting.
+			self.removeWrappers( '.ext-wikispeech-highlight-sentence' );
+			// Remove word highlighting.
+			self.removeWrappers( '.ext-wikispeech-highlight-word' );
+			self.clearHighlightTokenTimer();
 		};
 
 		/**

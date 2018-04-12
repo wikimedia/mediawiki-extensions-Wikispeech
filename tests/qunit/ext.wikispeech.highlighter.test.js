@@ -1,31 +1,32 @@
 ( function ( mw, $ ) {
-	var contentSelector, utterances;
+	var contentSelector, util, highlighter, storage;
 
 	QUnit.module( 'ext.wikispeech.highlighter', {
 		setup: function () {
-			mw.wikispeech.highlighter = new mw.wikispeech.Highlighter();
-			// Mock wikispeech for methods that are called as side
-			// effects.
-			mw.wikispeech.wikispeech = {
-				getNextToken: function () {}
-			};
-			contentSelector =
-				mw.config.get( 'wgWikispeechContentSelector' );
-			mw.wikispeech.test.util.setContentHtml( 'Utterance zero.' );
-			utterances = [
+			util = mw.wikispeech.test.util;
+			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
+			util.setContentHtml( 'Utterance zero.' );
+			mw.wikispeech.storage =
+				sinon.stub( new mw.wikispeech.Storage() );
+			storage = mw.wikispeech.storage;
+			storage.utterances = [
 				{
 					startOffset: 0,
 					endOffset: 14,
 					content: [ { path: './text()' } ]
 				}
 			];
+			highlighter = new mw.wikispeech.Highlighter();
 		}
 	} );
 
 	QUnit.test( 'highlightUtterance()', function ( assert ) {
 		assert.expect( 2 );
+		storage.getNodeForItem.returns(
+			$( contentSelector ).contents().get( 0 )
+		);
 
-		mw.wikispeech.highlighter.highlightUtterance( utterances[ 0 ] );
+		highlighter.highlightUtterance( storage.utterances[ 0 ] );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -39,15 +40,19 @@
 
 	QUnit.test( 'highlightUtterance(): multiple utterances', function ( assert ) {
 		assert.expect( 1 );
-		$( contentSelector )
-			.text( 'Utterance zero. Utterance one. Utterance two.' );
-		utterances[ 1 ] = {
+		util.setContentHtml(
+			'Utterance zero. Utterance one. Utterance two.'
+		);
+		storage.getNodeForItem.returns(
+			$( contentSelector ).contents().get( 0 )
+		);
+		storage.utterances[ 1 ] = {
 			startOffset: 16,
 			endOffset: 29,
 			content: [ { path: './text()' } ]
 		};
 
-		mw.wikispeech.highlighter.highlightUtterance( utterances[ 1 ] );
+		highlighter.highlightUtterance( storage.utterances[ 1 ] );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -57,10 +62,19 @@
 
 	QUnit.test( 'highlightUtterance(): with tags', function ( assert ) {
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml(
+		util.setContentHtml(
 			'<p>Utterance with <b>a</b> tag.</p>'
 		);
-		utterances[ 0 ] = {
+		storage.getNodeForItem.onCall( 0 ).returns(
+			$( contentSelector + ' p' ).contents().get( 0 )
+		);
+		storage.getNodeForItem.onCall( 1 ).returns(
+			$( contentSelector + ' p b' ).contents().get( 0 )
+		);
+		storage.getNodeForItem.onCall( 2 ).returns(
+			$( contentSelector + ' p' ).contents().get( 2 )
+		);
+		storage.utterances[ 0 ] = {
 			startOffset: 0,
 			endOffset: 4,
 			content: [
@@ -70,7 +84,7 @@
 			]
 		};
 
-		mw.wikispeech.highlighter.highlightUtterance( utterances[ 0 ] );
+		highlighter.highlightUtterance( storage.utterances[ 0 ] );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -80,8 +94,17 @@
 
 	QUnit.test( 'highlightUtterance(): wrap middle text nodes properly', function ( assert ) {
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( 'First<br />middle<br />last. Next utterance.' );
-		utterances[ 0 ] = {
+		util.setContentHtml( 'First<br />middle<br />last. Next utterance.' );
+		storage.getNodeForItem.onCall( 0 ).returns(
+			$( contentSelector ).contents().get( 0 )
+		);
+		storage.getNodeForItem.onCall( 1 ).returns(
+			$( contentSelector ).contents().get( 2 )
+		);
+		storage.getNodeForItem.onCall( 2 ).returns(
+			$( contentSelector ).contents().get( 4 )
+		);
+		storage.utterances[ 0 ] = {
 			startOffset: 0,
 			endOffset: 4,
 			content: [
@@ -91,7 +114,7 @@
 			]
 		};
 
-		mw.wikispeech.highlighter.highlightUtterance( utterances[ 0 ] );
+		highlighter.highlightUtterance( storage.utterances[ 0 ] );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -101,9 +124,9 @@
 
 	QUnit.test( 'removeWrappers()', function ( assert ) {
 		assert.expect( 2 );
-		mw.wikispeech.test.util.setContentHtml( '<span class="wrapper">Utterance zero.</span>' );
+		util.setContentHtml( '<span class="wrapper">Utterance zero.</span>' );
 
-		mw.wikispeech.highlighter.removeWrappers( '.wrapper' );
+		highlighter.removeWrappers( '.wrapper' );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -114,9 +137,9 @@
 
 	QUnit.test( 'removeWrappers(): restore text nodes as one', function ( assert ) {
 		assert.expect( 3 );
-		mw.wikispeech.test.util.setContentHtml( 'prefix <span class="wrapper">Utterance zero.</span> suffix' );
+		util.setContentHtml( 'prefix <span class="wrapper">Utterance zero.</span> suffix' );
 
-		mw.wikispeech.highlighter.removeWrappers( '.wrapper' );
+		highlighter.removeWrappers( '.wrapper' );
 
 		assert.strictEqual( $( contentSelector ).html(),
 			'prefix Utterance zero. suffix'
@@ -127,9 +150,9 @@
 
 	QUnit.test( 'removeWrappers(): restore text nodes as one with inner wrapper', function ( assert ) {
 		assert.expect( 2 );
-		mw.wikispeech.test.util.setContentHtml( '<span class="outer-wrapper">Utterance <span class="inner-wrapper">zero</span>.</span>' );
+		util.setContentHtml( '<span class="outer-wrapper">Utterance <span class="inner-wrapper">zero</span>.</span>' );
 
-		mw.wikispeech.highlighter.removeWrappers( '.outer-wrapper' );
+		highlighter.removeWrappers( '.outer-wrapper' );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -140,9 +163,9 @@
 
 	QUnit.test( 'removeWrappers(): multiple wrappers', function ( assert ) {
 		assert.expect( 3 );
-		mw.wikispeech.test.util.setContentHtml( '<span class="wrapper">Utterance</span> <span class="wrapper">zero.</span>' );
+		util.setContentHtml( '<span class="wrapper">Utterance</span> <span class="wrapper">zero.</span>' );
 
-		mw.wikispeech.highlighter.removeWrappers( '.wrapper' );
+		highlighter.removeWrappers( '.wrapper' );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -156,14 +179,18 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
+		storage.getNodeForItem.returns(
+			$( contentSelector ).contents().get( 0 )
+		);
+
 		highlightedToken = {
-			utterance: utterances[ 0 ],
+			utterance: storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 8,
-			items: [ utterances[ 0 ].content[ 0 ] ]
+			items: [ storage.utterances[ 0 ].content[ 0 ] ]
 		};
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -175,20 +202,23 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( 'Utterance zero. Utterance one.' );
-		utterances[ 1 ] = {
+		util.setContentHtml( 'Utterance zero. Utterance one.' );
+		storage.getNodeForItem.returns(
+			$( contentSelector ).contents().get( 0 )
+		);
+		storage.utterances[ 1 ] = {
 			startOffset: 16,
 			content: [ { path: './text()' } ]
 		};
 		highlightedToken = {
-			utterance: utterances[ 1 ],
+			utterance: storage.utterances[ 1 ],
 			startOffset: 16,
 			endOffset: 24,
-			items: [ utterances[ 1 ].content[ 0 ] ]
+			items: [ storage.utterances[ 1 ].content[ 0 ] ]
 		};
-		utterances[ 1 ].tokens = [ highlightedToken ];
+		storage.utterances[ 1 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -200,18 +230,18 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Utterance with token.</span>' );
+		util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Utterance with token.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()' );
 		highlightedToken = {
-			utterance: utterances[ 0 ],
+			utterance: storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 19,
-			items: [ utterances[ 0 ].content[ 0 ] ]
+			items: [ storage.utterances[ 0 ].content[ 0 ] ]
 		};
-		utterances[ 0 ].tokens = [ highlightedToken ];
+		storage.utterances[ 0 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -223,24 +253,24 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml(
+		util.setContentHtml(
 			'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>'
 		);
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()' );
-		utterances[ 1 ] = {
+		storage.utterances[ 1 ] = {
 			startOffset: 16,
 			content: [ { path: './text()' } ]
 		};
 		highlightedToken = {
-			utterance: utterances[ 1 ],
+			utterance: storage.utterances[ 1 ],
 			startOffset: 16,
 			endOffset: 24,
-			items: [ utterances[ 1 ].content[ 0 ] ]
+			items: [ storage.utterances[ 1 ].content[ 0 ] ]
 		};
-		utterances[ 1 ].tokens = [ highlightedToken ];
+		storage.utterances[ 1 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -252,19 +282,19 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( '<span><span class="ext-wikispeech-highlight-sentence">Utterance with token.</span></span>' );
+		util.setContentHtml( '<span><span class="ext-wikispeech-highlight-sentence">Utterance with token.</span></span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './span/text()' );
-		utterances[ 0 ].content[ 0 ] = { path: './span/text()' };
+		storage.utterances[ 0 ].content[ 0 ] = { path: './span/text()' };
 		highlightedToken = {
-			utterance: utterances[ 0 ],
+			utterance: storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 19,
-			items: [ utterances[ 0 ].content[ 0 ] ]
+			items: [ storage.utterances[ 0 ].content[ 0 ] ]
 		};
-		utterances[ 0 ].tokens = [ highlightedToken ];
+		storage.utterances[ 0 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -276,17 +306,20 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( 'Utterance with <br>token.' );
-		utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
+		util.setContentHtml( 'Utterance with <br />token.' );
+		storage.getNodeForItem.returns(
+			$( contentSelector ).contents().get( 2 )
+		);
+		storage.utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
 		highlightedToken = {
-			utterance: utterances[ 0 ],
+			utterance: storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 4,
-			items: [ utterances[ 0 ].content[ 0 ] ]
+			items: [ storage.utterances[ 0 ].content[ 0 ] ]
 		};
-		utterances[ 0 ].tokens = [ highlightedToken ];
+		storage.utterances[ 0 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -298,19 +331,19 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Phrase </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">, phrase two.</span>' );
+		util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Phrase </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">, phrase two.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.get( 2 ).textPath = './text()[2]';
-		utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
+		storage.utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
 		highlightedToken = {
-			utterance: utterances[ 0 ],
+			utterance: storage.utterances[ 0 ],
 			startOffset: 2,
 			endOffset: 7,
-			items: [ utterances[ 0 ].content[ 0 ] ]
+			items: [ storage.utterances[ 0 ].content[ 0 ] ]
 		};
-		utterances[ 0 ].tokens = [ highlightedToken ];
+		storage.utterances[ 0 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -322,22 +355,22 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( 'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>' );
+		util.setContentHtml( 'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()[2]' );
-		utterances[ 1 ] = {
+		storage.utterances[ 1 ] = {
 			startOffset: 2,
 			content: [ { path: './text()[2]' } ]
 		};
 		highlightedToken = {
-			utterance: utterances[ 1 ],
+			utterance: storage.utterances[ 1 ],
 			startOffset: 2,
 			endOffset: 10,
-			items: [ utterances[ 1 ].content[ 0 ] ]
+			items: [ storage.utterances[ 1 ].content[ 0 ] ]
 		};
-		utterances[ 1 ].tokens = [ highlightedToken ];
+		storage.utterances[ 1 ].tokens = [ highlightedToken ];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),
@@ -349,10 +382,10 @@
 		var highlightedToken;
 
 		assert.expect( 1 );
-		mw.wikispeech.test.util.setContentHtml( 'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">.</span>' );
+		util.setContentHtml( 'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' ).get( 1 ).textPath =
 			'./b/text()';
-		utterances[ 1 ] = {
+		storage.utterances[ 1 ] = {
 			startOffset: 2,
 			content: [
 				{ path: './text()[1]' },
@@ -361,17 +394,17 @@
 			]
 		};
 		highlightedToken = {
-			utterance: utterances[ 1 ],
+			utterance: storage.utterances[ 1 ],
 			startOffset: 0,
 			endOffset: 2,
-			items: [ utterances[ 1 ].content[ 1 ] ]
+			items: [ storage.utterances[ 1 ].content[ 1 ] ]
 		};
-		utterances[ 1 ].tokens = [
+		storage.utterances[ 1 ].tokens = [
 			{},
 			highlightedToken
 		];
 
-		mw.wikispeech.highlighter.highlightToken( highlightedToken );
+		highlighter.highlightToken( highlightedToken );
 
 		assert.strictEqual(
 			$( contentSelector ).html(),

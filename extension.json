@@ -28,10 +28,13 @@
 	"ResourceModules": {
 		"ext.wikispeech": {
 			"scripts": [
-				"ext.wikispeech.js",
 				"ext.wikispeech.highlighter.js",
-				"ext.wikispeech.util.js",
-				"ext.wikispeech.selectionPlayer.js"
+				"ext.wikispeech.main.js",
+				"ext.wikispeech.player.js",
+				"ext.wikispeech.selectionPlayer.js",
+				"ext.wikispeech.storage.js",
+				"ext.wikispeech.ui.js",
+				"ext.wikispeech.util.js"
 			],
 			"styles": [
 				"ext.wikispeech.css"

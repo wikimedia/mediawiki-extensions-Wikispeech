@@ -23,11 +23,13 @@ class WikispeechHooks {
 	) {
 		$testModules['qunit']['ext.wikispeech.test'] = [
 			'scripts' => [
-				'tests/qunit/ext.wikispeech.test.js',
 				'tests/qunit/ext.wikispeech.highlighter.test.js',
-				'tests/qunit/ext.wikispeech.util.test.js',
+				'tests/qunit/ext.wikispeech.main.test.js',
+				'tests/qunit/ext.wikispeech.player.test.js',
 				'tests/qunit/ext.wikispeech.selectionPlayer.test.js',
-				'tests/qunit/ext.wikispeech.test.util.js'
+				'tests/qunit/ext.wikispeech.storage.test.js',
+				'tests/qunit/ext.wikispeech.test.util.js',
+				'tests/qunit/ext.wikispeech.ui.test.js'
 			],
 			'dependencies' => [
 				// Despite what it says at

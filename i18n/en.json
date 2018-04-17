@@ -6,8 +6,6 @@
 	},
 	"wikispeech": "Wikispeech",
 	"wikispeech-desc": "A text-to-speech tool to make Wikimedia's projects more accessible for people that for different reasons have difficulties reading.",
-	"special-wikispeech-intro": "Wikispeech",
-	"special-wikispeech-title": "Special page introduction.",
 	"apihelp-wikispeech-summary": "Process a page to be used by the Wikispeech extension.",
 	"apihelp-wikispeech-param-page": "The title of the page to process.",
 	"apihelp-wikispeech-param-output": "The formats of the output, can be a combination of the following:",

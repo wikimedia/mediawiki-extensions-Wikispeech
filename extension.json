@@ -55,9 +55,6 @@
 		"localBasePath": "modules",
 		"remoteExtPath": "Wikispeech/modules"
 	},
-	"ExtensionMessagesFiles": {
-		"WikispeechAlias": "Wikispeech.alias.php"
-	},
 	"Hooks": {
 		"ResourceLoaderTestModules": [
 			"WikispeechHooks::onResourceLoaderTestModules"

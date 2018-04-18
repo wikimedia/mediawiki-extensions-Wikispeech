@@ -135,7 +135,9 @@
 			) {
 				// Restart the current utterance if it's the first one
 				// or if it has played for longer than the skip back
-				// threshold.
+				// threshold. The threshold is based on position in
+				// the audio, rather than time played. This means it
+				// scales with speech rate.
 				currentUtterance.audio.currentTime = 0.0;
 			} else {
 				previousUtterance =

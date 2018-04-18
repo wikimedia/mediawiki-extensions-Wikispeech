@@ -155,6 +155,9 @@
 					utterance, '=', audioUrl
 				);
 				utterance.audio.setAttribute( 'src', audioUrl );
+				utterance.audio.playbackRate =
+					mw.user.options.get( 'wikispeechSpeechRate' );
+
 				self.addTokens( utterance, response.tokens );
 				if ( callback ) {
 					callback();

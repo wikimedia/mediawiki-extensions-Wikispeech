@@ -1,6 +1,6 @@
 {
 	"name": "Wikispeech",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"author": [
 		"Sebastian Berlin",
 		"André Costa"
@@ -128,7 +128,8 @@
 	"DefaultUserOptions": {
 		"wikispeechVoiceAr": "",
 		"wikispeechVoiceEn": "",
-		"wikispeechVoiceSv": ""
+		"wikispeechVoiceSv": "",
+		"wikispeechSpeechRate": 1.0
 	},
 	"APIModules": {
 		"wikispeech": "ApiWikispeech"

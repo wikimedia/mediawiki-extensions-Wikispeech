@@ -216,7 +216,8 @@
 						// starts playing.
 						self.setHighlightTokenTimer( nextToken );
 					},
-					duration * 1000
+					duration * 1000 /
+						mw.user.options.get( 'wikispeechSpeechRate' )
 				);
 			}
 		};

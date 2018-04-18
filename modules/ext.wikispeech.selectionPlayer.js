@@ -266,7 +266,8 @@
 							mw.wikispeech.player.stop();
 							self.resetPreviousEndUtterance();
 						},
-						timeLeft * 1000
+						timeLeft * 1000 /
+							mw.user.options.get( 'wikispeechSpeechRate' )
 					);
 			} );
 		};

@@ -19,5 +19,6 @@
 	"apierror-wikispeech-removetagsinvalidjson": "{{doc-apierror}}",
 	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}",
 	"prefs-wikispeech": "Used in user preferences as a tab heading.\n{{Identical|wikispeech}}",
-	"prefs-voice": "Used in user preferences as a section heading for voice selection."
+	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
+	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection."
 }

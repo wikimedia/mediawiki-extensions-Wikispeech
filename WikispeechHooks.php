@@ -120,10 +120,7 @@ class WikispeechHooks {
 		OutputPage &$out,
 		Skin &$skin
 	) {
-		$out->addModules( [
-			'ext.wikispeech',
-			'ext.wikispeech.highlighter'
-		] );
+		$out->addModules( [ 'ext.wikispeech' ] );
 	}
 
 	/**
@@ -166,6 +163,7 @@ class WikispeechHooks {
 	 */
 	static function onGetPreferences( $user, &$preferences ) {
 		self::addVoicePreferences( $preferences );
+		self::addSpeechRatePreferences( $preferences );
 		return true;
 	}
 
@@ -187,9 +185,31 @@ class WikispeechHooks {
 			$preferences[$languageKey] = [
 				'type' => 'select',
 				'label' => $languageName,
-				'section' => 'wikispeech/voice',
+				'section' => 'wikispeech/wikispeech-voice',
 				'options' => $options
 			];
 		}
+	}
+
+	/**
+	 * Add preferences for selecting speech rate.
+	 *
+	 * @param array &$preferences Preferences array.
+	 */
+	static function addSpeechRatePreferences( &$preferences ) {
+		$options = [
+			'400%' => 4.0,
+			'200%' => 2.0,
+			'150%' => 1.5,
+			'100%' => 1.0,
+			'75%' => 0.75,
+			'50%' => 0.5
+		];
+		$preferences['wikispeechSpeechRate'] = [
+			'type' => 'select',
+			'label-message' => 'prefs-wikispeech-speech-rate',
+			'section' => 'wikispeech/wikispeech-voice',
+			'options' => $options
+		];
 	}
 }

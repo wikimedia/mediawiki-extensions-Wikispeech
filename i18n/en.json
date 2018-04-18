@@ -19,5 +19,6 @@
 	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> is not a valid JSON string.",
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>.",
 	"prefs-wikispeech": "Wikispeech",
-	"prefs-voice": "Voice"
+	"prefs-wikispeech-voice": "Voice",
+	"prefs-wikispeech-speech-rate": "Speech rate"
 }

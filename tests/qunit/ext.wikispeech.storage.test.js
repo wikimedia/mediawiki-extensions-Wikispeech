@@ -31,14 +31,11 @@
 					content: [ { string: 'Utterance one.' } ]
 				}
 			];
-			mw.config.set(
-				'wgWikispeechServerUrl',
-				''
-			);
-			mw.user.options.set( 'wikispeechVoiceEn', '' );
 		},
 		teardown: function () {
 			server.restore();
+			mw.user.options.set( 'wikispeechVoiceEn', '' );
+			mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 		}
 	} );
 
@@ -148,11 +145,12 @@
 	} );
 
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
-		assert.expect( 3 );
+		assert.expect( 4 );
 		server.respondWith(
 			'{"audio": "http://server.url/audio", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}'
 		);
 		sinon.stub( storage, 'addTokens' );
+		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
@@ -166,6 +164,7 @@
 			[ { orth: 'Utterance' }, { orth: 'zero' }, { orth: '.' } ]
 		);
 		assert.strictEqual( storage.utterances[ 0 ].request, null );
+		assert.strictEqual( storage.utterances[ 0 ].audio.playbackRate, 2.0 );
 	} );
 
 	QUnit.test( 'loadAudio(): request failed', function ( assert ) {

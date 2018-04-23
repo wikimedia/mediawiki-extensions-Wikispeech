@@ -70,7 +70,7 @@
 		]
 	},
 	"config": {
-		"WikispeechServerUrl": "https://morf.se/wikispeech/",
+		"WikispeechServerUrl": "",
 		"WikispeechRemoveTags": {
 			"span": "mw-editsection",
 			"table": true,

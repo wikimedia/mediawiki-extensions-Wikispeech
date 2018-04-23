@@ -32,12 +32,14 @@
 			);
 			contentSelector =
 				mw.config.get( 'wgWikispeechContentSelector' );
+			this.clock = sinon.useFakeTimers();
 		},
 		teardown: function () {
 			sandbox.restore();
 			// Remove the event listeners to not trigger them after
 			// the tests have run.
 			$( document ).off( 'mouseup' );
+			this.clock.restore();
 		}
 	} );
 
@@ -473,8 +475,7 @@
 	} );
 
 	QUnit.test( 'setEndTime()', function ( assert ) {
-		this.clock = sinon.useFakeTimers();
-
+		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [ {} ];
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
@@ -483,13 +484,11 @@
 
 		this.clock.tick( 1000 );
 
-		assert.strictEqual( storage.utterances[ 0 ].audio.paused, true );
-		this.clock.restore();
+		sinon.assert.called( player.stop );
 	} );
 
 	QUnit.test( 'resetPreviousEndUtterance()', function ( assert ) {
 		assert.expect( 1 );
-		this.clock = sinon.useFakeTimers();
 		mw.wikispeech.test.util.setContentHtml(
 			'Utterance with selected text.'
 		);
@@ -531,13 +530,11 @@
 		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.0 );
 		selectionPlayer.previousEndUtterance = storage.utterances[ 0 ];
 		selectionPlayer.resetPreviousEndUtterance();
-		storage.utterances[ 0 ].audio.play();
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
 
 		this.clock.tick( 1000 );
 
-		assert.strictEqual( storage.utterances[ 0 ].audio.paused, false );
-		this.clock.restore();
+		sinon.assert.notCalled( player.stop );
 	} );
 
 	QUnit.test( 'getFirstNodeInSelection()', function ( assert ) {

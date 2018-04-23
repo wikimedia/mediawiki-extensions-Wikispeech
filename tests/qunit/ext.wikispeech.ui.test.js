@@ -21,6 +21,7 @@
 			// Remove the event listeners to not trigger them after
 			// the tests have run.
 			$( document ).off( 'mouseup' );
+			$( '#qunit-fixture' ).empty();
 		}
 	} );
 

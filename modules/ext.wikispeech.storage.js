@@ -86,8 +86,7 @@
 			} else {
 				// Only load audio for an utterance if it isn't
 				// already loaded or waiting for response from server.
-				self.loadAudio( utterance );
-				utterance.request.done( callback );
+				self.loadAudio( utterance, callback );
 				nextUtterance = self.getNextUtterance( utterance );
 				$audio.on( {
 					playing: function () {
@@ -133,9 +132,10 @@
 		 * when the response is received.
 		 *
 		 * @param {Object} utterance The utterance to load audio for.
+		 * @param {Function} callback Function to call when audio is loaded.
 		 */
 
-		this.loadAudio = function ( utterance ) {
+		this.loadAudio = function ( utterance, callback ) {
 			var text, audioUrl, utteranceIndex;
 
 			utteranceIndex = self.utterances.indexOf( utterance );
@@ -148,11 +148,6 @@
 				text += item.string;
 			} );
 			utterance.request = self.requestTts( text );
-			// Remove request on success or failure, to allow new
-			// requests if this one fails.
-			utterance.request.always( function () {
-				utterance.request = null;
-			} );
 			utterance.request.done( function ( response ) {
 				audioUrl = response.audio;
 				mw.log(
@@ -161,7 +156,15 @@
 				);
 				utterance.audio.setAttribute( 'src', audioUrl );
 				self.addTokens( utterance, response.tokens );
-			} );
+				if ( callback ) {
+					callback();
+				}
+			} )
+				.always( function () {
+					// Remove request on success or failure, to allow new
+					// requests if this one fails.
+					utterance.request = null;
+				} );
 		};
 
 		/**

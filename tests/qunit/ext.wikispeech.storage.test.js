@@ -10,7 +10,9 @@
 			};
 			player = mw.wikispeech.player;
 			storage = new mw.wikispeech.Storage();
-			server = sinon.fakeServer.create();
+			server = sinon.fakeServer.create( {
+				respondImmediately: true
+			} );
 			// overrideMimeType() isn't defined by default.
 			server.xhr.prototype.overrideMimeType = function () {};
 			$( '#qunit-fixture' ).append(
@@ -29,9 +31,14 @@
 					content: [ { string: 'Utterance one.' } ]
 				}
 			];
+			mw.config.set(
+				'wgWikispeechServerUrl',
+				''
+			);
+			mw.user.options.set( 'wikispeechVoiceEn', '' );
 		},
 		teardown: function () {
-			mw.user.options.set( 'wikispeechVoiceEn', '' );
+			server.restore();
 		}
 	} );
 
@@ -50,13 +57,12 @@
 
 	QUnit.test( 'prepareUtterance()', function ( assert ) {
 		assert.expect( 1 );
-		sinon.spy( storage, 'loadAudio' );
+		sinon.stub( storage, 'loadAudio' );
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
-		assert.strictEqual(
-			storage.loadAudio.calledWith( storage.utterances[ 0 ] ),
-			true
+		sinon.assert.calledWith(
+			storage.loadAudio, storage.utterances[ 0 ]
 		);
 	} );
 
@@ -67,10 +73,8 @@
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
-		assert.strictEqual(
-			storage.loadAudio.notCalled,
-			true
-		);
+		sinon.assert.notCalled( storage.loadAudio );
+
 	} );
 
 	QUnit.test( 'prepareUtterance(): do not load audio if already loaded', function ( assert ) {
@@ -83,24 +87,19 @@
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
-		assert.strictEqual(
-			storage.loadAudio.notCalled,
-			true
-		);
+		sinon.assert.notCalled( storage.loadAudio );
 	} );
 
 	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', function ( assert ) {
 		assert.expect( 1 );
-		storage.prepareUtterance( storage.utterances[ 0 ] );
+		sinon.stub( storage, 'loadAudio' );
 		sinon.spy( storage, 'prepareUtterance' );
+		storage.prepareUtterance( storage.utterances[ 0 ] );
 
 		$( storage.utterances[ 0 ].audio ).trigger( 'play' );
 
-		assert.strictEqual(
-			storage.prepareUtterance.calledWith(
-				storage.utterances[ 1 ]
-			),
-			true
+		sinon.assert.calledWith(
+			storage.prepareUtterance, storage.utterances[ 1 ]
 		);
 	} );
 
@@ -111,10 +110,7 @@
 
 		$( storage.utterances[ 1 ].audio ).trigger( 'play' );
 
-		assert.strictEqual(
-			storage.prepareUtterance.calledOnce,
-			true
-		);
+		sinon.assert.calledOnce( storage.prepareUtterance );
 	} );
 
 	QUnit.test( 'prepareUtterance(): skip to next utterance when ended', function ( assert ) {
@@ -123,7 +119,7 @@
 
 		$( storage.utterances[ 0 ].audio ).trigger( 'ended' );
 
-		assert.strictEqual( player.skipAheadUtterance.called, true );
+		sinon.assert.called( player.skipAheadUtterance );
 	} );
 
 	QUnit.test( 'prepareUtterance(): stop when end of text is reached', function ( assert ) {
@@ -135,7 +131,7 @@
 
 		$( lastUtterance.audio ).trigger( 'ended' );
 
-		assert.strictEqual( player.stop.called, true );
+		sinon.assert.called( player.stop );
 	} );
 
 	QUnit.test( 'loadAudio()', function ( assert ) {
@@ -144,7 +140,7 @@
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
-		assert.strictEqual( storage.requestTts.called, true );
+		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
 			'lang=en&input_type=text&input=Utterance+zero.'
@@ -153,25 +149,21 @@
 
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
 		assert.expect( 3 );
-		storage.utterances[ 0 ].request = { done: function () {} };
 		server.respondWith(
 			'{"audio": "http://server.url/audio", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}'
 		);
 		sinon.stub( storage, 'addTokens' );
-		storage.loadAudio( storage.utterances[ 0 ] );
 
-		server.respond();
+		storage.loadAudio( storage.utterances[ 0 ] );
 
 		assert.strictEqual(
 			storage.utterances[ 0 ].audio.src,
 			'http://server.url/audio'
 		);
-		assert.strictEqual(
-			storage.addTokens.calledWith(
-				storage.utterances[ 0 ],
-				[ { orth: 'Utterance' }, { orth: 'zero' }, { orth: '.' } ]
-			),
-			true
+		sinon.assert.calledWith(
+			storage.addTokens,
+			storage.utterances[ 0 ],
+			[ { orth: 'Utterance' }, { orth: 'zero' }, { orth: '.' } ]
 		);
 		assert.strictEqual( storage.utterances[ 0 ].request, null );
 	} );
@@ -181,14 +173,10 @@
 		storage.utterances[ 0 ].request = { done: function () {} };
 		server.respondWith( [ 404, {}, '' ] );
 		sinon.spy( storage, 'addTokens' );
+
 		storage.loadAudio( storage.utterances[ 0 ] );
 
-		server.respond();
-
-		assert.strictEqual(
-			storage.addTokens.notCalled,
-			true
-		);
+		sinon.assert.notCalled( storage.addTokens );
 		assert.strictEqual( storage.utterances[ 0 ].request, null );
 		assert.strictEqual( storage.utterances[ 0 ].audio.src, '' );
 	} );
@@ -201,7 +189,7 @@
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
-		assert.strictEqual( storage.requestTts.called, true );
+		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
 			'lang=en&input_type=text&input=Utterance+zero.&voice=en-voice'

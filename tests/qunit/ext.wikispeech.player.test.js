@@ -17,11 +17,17 @@
 			storage = mw.wikispeech.storage;
 			storage.utterances = [
 				{
-					audio: $( '<audio></audio>' ).get( 0 ),
+					audio: {
+						play: function () {},
+						pause: function () {}
+					},
 					content: []
 				},
 				{
-					audio: $( '<audio></audio>' ).get( 0 )
+					audio: {
+						play: function () {},
+						pause: function () {}
+					}
 				}
 			];
 			player = new mw.wikispeech.Player();
@@ -52,24 +58,28 @@
 	} );
 
 	QUnit.test( 'stop()', function ( assert ) {
-		assert.expect( 4 );
+		assert.expect( 3 );
 		player.play();
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
+		sinon.spy( player, 'stopUtterance' );
 
 		player.stop();
 
-		assert.strictEqual( storage.utterances[ 0 ].audio.paused, true );
-		assert.strictEqual( storage.utterances[ 0 ].audio.currentTime, 0.0 );
+		sinon.assert.calledWith(
+			player.stopUtterance, storage.utterances[ 0 ]
+		);
 		sinon.assert.called( ui.setPlayStopIconToPlay );
 		sinon.assert.called( ui.hideBufferingIcon );
 	} );
 
 	QUnit.test( 'play()', function ( assert ) {
 		assert.expect( 2 );
+		selectionPlayer.playSelectionIfValid.returns( false );
+		sinon.spy( storage.utterances[ 0 ].audio, 'play' );
 
 		player.play();
 
-		assert.strictEqual( storage.utterances[ 0 ].audio.paused, false );
+		sinon.assert.called( storage.utterances[ 0 ].audio.play );
 		sinon.assert.called( ui.setPlayStopIconToStop );
 	} );
 
@@ -98,10 +108,11 @@
 
 	QUnit.test( 'playUtterance()', function ( assert ) {
 		assert.expect( 3 );
+		sinon.spy( storage.utterances[ 0 ].audio, 'play' );
 
 		player.playUtterance( storage.utterances[ 0 ] );
 
-		assert.strictEqual( storage.utterances[ 0 ].audio.paused, false );
+		sinon.assert.called( storage.utterances[ 0 ].audio.play );
 		sinon.assert.calledWith(
 			highlighter.highlightUtterance,
 			storage.utterances[ 0 ]
@@ -129,10 +140,11 @@
 		assert.expect( 5 );
 		player.playUtterance( storage.utterances[ 0 ] );
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
+		sinon.spy( storage.utterances[ 0 ].audio, 'pause' );
 
 		player.stopUtterance( storage.utterances[ 0 ] );
 
-		assert.strictEqual( storage.utterances[ 0 ].audio.paused, true );
+		sinon.assert.called( storage.utterances[ 0 ].audio.pause );
 		assert.strictEqual( storage.utterances[ 0 ].audio.currentTime, 0.0 );
 		sinon.assert.called( highlighter.clearHighlighting );
 		sinon.assert.calledWith(
@@ -183,37 +195,32 @@
 		assert.expect( 2 );
 		player.playUtterance( storage.utterances[ 0 ] );
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
+		sinon.spy( storage.utterances[ 0 ].audio, 'pause' );
 
 		player.skipBackUtterance();
 
-		assert.strictEqual(
-			storage.utterances[ 0 ].audio.paused,
-			false
-		);
 		assert.strictEqual(
 			storage.utterances[ 0 ].audio.currentTime,
 			0.0
 		);
+		sinon.assert.notCalled( storage.utterances[ 0 ].audio.pause );
 	} );
 
 	QUnit.test( 'skipBackUtterance(): restart if played long enough', function ( assert ) {
-		assert.expect( 3 );
+		assert.expect( 2 );
 		player.playUtterance( storage.utterances[ 1 ] );
 		storage.utterances[ 1 ].audio.currentTime = 3.1;
+		sinon.spy( player, 'playUtterance' );
+		storage.getPreviousUtterance.returns( storage.utterances[ 0 ] );
 
 		player.skipBackUtterance();
 
 		assert.strictEqual(
-			storage.utterances[ 1 ].audio.paused,
-			false
-		);
-		assert.strictEqual(
 			storage.utterances[ 1 ].audio.currentTime,
 			0.0
 		);
-		assert.strictEqual(
-			storage.utterances[ 0 ].audio.paused,
-			true
+		sinon.assert.neverCalledWith(
+			player.playUtterance, storage.utterances[ 0 ]
 		);
 	} );
 
@@ -453,7 +460,7 @@
 	} );
 
 	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', function ( assert ) {
-		assert.expect( 3 );
+		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0.0,
@@ -474,20 +481,14 @@
 		storage.getPreviousUtterance.returns( storage.utterances[ 0 ] );
 		storage.getPreviousToken.returns( null );
 		storage.getLastToken.returns( storage.utterances[ 0 ].tokens[ 1 ] );
+		sinon.spy( player, 'skipBackUtterance' );
 
 		player.skipBackToken();
 
-		assert.strictEqual(
-			storage.utterances[ 0 ].audio.paused,
-			false
-		);
+		sinon.assert.calledOnce( player.skipBackUtterance );
 		assert.strictEqual(
 			storage.utterances[ 0 ].audio.currentTime,
 			1.0
-		);
-		assert.strictEqual(
-			storage.utterances[ 1 ].audio.paused,
-			true
 		);
 	} );
 }( mediaWiki, jQuery ) );

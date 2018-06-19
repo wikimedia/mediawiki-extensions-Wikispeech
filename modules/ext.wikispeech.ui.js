@@ -200,8 +200,8 @@
 		 */
 
 		this.setPlayStopIconToStop = function () {
-			$( '.ext-wikispeech-play-stop' ).addClass( 'ext-wikispeech-stop' );
 			$( '.ext-wikispeech-play-stop' )
+				.addClass( 'ext-wikispeech-stop' )
 				.removeClass( 'ext-wikispeech-play' );
 		};
 
@@ -210,8 +210,8 @@
 		 */
 
 		this.setPlayStopIconToPlay = function () {
-			$( '.ext-wikispeech-play-stop' ).addClass( 'ext-wikispeech-play' );
 			$( '.ext-wikispeech-play-stop' )
+				.addClass( 'ext-wikispeech-play' )
 				.removeClass( 'ext-wikispeech-stop' );
 		};
 
@@ -300,10 +300,10 @@
 					$( document ).scrollLeft() -
 					$( '.ext-wikispeech-selection-player' ).width();
 			}
-			$( '.ext-wikispeech-selection-player' ).css( 'left', left );
 			top = lastRect.bottom + $( document ).scrollTop();
-			$( '.ext-wikispeech-selection-player' ).css( 'top', top );
 			$( '.ext-wikispeech-selection-player' )
+				.css( 'left', left )
+				.css( 'top', top )
 				.css( 'visibility', 'visible' );
 		};
 

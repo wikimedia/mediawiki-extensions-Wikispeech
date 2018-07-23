@@ -96,7 +96,6 @@
 			// Rewind audio for next time it plays.
 			utterance.audio.currentTime = 0.0;
 			mw.wikispeech.ui.removeCanPlayListener( $( utterance.audio ) );
-			mw.wikispeech.selectionPlayer.resetPreviousEndUtterance();
 			mw.wikispeech.highlighter.clearHighlighting();
 		};
 

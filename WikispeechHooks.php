@@ -178,7 +178,7 @@ class WikispeechHooks {
 		global $wgWikispeechVoices;
 		foreach ( $wgWikispeechVoices as $language => $voices ) {
 			$languageKey = 'wikispeechVoice' . ucfirst( $language );
-			$mwLanguage = new Language();
+			$mwLanguage = Language::factory( 'en' );
 			$languageName = $mwLanguage->getVariantname( $language );
 			$options = [ 'Default' => '' ];
 			foreach ( $voices as $voice ) {

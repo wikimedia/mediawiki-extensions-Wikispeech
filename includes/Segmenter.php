@@ -213,7 +213,7 @@ class Segmenter {
 	 *
 	 * @since 0.0.1
 	 * @param string $string The string to check in.
-	 * @param int $index The the index in $string of the character to check.
+	 * @param int $index The index in $string of the character to check.
 	 * @return bool True if the character is sentence final, else false.
 	 */
 	private static function isSentenceFinal( $string, $index ) {

@@ -140,7 +140,7 @@
 				var textNode;
 
 				if ( $( self.utteranceHighlightingSelector ).length ) {
-					// Add the the token highlighting within the
+					// Add the token highlighting within the
 					// utterance highlightings, if there are any.
 					textNode = self.getNodeInUtteranceHighlighting(
 						item

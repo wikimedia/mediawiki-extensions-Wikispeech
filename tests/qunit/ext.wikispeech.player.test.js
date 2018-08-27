@@ -137,7 +137,7 @@
 	} );
 
 	QUnit.test( 'stopUtterance()', function ( assert ) {
-		assert.expect( 5 );
+		assert.expect( 4 );
 		player.playUtterance( storage.utterances[ 0 ] );
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.spy( storage.utterances[ 0 ].audio, 'pause' );
@@ -151,7 +151,6 @@
 			ui.removeCanPlayListener,
 			$( storage.utterances[ 0 ].audio )
 		);
-		sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
 	} );
 
 	QUnit.test( 'skipAheadUtterance()', function ( assert ) {

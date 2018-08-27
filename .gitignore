@@ -1,8 +1,14 @@
 *~
+*#
+*.wip
+*.orig
+*.log
 
 composer.lock
+package-lock.json
+
 vendor
-
 node_modules
-
-docs
+php-docs
+js-docs
+coverage

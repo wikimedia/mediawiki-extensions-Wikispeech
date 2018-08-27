@@ -475,16 +475,18 @@
 	} );
 
 	QUnit.test( 'setEndTime()', function ( assert ) {
-		assert.expect( 1 );
+		assert.expect( 2 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [ {} ];
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
 		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.5 );
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
 
 		this.clock.tick( 1000 );
 
 		sinon.assert.called( player.stop );
+		sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
 	} );
 
 	QUnit.test( 'resetPreviousEndUtterance()', function ( assert ) {

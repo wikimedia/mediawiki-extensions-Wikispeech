@@ -142,9 +142,15 @@
 				startOffset = startRange.startOffset;
 			}
 			startNode =
-				mw.wikispeech.storage.getFirstTextNode( firstSelectionNode, true );
+				mw.wikispeech.storage.getFirstTextNode(
+					firstSelectionNode,
+					true
+				);
 			startUtterance =
-				mw.wikispeech.storage.getStartUtterance( startNode, startOffset );
+				mw.wikispeech.storage.getStartUtterance(
+					startNode,
+					startOffset
+				);
 			mw.wikispeech.storage.prepareUtterance(
 				startUtterance,
 				function () {
@@ -170,7 +176,10 @@
 				endOffset = endRange.endOffset - 1;
 			}
 			endNode =
-				mw.wikispeech.storage.getLastTextNode( lastSelectionNode, true );
+				mw.wikispeech.storage.getLastTextNode(
+					lastSelectionNode,
+					true
+				);
 			endUtterance =
 				mw.wikispeech.storage.getEndUtterance( endNode, endOffset );
 			self.previousEndUtterance = endUtterance;
@@ -253,7 +262,10 @@
 				var timeLeft = endTime - utterance.audio.currentTime;
 				utterance.stopTimeout =
 					window.setTimeout(
-						mw.wikispeech.player.stop,
+						function () {
+							mw.wikispeech.player.stop();
+							self.resetPreviousEndUtterance();
+						},
 						timeLeft * 1000
 					);
 			} );

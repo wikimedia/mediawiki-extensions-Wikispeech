@@ -24,7 +24,7 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->addPage( TITLE, $talkContent, NS_TALK );
 	}
 
-	private function addPage( $titleString, $content, $namespace=NS_MAIN ) {
+	private function addPage( $titleString, $content, $namespace = NS_MAIN ) {
 		$title = Title::newFromText( $titleString, $namespace );
 		$page = WikiPage::factory( $title );
 		$status = $page->doEditContent(

@@ -114,7 +114,7 @@ class Segmenter {
 	 *   sentence. If the sentence didn't end yet, this is the last
 	 *   character of $text.
 	 */
-	private function addSegment( $text, $startOffset=0 ) {
+	private function addSegment( $text, $startOffset = 0 ) {
 		if ( $this->currentSegment['startOffset'] === null ) {
 			// Move the start offset ahead by the number of leading
 			// whitespaces. This means that whitespaces before or

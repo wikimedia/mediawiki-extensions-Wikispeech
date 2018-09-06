@@ -120,7 +120,11 @@ class WikispeechHooks {
 		OutputPage &$out,
 		Skin &$skin
 	) {
-		$out->addModules( [ 'ext.wikispeech' ] );
+		if ( $out->getUser()->getOption( 'wikispeechEnable' ) ) {
+			$out->addModules( [
+				'ext.wikispeech'
+			] );
+		}
 	}
 
 	/**
@@ -162,9 +166,23 @@ class WikispeechHooks {
 	 * @return bool true
 	 */
 	static function onGetPreferences( $user, &$preferences ) {
+		self::addWikispeechEnable( $preferences );
 		self::addVoicePreferences( $preferences );
 		self::addSpeechRatePreferences( $preferences );
 		return true;
+	}
+
+	/**
+	 * Add preference for enabilng/disabling Wikispeech.
+	 *
+	 * @param array &$preferences Preferences array.
+	 */
+	static function addWikispeechEnable( &$preferences ) {
+		$preferences['wikispeechEnable'] = [
+			'type' => 'toggle',
+			'label-message' => 'prefs-wikispeech-enable',
+			'section' => 'wikispeech'
+		];
 	}
 
 	/**

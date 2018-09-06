@@ -68,6 +68,18 @@ class ApiWikispeechTest extends ApiTestCase {
 		);
 	}
 
+	public function testOriginalContent() {
+		$res = $this->doApiRequest( [
+			'action' => 'wikispeech',
+			'page' => TITLE,
+			'output' => 'originalcontent'
+		] );
+		$this->assertEquals(
+			"<div class=\"mw-parser-output\"><p>Text <i>italic</i> <b>bold</b>\n</p>\n<!--",
+			mb_substr( $res[0]['wikispeech']['originalcontent'], 0, 73 )
+		);
+	}
+
 	public function testSegmentText() {
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech',

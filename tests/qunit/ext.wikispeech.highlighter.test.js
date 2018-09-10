@@ -13,10 +13,16 @@
 				{
 					startOffset: 0,
 					endOffset: 14,
-					content: [ { path: './text()' } ]
+					content: [ { path: './text()' } ],
+					audio: $( '<audio></audio>' ).get( 0 )
 				}
 			];
 			highlighter = new mw.wikispeech.Highlighter();
+			this.clock = sinon.useFakeTimers();
+		},
+		teardown: function () {
+			this.clock.restore();
+			mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 		}
 	} );
 
@@ -410,5 +416,73 @@
 			$( contentSelector ).html(),
 			'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence"><span class="ext-wikispeech-highlight-word">one</span></span></b><span class="ext-wikispeech-highlight-sentence">.</span>'
 		);
+	} );
+
+	QUnit.test( 'setHighlightTokenTimer()', function ( assert ) {
+		var highlightedToken, nextToken;
+
+		assert.expect( 1 );
+		highlightedToken = {
+			utterance: storage.utterances[ 0 ],
+			endTime: 1.0
+		};
+		nextToken = { utterance: storage.utterances[ 0 ] };
+		storage.utterances[ 0 ].tokens = [
+			highlightedToken,
+			nextToken
+		];
+		sinon.stub( highlighter, 'highlightToken' );
+		storage.getNextToken.returns( nextToken );
+
+		highlighter.setHighlightTokenTimer( highlightedToken );
+		this.clock.tick( 1001 );
+
+		sinon.assert.calledWith( highlighter.highlightToken, nextToken );
+	} );
+
+	QUnit.test( 'setHighlightTokenTimer(): faster speech rate', function ( assert ) {
+		var highlightedToken, nextToken;
+
+		assert.expect( 1 );
+		highlightedToken = {
+			utterance: storage.utterances[ 0 ],
+			endTime: 1.0
+		};
+		nextToken = { utterance: storage.utterances[ 0 ] };
+		storage.utterances[ 0 ].tokens = [
+			highlightedToken,
+			nextToken
+		];
+		sinon.stub( highlighter, 'highlightToken' );
+		storage.getNextToken.returns( nextToken );
+		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
+
+		highlighter.setHighlightTokenTimer( highlightedToken );
+		this.clock.tick( 501 );
+
+		sinon.assert.calledWith( highlighter.highlightToken, nextToken );
+	} );
+
+	QUnit.test( 'setHighlightTokenTimer(): slower speech rate', function ( assert ) {
+		var highlightedToken, nextToken;
+
+		assert.expect( 1 );
+		highlightedToken = {
+			utterance: storage.utterances[ 0 ],
+			endTime: 1.0
+		};
+		nextToken = { utterance: storage.utterances[ 0 ] };
+		storage.utterances[ 0 ].tokens = [
+			highlightedToken,
+			nextToken
+		];
+		sinon.stub( highlighter, 'highlightToken' );
+		storage.getNextToken.returns( nextToken );
+		mw.user.options.set( 'wikispeechSpeechRate', 0.5 );
+
+		highlighter.setHighlightTokenTimer( highlightedToken );
+		this.clock.tick( 1001 );
+
+		sinon.assert.neverCalledWith( highlighter.highlightToken, nextToken );
 	} );
 }( mediaWiki, jQuery ) );

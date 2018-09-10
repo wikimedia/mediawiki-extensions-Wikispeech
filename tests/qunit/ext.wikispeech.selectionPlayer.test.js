@@ -40,6 +40,7 @@
 			// the tests have run.
 			$( document ).off( 'mouseup' );
 			this.clock.restore();
+			mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 		}
 	} );
 
@@ -483,10 +484,40 @@
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
 		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
 
-		this.clock.tick( 1000 );
+		this.clock.tick( 1001 );
 
 		sinon.assert.called( player.stop );
 		sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
+	} );
+
+	QUnit.test( 'setEndTime(): faster speech rate', function ( assert ) {
+		assert.expect( 2 );
+		storage.utterances[ 0 ].audio.src = 'loaded';
+		storage.utterances[ 0 ].tokens = [ {} ];
+		storage.utterances[ 0 ].audio.currentTime = 0.5;
+		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.5 );
+		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
+		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
+
+		this.clock.tick( 501 );
+
+		sinon.assert.called( player.stop );
+		sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
+	} );
+
+	QUnit.test( 'setEndTime(): slower speech rate', function ( assert ) {
+		assert.expect( 1 );
+		storage.utterances[ 0 ].audio.src = 'loaded';
+		storage.utterances[ 0 ].tokens = [ {} ];
+		storage.utterances[ 0 ].audio.currentTime = 0.5;
+		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.5 );
+		mw.user.options.set( 'wikispeechSpeechRate', 0.5 );
+		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+
+		this.clock.tick( 1001 );
+
+		sinon.assert.notCalled( player.stop );
 	} );
 
 	QUnit.test( 'resetPreviousEndUtterance()', function ( assert ) {

@@ -19,8 +19,19 @@
 	"apihelp-wikispeech-example-2": "Get original HTML content and cleaned text.",
 	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> is not a valid JSON string.",
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>.",
+	"apihelp-wikispeechlisten-summary": "Synthesize speech.",
+	"apihelp-wikispeechlisten-param-lang": "Language code.",
+	"apihelp-wikispeechlisten-param-input": "Text to synthesize.",
+	"apihelp-wikispeechlisten-param-voice": "Voice to use. If not provided the default voice for the language will be used.",
+	"apierror-wikispeechlisten-notallowed": "You do not have the rights to call this API action.",
+	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> is not a valid language. Should be one of: $2.",
+	"apierror-wikispeechlisten-invalid-voice": "<code>$1</code> is not a valid voice. Should be one of: $2.",
+	"apihelp-wikispeechlisten-example-1": "Synthesize an utterance in English.",
+	"apihelp-wikispeechlisten-example-2": "Use a non-default voice.",
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Voice",
 	"prefs-wikispeech-speech-rate": "Speech rate",
-	"prefs-wikispeech-enable": "Enable Wikispeech"
+	"prefs-wikispeech-enable": "Enable Wikispeech",
+	"right-wikispeech-listen": "Listen to page",
+	"action-wikispeech-listen": "listen to page"
 }

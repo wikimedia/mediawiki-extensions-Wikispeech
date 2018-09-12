@@ -140,14 +140,14 @@
 		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'lang=en&input_type=text&input=Utterance+zero.'
+			'action=wikispeechlisten&format=json&lang=en&input=Utterance+zero.'
 		);
 	} );
 
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
 		assert.expect( 4 );
 		server.respondWith(
-			'{"audio": "http://server.url/audio", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}'
+			'{"wikispeechlisten": {"audio": "http://server.url/audio", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}}'
 		);
 		sinon.stub( storage, 'addTokens' );
 		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
@@ -191,7 +191,7 @@
 		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'lang=en&input_type=text&input=Utterance+zero.&voice=en-voice'
+			'action=wikispeechlisten&format=json&lang=en&input=Utterance+zero.&voice=en-voice'
 		);
 	} );
 

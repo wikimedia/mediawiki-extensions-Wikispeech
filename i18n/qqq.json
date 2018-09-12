@@ -19,9 +19,19 @@
 	"apihelp-wikispeech-example-2": "{{doc-apihelp-example|wikispeech}}",
 	"apierror-wikispeech-removetagsinvalidjson": "{{doc-apierror}}",
 	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}",
-	"prefs-wikispeech": "Used in user preferences as a tab heading.\n{{Identical|wikispeech}}",
+	"apihelp-wikispeechlisten-summary": "{{doc-apihelp-summary|wikispeechlisten}}",
+	"apihelp-wikispeechlisten-param-lang": "{{doc-apihelp-param|wikispeech|lang}}",
+	"apihelp-wikispeechlisten-param-input": "{{doc-apihelp-param|wikispeech|input}}",
+	"apihelp-wikispeechlisten-param-voice": "{{doc-apihelp-param|wikispeech|voice}}",
+	"apierror-wikispeechlisten-notallowed": "{{doc-apierror}}",
+	"apierror-wikispeechlisten-invalid-language": "{{doc-apierror}}",
+	"apierror-wikispeechlisten-invalid-voice": "{{doc-apierror}}",
+	"apihelp-wikispeechlisten-example-1": "{{doc-apihelp-example|wikispeechlisten}}",
+	"apihelp-wikispeechlisten-example-2": "{{doc-apihelp-example|wikispeechlisten}}",
+    "prefs-wikispeech": "Used in user preferences as a tab heading.\n{{Identical|wikispeech}}",
 	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
-	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension"
-
+	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
+	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",
+	"action-wikispeech-listen": "{{doc-action|wikispeech-listen}}"
 }

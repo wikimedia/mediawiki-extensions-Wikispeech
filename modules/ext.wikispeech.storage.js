@@ -149,7 +149,7 @@
 			} );
 			utterance.request = self.requestTts( text );
 			utterance.request.done( function ( response ) {
-				audioUrl = response.audio;
+				audioUrl = response.wikispeechlisten.audio;
 				mw.log(
 					'Setting audio url for: [' + utteranceIndex + ']',
 					utterance, '=', audioUrl
@@ -158,7 +158,7 @@
 				utterance.audio.playbackRate =
 					mw.user.options.get( 'wikispeechSpeechRate' );
 
-				self.addTokens( utterance, response.tokens );
+				self.addTokens( utterance, response.wikispeechlisten.tokens );
 				if ( callback ) {
 					callback();
 				}
@@ -173,46 +173,44 @@
 		/**
 		 * Send a request to the TTS server.
 		 *
-		 * URL for server is specified in the config and language to
+		 * Request is sent via the "wikispeechlisten" API action. Language to
 		 * use is retrieved from the current page.
 		 *
 		 * @param {string} text The utterance string to send in the
 		 *  request.
-		 * @return {Object} The jqXHR returned by the $.ajax() call.
+		 * @return {jQuery.Promise}
 		 */
 
 		this.requestTts = function ( text ) {
-			var serverUrl, request, language, voiceKey, voice, data;
+			var request, language, voiceKey, voice, options, api;
 
-			serverUrl = mw.config.get( 'wgWikispeechServerUrl' );
 			language = mw.config.get( 'wgPageContentLanguage' );
 			// Capitalize first letter in language code.
 			voiceKey = 'wikispeechVoice' +
 				language[ 0 ].toUpperCase() +
 				language.slice( 1 );
 			voice = mw.user.options.get( voiceKey );
-			data = {
+			options = {
+				action: 'wikispeechlisten',
 				lang: language,
-				// eslint-disable-next-line camelcase
-				input_type: 'text',
 				input: text
 			};
 			if ( voice !== '' ) {
 				// Set voice if not default.
-				data.voice = voice;
+				options.voice = voice;
 			}
-			request = $.ajax( {
-				url: serverUrl,
-				method: 'POST',
-				data: data,
-				dataType: 'json',
-				beforeSend: function ( jqXHR, settings ) {
-					mw.log(
-						'Sending TTS request: ' + settings.url + '?' +
-							settings.data
-					);
+			api = new mw.Api();
+			request = api.post(
+				options,
+				{
+					beforeSend: function ( jqXHR, settings ) {
+						mw.log(
+							'Sending TTS request: ' + settings.url + '?' +
+								settings.data
+						);
+					}
 				}
-			} )
+			)
 				.done( function ( data ) {
 					mw.log( 'Response received:', data );
 				} )

@@ -1,6 +1,6 @@
 {
 	"name": "Wikispeech",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"author": [
 		"Sebastian Berlin",
 		"André Costa",
@@ -27,7 +27,8 @@
 		"SegmentBreak": "includes/SegmentBreak.php",
 		"Cleaner": "includes/Cleaner.php",
 		"Segmenter": "includes/Segmenter.php",
-		"ApiWikispeech": "includes/ApiWikispeech.php"
+		"ApiWikispeech": "includes/ApiWikispeech.php",
+		"ApiWikispeechListen": "includes/ApiWikispeechListen.php"
 	},
 	"ResourceModules": {
 		"ext.wikispeech": {
@@ -71,7 +72,11 @@
 		],
 		"GetPreferences": [
 			"WikispeechHooks::onGetPreferences"
-		]
+		],
+		"ApiCheckCanExecute": "WikispeechHooks::onApiCheckCanExecute"
+	},
+	"ConfigRegistry": {
+		"wikispeech": "GlobalVarConfig::newInstance"
 	},
 	"config": {
 		"WikispeechServerUrl": {
@@ -178,6 +183,15 @@
 		"wikispeechSpeechRate": 1.0
 	},
 	"APIModules": {
-		"wikispeech": "ApiWikispeech"
+		"wikispeech": "ApiWikispeech",
+		"wikispeechlisten": "ApiWikispeechListen"
+	},
+	"AvailableRights": [
+		"wikispeech-listen"
+	],
+	"GroupPermissions": {
+		"*": {
+			"wikispeech-listen": true
+		}
 	}
 }

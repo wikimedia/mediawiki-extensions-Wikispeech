@@ -126,6 +126,7 @@
 		}
 	},
 	"DefaultUserOptions": {
+		"wikispeechEnable": true,
 		"wikispeechVoiceAr": "",
 		"wikispeechVoiceEn": "",
 		"wikispeechVoiceSv": "",

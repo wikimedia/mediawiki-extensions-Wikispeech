@@ -1,9 +1,10 @@
 {
 	"name": "Wikispeech",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"author": [
 		"Sebastian Berlin",
-		"André Costa"
+		"André Costa",
+		"Igor Leturia"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:Wikispeech",
 	"namemsg": "wikispeech",

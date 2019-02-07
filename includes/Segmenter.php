@@ -192,7 +192,7 @@ class Segmenter {
 		// not miss if that is a sentence final character. To only
 		// have one loop for both these cases, we need to go back one
 		// for the first search.
-		$offset --;
+		$offset--;
 		do {
 			// Find the next character that may be sentence final.
 			$offset = mb_strpos( $string, '.', $offset + 1 );

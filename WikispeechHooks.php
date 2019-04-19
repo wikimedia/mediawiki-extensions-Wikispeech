@@ -13,13 +13,12 @@ class WikispeechHooks {
 	 * module only if that module is loaded.
 	 *
 	 * @param array &$testModules The array of registered test modules
-	 * @param ResourceLoader &$resourceLoader The reference to the resource
+	 * @param ResourceLoader $resourceLoader The reference to the resource
 	 *  loader
-	 * @return true
 	 */
 	public static function onResourceLoaderTestModules(
 		array &$testModules,
-		ResourceLoader &$resourceLoader
+		ResourceLoader $resourceLoader
 	) {
 		$testModules['qunit']['ext.wikispeech.test'] = [
 			'scripts' => [
@@ -41,7 +40,6 @@ class WikispeechHooks {
 			'localBasePath' => __DIR__,
 			'remoteExtPath' => 'Wikispeech'
 		];
-		return true;
 	}
 
 	/**
@@ -112,14 +110,11 @@ class WikispeechHooks {
 	 *
 	 * Enables JavaScript.
 	 *
-	 * @param OutputPage &$out The OutputPage object.
-	 * @param Skin &$skin Skin object that will be used to generate the page,
+	 * @param OutputPage $out The OutputPage object.
+	 * @param Skin $skin Skin object that will be used to generate the page,
 	 *  added in 1.13.
 	 */
-	public static function onBeforePageDisplay(
-		OutputPage &$out,
-		Skin &$skin
-	) {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		if ( $out->getUser()->getOption( 'wikispeechEnable' ) ) {
 			$out->addModules( [
 				'ext.wikispeech'
@@ -132,7 +127,6 @@ class WikispeechHooks {
 	 * ext.wikispeech module only if that module is loaded.
 	 *
 	 * @param array &$vars The array of static configuration variables.
-	 * @return true
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgWikispeechServerUrl;
@@ -155,7 +149,6 @@ class WikispeechHooks {
 		global $wgWikispeechContentSelector;
 		$vars['wgWikispeechContentSelector'] =
 			$wgWikispeechContentSelector;
-		return true;
 	}
 
 	/**
@@ -163,13 +156,11 @@ class WikispeechHooks {
 	 *
 	 * @param User $user current User object.
 	 * @param array &$preferences Preferences array.
-	 * @return bool true
 	 */
 	static function onGetPreferences( $user, &$preferences ) {
 		self::addWikispeechEnable( $preferences );
 		self::addVoicePreferences( $preferences );
 		self::addSpeechRatePreferences( $preferences );
-		return true;
 	}
 
 	/**

@@ -18,10 +18,7 @@ class ApiWikispeech extends ApiBase {
 		if ( empty( $parameters['output'] ) ) {
 			$this->dieWithError( [ 'apierror-paramempty', 'output' ] );
 		}
-		$titleAndContent =
-			$this->getTitleAndContent( $parameters['page'] );
-		$displayTitle = $titleAndContent[ 0 ];
-		$pageContent = $titleAndContent[ 1 ];
+		list( $displayTitle, $pageContent ) = $this->getTitleAndContent( $parameters['page'] );
 		$result = FormatJson::parse(
 			$parameters['removetags'],
 			FormatJson::FORCE_ASSOC
@@ -132,14 +129,9 @@ class ApiWikispeech extends ApiBase {
 	 * @param array $outputFormats Specifies what output formats to
 	 *  return. Can be any combination of: "originalcontent",
 	 *  "cleanedtext" and "segments".
-	 * @param string $removeTags Used by `Cleaner` to remove tags.
+	 * @param array $removeTags Used by `Cleaner` to remove tags.
 	 * @param array $segmentBreakingTags Used by `Segmenter` to break
 	 *  segments.
-	 * @return array An array containing the output from the processes
-	 *  specified by $outputFormats:
-	 *  * "originalcontent": The input HTML string.
-	 *  * "cleanedtext": The cleaned HTML, as a string.
-	 *  * "segments": Cleaned and segmented HTML as an array.
 	 */
 	public function processPageContent(
 		$displayTitle,
@@ -201,7 +193,7 @@ class ApiWikispeech extends ApiBase {
 	 *
 	 * @param string $displayTitle The title HTML as displayed on the page.
 	 * @param string $pageContent The HTML string to process.
-	 * @param string $removeTags Used by `Cleaner` to remove tags.
+	 * @param array $removeTags Used by `Cleaner` to remove tags.
 	 * @param array $segmentBreakingTags Used by `Segmenter` to break
 	 *  segments.
 	 * @since 0.0.1
@@ -259,8 +251,8 @@ class ApiWikispeech extends ApiBase {
 					ApiBase::PARAM_TYPE => 'string',
 					ApiBase::PARAM_ISMULTI => true,
 					ApiBase::PARAM_DFLT => implode(
-						$wgWikispeechSegmentBreakingTags,
-						'|'
+						'|',
+						$wgWikispeechSegmentBreakingTags
 					)
 				]
 			]

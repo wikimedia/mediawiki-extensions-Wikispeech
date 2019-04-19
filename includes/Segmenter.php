@@ -148,7 +148,7 @@ class Segmenter {
 				$sentence,
 				$text->path
 			);
-			array_push( $this->currentSegment['content'], $sentenceText );
+			$this->currentSegment['content'][] = $sentenceText;
 			if ( $this->currentSegment['startOffset'] === null ) {
 				// Record the start offset if this is the first text
 				// added to the segment.
@@ -228,7 +228,7 @@ class Segmenter {
 		}
 		if (
 			$character == '.' &&
-			( $nextCharacter == ' ' && self::isUpper( $characterAfterNext ) ||
+			( ( $nextCharacter == ' ' && self::isUpper( $characterAfterNext ) ) ||
 			$nextCharacter == '' ||
 			$nextCharacter == "\n" )
 		) {
@@ -257,13 +257,10 @@ class Segmenter {
 	 * Creates a new, empty segment as the new current segment.
 	 *
 	 * @since 0.0.1
-	 * @param array $segments The array of segments to add the
-	 *  finished one to.
-	 * @param array $currentCegments The finished segment to add.
 	 */
 	private function finishSegment() {
 		if ( count( $this->currentSegment['content'] ) ) {
-			array_push( $this->segments, $this->currentSegment );
+			$this->segments[] = $this->currentSegment;
 		}
 		// Create a fresh segment to add following text to.
 		$this->currentSegment = [

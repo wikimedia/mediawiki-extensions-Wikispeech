@@ -94,7 +94,7 @@ class Cleaner {
 	 * A dummy element is added as top node.
 	 *
 	 * @since 0.0.1
-	 * @param string $markedUpString The string to create the
+	 * @param string $markedUpText The string to create the
 	 *  DOMDocument.
 	 * @return DOMDocument The created DOMDocument.
 	 */
@@ -150,8 +150,7 @@ class Cleaner {
 						'.',
 						$child->getNodePath()
 					);
-					$text = new CleanedText( $child->textContent, $path );
-					array_push( $this->cleanedContent, $text );
+					$this->cleanedContent[] = new CleanedText( $child->textContent, $path );
 				} else {
 					$this->addContent( $child );
 				}
@@ -164,7 +163,7 @@ class Cleaner {
 				) {
 					// Add segment breaks for end tags specified in
 					// the config.
-					array_push( $this->cleanedContent, new SegmentBreak() );
+					$this->cleanedContent[] = new SegmentBreak();
 				}
 			}
 		}

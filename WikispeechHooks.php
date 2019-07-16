@@ -105,6 +105,7 @@ class WikispeechHooks {
 		}
 		return false;
 	}
+
 	/**
 	 * Hook for BeforePageDisplay.
 	 *

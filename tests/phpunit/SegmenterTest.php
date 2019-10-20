@@ -13,7 +13,7 @@ require_once 'Util.php';
  * @covers Segmenter
  */
 class SegmenterTest extends MediaWikiTestCase {
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		$this->segmenter = new Segmenter();
 	}

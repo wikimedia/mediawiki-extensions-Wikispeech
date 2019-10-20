@@ -127,11 +127,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		);
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage "removetags" is not a valid JSON string.
-	 */
 	public function testRemoveTagsInvalidJsonThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( '"removetags" is not a valid JSON string.' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
@@ -140,11 +138,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage "removetags" is not of a valid format.
-	 */
 	public function testRemoveTagsNotAnObjectThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
@@ -153,11 +149,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage "removetags" is not of a valid format.
-	 */
 	public function testRemoveTagsInvalidValueThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
@@ -166,11 +160,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage "removetags" is not of a valid format.
-	 */
 	public function testRemoveTagsJsonArrayThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
@@ -179,11 +171,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage "removetags" is not of a valid format.
-	 */
 	public function testRemoveTagsInvalidRuleThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
@@ -192,11 +182,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage There is no revision with ID
-	 */
 	public function testInvalidPageThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( 'There is no revision with ID' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => 'Not a page',
@@ -205,11 +193,9 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	/**
-	 * @expectedException ApiUsageException
-	 * @expectedExceptionMessage The parameter "output" may not be empty.
-	 */
 	public function testNoOutputFormatThrowsException() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( 'The parameter "output" may not be empty.' );
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,

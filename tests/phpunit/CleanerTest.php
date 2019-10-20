@@ -13,7 +13,7 @@ require_once 'Util.php';
  * @covers Cleaner
  */
 class CleanerTest extends MediaWikiTestCase {
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		$removeTags = [
 			'sup' => 'reference',

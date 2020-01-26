@@ -31,8 +31,8 @@ class HtmlGeneratorTest extends MediaWikiTestCase {
 			'utterance-0',
 			$utteranceElement->getAttribute( 'id' )
 		);
-		$this->assertEquals(
-			0,
+		$this->assertSame(
+			'0',
 			$utteranceElement->getAttribute( 'start-offset' )
 		);
 		$this->assertEquals(

@@ -113,6 +113,7 @@ class HtmlGenerator {
 	 * `CleanedText`s are represented by `<text>` nodes.
 	 *
 	 * @since 0.0.1
+	 * @param DOMDocument $dom
 	 * @param array $content An array of `CleanedText`s.
 	 * @return DOMNode A content element.
 	 */

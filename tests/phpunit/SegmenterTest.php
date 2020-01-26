@@ -98,7 +98,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( ' tags.' )
 		];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertEquals(
+		$this->assertSame(
 			0,
 			$segments[0]['startOffset']
 		);
@@ -139,7 +139,7 @@ class SegmenterTest extends MediaWikiTestCase {
 	public function testTextOffset() {
 		$cleanedContent = [ new CleanedText( 'Sentence.' ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertEquals( 0, $segments[0]['startOffset'] );
+		$this->assertSame( 0, $segments[0]['startOffset'] );
 		$this->assertEquals( 8, $segments[0]['endOffset'] );
 	}
 

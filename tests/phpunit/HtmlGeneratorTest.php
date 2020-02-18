@@ -6,7 +6,6 @@
  * @license GPL-2.0-or-later
  */
 
-require_once __DIR__ . '/../../includes/HtmlGenerator.php';
 require_once 'Util.php';
 
 /**

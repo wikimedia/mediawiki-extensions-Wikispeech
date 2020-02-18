@@ -6,7 +6,6 @@
  * @license GPL-2.0-or-later
  */
 
-require_once __DIR__ . '/../../includes/ApiWikispeech.php';
 require_once 'Util.php';
 
 define( 'TITLE', 'Test_Page' );

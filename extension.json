@@ -12,11 +12,14 @@
 	"descriptionmsg": "wikispeech-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
-	"manifest_version": 1,
+	"manifest_version": 2,
 	"MessagesDirs": {
 		"Wikispeech": [
 			"i18n"
 		]
+	},
+	"requires": {
+		"MediaWiki": ">= 1.29"
 	},
 	"AutoloadClasses": {
 		"WikispeechHooks": "WikispeechHooks.php",
@@ -42,7 +45,6 @@
 				"ext.wikispeech.css"
 			],
 			"messages": [
-
 			],
 			"dependencies": [
 				"FontAwesome"
@@ -73,58 +75,100 @@
 		]
 	},
 	"config": {
-		"WikispeechServerUrl": "",
-		"WikispeechRemoveTags": {
-			"span": "mw-editsection",
-			"table": true,
-			"sup": "reference",
-			"div": [ "thumb", "toc" ]
+		"WikispeechServerUrl": {
+			"description": "URL to location of TTS-server.",
+			"value": ""
 		},
-		"WikispeechSegmentBreakingTags": [
-			"h1",
-			"h2",
-			"h3",
-			"h4",
-			"h5",
-			"h6",
-			"p",
-			"br",
-			"li"
-		],
-		"WikispeechNamespaces": [ 0 ],
-		"WikispeechKeyboardShortcuts": {
-			"playStop": {
-				"key": 32,
-				"modifiers": [ "alt", "shift" ]
-			},
-			"skipAheadSentence": {
-				"key": 39,
-				"modifiers": [ "alt", "shift" ]
-			},
-			"skipBackSentence": {
-				"key": 37,
-				"modifiers": [ "alt", "shift" ]
-			},
-			"skipAheadWord": {
-				"key": 40,
-				"modifiers": [ "alt", "shift" ]
-			},
-			"skipBackWord": {
-				"key": 38,
-				"modifiers": [ "alt", "shift" ]
+		"WikispeechRemoveTags": {
+			"value": {
+				"span": "mw-editsection",
+				"table": true,
+				"sup": "reference",
+				"div": [ "thumb", "toc" ]
 			}
 		},
-		"WikispeechSkipBackRewindsThreshold": 3.0,
-		"WikispeechHelpPage": "Help:Wikispeech",
-		"WikispeechFeedbackPage": "Wikispeech feedback",
-		"WikispeechContentSelector": "#mw-content-text",
+		"WikispeechSegmentBreakingTags": {
+			"description": "HTML tags that will break text in segments. This ensure that, for example a header text without punctuation suffix will not be merged to the same segment as the text content of a preceding paragraph.",
+			"value": [
+				"h1",
+				"h2",
+				"h3",
+				"h4",
+				"h5",
+				"h6",
+				"p",
+				"br",
+				"li"
+			]
+		},
+		"WikispeechNamespaces": {
+			"value": [ 0 ]
+		},
+		"WikispeechKeyboardShortcuts": {
+			"value": {
+				"playStop": {
+					"key": 32,
+					"modifiers": [
+						"alt",
+						"shift"
+					]
+				},
+				"skipAheadSentence": {
+					"key": 39,
+					"modifiers": [
+						"alt",
+						"shift"
+					]
+				},
+				"skipBackSentence": {
+					"key": 37,
+					"modifiers": [
+						"alt",
+						"shift"
+					]
+				},
+				"skipAheadWord": {
+					"key": 40,
+					"modifiers": [
+						"alt",
+						"shift"
+					]
+				},
+				"skipBackWord": {
+					"key": 38,
+					"modifiers": [
+						"alt",
+						"shift"
+					]
+				}
+			}
+		},
+		"WikispeechSkipBackRewindsThreshold": {
+			"value": 3.0
+		},
+		"WikispeechHelpPage": {
+			"value": "Help:Wikispeech"
+		},
+		"WikispeechFeedbackPage": {
+			"value": "Wikispeech feedback"
+		},
+		"WikispeechContentSelector": {
+			"value": "#mw-content-text"
+		},
 		"WikispeechVoices": {
-			"ar": [ "ar-nah-hsmm" ],
-			"en": [
-				"dfki-spike-hsmm",
-				"cmu-slt-flite"
-			],
-			"sv": [ "stts_sv_nst-hsmm" ]
+			"description": "Registered voices per language.",
+			"value": {
+				"ar": [
+					"ar-nah-hsmm"
+				],
+				"en": [
+					"dfki-spike-hsmm",
+					"cmu-slt-flite"
+				],
+				"sv": [
+					"stts_sv_nst-hsmm"
+				]
+			}
 		}
 	},
 	"DefaultUserOptions": {

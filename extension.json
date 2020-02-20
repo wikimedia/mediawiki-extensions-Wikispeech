@@ -23,7 +23,6 @@
 		"CleanedText": "includes/CleanedText.php",
 		"SegmentBreak": "includes/SegmentBreak.php",
 		"Cleaner": "includes/Cleaner.php",
-		"HtmlGenerator": "includes/HtmlGenerator.php",
 		"Segmenter": "includes/Segmenter.php",
 		"ApiWikispeech": "includes/ApiWikispeech.php"
 	},

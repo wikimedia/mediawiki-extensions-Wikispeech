@@ -67,6 +67,7 @@
 		"BeforePageDisplay": [
 			"WikispeechHooks::onBeforePageDisplay"
 		],
+		"ApiBeforeMain": "WikispeechHooks::onApiBeforeMain",
 		"ResourceLoaderGetConfigVars": [
 			"WikispeechHooks::onResourceLoaderGetConfigVars"
 		],

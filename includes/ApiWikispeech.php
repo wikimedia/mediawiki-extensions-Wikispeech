@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * @file
  * @ingroup Extensions
@@ -13,12 +15,13 @@ class ApiWikispeech extends ApiBase {
 	 *
 	 * @since 0.0.1
 	 */
-	function execute() {
+	public function execute() {
 		$parameters = $this->extractRequestParams();
 		if ( empty( $parameters['output'] ) ) {
 			$this->dieWithError( [ 'apierror-paramempty', 'output' ] );
 		}
-		list( $displayTitle, $pageContent ) = $this->getTitleAndContent( $parameters['page'] );
+		list( $displayTitle, $pageContent, $revisionId ) =
+			$this->getTitleContentRevision( $parameters['page'] );
 		$result = FormatJson::parse(
 			$parameters['removetags'],
 			FormatJson::FORCE_ASSOC
@@ -39,6 +42,7 @@ class ApiWikispeech extends ApiBase {
 		$this->processPageContent(
 			$displayTitle,
 			$pageContent,
+			$revisionId,
 			$parameters['output'],
 			$removeTags,
 			$parameters['segmentbreakingtags']
@@ -49,13 +53,14 @@ class ApiWikispeech extends ApiBase {
 	 * Get the title and parsed content of the named page.
 	 *
 	 * @since 0.0.1
-	 * @param string $pageTitle The title of the page to get content
-	 *  from.
+	 * @param string $pageTitle The title of the page to get content from.
 	 * @return array An array containing the displayed title HTML and
 	 *  the parsed content for the page given in the request to the
 	 *  Wikispeech API.
+	 * @throws ApiUsageException When dying with an API error.
+	 * @throws MWException If failing to create WikiPage from title.
 	 */
-	private function getTitleAndContent( $pageTitle ) {
+	private function getTitleContentRevision( $pageTitle ) {
 		// Get and validate Title
 		$title = Title::newFromText( $pageTitle );
 		if ( !$title || $title->isExternal() ) {
@@ -79,8 +84,8 @@ class ApiWikispeech extends ApiBase {
 			] );
 		}
 
-		// Return title and content HTML.
-		return [ $pout->getDisplayTitle(), $pout->getText() ];
+		// Return title, content HTML and revision identity
+		return [ $pout->getDisplayTitle(), $pout->getText(), $page->getLatest() ];
 	}
 
 	/**
@@ -126,6 +131,7 @@ class ApiWikispeech extends ApiBase {
 	 * @since 0.0.1
 	 * @param string $displayTitle The title HTML as displayed on the page.
 	 * @param string $pageContent The HTML string to process.
+	 * @param string $revisionId The revision identity of the page.
 	 * @param array $outputFormats Specifies what output formats to
 	 *  return. Can be any combination of: "originalcontent",
 	 *  "cleanedtext" and "segments".
@@ -136,6 +142,7 @@ class ApiWikispeech extends ApiBase {
 	public function processPageContent(
 		$displayTitle,
 		$pageContent,
+		$revisionId,
 		$outputFormats,
 		$removeTags,
 		$segmentBreakingTags
@@ -153,6 +160,7 @@ class ApiWikispeech extends ApiBase {
 			$cleanedText = $this->getCleanedText(
 				$displayTitle,
 				$pageContent,
+				$revisionId,
 				$removeTags,
 				$segmentBreakingTags
 			);
@@ -164,21 +172,28 @@ class ApiWikispeech extends ApiBase {
 					$cleanedTextString .= $item->string;
 				}
 			}
-			$values['cleanedtext'] = trim( $cleanedTextString );
+			$values[ 'cleanedtext' ] = trim( $cleanedTextString );
 		}
 
 		if ( in_array( 'segments', $outputFormats ) ) {
-			$segmenter = new Segmenter();
-			if ( $cleanedText == null ) {
-				$cleanedText = $this->getCleanedText(
-					$displayTitle,
-					$pageContent,
-					$removeTags,
-					$segmentBreakingTags
-				);
+			$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+			$cacheKey = $cache->makeKey( 'Wikispeech.processPageContent.segments', $revisionId );
+			$segments = $cache->get( $cacheKey );
+			if ( $segments == null ) {
+				$segmenter = new Segmenter();
+				if ( $cleanedText == null ) {
+					$cleanedText = $this->getCleanedText(
+						$displayTitle,
+						$pageContent,
+						$revisionId,
+						$removeTags,
+						$segmentBreakingTags
+					);
+				}
+				$segments = $segmenter->segmentSentences( $cleanedText );
+				$cache->set( $cacheKey, $segments, 3600 );
 			}
-			$segments = $segmenter->segmentSentences( $cleanedText );
-			$values['segments'] = $segments;
+			$values[ 'segments' ] = $segments;
 		}
 
 		$this->getResult()->addValue(
@@ -193,6 +208,7 @@ class ApiWikispeech extends ApiBase {
 	 *
 	 * @param string $displayTitle The title HTML as displayed on the page.
 	 * @param string $pageContent The HTML string to process.
+	 * @param int $revisionId Revision identity of the page, for cache purposes.
 	 * @param array $removeTags Used by `Cleaner` to remove tags.
 	 * @param array $segmentBreakingTags Used by `Segmenter` to break
 	 *  segments.
@@ -203,15 +219,22 @@ class ApiWikispeech extends ApiBase {
 	public function getCleanedText(
 		$displayTitle,
 		$pageContent,
+		$revisionId,
 		$removeTags,
 		$segmentBreakingTags
 	) {
-		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
-		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
-		$titleSegment->path = '//h1[@id="firstHeading"]//text()';
-		$cleanedText = $cleaner->cleanHtml( $pageContent );
-		// Add the title as a separate utterance to the start.
-		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
+		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$cacheKey = $cache->makeKey( 'Wikispeech.getCleanedText', $revisionId );
+		$cleanedText = $cache->get( $cacheKey );
+		if ( $cleanedText == null ) {
+			$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
+			$titleSegment = $cleaner->cleanHtml( $displayTitle )[ 0 ];
+			$titleSegment->path = '//h1[@id="firstHeading"]//text()';
+			$cleanedText = $cleaner->cleanHtml( $pageContent );
+			// Add the title as a separate utterance to the start.
+			array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
+			$cache->set( $cacheKey, $cleanedText, 3600 );
+		}
 		return $cleanedText;
 	}
 

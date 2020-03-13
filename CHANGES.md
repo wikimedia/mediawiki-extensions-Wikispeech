@@ -13,6 +13,7 @@ Add new version header section when version is bumped up and leave unreleased se
 ### Unreleased
 202Y-MM-DD
 
+* [T246079](https://phabricator.wikimedia.org/T246079) Add cache to segmenter.
 * [T249198](https://phabricator.wikimedia.org/T249198) Version changelog file introduced.
 
 ### 0.1.3

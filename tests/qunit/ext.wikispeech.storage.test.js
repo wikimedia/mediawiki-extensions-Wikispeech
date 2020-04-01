@@ -18,6 +18,7 @@
 			$( '#qunit-fixture' ).append(
 				$( '<div></div>' ).attr( 'id', 'content' )
 			);
+			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 			contentSelector =
 				mw.config.get( 'wgWikispeechContentSelector' );
 			storage.utterances = [

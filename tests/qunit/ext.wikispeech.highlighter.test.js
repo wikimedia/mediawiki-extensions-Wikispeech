@@ -4,6 +4,7 @@
 	QUnit.module( 'ext.wikispeech.highlighter', {
 		setup: function () {
 			util = mw.wikispeech.test.util;
+			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
 			util.setContentHtml( 'Utterance zero.' );
 			mw.wikispeech.storage =

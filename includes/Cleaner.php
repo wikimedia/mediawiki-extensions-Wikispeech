@@ -104,11 +104,10 @@ class Cleaner {
 		// tag to prevent p tags from being added for text nodes.
 		global $wgWikispeechContentWrapperTagName;
 		$contentTag = '<' . $wgWikispeechContentWrapperTagName . '>';
-		// @codingStandardsIgnoreStart
+		// phpcs:ignore Generic.Files.LineLength
 		$wrappedText = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><dummy>' .
 			$markedUpText .
 			'</dummy></head>';
-		// @codingStandardsIgnoreEnd
 		libxml_use_internal_errors( true );
 		$dom->loadHTML(
 			$wrappedText,

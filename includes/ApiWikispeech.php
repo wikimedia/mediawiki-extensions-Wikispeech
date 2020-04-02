@@ -267,9 +267,8 @@ class ApiWikispeech extends ApiBase {
 	 */
 	public function getExamplesMessages() {
 		return [
-		// @codingStandardsIgnoreStart
+		// phpcs:ignore Generic.Files.LineLength
 			'action=wikispeech&format=json&page=Main_Page&output=segments&removetags={"sup": true, "div": "toc"}&segmentbreakingtags=h1|h2'
-		// @codingStandardsIgnoreEnd
 			=> 'apihelp-wikispeech-example-1',
 			'action=wikispeech&format=json&page=Main_Page&output=originalcontent|cleanedtext'
 			=> 'apihelp-wikispeech-example-2',

@@ -52,7 +52,9 @@ class WikispeechHooks {
 	 *  added in 1.13.
 	 */
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
-		if ( $out->getUser()->getOption( 'wikispeechEnable' ) ) {
+		if ( $out->getUser()->getOption( 'wikispeechEnable' ) &&
+			 $out->getUser()->isAllowed( 'wikispeech-listen' )
+		) {
 			$out->addModules( [
 				'ext.wikispeech'
 			] );
@@ -157,5 +159,27 @@ class WikispeechHooks {
 			'section' => 'wikispeech/wikispeech-voice',
 			'options' => $options
 		];
+	}
+
+	/**
+	 * Check if the user is allowed to use a API module.
+	 *
+	 * @since 0.1.3
+	 * @param string $module
+	 * @param User $user
+	 * @param ApiMessage &$message
+	 * @return bool
+	 */
+	public static function onApiCheckCanExecute( $module, $user, &$message ) {
+		if (
+			$module->getModuleName() == 'wikispeechlisten' &&
+			!$user->isAllowed( 'wikispeech-listen' )
+		) {
+			$message = ApiMessage::create(
+				'apierror-wikispeechlisten-notallowed'
+			);
+			return false;
+		}
+		return true;
 	}
 }

@@ -6,6 +6,9 @@
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
+
 class WikispeechHooks {
 
 	/**
@@ -43,22 +46,62 @@ class WikispeechHooks {
 	}
 
 	/**
+	 * Investigates whether or not configuration is valid.
+	 *
+	 * Writes entries to the log in case not valid.
+	 *
+	 * @since 0.1.3
+	 * @return bool true if all configuration passes validation
+	 */
+	private static function validateConfiguration() {
+		$config = MediaWikiServices::getInstance()->
+			getConfigFactory()->
+			makeConfig( 'wikispeech' );
+		$serverUrl = $config->get( 'WikispeechServerUrl' );
+
+		if ( !filter_var( $serverUrl, FILTER_VALIDATE_URL ) ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value for 'WikispeechServerUrl' is not a valid URL: {value}",
+				[ 'value' => $serverUrl ]
+			);
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Hook for BeforePageDisplay.
 	 *
 	 * Enables JavaScript.
 	 *
 	 * @param OutputPage $out The OutputPage object.
 	 * @param Skin $skin Skin object that will be used to generate the page,
-	 *  added in 1.13.
+	 *  added in MediaWiki 1.13.
 	 */
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		if ( $out->getUser()->getOption( 'wikispeechEnable' ) &&
-			 $out->getUser()->isAllowed( 'wikispeech-listen' )
+			 $out->getUser()->isAllowed( 'wikispeech-listen' ) &&
+			 self::validateConfiguration()
 		) {
 			$out->addModules( [
 				'ext.wikispeech'
 			] );
 		}
+	}
+
+	/**
+	 * Hook for ApiBeforeMain.
+	 *
+	 * Calls configuration validation for logging purposes on API calls,
+	 * but doesn't stop the use of the API due to invalid configuration.
+	 * Generally a user would not call the API at this point as the module
+	 * wouldn't actually have been added in onBeforePageDisplay.
+	 *
+	 * @since 0.1.3
+	 * @param ApiMain &$main The ApiMain instance being used.
+	 */
+	public static function onApiBeforeMain( &$main ) {
+		self::validateConfiguration();
 	}
 
 	/**
@@ -69,7 +112,8 @@ class WikispeechHooks {
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgWikispeechServerUrl;
-		$vars['wgWikispeechServerUrl'] = $wgWikispeechServerUrl;
+		$vars[ 'wgWikispeechServerUrl' ] =
+			$wgWikispeechServerUrl;
 		global $wgWikispeechKeyboardShortcuts;
 		$vars['wgWikispeechKeyboardShortcuts'] =
 			$wgWikispeechKeyboardShortcuts;

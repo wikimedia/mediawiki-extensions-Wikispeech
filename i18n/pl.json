@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Rail"
+		]
+	},
+	"wikispeech": "Wiki mowa",
+	"wikispeech-desc": "Narzędzie przetwarzające tekst na mowę, aby uczynić projekty fundacji Wikimedia przystępniejszymi dla osób mających problemy z czytaniem",
+	"apihelp-wikispeech-summary": "Pzetwórz stronę do użytku przez rozszerzenie Wiki mowa.",
+	"apihelp-wikispeech-param-page": "Tytuł strony do przetworzenia.",
+	"apihelp-wikispeechlisten-summary": "Syntezuj mowę.",
+	"apihelp-wikispeechlisten-param-lang": "Kod języka.",
+	"apihelp-wikispeechlisten-param-input": "Tekst do zsyntezowania.",
+	"apihelp-wikispeechlisten-param-voice": "Głos do użycia. Jeśli wartość nie jest podana, zostanie użyty domyślny głos dla języka.",
+	"apierror-wikispeechlisten-notallowed": "Nie posiadasz uprawnień do wywoływania tej akcji API.",
+	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> nie jest poprawnym językiem. Dostępne są: $2.",
+	"apierror-wikispeechlisten-invalid-voice": "<code>$1</code> nie jest poprawnym głosem. Dostępne są: $2.",
+	"apihelp-wikispeechlisten-example-2": "Użyj niestandardowego głosu.",
+	"prefs-wikispeech": "Wiki mowa",
+	"prefs-wikispeech-voice": "Głos",
+	"prefs-wikispeech-speech-rate": "Przepustowość mowy",
+	"prefs-wikispeech-enable": "Włącz Wiki mowę",
+	"right-wikispeech-listen": "Słuchanie treści strony",
+	"action-wikispeech-listen": "słuchania treści strony"
+}

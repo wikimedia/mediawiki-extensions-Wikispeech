@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sebastian Berlin",
-			"Igor Leturia"
+			"FF11",
+			"Igor Leturia",
+			"Sebastian Berlin"
 		]
 	},
 	"wikispeech": "The name of the extension",
@@ -28,7 +29,7 @@
 	"apierror-wikispeechlisten-invalid-voice": "{{doc-apierror}}",
 	"apihelp-wikispeechlisten-example-1": "{{doc-apihelp-example|wikispeechlisten}}",
 	"apihelp-wikispeechlisten-example-2": "{{doc-apihelp-example|wikispeechlisten}}",
-    "prefs-wikispeech": "Used in user preferences as a tab heading.\n{{Identical|wikispeech}}",
+	"prefs-wikispeech": "Used in user preferences as a tab heading.",
 	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",

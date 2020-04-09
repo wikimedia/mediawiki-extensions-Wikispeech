@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eduardo Addad de Oliveira"
+		]
+	},
+	"wikispeech": "Wikispeech",
+	"wikispeech-desc": "Uma ferramenta de conversão de texto em fala para tornar os projetos da Wikimedia mais acessíveis para pessoas que, por diferentes razões, têm dificuldades em ler.",
+	"apihelp-wikispeech-summary": "Processe uma página a ser usada pela extensão Wikispeech.",
+	"apihelp-wikispeech-param-page": "O título da página a processar.",
+	"apihelp-wikispeech-param-output": "Os formatos da saída podem ser uma combinação do seguinte:",
+	"apihelp-wikispeech-paramvalue-output-originalcontent": "O HTML original da página. Pretendido como ajuda ao depurar.",
+	"apihelp-wikispeech-paramvalue-output-segments": "O conteúdo da página segmentado em frases.",
+	"apihelp-wikispeech-example-2": "Obtenha conteúdo HTML original e texto limpo.",
+	"apihelp-wikispeechlisten-summary": "Sintetize a fala.",
+	"apihelp-wikispeechlisten-param-lang": "Código do idioma",
+	"apihelp-wikispeechlisten-param-input": "Texto para sintetizar.",
+	"apierror-wikispeechlisten-notallowed": "Você não tem o direito de chamar essa ação da API.",
+	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> não é um idioma válido. Deve ser um dos seguintes: $2.",
+	"apihelp-wikispeechlisten-example-1": "Sintetize uma expressão em inglês.",
+	"apihelp-wikispeechlisten-example-2": "Use uma voz não padrão.",
+	"prefs-wikispeech": "Wikispeech",
+	"prefs-wikispeech-voice": "Voz",
+	"prefs-wikispeech-speech-rate": "Taxa de fala",
+	"prefs-wikispeech-enable": "Ativar Wikispeech",
+	"right-wikispeech-listen": "Ouça a página",
+	"action-wikispeech-listen": "ouvir a página"
+}

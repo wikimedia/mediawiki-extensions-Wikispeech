@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"FF11"
+		]
+	},
+	"apihelp-wikispeech-param-page": "Der Titel der zu verarbeitenden Seite",
+	"apihelp-wikispeech-paramvalue-output-cleanedtext": "Der Seiteninhalt ohne HTML-Tags.",
+	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> ist kein JSON-String.",
+	"apihelp-wikispeechlisten-param-lang": "Sprachcode.",
+	"apihelp-wikispeechlisten-param-voice": "Zu benutzende Stimme. Wenn nicht angegeben, wird die Standardstimme benutzt.",
+	"apihelp-wikispeechlisten-example-2": "Verwende eine vom Standard abweichende Stimme.",
+	"prefs-wikispeech-voice": "Stimme",
+	"right-wikispeech-listen": "Einer Seite zuhören",
+	"action-wikispeech-listen": "der Seite zuzuhören"
+}

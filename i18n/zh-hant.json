@@ -1,0 +1,36 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kly"
+		]
+	},
+	"wikispeech": "Wikispeech",
+	"wikispeech-desc": "一個文字轉語音工具，可讓因為不同原因而有閱讀障礙的人們，可以更輕鬆訪問維基多媒體專案。",
+	"apihelp-wikispeech-summary": "處理由 Wikispeech 擴充所使用的頁面。",
+	"apihelp-wikispeech-param-page": "要處理的頁面標題。",
+	"apihelp-wikispeech-param-output": "輸出的格式，可以是以下的結合：",
+	"apihelp-wikispeech-paramvalue-output-originalcontent": "頁面的原始 HTML 內容。可用在幫助除錯。",
+	"apihelp-wikispeech-paramvalue-output-cleanedtext": "帶有 HTML 標籤的頁面已移除。",
+	"apihelp-wikispeech-paramvalue-output-segments": "頁面內容已切分成句子。",
+	"apihelp-wikispeech-param-removetags": "在清除期間標籤應要完全移除，其格式為 JSON 物件：\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\",\n  \"tagName3\": [\"cssClass1\", \"cssClass2\"]\n}</pre>\n<code>tagName1</code> 為絕對會被移除，<code>tagName2</code> 則是僅會在有 <code>cssClass</code> CSS 類別時被移除，而 <code>tagName3</code> 是僅會在有 <code>cssClass2</code> 或 <code>cssClass1</code> CSS 類別時被移除。",
+	"apihelp-wikispeech-param-segmentbreakingtags": "應添加分段的用於標籤之標籤名稱。",
+	"apihelp-wikispeech-example-1": "取得 Wikispeech 擴充的切分。標籤 <code>sup</code> 與帶有類別 <code>toc</code> 的 <code>div</code> 被移除。標籤 <code>h1</code>與 <code>h2</code> 中斷切分。",
+	"apihelp-wikispeech-example-2": "取得原始 HTML 內容與已清除文字。",
+	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> 不是有效的 JSON 字串。",
+	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> 不是有效的格式。這應要是值為布林值、字串、或是字串陣列的物件。要不移除任何標籤，請將 <var>removetags</var> 設定成空物件，<code>{}</code>。",
+	"apihelp-wikispeechlisten-summary": "合成發聲。",
+	"apihelp-wikispeechlisten-param-lang": "語言代碼。",
+	"apihelp-wikispeechlisten-param-input": "要合成的文字。",
+	"apihelp-wikispeechlisten-param-voice": "要使用的語音。若未提供的話，會使用語言的預設語音。",
+	"apierror-wikispeechlisten-notallowed": "您沒有權限來呼叫這個 API 操作。",
+	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> 不是有效的語言。應為這其中之一：$2。",
+	"apierror-wikispeechlisten-invalid-voice": "<code>$1</code> 不是有效的語音。應為這其中之一：$2。",
+	"apihelp-wikispeechlisten-example-1": "用英語來合成話語。",
+	"apihelp-wikispeechlisten-example-2": "使用非預設語音。",
+	"prefs-wikispeech": "Wikispeech",
+	"prefs-wikispeech-voice": "語音",
+	"prefs-wikispeech-speech-rate": "發聲速度",
+	"prefs-wikispeech-enable": "啟用 Wikispeech",
+	"right-wikispeech-listen": "聆聽頁面",
+	"action-wikispeech-listen": "聆聽頁面"
+}

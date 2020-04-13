@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Joao Xavier"
+		]
+	},
+	"apihelp-wikispeech-param-page": "Titulo di la pagino por traktar.",
+	"apihelp-wikispeech-paramvalue-output-originalcontent": "Yen l'originala HTML-fonto de la pagino. Montrata por helpar la revizo.",
+	"apihelp-wikispeechlisten-param-lang": "Linguala kodexo.",
+	"prefs-wikispeech": "Wiki-naraco",
+	"prefs-wikispeech-voice": "Voco",
+	"prefs-wikispeech-speech-rate": "Rapideso di la naraco",
+	"right-wikispeech-listen": "Audez la pagino",
+	"action-wikispeech-listen": "audez la pagino"
+}

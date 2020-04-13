@@ -1,18 +1,20 @@
 {
 	"@metadata": {
 		"authors": [
-			"Gomoko"
+			"Gomoko",
+			"Thibaut120094",
+			"Wladek92"
 		]
 	},
 	"wikispeech": "Wikispeech",
 	"wikispeech-desc": "Un outil texte-vers-parole pour rendre les projets de Wikimédia plus accessibles aux gens qui, pour diverses raisons, ont des difficultés à lire.",
 	"apihelp-wikispeech-summary": "Traiter une page à utiliser par l’extension Wikispeech.",
 	"apihelp-wikispeech-param-page": "Le titre de la page à traiter.",
-	"apihelp-wikispeech-param-output": "Les formats de sortir, qui peuvent être une combinaison de ce qui suit :",
+	"apihelp-wikispeech-param-output": "Les formats de sortie peuvent être une combinaison de ce qui suit :",
 	"apihelp-wikispeech-paramvalue-output-originalcontent": "Le HTML d’origine de la page. Prévu comme aide lors du débogage.",
 	"apihelp-wikispeech-paramvalue-output-cleanedtext": "Le contenu de la page sans les balises HTML.",
 	"apihelp-wikispeech-paramvalue-output-segments": "Le contenu de la page découpé en phrases.",
-	"apihelp-wikispeech-param-removetags": "Les balises qui doivent être complètement supprimées lors du nettoyage, sous forme d’objet JSON au format :\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\",\n  \"tagName3\": [\"cssClass1\", \"cssClass2\"]\n}</pre>\noù <code>tagName1</code> est toujours supprimé, <code>tagName2</code> n’est supprimé que s’il a la classe CSS <code>cssClass</code>, et <code>tagName3</code> est supprimé seulement s’il a aussi la classe CSS <code>cssClass2</code> ou <code>cssClass1</code>.",
+	"apihelp-wikispeech-param-removetags": "Les balises qui doivent être complètement supprimées lors du nettoyage, sous forme d’objet JSON au format :\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\",\n  \"tagName3\": [\"cssClass1\", \"cssClass2\"]\n}</pre>\noù <code>tagName1</code> est toujours supprimé, <code>tagName2</code> n’est supprimé que s’il a la classe CSS <code>cssClass</code>, et <code>tagName3</code> est supprimé seulement s’il a aussi la classe CSS <code>cssClass2</code> ou <code>cssClass1</code>.",
 	"apihelp-wikispeech-param-segmentbreakingtags": "Les noms de balise pour les balises qui doivent ajouter des coupures de segment.",
 	"apihelp-wikispeech-example-1": "Obtenir les segments de l’extension Wikispeech. La balise <code>sup</code> est supprimée, et de même <code>div</code> quand il a la classe <code>toc</code>. Les balises <code>h1</code> et <code>h2</code> coupent les segments.",
 	"apihelp-wikispeech-example-2": "Obtenir le contenu HTML d’origine et le texte nettoyé.",
@@ -22,9 +24,9 @@
 	"apihelp-wikispeechlisten-param-lang": "Code de langue.",
 	"apihelp-wikispeechlisten-param-input": "Texte à synthétiser.",
 	"apihelp-wikispeechlisten-param-voice": "Voix à utiliser. Si non fourni, la voix par défaut pour la langue sera utilisée.",
-	"apierror-wikispeechlisten-notallowed": "Vous n’avez pas le droit d’’appeler cette action de l’API.",
-	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> n’est pas un code de langue validde. Ce doit être un parmi : $2.",
-	"apierror-wikispeechlisten-invalid-voice": "<code>$1</code> n’est pas un choix valide. Ce doit être un parmi : $2.",
+	"apierror-wikispeechlisten-notallowed": "Vous n’avez pas le droit d’appeler cette action de l’API.",
+	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> n’est pas un code de langue validde. Ce doit être un parmi : $2.",
+	"apierror-wikispeechlisten-invalid-voice": "<code>$1</code> n’est pas un choix valide. Ce doit être un parmi : $2.",
 	"apihelp-wikispeechlisten-example-1": "Synthétiser une prononciation en anglais.",
 	"apihelp-wikispeechlisten-example-2": "Utiliser une voix autre que celle par défaut.",
 	"prefs-wikispeech": "Wikispeech",

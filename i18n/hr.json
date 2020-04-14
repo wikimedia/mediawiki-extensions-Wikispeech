@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Bugoslav"
+			"Bugoslav",
+			"Neptune, the Mystic"
 		]
 	},
+	"wikispeech": "Wikigovor",
 	"prefs-wikispeech": "Wikigovor",
 	"prefs-wikispeech-enable": "Omogućavanje Wikigovora"
 }

@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Robby"
+		]
+	},
+	"apihelp-wikispeechlisten-summary": "Sprooch synthetiséieren.",
+	"apihelp-wikispeechlisten-param-lang": "Sproochcode.",
+	"prefs-wikispeech-voice": "Stëmm",
+	"right-wikispeech-listen": "D'Säit lauschteren"
+}

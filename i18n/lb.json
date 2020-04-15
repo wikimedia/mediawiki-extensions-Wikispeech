@@ -7,5 +7,6 @@
 	"apihelp-wikispeechlisten-summary": "Sprooch synthetiséieren.",
 	"apihelp-wikispeechlisten-param-lang": "Sproochcode.",
 	"prefs-wikispeech-voice": "Stëmm",
-	"right-wikispeech-listen": "D'Säit lauschteren"
+	"right-wikispeech-listen": "D'Säit lauschteren",
+	"action-wikispeech-listen": "d'Säit lauschteren"
 }

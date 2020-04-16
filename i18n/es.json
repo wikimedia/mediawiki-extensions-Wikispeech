@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Fitoschido"
+		]
+	},
+	"apihelp-wikispeech-param-page": "El título de la página por procesar.",
+	"apihelp-wikispeechlisten-param-lang": "Código de idioma.",
+	"apihelp-wikispeechlisten-param-input": "Texto por sintetizar.",
+	"prefs-wikispeech-voice": "Voz",
+	"right-wikispeech-listen": "Escuchar página",
+	"action-wikispeech-listen": "escuchar página"
+}

@@ -4,5 +4,7 @@
 			"FarsiNevis"
 		]
 	},
+	"apihelp-wikispeech-paramvalue-output-segments": "محتوای صفحه به جمله‌های آن تفکیک شد.",
+	"apihelp-wikispeechlisten-param-lang": "کد زبان.",
 	"prefs-wikispeech-voice": "صدا"
 }

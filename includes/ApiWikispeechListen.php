@@ -89,6 +89,18 @@ class ApiWikispeechListen extends ApiBase {
 				] );
 			}
 		}
+
+		// Validate input text.
+		$input = $parameters['input'];
+		$numberOfCharactersInInput = mb_strlen( $input );
+		$maximumNumberOfCharacterInInput = $config->get( 'WikispeechListenMaximumInputCharacters' );
+		if ( $numberOfCharactersInInput > $maximumNumberOfCharacterInInput ) {
+			$this->dieWithError( [
+				'apierror-wikispeechlisten-invalid-input-too-long',
+				$maximumNumberOfCharacterInInput,
+				$numberOfCharactersInInput
+			] );
+		}
 	}
 
 	/**

@@ -97,6 +97,10 @@
 			"description": "URL to location of TTS-server.",
 			"value": ""
 		},
+		"WikispeechListenMaximumInputCharacters": {
+			"description": "Maximum number of characters in the input (a segment) sent to the TTS-server.",
+			"value": 2048
+		},
 		"WikispeechRemoveTags": {
 			"value": {
 				"span": "mw-editsection",

@@ -26,7 +26,6 @@ class WikispeechHooks {
 		$testModules['qunit']['ext.wikispeech.test'] = [
 			'scripts' => [
 				'tests/qunit/ext.wikispeech.highlighter.test.js',
-				'tests/qunit/ext.wikispeech.main.test.js',
 				'tests/qunit/ext.wikispeech.player.test.js',
 				'tests/qunit/ext.wikispeech.selectionPlayer.test.js',
 				'tests/qunit/ext.wikispeech.storage.test.js',
@@ -79,12 +78,28 @@ class WikispeechHooks {
 	 *  added in MediaWiki 1.13.
 	 */
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
+		$namespace = $out->getTitle()->getNamespace();
+		$config = MediaWikiServices::getInstance()->
+			getConfigFactory()->
+			makeConfig( 'wikispeech' );
+		$validNamespaces = $config->get( 'WikispeechNamespaces' );
+		$validLanguages = array_keys( $config->get( 'WikispeechVoices' ) );
 		if ( $out->getUser()->getOption( 'wikispeechEnable' ) &&
 			 $out->getUser()->isAllowed( 'wikispeech-listen' ) &&
-			 self::validateConfiguration()
+			 self::validateConfiguration() &&
+			 in_array( $namespace, $validNamespaces ) &&
+			 $out->isRevisionCurrent() &&
+			 in_array( $out->getLanguage()->getCode(), $validLanguages )
 		) {
 			$out->addModules( [
 				'ext.wikispeech'
+			] );
+			$out->addJsConfigVars( [
+				'wgWikispeechKeyboardShortcuts' => $config->get( 'WikispeechKeyboardShortcuts' ),
+				'wgWikispeechContentSelector' => $config->get( 'WikispeechContentSelector' ),
+				'wgWikispeechSkipBackRewindsThreshold' => $config->get( 'WikispeechSkipBackRewindsThreshold' ),
+				'wgWikispeechHelpPage' => $config->get( 'WikispeechHelpPage' ),
+				'wgWikispeechFeedbackPage' => $config->get( 'WikispeechFeedbackPage' )
 			] );
 		}
 	}
@@ -114,24 +129,9 @@ class WikispeechHooks {
 		global $wgWikispeechServerUrl;
 		$vars[ 'wgWikispeechServerUrl' ] =
 			$wgWikispeechServerUrl;
-		global $wgWikispeechKeyboardShortcuts;
-		$vars['wgWikispeechKeyboardShortcuts'] =
-			$wgWikispeechKeyboardShortcuts;
-		global $wgWikispeechSkipBackRewindsThreshold;
-		$vars['wgWikispeechSkipBackRewindsThreshold'] =
-			$wgWikispeechSkipBackRewindsThreshold;
-		global $wgWikispeechHelpPage;
-		$vars['wgWikispeechHelpPage'] =
-			$wgWikispeechHelpPage;
-		global $wgWikispeechFeedbackPage;
-		$vars['wgWikispeechFeedbackPage'] =
-			$wgWikispeechFeedbackPage;
 		global $wgWikispeechNamespaces;
 		$vars['wgWikispeechNamespaces'] =
 			$wgWikispeechNamespaces;
-		global $wgWikispeechContentSelector;
-		$vars['wgWikispeechContentSelector'] =
-			$wgWikispeechContentSelector;
 	}
 
 	/**

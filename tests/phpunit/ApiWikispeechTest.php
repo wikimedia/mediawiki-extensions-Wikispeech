@@ -93,7 +93,8 @@ class ApiWikispeechTest extends ApiTestCase {
 						'string' => 'Talk:Test Page',
 						'path' => '//h1[@id="firstHeading"]//text()'
 					]
-				]
+				],
+				'hash' => '50c0083861b4c8bc5e6c1402bbb18ab093cfdf930aa8f5ef9297764e01137a26'
 			],
 			$res[0]['wikispeech']['segments'][0]
 		);
@@ -118,7 +119,8 @@ class ApiWikispeechTest extends ApiTestCase {
 						'string' => 'bold',
 						'path' => './div/p/b/text()'
 					]
-				]
+				],
+				'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'
 			],
 			$res[0]['wikispeech']['segments'][1]
 		);
@@ -220,7 +222,8 @@ class ApiWikispeechTest extends ApiTestCase {
 						'string' => 'title',
 						'path' => '//h1[@id="firstHeading"]//text()'
 					]
-				]
+				],
+				'hash' => '1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'
 			],
 			$res[0]['wikispeech']['segments'][0]
 		);
@@ -233,7 +236,8 @@ class ApiWikispeechTest extends ApiTestCase {
 						'string' => 'Some content text.',
 						'path' => './div/p/text()'
 					]
-				]
+				],
+				'hash' => '3eb8e91dc31a98b63aebe35a1229364deced3f3abbc26eb09fe67394e5cd5c0f'
 			],
 			$res[0]['wikispeech']['segments'][1]
 		);

@@ -10,6 +10,12 @@
  * @covers Segmenter
  */
 class SegmenterTest extends MediaWikiTestCase {
+
+	/**
+	 * @var Segmenter
+	 */
+	private $segmenter;
+
 	protected function setUp() : void {
 		parent::setUp();
 		$this->segmenter = new Segmenter();
@@ -23,17 +29,20 @@ class SegmenterTest extends MediaWikiTestCase {
 			[
 				'startOffset' => 0,
 				'endOffset' => 10,
-				'content' => [ new CleanedText( 'Sentence 1.' ) ]
+				'content' => [ new CleanedText( 'Sentence 1.' ) ],
+				'hash' => '76ca3069cee56491f5b2f465c4e9b57b7fb74ebc12eecc0cd6aad965ea7e247e'
 			],
 			[
 				'startOffset' => 12,
 				'endOffset' => 22,
-				'content' => [ new CleanedText( 'Sentence 2.' ) ]
+				'content' => [ new CleanedText( 'Sentence 2.' ) ],
+				'hash' => '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac'
 			],
 			[
 				'startOffset' => 24,
 				'endOffset' => 34,
-				'content' => [ new CleanedText( 'Sentence 3.' ) ]
+				'content' => [ new CleanedText( 'Sentence 3.' ) ],
+				'hash' => 'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
 			]
 		];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
@@ -298,4 +307,15 @@ class SegmenterTest extends MediaWikiTestCase {
 			$segments[2]['content'][0]->string
 		);
 	}
+
+	public function testEvaluateHash() {
+		// SHA256 of "Word 1 Word 2 Word 3."
+		$expectedHash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
+		$segments = $this->segmenter->segmentSentences(
+			[ new CleanedText( 'Word 1 Word 2 Word 3.' ) ]
+		);
+		$hash = $this->segmenter->evaluateHash( $segments[0] );
+		$this->assertEquals( $expectedHash, $hash );
+	}
+
 }

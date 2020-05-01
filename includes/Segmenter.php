@@ -260,6 +260,7 @@ class Segmenter {
 	 */
 	private function finishSegment() {
 		if ( count( $this->currentSegment['content'] ) ) {
+			$this->currentSegment['hash'] = $this->evaluateHash( $this->currentSegment );
 			$this->segments[] = $this->currentSegment;
 		}
 		// Create a fresh segment to add following text to.
@@ -269,4 +270,29 @@ class Segmenter {
 			'endOffset' => null
 		];
 	}
+
+	/**
+	 * Used to evaluate hash of segments, the primary key for stored utterances.
+	 *
+	 * @since 0.1.4
+	 * @param array $segment The segment array of {@see CleanedText} to be evaluated.
+	 * @return string SHA256 message digest
+	 */
+	public function evaluateHash( $segment ) {
+		$context = hash_init( 'sha256' );
+		$content = $segment['content'];
+		foreach ( $content as $part ) {
+			hash_update( $context, $part->string );
+			hash_update( $context, "\n" );
+		}
+		$hash = hash_final( $context );
+		// Uncommenting below block can be useful during creation of
+		// new test cases as you might need to figure out hashes.
+		//MediaWiki\Logger\LoggerFactory::getInstance( 'Segmenter' )->info( "{segement} : {hash}", [
+		//	'segment' => $segment,
+		//	'hash' => $hash
+		//] );
+		return $hash;
+	}
+
 }

@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Eduardo Addad de Oliveira"
+			"Eduardo Addad de Oliveira",
+			"TheEduGobi"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -10,6 +11,7 @@
 	"apihelp-wikispeech-param-page": "O título da página a processar.",
 	"apihelp-wikispeech-param-output": "Os formatos da saída podem ser uma combinação do seguinte:",
 	"apihelp-wikispeech-paramvalue-output-originalcontent": "O HTML original da página. Pretendido como ajuda ao depurar.",
+	"apihelp-wikispeech-paramvalue-output-cleanedtext": "Conteúdo da página com as marcações em HTML removidas.",
 	"apihelp-wikispeech-paramvalue-output-segments": "O conteúdo da página segmentado em frases.",
 	"apihelp-wikispeech-example-2": "Obtenha conteúdo HTML original e texto limpo.",
 	"apihelp-wikispeechlisten-summary": "Sintetize a fala.",

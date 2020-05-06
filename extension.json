@@ -47,12 +47,11 @@
 			"messages": [
 			],
 			"dependencies": [
-				"FontAwesome"
-			]
-		},
-		"FontAwesome": {
-			"styles": [
-				"../lib/font-awesome-4.7.0/css/font-awesome.min.css"
+				"oojs-ui-core",
+				"oojs-ui-toolbars",
+				"oojs-ui.styles.icons-media",
+				"oojs-ui.styles.icons-movement",
+				"oojs-ui.styles.icons-interactions"
 			]
 		}
 	},

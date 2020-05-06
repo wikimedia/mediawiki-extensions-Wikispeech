@@ -2,65 +2,48 @@
 	font-size: 1.1em;
 }
 
-.ext-wikispeech-skip-back-sentence:after {
-	font-family: 'Fontawesome';
-	content: '\f049';
-}
-
-.ext-wikispeech-skip-back-word:after {
-	font-family: 'Fontawesome';
-	content: '\f048';
-}
-
-.ext-wikispeech-play:after {
-	font-family: 'Fontawesome';
-	content: '\f04b';
-}
-
-.ext-wikispeech-stop:after {
-	font-family: 'Fontawesome';
-	content: '\f04d';
-}
-
-.ext-wikispeech-buffering-icon:after {
-	font-family: 'Fontawesome';
-	content: '\f110';
-	color: #ff0;
-}
-
-.ext-wikispeech-skip-ahead-word:after {
-	font-family: 'Fontawesome';
-	content: '\f051';
-}
-
-.ext-wikispeech-skip-ahead-sentence:after {
-	font-family: 'Fontawesome';
-	content: '\f050';
-}
-
-.ext-wikispeech-divider {
-	border-left: solid 1px rgb( 150, 150, 150 );
-	margin: 3px;
-}
-
-.ext-wikispeech-help:after {
-	font-family: 'Fontawesome';
-	content: '\f128';
-}
-
-.ext-wikispeech-feedback:after {
-	font-family: 'Fontawesome';
-	content: '\f075';
-}
-
 .ext-wikispeech-control-panel {
 	position: fixed;
 	left: 0;
 	bottom: 0;
 	width: 100%;
 	text-align: center;
-	border: solid 1px rgb( 150, 150, 150 );
-	background-color: rgb( 200, 200, 200 );
+}
+
+.ext-wikispeech-control-panel .oo-ui-toolbar-actions {
+	float: unset;
+}
+
+.ext-wikispeech-selection-player {
+	visibility: hidden;
+	position: absolute;
+}
+
+.ext-wikispeech-buffering-icon-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.ext-wikispeech-buffering-icon {
+	border: 5px solid #fc2;
+	border-top: 5px solid #0000;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	animation: spin 2s linear infinite;
+	position: absolute;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate( 0deg );
+	}
+
+	100% {
+		transform: rotate( 360deg );
+	}
 }
 
 .ext-wikispeech-highlight-sentence {
@@ -69,11 +52,4 @@
 
 .ext-wikispeech-highlight-word {
 	background-color: rgb( 255, 200, 140 );
-}
-
-.ext-wikispeech-selection-player {
-	visibility: hidden;
-	background-color: rgb( 200, 200, 200 );
-	border: solid 1px rgb( 150, 150, 150 );
-	position: absolute;
 }

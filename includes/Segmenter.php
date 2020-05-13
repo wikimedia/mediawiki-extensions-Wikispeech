@@ -6,6 +6,8 @@
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Used for dividing text into segments, that can then be sent to the
  * TTS server. Also calculates values for variables that are needed
@@ -15,6 +17,11 @@
  */
 
 class Segmenter {
+
+	/**
+	 * @var IContextSource $context
+	 */
+	private $context;
 
 	/**
 	 * An array to which finished segments are added.
@@ -32,13 +39,80 @@ class Segmenter {
 
 	private $currentSegment;
 
-	function __construct() {
+	/**
+	 * @since 0.0.1
+	 * @param IContextSource $context
+	 */
+	function __construct( $context ) {
+		$this->context = $context;
 		$this->segments = [];
 		$this->currentSegment = [
 			'content' => [],
 			'startOffset' => null,
 			'endOffset' => null
 		];
+	}
+
+	/**
+	 * Split the content of a page into segments.
+	 *
+	 * @since 0.1.5
+	 * @param string $title
+	 * @param array $removeTags HTML tags that should not be included.
+	 * @param array $segmentBreakingTags HTML tags that mark segment breaks.
+	 * @return array A list of segments each made up of `CleanedTest`
+	 *  objects and with start and end offset.
+	 * @throws MWException If failing to create WikiPage from title.
+	 */
+	public function segmentPage(
+		$title,
+		$removeTags,
+		$segmentBreakingTags
+	) {
+		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$page = WikiPage::factory( $title );
+		$revisionId = $page->getLatest();
+		$cacheKey = $cache->makeKey( 'Wikispeech.segments', $revisionId );
+		$segments = $cache->get( $cacheKey );
+		if ( $segments == null ) {
+			$cleanedText =
+				$this->cleanPage( $page, $removeTags, $segmentBreakingTags );
+			$segments = $this->segmentSentences( $cleanedText );
+			$cache->set( $cacheKey, $segments, 3600 );
+		}
+		return $segments;
+	}
+
+	/**
+	 * Clean content text and title.
+	 *
+	 * @since 0.1.5
+	 * @param WikiPage $page
+	 * @param array $removeTags HTML tags that should not be included.
+	 * @param array $segmentBreakingTags HTML tags that mark segment breaks.
+	 * @return array Title and content represented as `CleanedText`s
+	 *  and `SegmentBreak`s
+	 */
+	private function cleanPage(
+		$page,
+		$removeTags,
+		$segmentBreakingTags
+	) {
+		// Clean HTML.
+		$cleanedText = null;
+		$cleanedTextString = '';
+		// Parse latest revision, using parser cache.
+		$popts = $page->makeParserOptions( $this->context );
+		$pout = $page->getParserOutput( $popts );
+		$displayTitle = $pout->getDisplayTitle();
+		$pageContent = $pout->getText();
+		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
+		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
+		$titleSegment->path = '//h1[@id="firstHeading"]//text()';
+		$cleanedText = $cleaner->cleanHtml( $pageContent );
+		// Add the title as a separate utterance to the start.
+		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
+		return $cleanedText;
 	}
 
 	/**
@@ -61,7 +135,7 @@ class Segmenter {
 	 * @return array An array of segments, each containing the
 	 *  `CleanedText's in that segment.
 	 */
-	public function segmentSentences( $cleanedContent ) {
+	private function segmentSentences( $cleanedContent ) {
 		foreach ( $cleanedContent as $item ) {
 			if ( $item instanceof CleanedText ) {
 				$this->addSegments( $item );

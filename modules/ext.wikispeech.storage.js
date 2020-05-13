@@ -30,8 +30,7 @@
 			api.post(
 				{
 					action: 'wikispeech',
-					page: [ page ],
-					output: 'segments'
+					page: [ page ]
 				},
 				{
 					beforeSend: function ( jqXHR, settings ) {

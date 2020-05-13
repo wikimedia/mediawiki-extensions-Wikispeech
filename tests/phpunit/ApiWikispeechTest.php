@@ -6,6 +6,7 @@
  * @license GPL-2.0-or-later
  */
 
+require_once __DIR__ . '/Util.php';
 define( 'TITLE', 'Test_Page' );
 
 /**
@@ -16,65 +17,9 @@ define( 'TITLE', 'Test_Page' );
 class ApiWikispeechTest extends ApiTestCase {
 	public function addDBDataOnce() {
 		$content = "Text ''italic'' '''bold'''";
-		$this->addPage( TITLE, $content );
+		Util::addPage( TITLE, $content );
 		$talkContent = "Talking about ''italic'' '''bold'''";
-		$this->addPage( TITLE, $talkContent, NS_TALK );
-	}
-
-	private function addPage( $titleString, $content, $namespace = NS_MAIN ) {
-		$title = Title::newFromText( $titleString, $namespace );
-		$page = WikiPage::factory( $title );
-		$status = $page->doEditContent(
-			ContentHandler::makeContent(
-				$content,
-				$title,
-				CONTENT_MODEL_WIKITEXT
-			),
-			''
-		);
-		if ( !$status->isOk() ) {
-			$this->fail( "Failed to create $title: " . $status->getWikiText( false, false, 'en' ) );
-		}
-	}
-
-	public function testCleanText() {
-		$res = $this->doApiRequest( [
-			'action' => 'wikispeech',
-			'page' => TITLE,
-			'output' => 'cleanedtext'
-		] );
-		$this->assertEquals(
-			"Test Page\nText italic bold",
-			$res[0]['wikispeech']['cleanedtext']
-		);
-	}
-
-	public function testCleanTextHandleSegmentBreaks() {
-		$title = 'Break';
-		$content = 'Text with<br/ >break.';
-		$this->addPage( $title, $content );
-		$res = $this->doApiRequest( [
-			'action' => 'wikispeech',
-			'page' => $title,
-			'output' => 'cleanedtext',
-			'segmentbreakingtags' => 'br'
-		] );
-		$this->assertEquals(
-			"Break\nText with\nbreak.",
-			$res[0]['wikispeech']['cleanedtext']
-		);
-	}
-
-	public function testOriginalContent() {
-		$res = $this->doApiRequest( [
-			'action' => 'wikispeech',
-			'page' => TITLE,
-			'output' => 'originalcontent'
-		] );
-		$this->assertEquals(
-			"<div class=\"mw-parser-output\"><p>Text <i>italic</i> <b>bold</b>\n</p>\n<!--",
-			mb_substr( $res[0]['wikispeech']['originalcontent'], 0, 73 )
-		);
+		Util::addPage( TITLE, $talkContent, NS_TALK );
 	}
 
 	public function testSegmentText() {
@@ -183,7 +128,9 @@ class ApiWikispeechTest extends ApiTestCase {
 
 	public function testInvalidPageThrowsException() {
 		$this->expectException( ApiUsageException::class );
-		$this->expectExceptionMessage( 'There is no revision with ID' );
+		$this->expectExceptionMessage(
+			"The page you specified doesn't exist."
+		);
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => 'Not a page',
@@ -192,21 +139,10 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	public function testNoOutputFormatThrowsException() {
-		$this->expectException( ApiUsageException::class );
-		$this->expectExceptionMessage( 'The parameter "output" may not be empty.' );
-		$this->doApiRequest( [
-			'action' => 'wikispeech',
-			'page' => TITLE,
-			'output' => '',
-			'removetags' => '{}'
-		] );
-	}
-
 	public function testSegmentTextHandleDisplayTitle() {
 		$title = 'Title';
 		$content = '{{DISPLAYTITLE:title}}Some content text.';
-		$this->addPage( $title, $content );
+		Util::addPage( $title, $content );
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => $title,

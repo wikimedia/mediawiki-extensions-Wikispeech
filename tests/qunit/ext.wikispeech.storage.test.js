@@ -49,7 +49,7 @@
 
 		assert.strictEqual(
 			decodeURIComponent( server.requests[ 0 ].requestBody ),
-			'action=wikispeech&format=json&page=Page&output=segments'
+			'action=wikispeech&format=json&page=Page'
 		);
 	} );
 

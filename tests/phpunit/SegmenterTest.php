@@ -6,7 +6,13 @@
  * @license GPL-2.0-or-later
  */
 
+use Wikimedia\TestingAccessWrapper;
+
+require_once __DIR__ . '/Util.php';
+
 /**
+ * @group Database
+ * @group medium
  * @covers Segmenter
  */
 class SegmenterTest extends MediaWikiTestCase {
@@ -18,7 +24,66 @@ class SegmenterTest extends MediaWikiTestCase {
 
 	protected function setUp() : void {
 		parent::setUp();
-		$this->segmenter = new Segmenter();
+		$this->segmenter = TestingAccessWrapper::newFromObject(
+			new Segmenter( new RequestContext() )
+		);
+	}
+
+	public function testSegmentPage() {
+		$titleString = 'Page';
+		$content = 'Sentence 1. Sentence 2. Sentence 3.';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$expectedSegments = [
+			[
+				'startOffset' => 0,
+				'endOffset' => 3,
+				'content' => [ new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ) ],
+				'hash' => 'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
+			],
+			[
+				'startOffset' => 0,
+				'endOffset' => 10,
+				'content' => [ new CleanedText( 'Sentence 1.', './div/p/text()' ) ],
+				'hash' => '76ca3069cee56491f5b2f465c4e9b57b7fb74ebc12eecc0cd6aad965ea7e247e'
+			],
+			[
+				'startOffset' => 12,
+				'endOffset' => 22,
+				'content' => [ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
+				'hash' => '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac'
+			],
+			[
+				'startOffset' => 24,
+				'endOffset' => 34,
+				'content' => [ new CleanedText( 'Sentence 3.', './div/p/text()' ) ],
+				'hash' => 'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
+			]
+		];
+		$segments = $this->segmenter->segmentPage( $title, [], [] );
+		$this->assertEquals( $expectedSegments, $segments );
+	}
+
+	public function testCleanPage() {
+		$content = 'Content';
+		Util::addPage( 'Page', $content );
+		$title = Title::newFromText( 'Page' );
+		$page = WikiPage::factory( $title );
+
+		$cleanedText = $this->segmenter->cleanPage( $page, [], [] );
+
+		$this->assertEquals(
+			[
+				new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ),
+				new SegmentBreak(),
+				new CleanedText( "Content\n", './div/p/text()' )
+			],
+			// For some reason, there are a number of HTML nodes
+			// containing only newlines, which adds extra
+			// CleanText's. They don't cause any issues in the end
+			// though. See T255152.
+			array_slice( $cleanedText, 0, 3 )
+		);
 	}
 
 	public function testSegmentSentences() {

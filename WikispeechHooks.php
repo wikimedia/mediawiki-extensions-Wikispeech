@@ -47,25 +47,68 @@ class WikispeechHooks {
 	/**
 	 * Investigates whether or not configuration is valid.
 	 *
-	 * Writes entries to the log in case not valid.
+	 * Writes all invalid configuration entries to the log.
 	 *
 	 * @since 0.1.3
 	 * @return bool true if all configuration passes validation
 	 */
 	private static function validateConfiguration() {
-		$config = MediaWikiServices::getInstance()->
-			getConfigFactory()->
-			makeConfig( 'wikispeech' );
-		$serverUrl = $config->get( 'WikispeechServerUrl' );
+		$success = true;
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
 
+		$serverUrl = $config->get( 'WikispeechServerUrl' );
 		if ( !filter_var( $serverUrl, FILTER_VALIDATE_URL ) ) {
 			LoggerFactory::getInstance( 'Wikispeech' )->warning(
 				"Configuration value for 'WikispeechServerUrl' is not a valid URL: {value}",
 				[ 'value' => $serverUrl ]
 			);
-			return false;
+			$success = false;
 		}
-		return true;
+
+		$utteranceTimeToLiveDays = $config->get( 'WikispeechUtteranceTimeToLiveDays' );
+		if ( !$utteranceTimeToLiveDays ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value for 'WikispeechUtteranceTimeToLiveDays' is missing"
+			);
+			$success = false;
+		}
+		$utteranceTimeToLiveDays = intval( $utteranceTimeToLiveDays );
+		if ( $utteranceTimeToLiveDays < 0 ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value for 'WikispeechUtteranceTimeToLiveDays' must not be negative."
+			);
+			$success = false;
+		}
+
+		$fileBackendName = $config->get( 'WikispeechUtteranceFileBackendName' );
+		if ( $fileBackendName == null ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value 'WikispeechUtteranceFileBackendName' is missing."
+			);
+			// this is not a failure. It will fall back on default, but admin should be aware.
+		} elseif ( !is_string( $fileBackendName ) ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value 'WikispeechUtteranceFileBackendName' is not a string value."
+			);
+			$success = false;
+		}
+
+		$fileBackendContainerName = $config->get( 'WikispeechUtteranceFileBackendContainerName' );
+		if ( $fileBackendContainerName == null ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value 'WikispeechUtteranceFileBackendContainerName' is missing."
+			);
+			$success = false;
+		} elseif ( !is_string( $fileBackendContainerName ) ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->warning(
+				"Configuration value 'WikispeechUtteranceFileStore.type' is not a string value."
+			);
+			$success = false;
+		}
+
+		return $success;
 	}
 
 	/**
@@ -226,4 +269,18 @@ class WikispeechHooks {
 		}
 		return true;
 	}
+
+	/**
+	 * Creates utterance database tables.
+	 *
+	 * @since 0.1.5
+	 * @param DatabaseUpdater $updater
+	 */
+	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
+		$updater->addExtensionTable(
+			'wikispeech_utterance',
+			__DIR__ . '/sql/wikispeech_utterance_v1.sql'
+		);
+	}
+
 }

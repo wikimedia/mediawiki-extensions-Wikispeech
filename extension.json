@@ -19,7 +19,7 @@
 		]
 	},
 	"requires": {
-		"MediaWiki": ">= 1.29"
+		"MediaWiki": ">= 1.35"
 	},
 	"AutoloadClasses": {
 		"WikispeechHooks": "WikispeechHooks.php",
@@ -27,6 +27,7 @@
 		"SegmentBreak": "includes/SegmentBreak.php",
 		"Cleaner": "includes/Cleaner.php",
 		"Segmenter": "includes/Segmenter.php",
+		"UtteranceStore": "includes/UtteranceStore.php",
 		"ApiWikispeech": "includes/ApiWikispeech.php",
 		"ApiWikispeechListen": "includes/ApiWikispeechListen.php"
 	},
@@ -73,7 +74,8 @@
 		"GetPreferences": [
 			"WikispeechHooks::onGetPreferences"
 		],
-		"ApiCheckCanExecute": "WikispeechHooks::onApiCheckCanExecute"
+		"ApiCheckCanExecute": "WikispeechHooks::onApiCheckCanExecute",
+		"LoadExtensionSchemaUpdates": "WikispeechHooks::onLoadExtensionSchemaUpdates"
 	},
 	"ConfigRegistry": {
 		"wikispeech": "GlobalVarConfig::newInstance"
@@ -173,6 +175,33 @@
 					"stts_sv_nst-hsmm"
 				]
 			}
+		},
+		"WikispeechUtteranceTimeToLiveDays": {
+			"description": [
+				"Minimum number of days for an utterance to live before being ",
+				"automatically flushed from the utterance store. ",
+				"More or less the cache flush setting for synthesized text. ",
+				"Setting this value too low will save disk space but cause frequently ",
+				"requested text segments to be re-synthesized more often with a CPU cost.",
+				"Setting this value too high will block improvements to the voice synthesis. ",
+				"Setting this value to 0 will in effect turn off the cache ",
+				"and thus flush all utterances as soon as possible.",
+				"To avoid running the flush job too often, see the MW job documentation: ",
+				"https://www.mediawiki.org/wiki/Manual:Job_queue#Job_execution_on_page_requests"
+			],
+			"value": 31
+		},
+		"WikispeechUtteranceFileBackendName": {
+			"description": [
+				"FileBackend group defined in LocalSettings.php used for utterance audio and metadata files.",
+				"If not defined in LocalSettings.php, a FSBackend will be created that work against ",
+				"a temporary directory. See log warnings for exact path."
+			],
+			"value": ""
+		},
+		"WikispeechUtteranceFileBackendContainerName": {
+			"description": "Container name used in FileBackend for utterance audio and metadata files.",
+			"value": "wikispeech_utterances"
 		}
 	},
 	"DefaultUserOptions": {

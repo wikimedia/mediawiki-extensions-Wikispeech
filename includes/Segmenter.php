@@ -10,7 +10,7 @@ use MediaWiki\MediaWikiServices;
 
 /**
  * Used for dividing text into segments, that can then be sent to the
- * TTS server. Also calculates values for variables that are needed
+ * Speechoid service. Also calculates values for variables that are needed
  * for highlighting.
  *
  * @since 0.0.1

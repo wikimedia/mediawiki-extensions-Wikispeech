@@ -21,7 +21,7 @@ class ApiWikispeechListen extends ApiBase {
 		$config = MediaWikiServices::getInstance()->
 			getConfigFactory()->
 			makeConfig( 'wikispeech' );
-		$serverUrl = $config->get( 'WikispeechServerUrl' );
+		$speechoidUrl = $config->get( 'WikispeechSpeechoidUrl' );
 		$inputParameters = $this->extractRequestParams();
 		self::validateParameters( $inputParameters );
 		$speechoidParameters = [
@@ -30,7 +30,7 @@ class ApiWikispeechListen extends ApiBase {
 			'input' => $inputParameters['input']
 		];
 		$responseString = $requestFactory->post(
-			$serverUrl,
+			$speechoidUrl,
 			[ 'postData' => $speechoidParameters ]
 		);
 		$speechoidResponse = FormatJson::parse(
@@ -54,7 +54,7 @@ class ApiWikispeechListen extends ApiBase {
 	 *
 	 * The parameter values are checked against the extension
 	 * configuration. These may differ from what is actually running
-	 * on the Speechoid server.
+	 * on the Speechoid service.
 	 *
 	 * @since 0.1.3
 	 * @param array $parameters Request parameters.

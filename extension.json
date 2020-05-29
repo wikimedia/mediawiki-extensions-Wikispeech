@@ -93,12 +93,12 @@
 		"wikispeech": "GlobalVarConfig::newInstance"
 	},
 	"config": {
-		"WikispeechServerUrl": {
-			"description": "URL to location of TTS-server.",
+		"WikispeechSpeechoidUrl": {
+			"description": "The URL to use for the Speechoid service.",
 			"value": ""
 		},
 		"WikispeechListenMaximumInputCharacters": {
-			"description": "Maximum number of characters in the input (a segment) sent to the TTS-server.",
+			"description": "Maximum number of characters in the input (a segment) sent to the Speechoid service.",
 			"value": 2048
 		},
 		"WikispeechRemoveTags": {

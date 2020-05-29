@@ -15,7 +15,7 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 	protected function setUp() : void {
 		parent::setUp();
 		$this->setMwGlobals( [
-				'wgWikispeechServerUrl' => 'https://server.domain',
+				'wgWikispeechSpeechoidUrl' => 'https://server.domain',
 				'wgWikispeechVoices' => [ 'en' => 'en-voice' ]
 		] );
 		$context = new RequestContext();
@@ -62,7 +62,7 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 
 	public function testOnBeforePageDisplayDontLoadModulesIfServerUrlInvalid() {
 		$this->setMwGlobals(
-			'wgWikispeechServerUrl',
+			'wgWikispeechSpeechoidUrl',
 			'invalid-url'
 		);
 		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );

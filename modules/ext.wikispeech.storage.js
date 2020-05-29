@@ -56,7 +56,7 @@
 		/**
 		 * Prepare an utterance for playback.
 		 *
-		 * Audio for the utterance is requested from the TTS server
+		 * Audio for the utterance is requested from the Speechoid service
 		 * and event listeners are added. When an utterance starts
 		 * playing, the next one is prepared, and when an utterance is
 		 * done, the next utterance is played. This is meant to be a
@@ -84,7 +84,7 @@
 				utterance.request.done( callback );
 			} else {
 				// Only load audio for an utterance if it isn't
-				// already loaded or waiting for response from server.
+				// already loaded or waiting for response from Speechoid.
 				self.loadAudio( utterance, callback );
 				nextUtterance = self.getNextUtterance( utterance );
 				$audio.on( {
@@ -127,7 +127,7 @@
 		/**
 		 * Load audio for an utterance.
 		 *
-		 * Sends a request to the TTS server and adds audio and tokens
+		 * Sends a request to the Speechoid service and adds audio and tokens
 		 * when the response is received.
 		 *
 		 * @param {Object} utterance The utterance to load audio for.
@@ -170,7 +170,7 @@
 		};
 
 		/**
-		 * Send a request to the TTS server.
+		 * Send a request to the Speechoid service.
 		 *
 		 * Request is sent via the "wikispeechlisten" API action. Language to
 		 * use is retrieved from the current page.
@@ -226,7 +226,7 @@
 		 * Add tokens to an utterance.
 		 *
 		 * @param {Object} utterance The utterance to add tokens to.
-		 * @param {Object[]} responseTokens Tokens from a server response,
+		 * @param {Object[]} responseTokens Tokens from a Speechoid response,
 		 *  where each token is an object. For these objects, the
 		 *  property "orth" is the string used by the TTS to generate
 		 *  audio for the token.

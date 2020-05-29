@@ -25,11 +25,11 @@ class WikispeechHooks {
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
 
-		$serverUrl = $config->get( 'WikispeechServerUrl' );
-		if ( !filter_var( $serverUrl, FILTER_VALIDATE_URL ) ) {
+		$speechoidUrl = $config->get( 'WikispeechSpeechoidUrl' );
+		if ( !filter_var( $speechoidUrl, FILTER_VALIDATE_URL ) ) {
 			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value for 'WikispeechServerUrl' is not a valid URL: {value}",
-				[ 'value' => $serverUrl ]
+				"Configuration value for 'WikispeechSpeechoidUrl' is not a valid URL: {value}",
+				[ 'value' => $speechoidUrl ]
 			);
 			$success = false;
 		}
@@ -136,9 +136,9 @@ class WikispeechHooks {
 	 * @param array &$vars The array of static configuration variables.
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
-		global $wgWikispeechServerUrl;
-		$vars[ 'wgWikispeechServerUrl' ] =
-			$wgWikispeechServerUrl;
+		global $wgWikispeechSpeechoidUrl;
+		$vars[ 'wgWikispeechSpeechoidUrl' ] =
+			$wgWikispeechSpeechoidUrl;
 		global $wgWikispeechNamespaces;
 		$vars['wgWikispeechNamespaces'] =
 			$wgWikispeechNamespaces;

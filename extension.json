@@ -86,6 +86,16 @@
 			"value": ""
 		},
 		"WikispeechRemoveTags": {
+			"description": [
+				"Map of HTML tags that should be removed completely, i.e. ",
+				"including any content. Keys are tag names and the values ",
+				"determine whether a tag should be removed, as follows:\n",
+				"* If <code>true</code>, remove all tags of that type.\n",
+				"* If an array, remove tags whose class matches any of the ",
+				"strings in the array.\n* If false, tags of that type will ",
+				"not be removed. This can be used in ''LocalSetting.php'' to ",
+				"override default criteria."
+			],
 			"value": {
 				"span": "mw-editsection",
 				"table": true,
@@ -94,7 +104,12 @@
 			}
 		},
 		"WikispeechSegmentBreakingTags": {
-			"description": "HTML tags that will break text in segments. This ensure that, for example a header text without punctuation suffix will not be merged to the same segment as the text content of a preceding paragraph.",
+			"description": [
+				"HTML tags that will break text in segments. This ensure that, ",
+				"for example a header text without punctuation suffix will not ",
+				"be merged to the same segment as the text content of a ",
+				"preceding paragraph."
+			],
 			"value": [
 				"h1",
 				"h2",
@@ -108,9 +123,18 @@
 			]
 		},
 		"WikispeechNamespaces": {
+			"description": [
+				"List of the [[https://www.mediawiki.org/Namespaces|namespace]] ",
+				"indices, for which Wikispeech is activated."
+		],
 			"value": [ 0 ]
 		},
 		"WikispeechKeyboardShortcuts": {
+			"description": [
+				"Shortcuts for Wikispeech commands. Each shortcut defines the ",
+				"key pressed (as key code<ref>https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes</ref>) ",
+				"and any modifier keys (ctrl, alt or shift)."
+			],
 			"value": {
 				"playStop": {
 					"key": 32,
@@ -150,15 +174,32 @@
 			}
 		},
 		"WikispeechSkipBackRewindsThreshold": {
+			"description": [
+				"If an utterance has played longer than this (in seconds), ",
+				"skipping back will rewind to the start of the current ",
+				"utterance, instead of skipping to previous utterance."
+			],
 			"value": 3.0
 		},
 		"WikispeechHelpPage": {
+			"description": [
+				"Help page for Wikispeech. If defined, a button that takes the ",
+				"user here is added next to the player buttons."
+			],
 			"value": "Help:Wikispeech"
 		},
 		"WikispeechFeedbackPage": {
+			"description": [
+				"Feedback page for Wikispeech. If defined, a button that takes ",
+				"the user here is added next to the player buttons."
+			],
 			"value": "Wikispeech feedback"
 		},
 		"WikispeechContentSelector": {
+			"description": [
+				"The selector for the element that contains the text of the page. ",
+				"Used internally, but may change with MediaWiki version."
+			],
 			"value": "#mw-content-text"
 		},
 		"WikispeechVoices": {

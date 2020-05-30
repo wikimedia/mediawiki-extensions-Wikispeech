@@ -244,7 +244,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			'Sentence.',
 			$segments[0]['content'][0]->string
 		);
-		$this->assertEquals( 1, $segments[0]['startOffset'] );
+		$this->assertSame( 1, $segments[0]['startOffset'] );
 		$this->assertEquals( 9, $segments[0]['endOffset'] );
 	}
 
@@ -254,7 +254,7 @@ class SegmenterTest extends MediaWikiTestCase {
 			new CleanedText( "\n" )
 		];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertEquals(
+		$this->assertSame(
 			1,
 			count( $segments[0]['content'] )
 		);

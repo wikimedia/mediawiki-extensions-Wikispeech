@@ -6,8 +6,7 @@
 		"jquery": true
 	},
 	"globals": {
-		"mediaWiki": false,
-		"OO": false
+		"mediaWiki": false
 	},
 	"rules": {}
 }

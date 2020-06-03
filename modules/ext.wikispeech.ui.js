@@ -17,7 +17,7 @@
 		this.init = function () {
 			mw.wikispeech.ui.addControlPanel();
 			mw.wikispeech.ui.addSelectionPlayer();
-			mw.wikispeech.ui.addBufferingIcon();
+			mw.wikispeech.ui.addStackToPlayStopButton();
 			mw.wikispeech.ui.addKeyboardShortcuts();
 		};
 
@@ -29,111 +29,105 @@
 		 */
 
 		this.addControlPanel = function () {
-			var toolFactory, toolGroupFactory, toolbar, playerGroup, linkGroup, height, padding;
-			toolFactory = new OO.ui.ToolFactory();
-			toolGroupFactory = new OO.ui.ToolGroupFactory();
-			toolbar = new OO.ui.Toolbar(
-				toolFactory,
-				toolGroupFactory,
-				{
-					actions: true,
-					classes: [ 'ext-wikispeech-control-panel' ],
-					position: 'bottom'
-				}
-			);
-
-			playerGroup = new OO.ui.ButtonGroupWidget();
-			toolbar.$actions.append( playerGroup.$element );
+			$( '<div></div>' )
+				.attr( 'id', 'ext-wikispeech-control-panel' )
+				.addClass( 'ext-wikispeech-control-panel' )
+				.appendTo( '#content' );
 			self.addButton(
-				playerGroup,
-				'first',
+				'ext-wikispeech-skip-back-sentence',
 				mw.wikispeech.player.skipBackUtterance
 			);
 			self.addButton(
-				playerGroup,
-				'previous',
+				'ext-wikispeech-skip-back-word',
 				mw.wikispeech.player.skipBackToken
 			);
-			self.playStopButton = self.addButton(
-				playerGroup,
-				'play',
-				mw.wikispeech.player.playOrStop,
-				[ 'ext-wikispeech-play-stop' ]
+			self.addButton(
+				'ext-wikispeech-play-stop-button',
+				mw.wikispeech.player.playOrStop
 			);
 			self.addButton(
-				playerGroup,
-				'next',
+				'ext-wikispeech-skip-ahead-word',
 				mw.wikispeech.player.skipAheadToken
 			);
 			self.addButton(
-				playerGroup,
-				'last',
+				'ext-wikispeech-skip-ahead-sentence',
 				mw.wikispeech.player.skipAheadUtterance
 			);
-
-			linkGroup = new OO.ui.ButtonGroupWidget();
-			toolbar.$actions.append( linkGroup.$element );
 			self.addLinkButton(
-				linkGroup,
-				'help',
+				'ext-wikispeech-help',
 				'wgWikispeechHelpPage'
 			);
 			self.addLinkButton(
-				linkGroup,
-				'feedback',
+				'ext-wikispeech-feedback',
 				'wgWikispeechFeedbackPage'
 			);
-			$( document.body ).append( toolbar.$element );
-			toolbar.initialize();
-
-			// Add extra padding at the bottom of the page to not have
-			// the player cover anything.
-			height = toolbar.$element.height();
-			padding =
-                Number( $( '#footer' ).css( 'padding-bottom' ).slice( 0, -2 ) );
-			$( '#footer' ).css( 'padding-bottom', padding + height );
+			if (
+				$( '.ext-wikispeech-help, ext-wikispeech-feedback' ).length
+			) {
+				// Add divider if there are any non-control buttons.
+				$( '<span></span>' )
+					.addClass( 'ext-wikispeech-divider' )
+					.insertBefore(
+						$( '.ext-wikispeech-help, ext-wikispeech-feedback' )
+							.first()
+					);
+			}
 		};
 
 		/**
 		* Add a control button.
 		*
-		* @param {OO.ui.ButtonGroupWidget} group Group to add button to.
-		* @param {string} icon Name of button icon.
-		* @param {Function|string} onClick Function to call or link.
-		* @param {string[]} classes CSS classes.
-		* @return {OO.ui.ButtonWidget}
+		* @param {string} cssClass The name of the CSS class to add to
+		*  the button.
+		* @param {string} onClickFunction The name of the function to
+		*  call when the button is clicked.
 		*/
 
-		this.addButton = function ( group, icon, onClick, classes ) {
-			var button = new OO.ui.ButtonWidget( {
-				icon: icon,
-				classes: classes
-			} );
-			if ( typeof onClick === 'function' ) {
-				button.on( 'click', onClick );
-			} else if ( typeof onClick === 'string' ) {
-				button.setHref( onClick );
-			}
-			group.addItems( button );
-			return button;
+		this.addButton = function ( cssClass, onClickFunction ) {
+			var $button = $( '<button></button>' )
+				.addClass( cssClass )
+				.appendTo( '#ext-wikispeech-control-panel' );
+			$button.click( onClickFunction );
+			return $button;
 		};
 
 		/**
-		 * Add buffering icon to the play/stop button.
-         *
-         * The icon shows when the waiting for audio to play.
+		 * Add a stack which contains the buffering icon to `playStopButton`s.
 		 */
 
-		this.addBufferingIcon = function () {
+		this.addStackToPlayStopButton = function () {
+			this.addSpanToPlayStopButton();
+			this.addElementToPlayStopButtonStack(
+				'ext-wikispeech-play-stop ext-wikispeech-play fa-stack-2x'
+			);
+			this.addElementToPlayStopButtonStack(
+				'ext-wikispeech-buffering-icon fa-stack-2x fa-spin'
+			);
+			$( '.ext-wikispeech-play-stop-stack' ).css( 'font-size', '50%' );
+			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'hidden' );
+		};
+
+		/**
+		 * Add a Font Awesome stack to the play button.
+		 */
+
+		this.addSpanToPlayStopButton = function () {
 			$( '<span></span>' )
-				.addClass( 'ext-wikispeech-buffering-icon-container' )
-				.appendTo( $( '.ext-wikispeech-play-stop' ).find(
-					'.oo-ui-iconElement-icon'
-				) );
-			$( '<span></span>' )
-				.addClass( 'ext-wikispeech-buffering-icon' )
-				.appendTo( $( '.ext-wikispeech-buffering-icon-container' ) )
-				.hide();
+				.addClass( 'ext-wikispeech-play-stop-stack fa-stack fa-lg' )
+				.appendTo( '.ext-wikispeech-play-stop-button' );
+		};
+
+		/**
+		 * Add an element to the stack on the playStop button.
+		 *
+		 * @param {string} cssClass The name of the CSS class to add
+		 *  the item.
+		 */
+
+		this.addElementToPlayStopButtonStack = function ( cssClass ) {
+			$( '<i></i>' )
+				.addClass( 'fa ' + cssClass )
+				.appendTo( '.ext-wikispeech-play-stop-stack' );
 		};
 
 		/**
@@ -141,7 +135,8 @@
 		 */
 
 		this.hideBufferingIcon = function () {
-			$( '.ext-wikispeech-buffering-icon' ).hide();
+			$( '.ext-wikispeech-buffering-icon' )
+				.css( 'visibility', 'hidden' );
 		};
 
 		/**
@@ -152,10 +147,9 @@
 			if ( self.audioIsReady( audio ) ) {
 				self.hideBufferingIcon();
 			} else {
-				$( audio ).on( 'canplay', function () {
-					self.hideBufferingIcon();
-				} );
-				$( '.ext-wikispeech-buffering-icon' ).show();
+				self.addCanPlayListener( $( audio ) );
+				$( '.ext-wikispeech-buffering-icon' )
+					.css( 'visibility', 'visible' );
 			}
 		};
 
@@ -174,6 +168,23 @@
 		};
 
 		/**
+		 * Add canplay listener for the audio to hide buffering icon.
+		 *
+		 * Canplaythrough will be caught implicitly as it occurs after
+		 * canplay.
+		 *
+		 * @param {jQuery} $audioElement Audio element to which the
+		 *  listener is added.
+		 */
+
+		this.addCanPlayListener = function ( $audioElement ) {
+			$audioElement.on( 'canplay', function () {
+				$( '.ext-wikispeech-buffering-icon' )
+					.css( 'visibility', 'hidden' );
+			} );
+		};
+
+		/**
 		 * Remove canplay listener for the audio to hide buffering icon.
 		 *
 		 * @param {jQuery} $audioElement Audio element from which the
@@ -189,8 +200,9 @@
 		 */
 
 		this.setPlayStopIconToStop = function () {
-			self.playStopButton.setIcon( 'stop' );
-			self.selectionPlayer.setIcon( 'stop' );
+			$( '.ext-wikispeech-play-stop' )
+				.addClass( 'ext-wikispeech-stop' )
+				.removeClass( 'ext-wikispeech-play' );
 		};
 
 		/**
@@ -198,8 +210,9 @@
 		 */
 
 		this.setPlayStopIconToPlay = function () {
-			self.playStopButton.setIcon( 'play' );
-			self.selectionPlayer.setIcon( 'play' );
+			$( '.ext-wikispeech-play-stop' )
+				.addClass( 'ext-wikispeech-play' )
+				.removeClass( 'ext-wikispeech-stop' );
 		};
 
 		/**
@@ -209,18 +222,26 @@
 		* config variable. If the variable isn't specified, the button
 		* isn't added.
 		*
-		* @param {OO.ui.ButtonGroupWidget} group Group to add button to.
-		* @param {string} icon Name of button icon.
+		* @param {string} cssClass The name of the CSS class to add to
+		*  the button.
 		* @param {string} configVariable The config variable to get
 		*  link destination from.
 		*/
 
-		this.addLinkButton = function ( toolbar, icon, configVariable ) {
-			var page;
+		this.addLinkButton = function ( cssClass, configVariable ) {
+			var page, pagePath;
 
 			page = mw.config.get( configVariable );
 			if ( page ) {
-				self.addButton( toolbar, icon, page );
+				pagePath = mw.config.get( 'wgArticlePath' )
+					.replace( '$1', page );
+				$( '<a></a>' )
+					.attr( 'href', pagePath )
+					.append(
+						$( '<button></button>' )
+							.addClass( cssClass )
+					)
+					.appendTo( '#ext-wikispeech-control-panel' );
 			}
 		};
 
@@ -229,15 +250,13 @@
 		 */
 
 		this.addSelectionPlayer = function () {
-			self.selectionPlayer = new OO.ui.ButtonWidget( {
-				icon: 'play',
-				classes: [
-					'ext-wikispeech-selection-player',
-					'ext-wikispeech-play-stop'
-				]
-			} )
-				.on( 'click', mw.wikispeech.player.playOrStop );
-			$( document.body ).append( self.selectionPlayer.$element );
+			var $player = $( '<div></div>' )
+				.addClass( 'ext-wikispeech-selection-player' )
+				.appendTo( '#content' );
+			$( '<button></button>' )
+				.addClass( 'ext-wikispeech-play-stop-button' )
+				.click( mw.wikispeech.player.playOrStop )
+				.appendTo( $player );
 			$( document ).on( 'mouseup', function () {
 				if ( mw.wikispeech.selectionPlayer.isSelectionValid() ) {
 					self.showSelectionPlayer();

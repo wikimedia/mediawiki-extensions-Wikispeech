@@ -160,9 +160,9 @@
 						startOffset
 					);
 					self.setStartTime( startUtterance, startToken.startTime );
+					mw.wikispeech.player.playUtterance( startUtterance );
 				}
 			);
-			mw.wikispeech.player.playUtterance( startUtterance );
 
 			endRange = startRange;
 			endRange = selection.getRangeAt( selection.rangeCount - 1 );

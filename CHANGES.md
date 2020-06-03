@@ -4,18 +4,28 @@
 
 Wikispeech use [Semantic versioning](https://semver.org/). Major.Minor.Patch.
 
-Add new entries to the top of Unreleased, i.e. in reversed chronological order.
+## Versioning
 
-Add new version header section when version is bumped up and leave unreleased section empty.
+Add new entries to the top of current -SNAPSHOT section,
+i.e. in reversed chronological order.
 
-## @since
+Annotate your code with @since using the current -SNAPSHOT version.
+E.g. when the current is 0.1.2-SNAPSHOT, use @since 0.1.2 in the code.
 
-When annotating your code with @since, use the next future theoretical version,
-i.e. if most recent release was 0.1.2 then tag you patch using @since 0.1.3.
+## On release
+
+Remove -SNAPSHOT, set date and create a new -SNAPSHOT section.
+
+If version bump is greater than originally expected,
+e.g. from 0.1.2-SNAPSHOT to 0.2.0,
+then replace all @since 0.1.2 tags in the code to 0.2.0 using a new task.
+
+Update [mediawiki.org documentation](https://www.mediawiki.org/wiki/Extension:Wikispeech)
+the match the new release version.
 
 ## Versions
 
-### Unreleased
+### 0.1.5-SNAPSHOT
 202Y-MM-DD
 
 ### 0.1.4

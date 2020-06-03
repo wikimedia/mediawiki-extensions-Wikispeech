@@ -47,7 +47,11 @@
 			"messages": [
 			],
 			"dependencies": [
-				"FontAwesome"
+				"oojs-ui-core",
+				"oojs-ui-toolbars",
+				"oojs-ui.styles.icons-media",
+				"oojs-ui.styles.icons-movement",
+				"oojs-ui.styles.icons-interactions"
 			]
 		},
 		"FontAwesome": {

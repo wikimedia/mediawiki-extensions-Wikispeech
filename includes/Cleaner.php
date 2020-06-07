@@ -44,7 +44,7 @@ class Cleaner {
 	 * @param array|null $segmentBreakingTags An array of `CleanedText`s and
 	 *  `SegmentBreak`s.
 	 */
-	function __construct( $removeTags, $segmentBreakingTags ) {
+	public function __construct( $removeTags, $segmentBreakingTags ) {
 		if ( $removeTags == null ) {
 			$removeTags = [];
 		}

@@ -183,7 +183,7 @@ class WikispeechHooks {
 	 * @param User $user current User object.
 	 * @param array &$preferences Preferences array.
 	 */
-	static function onGetPreferences( $user, &$preferences ) {
+	public static function onGetPreferences( $user, &$preferences ) {
 		self::addWikispeechEnable( $preferences );
 		self::addVoicePreferences( $preferences );
 		self::addSpeechRatePreferences( $preferences );
@@ -194,7 +194,7 @@ class WikispeechHooks {
 	 *
 	 * @param array &$preferences Preferences array.
 	 */
-	static function addWikispeechEnable( &$preferences ) {
+	private static function addWikispeechEnable( &$preferences ) {
 		$preferences['wikispeechEnable'] = [
 			'type' => 'toggle',
 			'label-message' => 'prefs-wikispeech-enable',
@@ -207,7 +207,7 @@ class WikispeechHooks {
 	 *
 	 * @param array &$preferences Preferences array.
 	 */
-	static function addVoicePreferences( &$preferences ) {
+	private static function addVoicePreferences( &$preferences ) {
 		global $wgWikispeechVoices;
 		foreach ( $wgWikispeechVoices as $language => $voices ) {
 			$languageKey = 'wikispeechVoice' . ucfirst( $language );
@@ -231,7 +231,7 @@ class WikispeechHooks {
 	 *
 	 * @param array &$preferences Preferences array.
 	 */
-	static function addSpeechRatePreferences( &$preferences ) {
+	private static function addSpeechRatePreferences( &$preferences ) {
 		$options = [
 			'400%' => 4.0,
 			'200%' => 2.0,

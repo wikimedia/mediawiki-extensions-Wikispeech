@@ -43,7 +43,7 @@ class Segmenter {
 	 * @since 0.0.1
 	 * @param IContextSource $context
 	 */
-	function __construct( $context ) {
+	public function __construct( $context ) {
 		$this->context = $context;
 		$this->segments = [];
 		$this->currentSegment = [

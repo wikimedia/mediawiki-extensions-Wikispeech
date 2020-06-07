@@ -40,7 +40,7 @@ class CleanedText {
 	 * @param string $string The string representation of this text.
 	 * @param array $path The path to the text node this was created from.
 	 */
-	function __construct( $string, $path = '' ) {
+	public function __construct( $string, $path = '' ) {
 		$this->string = $string;
 		$this->path = $path;
 	}

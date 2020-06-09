@@ -10,7 +10,8 @@
 			selectionPlayer = mw.wikispeech.selectionPlayer;
 			ui = new mw.wikispeech.Ui();
 			$( '#qunit-fixture' ).append(
-				$( '<div></div>' ).attr( 'id', 'content' )
+				$( '<div></div>' ).attr( 'id', 'content' ),
+				$( '<div></div>' ).attr( 'id', 'footer' )
 			);
 			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 			contentSelector =
@@ -23,126 +24,37 @@
 			// the tests have run.
 			$( document ).off( 'mouseup' );
 			$( '#qunit-fixture' ).empty();
+			$( '.ext-wikispeech-control-panel, .ext-wikispeech-selection-player' ).remove();
 		}
 	} );
 
-	QUnit.test( 'addControlPanel()', function ( assert ) {
-		assert.expect( 5 );
-
-		ui.addControlPanel();
-
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-play-stop-button' ).length,
-			1
-		);
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-ahead-sentence' ).length,
-			1
-		);
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-back-sentence' ).length,
-			1
-		);
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-ahead-word' ).length,
-			1
-		);
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-skip-back-word' ).length,
-			1
-		);
-	} );
-
 	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
-		assert.expect( 2 );
+		assert.expect( 1 );
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
+
 		ui.addControlPanel();
 
 		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-help' ).length,
+			$( '.ext-wikispeech-control-panel' )
+				.find( '.oo-ui-buttonElement-button[href="./Help"]' )
+				.length,
 			1
-		);
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-help' )
-				.parent()
-				.attr( 'href' ),
-			'/wiki/Help'
-		);
-	} );
-
-	QUnit.test( 'addControlPanel(): do not add help button if page is not set', function ( assert ) {
-		assert.expect( 1 );
-		mw.config.set( 'wgWikispeechHelpPage', null );
-
-		ui.addControlPanel();
-
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel #ext-wikispeech-help' ).length,
-			0
 		);
 	} );
 
 	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
-		assert.expect( 2 );
+		assert.expect( 1 );
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
 
 		ui.addControlPanel();
 
 		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-feedback' )
+			$( '.ext-wikispeech-control-panel' )
+				.find( '.oo-ui-buttonElement-button[href="./Feedback"]' )
 				.length,
 			1
-		);
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel .ext-wikispeech-feedback' )
-				.parent()
-				.attr( 'href' ),
-			'/wiki/Feedback'
-		);
-	} );
-
-	QUnit.test( 'addControlPanel(): do not add feedback button if page is not set', function ( assert ) {
-		assert.expect( 1 );
-		mw.config.set( 'wgWikispeechFeedbackPage', null );
-
-		ui.addControlPanel();
-
-		assert.strictEqual(
-			$( '#ext-wikispeech-control-panel #ext-wikispeech-feedback' )
-				.length,
-			0
-		);
-	} );
-
-	QUnit.test( 'addStackToPlayStopButton()', function ( assert ) {
-		assert.expect( 2 );
-		ui.addControlPanel();
-
-		ui.addStackToPlayStopButton();
-
-		assert.strictEqual(
-			$( '.ext-wikispeech-play-stop-button .ext-wikispeech-play-stop-stack' ).length,
-			1
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility' ),
-			'hidden'
-		);
-	} );
-
-	QUnit.test( 'hideBufferingIcon()', function ( assert ) {
-		assert.expect( 1 );
-		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
-		$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'visible' );
-
-		ui.hideBufferingIcon();
-
-		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility' ),
-			'hidden'
 		);
 	} );
 
@@ -151,14 +63,14 @@
 
 		assert.expect( 1 );
 		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
+		ui.addBufferingIcon();
 		mockAudio = { readyState: 0 };
 
 		ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
 		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility' ),
-			'visible'
+			$( '.ext-wikispeech-buffering-icon' ).css( 'display' ),
+			'block'
 		);
 	} );
 
@@ -167,147 +79,14 @@
 
 		assert.expect( 1 );
 		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
+		ui.addBufferingIcon();
 		mockAudio = { readyState: 2 };
 
 		ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
 		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility' ),
-			'hidden'
-		);
-	} );
-
-	QUnit.test( 'addCanPlayListener()', function ( assert ) {
-		var $audio;
-
-		assert.expect( 1 );
-		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
-		$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'visible' );
-		$audio = $( '<audio></audio>' );
-		ui.addCanPlayListener( $audio );
-
-		$audio.trigger( 'canplay' );
-
-		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility' ),
-			'hidden'
-		);
-	} );
-
-	QUnit.test( 'removeCanPlayListener()', function ( assert ) {
-		var $audio;
-
-		assert.expect( 1 );
-		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
-		$audio = $( '<audio></audio>' );
-		$( '.ext-wikispeech-buffering-icon' ).css( 'visibility', 'visible' );
-		ui.addCanPlayListener( $audio );
-		ui.removeCanPlayListener( $audio );
-
-		$audio.trigger( 'canplay' );
-
-		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'visibility' ),
-			'visible'
-		);
-	} );
-
-	QUnit.test( 'setPlayStopIconToStop()', function ( assert ) {
-		assert.expect( 2 );
-		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
-
-		ui.setPlayStopIconToStop();
-
-		assert.strictEqual(
-			$( '.ext-wikispeech-play-stop' ).hasClass( 'ext-wikispeech-stop' ),
-			true
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-play-stop' ).hasClass( 'ext-wikispeech-play' ),
-			false
-		);
-	} );
-
-	QUnit.test( 'setPlayStopIconToPlay()', function ( assert ) {
-		assert.expect( 2 );
-		ui.addControlPanel();
-		ui.addStackToPlayStopButton();
-		$( '.ext-wikispeech-play-stop' ).addClass( 'ext-wikispeech-stop' );
-		$( '.ext-wikispeech-play-stop' )
-			.removeClass( 'ext-wikispeech-play' );
-
-		ui.setPlayStopIconToPlay();
-
-		assert.strictEqual(
-			$( '.ext-wikispeech-play-stop' ).hasClass( 'ext-wikispeech-play' ),
-			true
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-play-stop' ).hasClass( 'ext-wikispeech-stop' ),
-			false
-		);
-	} );
-
-	/**
-	 * Test that clicking a button calls the correct function.
-	 *
-	 * @param {QUnit.assert} assert
-	 * @param {Object} object The object on which to call the function.
-	 * @param {string} functionName Name of the function that should
-	 *  be called.
-	 * @param {string} buttonSelector Id of the button that is clicked.
-	 */
-	function testClickButton(
-		assert,
-		object,
-		functionName,
-		buttonSelector
-	) {
-		assert.expect( 1 );
-		ui.addControlPanel();
-
-		$( buttonSelector ).click();
-
-		assert.strictEqual( object[ functionName ].called, true );
-	}
-
-	QUnit.test( 'Clicking play/stop button', function ( assert ) {
-		testClickButton(
-			assert,
-			player,
-			'playOrStop',
-			'.ext-wikispeech-play-stop-button'
-		);
-	} );
-
-	QUnit.test( 'Clicking skip ahead sentence button', function ( assert ) {
-		testClickButton(
-			assert,
-			player,
-			'skipAheadUtterance',
-			'.ext-wikispeech-skip-ahead-sentence'
-		);
-	} );
-
-	QUnit.test( 'Clicking skip back sentence button', function ( assert ) {
-		testClickButton(
-			assert,
-			player,
-			'skipBackUtterance',
-			'.ext-wikispeech-skip-back-sentence'
-		);
-	} );
-
-	QUnit.test( 'Clicking skip ahead word button', function ( assert ) {
-		testClickButton(
-			assert,
-			player,
-			'skipAheadToken',
-			'.ext-wikispeech-skip-ahead-word'
+			$( '.ext-wikispeech-buffering-icon' ).css( 'display' ),
+			'none'
 		);
 	} );
 

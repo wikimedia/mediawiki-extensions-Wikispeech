@@ -34,6 +34,8 @@ the match the new release version.
 * [T248472](https://phabricator.wikimedia.org/T248472) Create segment hasher.
 * [T246079](https://phabricator.wikimedia.org/T246079) Add cache to segmenter.
 * [T249198](https://phabricator.wikimedia.org/T249198) Version changelog file introduced.
+* [T181780](https://phabricator.wikimedia.org/T181780) Use OOUI for the player controls.
+
 
 ### 0.1.3
 2018-09-12

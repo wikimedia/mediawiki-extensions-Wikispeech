@@ -19,7 +19,7 @@ class ApiWikispeech extends ApiBase {
 		if ( !$title || $title->isExternal() ) {
 			$this->dieWithError( [
 				'apierror-invalidtitle',
-				wfEscapeWikiText( $title )
+				wfEscapeWikiText( $parameters['page'] )
 			] );
 		}
 		if ( !$title->exists() ) {
@@ -38,6 +38,7 @@ class ApiWikispeech extends ApiBase {
 		}
 		$segmenter = new Segmenter( $this->getContext() );
 		$segments = $segmenter->segmentPage(
+			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 			$title,
 			$removeTags,
 			$parameters['segmentbreakingtags']

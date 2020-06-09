@@ -122,7 +122,7 @@ class UtteranceStore {
 	 * @param string $voice Name of synthesis voice.
 	 * @param string $segmentHash Hash of segment representing utterance.
 	 * @param bool $omitAudio If true, then no audio is returned.
-	 * @return array Utterance found, or null if non existing.
+	 * @return array|null Utterance found, or null if non-existing.
 	 */
 	public function findUtterance( $pageId, $language, $voice, $segmentHash, $omitAudio = false ) {
 		$dbr = $this->dbLoadBalancer->getConnection( DB_REPLICA );

@@ -44,19 +44,4 @@ class CleanedText {
 		$this->string = $string;
 		$this->path = $path;
 	}
-
-	/**
-	 * Create a Text element from the content.
-	 *
-	 * Path is converted to a string and added as an attribute.
-	 *
-	 * @since 0.0.1
-	 * @param DOMDocument $dom The DOM Document used to create the element.
-	 * @return DOMElement The created text element.
-	 */
-	function toElement( $dom ) {
-		$element = $dom->createElement( 'text', $this->string );
-		$element->setAttribute( 'path', $this->path );
-		return $element;
-	}
 }

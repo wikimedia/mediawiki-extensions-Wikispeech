@@ -29,6 +29,7 @@ the match the new release version.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T251261](https://phabricator.wikimedia.org/T251261) Mechanisms for executing flushing of utterances from the store.
 * [T254737](https://phabricator.wikimedia.org/T254737) Rename APIs to wikispeech-listen and wikispeech-segment.
 
 ### 0.1.6

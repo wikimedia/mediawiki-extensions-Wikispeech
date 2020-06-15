@@ -5,7 +5,6 @@
 		]
 	},
 	"apihelp-wikispeech-param-page": "Der Titel der zu verarbeitenden Seite",
-	"apihelp-wikispeech-paramvalue-output-cleanedtext": "Der Seiteninhalt ohne HTML-Tags.",
 	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> ist kein JSON-String.",
 	"apihelp-wikispeechlisten-param-lang": "Sprachcode.",
 	"apihelp-wikispeechlisten-param-voice": "Zu benutzende Stimme. Wenn nicht angegeben, wird die Standardstimme benutzt.",

@@ -13,17 +13,20 @@ use Wikimedia\Rdbms\IResultWrapper;
 use Wikimedia\Timestamp\TimestampException;
 
 /**
- * Keeps track of utterances (audio of segments) in database,
- * which is linked using the utterance identity in file paths and names
- * on the file backend, where it keeps opus audio files (.opus suffix
- * is added although this class is agnostic regarding to the audio format)
- * and voice synthesis metadata as json-files.
+ * Keeps track of utterances in persistent layers.
+ *
+ * Utterance metadata (i.e. segment hash, page id, language, etc) is stored in a database table.
+ * Utterance audio is (synthesised voice audio) is stored as an opus file in file backend.
+ * Synthesis metadata (tokens, etc) is stored as a JSON file in file backend.
+ *
+ * (.opus and .json suffixes are added in file backed store although this class is agnostic
+ * regarding to the actual data encoding and formats.)
  *
  * @since 0.1.5
  */
 class UtteranceStore {
 
-	/** @var string Name of database table that keeps track of utterances. */
+	/** @var string Name of database table that keeps track of utterance metadata. */
 	public const UTTERANCE_TABLE = "wikispeech_utterance";
 
 	/** @var LoggerInterface */
@@ -31,7 +34,7 @@ class UtteranceStore {
 
 	/**
 	 * Don't use this directly, access @see getFileBackend
-	 * @var FileBackend Used to store audio and JSON metadata.
+	 * @var FileBackend Used to store utterance audio and synthesis metadata.
 	 */
 	private $fileBackend;
 
@@ -159,7 +162,7 @@ class UtteranceStore {
 		];
 		$dbr->freeResult( $res );
 
-		// load audio and metadata
+		// load utterance audio and synthesis metadata
 
 		// @todo We might want to keep this as separate function calls,
 		// allowing the user to request when needed, and perhaps
@@ -185,16 +188,16 @@ class UtteranceStore {
 			}
 		}
 
-		$metadataSrc = $this->audioMetadataUrlFactory( $utterance['utteranceId'] );
-		$utterance['audioMetadata'] = $this->getFileBackend()->getFileContents( [
-			'src' => $metadataSrc
+		$synthesisMetadataSrc = $this->synthesisMetadataUrlFactory( $utterance['utteranceId'] );
+		$utterance['synthesisMetadata'] = $this->getFileBackend()->getFileContents( [
+			'src' => $synthesisMetadataSrc
 		] );
-		if ( $utterance['audioMetadata'] == FileBackend::CONTENT_FAIL ) {
+		if ( $utterance['synthesisMetadata'] == FileBackend::CONTENT_FAIL ) {
 			$this->log->warning(
 				"Inconsistency! Database contains utterance with ID {id} "
-				. "that does not exist as audio metadata file named {src} in file backend.", [
+				. "that does not exist as synthesis metadata file named {src} in file backend.", [
 					'id' => $utterance['utteranceId'],
-					'src' => $metadataSrc
+					'src' => $synthesisMetadataSrc
 				]
 			);
 			// @todo mark system to flush inconsistencies from database
@@ -212,7 +215,7 @@ class UtteranceStore {
 	 * @param string $voice Name of synthesis voice.
 	 * @param string $segmentHash Hash of segment representing utterance.
 	 * @param string $audio Utterance audio.
-	 * @param string $audioMetadata JSON form metadata about the audio.
+	 * @param string $synthesisMetadata JSON form metadata about the audio.
 	 * @return array Inserted utterance.
 	 * @throws ExternalStoreException If unable to prepare or create files in file backend.
 	 */
@@ -222,7 +225,7 @@ class UtteranceStore {
 		$voice,
 		$segmentHash,
 		$audio,
-		$audioMetadata
+		$synthesisMetadata
 	) {
 		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
 		$rows = [
@@ -258,20 +261,24 @@ class UtteranceStore {
 			throw new ExternalStoreException( 'Failed to create audio file ' . $audioUrl );
 		}
 
-		// create audio metadata file
-		$audioMetadataUrl = $this->audioMetadataUrlFactory( $utterance['utteranceId'] );
+		// create synthesis metadata file
+		$synthesisMetadataUrl = $this->synthesisMetadataUrlFactory( $utterance['utteranceId'] );
 		if ( !$this->getFileBackend()->prepare( [
-			'dir' => dirname( $audioMetadataUrl ),
+			'dir' => dirname( $synthesisMetadataUrl ),
 			'noAccess' => 1,
 			'noListing' => 1
 		] )->isOK() ) {
-			throw new ExternalStoreException( 'Failed to prepare audio metadata file ' . $audioMetadataUrl );
+			throw new ExternalStoreException(
+				'Failed to prepare synthesis metadata file ' . $synthesisMetadataUrl
+			);
 		}
 		if ( !$this->getFileBackend()->create( [
-			'dst' => $audioMetadataUrl,
-			'content' => $audioMetadata
+			'dst' => $synthesisMetadataUrl,
+			'content' => $synthesisMetadata
 		] )->isOK() ) {
-			throw new ExternalStoreException( 'Failed to create audio metadata file ' . $audioMetadataUrl );
+			throw new ExternalStoreException(
+				'Failed to create synthesis metadata file ' . $synthesisMetadataUrl
+			);
 		}
 
 		return $utterance;
@@ -338,10 +345,13 @@ class UtteranceStore {
 	 * at least the wsu_utterance_id column.
 	 *
 	 * In order for return value to increase, the utterance must have been
-	 * successfully deleted in all layers, i.e. database row, audio and metadata
-	 * from file store. E.g. if the audio file is missing but
-	 * utterance was removed from database and as the metadata file, it will
-	 * not count as successfully removed. It would however cause a warning.
+	 * successfully deleted in all layers, i.e. utterance metadata database row,
+	 * utterance audio and synthesis metadata from file store.
+	 * E.g. if the utterance audio file is missing and thus not explicitally removed,
+	 * but at the same time we managed to remove the utterance metadata from database
+	 * and also removed the synthesis metadata file, this will not count as a
+	 * successfully removed utterance. It would however be removed from all layers
+	 * and it would also cause an out-of-sync warning in the log.
 	 *
 	 * @since 0.1.5
 	 * @todo Consider if use of database should be transactional flushing.
@@ -381,15 +391,15 @@ class UtteranceStore {
 				$utteranceId,
 				'audio file'
 			);
-			$successfullyDeletedAudioMetadataFile = $this->deleteFileBackendFile(
-				$this->audioMetadataUrlFactory( $utteranceId ),
+			$successfullyDeletedSynthesisMetadataFile = $this->deleteFileBackendFile(
+				$this->synthesisMetadataUrlFactory( $utteranceId ),
 				$utteranceId,
-				'audio metadata file'
+				'synthesis metadata file'
 			);
 
 			if ( $successfullyDeletedTableRow
 				&& $successfullyDeletedAudioFile
-				&& $successfullyDeletedAudioMetadataFile ) {
+				&& $successfullyDeletedSynthesisMetadataFile ) {
 				$successfullyFlushedCounter++;
 			}
 		}
@@ -405,11 +415,11 @@ class UtteranceStore {
 	 * @return bool If successfully deleted
 	 */
 	private function deleteFileBackendFile( $src, $utteranceId, $type ) {
-		$metadataFile = [
+		$synthesisMetadataFile = [
 			'src' => $src
 		];
-		if ( $this->getFileBackend()->fileExists( $metadataFile ) ) {
-			if ( !$this->getFileBackend()->delete( $metadataFile )->isOK() ) {
+		if ( $this->getFileBackend()->fileExists( $synthesisMetadataFile ) ) {
+			if ( !$this->getFileBackend()->delete( $synthesisMetadataFile )->isOK() ) {
 				$this->log->warning(
 					"Unable to delete {type} for utterance with identity {utteranceId}.",
 					[
@@ -489,7 +499,7 @@ class UtteranceStore {
 	 * @param int $utteranceId Utterance identity.
 	 * @return string url used to access object in file store
 	 */
-	private function audioMetadataUrlFactory( $utteranceId ) {
+	private function synthesisMetadataUrlFactory( $utteranceId ) {
 		return $this->audioUrlPrefixFactory( $utteranceId ) . '.json';
 	}
 }

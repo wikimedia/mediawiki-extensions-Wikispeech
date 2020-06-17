@@ -13,19 +13,20 @@
 class ApiWikispeechListenTest extends ApiTestCase {
 	protected function setUp() : void {
 		parent::setUp();
-		$voices = [
-			"ar" => [ "ar-nah-hsmm" ],
-			"en" => [
-				"dfki-spike-hsmm",
-				"cmu-slt-flite"
-			],
-			"sv" => [ "stts_sv_nst-hsmm" ]
-		];
-		$wgConfigRegistry['wikispeech'] = function () {
-			return new HashConfig( [
-				'wgWikispeechVoices' => $voices
-			] );
-		};
+		// Should be implementable using
+		// $wgConfigRegistry['wikispeech'] see T255497
+		$this->setMwGlobals( [
+			// Make sure we don't send requests to an actual server.
+			'wgWikispeechServerUrl' => '',
+			'wgWikispeechVoices' => [
+				'ar' => [ 'ar-voice' ],
+				'en' => [
+					'en-voice1',
+					'en-voice2'
+				],
+				'sv' => [ 'sv-voice' ]
+			]
+		] );
 	}
 
 	public function testInvalidLanguage() {
@@ -43,7 +44,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	public function testInvalidVoice() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
-			'"invalid-voice" is not a valid voice. Should be one of: "dfki-spike-hsmm", "cmu-slt-flite".'
+			'"invalid-voice" is not a valid voice. Should be one of: "en-voice1", "en-voice2".'
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeechlisten',

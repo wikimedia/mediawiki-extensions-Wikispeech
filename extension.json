@@ -60,10 +60,22 @@
 		"localBasePath": "modules",
 		"remoteExtPath": "Wikispeech/modules"
 	},
-	"Hooks": {
-		"ResourceLoaderTestModules": [
-			"WikispeechHooks::onResourceLoaderTestModules"
+	"QUnitTestModule": {
+		"localBasePath": "tests/qunit",
+		"remoteExtPath": "Wikispeech/tests/qunit",
+		"dependencies": [
+			"ext.wikispeech"
 		],
+		"scripts": [
+			"ext.wikispeech.highlighter.test.js",
+			"ext.wikispeech.player.test.js",
+			"ext.wikispeech.selectionPlayer.test.js",
+			"ext.wikispeech.storage.test.js",
+			"ext.wikispeech.test.util.js",
+			"ext.wikispeech.ui.test.js"
+		]
+	},
+	"Hooks": {
 		"BeforePageDisplay": [
 			"WikispeechHooks::onBeforePageDisplay"
 		],

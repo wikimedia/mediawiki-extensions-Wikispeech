@@ -12,39 +12,6 @@ use MediaWiki\MediaWikiServices;
 class WikispeechHooks {
 
 	/**
-	 * Conditionally register the unit testing module for the ext.wikispeech
-	 * module only if that module is loaded.
-	 *
-	 * @param array &$testModules The array of registered test modules
-	 * @param ResourceLoader $resourceLoader The reference to the resource
-	 *  loader
-	 */
-	public static function onResourceLoaderTestModules(
-		array &$testModules,
-		ResourceLoader $resourceLoader
-	) {
-		$testModules['qunit']['ext.wikispeech.test'] = [
-			'scripts' => [
-				'ext.wikispeech.highlighter.test.js',
-				'ext.wikispeech.player.test.js',
-				'ext.wikispeech.selectionPlayer.test.js',
-				'ext.wikispeech.storage.test.js',
-				'ext.wikispeech.test.util.js',
-				'ext.wikispeech.ui.test.js'
-			],
-			'dependencies' => [
-				// Despite what it says at
-				// https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderTestModules,
-				// adding 'ext.wikispeech.highlighter' etc. isn't
-				// needed and in fact breaks the testing.
-				'ext.wikispeech'
-			],
-			'localBasePath' => __DIR__ . '/../tests/qunit/',
-			'remoteExtPath' => 'Wikispeech/tests/qunit/'
-		];
-	}
-
-	/**
 	 * Investigates whether or not configuration is valid.
 	 *
 	 * Writes all invalid configuration entries to the log.

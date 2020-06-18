@@ -22,7 +22,7 @@
 		"MediaWiki": ">= 1.35"
 	},
 	"AutoloadClasses": {
-		"WikispeechHooks": "WikispeechHooks.php",
+		"WikispeechHooks": "includes/WikispeechHooks.php",
 		"CleanedText": "includes/CleanedText.php",
 		"SegmentBreak": "includes/SegmentBreak.php",
 		"Cleaner": "includes/Cleaner.php",

@@ -25,12 +25,12 @@ class WikispeechHooks {
 	) {
 		$testModules['qunit']['ext.wikispeech.test'] = [
 			'scripts' => [
-				'tests/qunit/ext.wikispeech.highlighter.test.js',
-				'tests/qunit/ext.wikispeech.player.test.js',
-				'tests/qunit/ext.wikispeech.selectionPlayer.test.js',
-				'tests/qunit/ext.wikispeech.storage.test.js',
-				'tests/qunit/ext.wikispeech.test.util.js',
-				'tests/qunit/ext.wikispeech.ui.test.js'
+				'ext.wikispeech.highlighter.test.js',
+				'ext.wikispeech.player.test.js',
+				'ext.wikispeech.selectionPlayer.test.js',
+				'ext.wikispeech.storage.test.js',
+				'ext.wikispeech.test.util.js',
+				'ext.wikispeech.ui.test.js'
 			],
 			'dependencies' => [
 				// Despite what it says at
@@ -39,8 +39,8 @@ class WikispeechHooks {
 				// needed and in fact breaks the testing.
 				'ext.wikispeech'
 			],
-			'localBasePath' => __DIR__,
-			'remoteExtPath' => 'Wikispeech'
+			'localBasePath' => __DIR__ . '/../tests/qunit/',
+			'remoteExtPath' => 'Wikispeech/tests/qunit/'
 		];
 	}
 
@@ -252,7 +252,7 @@ class WikispeechHooks {
 	 * Check if the user is allowed to use a API module.
 	 *
 	 * @since 0.1.3
-	 * @param string $module
+	 * @param ApiBase $module
 	 * @param User $user
 	 * @param ApiMessage &$message
 	 * @return bool
@@ -279,7 +279,7 @@ class WikispeechHooks {
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
 		$updater->addExtensionTable(
 			'wikispeech_utterance',
-			__DIR__ . '/sql/wikispeech_utterance_v1.sql'
+			__DIR__ . '/../sql/wikispeech_utterance_v1.sql'
 		);
 	}
 

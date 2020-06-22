@@ -693,4 +693,77 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			}
 		}
 	}
+
+	public function testFlushUtteranceFilesByExpirationDateOnFileFromFileBackend_emptyFileBackend_success() {
+		$this->assertSame( 0, $this->utteranceStore
+			->flushUtterancesByExpirationDateOnFileFromFileBackend( MWTimestamp::getInstance() ) );
+	}
+
+	// phpcs:ignore Generic.Files.LineLength
+	public function testFlushUtteranceFilesByExpirationDateOnFileFromFileBackend_fastForwardClock_firstKeptThenRemoved() {
+		$before = new MWTimestamp( strtotime( '-15 minutes' ) );
+
+		// create audio file
+		$mockedUtterance = [
+			'utteranceId' => 12345678,
+			'audio' => 'DummyBase64Audio=',
+			'synthesisMetadata' => '{ "foo": "bar" }'
+		];
+		$audioUrl = $this->utteranceStore->audioUrlFactory(
+			$mockedUtterance['utteranceId']
+		);
+		$this->logger->debug( 'Creating {url}', [ 'url' => $audioUrl ] );
+		$this->assertTrue( $this->utteranceStore->fileBackend->prepare( [
+			'dir' => dirname( $audioUrl ),
+			'noAccess' => 1,
+			'noListing' => 1
+		] )->isOK() );
+		$this->assertTrue( $this->utteranceStore->fileBackend->create( [
+			'dst' => $audioUrl,
+			'content' => $mockedUtterance['audio']
+		] )->isOK() );
+
+		// create synthesis metadata file
+		$synthesisMetadataUrl = $this->utteranceStore->synthesisMetadataUrlFactory(
+			$mockedUtterance['utteranceId']
+		);
+		$this->logger->debug( 'Creating {url}', [ 'url' => $synthesisMetadataUrl ] );
+		$this->assertTrue( $this->utteranceStore->fileBackend->prepare( [
+			'dir' => dirname( $synthesisMetadataUrl ),
+			'noAccess' => 1,
+			'noListing' => 1
+		] )->isOK() );
+		$this->assertTrue( $this->utteranceStore->fileBackend->create( [
+			'dst' => $synthesisMetadataUrl,
+			'content' => $mockedUtterance['synthesisMetadata']
+		] )->isOK() );
+
+		$this->assertSame( 0, $this->utteranceStore
+			->flushUtterancesByExpirationDateOnFileFromFileBackend( $before ) );
+
+		// assert files are still there
+		$this->assertTrue(
+			$this->utteranceStore->fileBackend
+				->fileExists( [ 'src' => $audioUrl ] )
+		);
+		$this->assertTrue(
+			$this->utteranceStore->fileBackend
+				->fileExists( [ 'src' => $synthesisMetadataUrl ] )
+		);
+
+		$future = strtotime( '+15 minutes' );
+
+		$this->assertSame( 2, $this->utteranceStore
+			->flushUtterancesByExpirationDateOnFileFromFileBackend( new MWTimestamp( $future ) ) );
+
+		// assert files are deleted
+		$this->assertFalse(
+			$this->utteranceStore->fileBackend
+				->fileExists( [ 'src' => $audioUrl ] )
+		);
+		$this->assertFalse(
+			$this->utteranceStore->fileBackend
+				->fileExists( [ 'src' => $synthesisMetadataUrl ] )
+		);
+	}
 }

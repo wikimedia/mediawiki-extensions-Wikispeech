@@ -28,6 +28,7 @@ the match the new release version.
 ### 0.1.5-SNAPSHOT
 202Y-MM-DD
 
+* [T255001](https://phabricator.wikimedia.org/T255001) Schedulable cleanup job of orphaned utterance files in file backend.
 * [T257571](https://phabricator.wikimedia.org/T257571) Extension is owner of default voice per language logic.
 * [T243579](https://phabricator.wikimedia.org/T243579) Add a pre-loaded trigger for Wikispeech.
 * [T199414](https://phabricator.wikimedia.org/T199414) Config variable `WikispeechServerUrl` renamed `WikispeechSpeechoidUrl`.

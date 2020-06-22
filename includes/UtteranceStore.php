@@ -606,4 +606,107 @@ class UtteranceStore {
 		}
 		return $defaultVoice;
 	}
+
+	/**
+	 * @since 0.1.5
+	 * @param MWTimestamp|null $expiredTimestamp File timestamp <= to this value is orphaned. Defaults to config value.
+	 * @return int Number of expired files flushed
+	 */
+	public function flushUtterancesByExpirationDateOnFileFromFileBackend( $expiredTimestamp = null ) {
+		// @todo Either this method, or the job,
+		// should probably call `flushUtterancesByExpirationDate`
+		// to ensure we are not deleting a bunch of files
+		// which were scheduled to be deleted together with their db-entries anyway.
+
+		if ( !$expiredTimestamp ) {
+			$expiredTimestamp = self::getWikispeechUtteranceExpirationTimestamp();
+		}
+		$fileBackend = $this->getFileBackend();
+		return $this->recurseFlushUtterancesByExpirationDateOnFileFromFileBackend(
+			$fileBackend,
+			$this->getFileBackend()
+				->getContainerStoragePath( $this->fileBackendContainerName ),
+			$expiredTimestamp
+		);
+	}
+
+	/**
+	 * @since 0.1.5
+	 * @param FileBackend $fileBackend
+	 * @param string $directory
+	 * @param MWTimestamp $expiredTimestamp
+	 * @return int Number of expired files flushed
+	 */
+	private function recurseFlushUtterancesByExpirationDateOnFileFromFileBackend(
+		$fileBackend,
+		$directory,
+		$expiredTimestamp
+	) {
+		$this->logger->debug( __METHOD__ . ': ' .
+			'Processing directory {directory}', [ 'directory' => $directory ] );
+		$removedFilesCounter = 0;
+		$subdirectories = $fileBackend->getDirectoryList( [
+			'dir' => $directory,
+			'topOnly' => true,
+		] );
+		if ( $subdirectories ) {
+			foreach ( $subdirectories as $subdirectory ) {
+				$removedFilesCounter += $this->recurseFlushUtterancesByExpirationDateOnFileFromFileBackend(
+					$fileBackend,
+					$directory . '/' . $subdirectory,
+					$expiredTimestamp
+				);
+			}
+		}
+		$files = $fileBackend->getFileList( [
+			'dir' => $directory,
+			'topOnly' => true,
+			'adviseStat' => false
+		] );
+		if ( $files ) {
+			foreach ( $files as $file ) {
+				$src = [ 'src' => $directory . '/' . $file ];
+				$timestamp = new MWTimestamp( $fileBackend->getFileTimestamp( $src ) );
+				$this->logger->debug( __METHOD__ . ': ' .
+					'Processing file {src} with timestamp {timestamp}', [
+					'src' => $file,
+					'timestamp' => $timestamp,
+					'expiredTimestamp' => $expiredTimestamp
+				] );
+				if ( $timestamp <= $expiredTimestamp ) {
+					if ( $fileBackend->delete( $src )->isOK() ) {
+						$removedFilesCounter++;
+						$this->logger->debug( __METHOD__ . ': ' .
+							'Deleted expired file {file} #{num}', [
+								'file' => $file,
+								'num' => $removedFilesCounter
+							]
+						);
+					} else {
+						$this->logger->warning( __METHOD__ . ': ' .
+							'Unable to delete orphaned file {file}',
+							[ 'file' => $file ]
+						);
+					}
+				}
+				unset( $timestamp );
+			}
+		}
+		$this->getFileBackend()->clean( [ 'dir' => $directory ] );
+		return $removedFilesCounter;
+	}
+
+	/**
+	 * Calculates historic timestamp on now-WikispeechUtteranceTimeToLiveDays
+	 *
+	 * @return MWTimestamp Utterance parts with timestamp <= this is expired.
+	 */
+	public function getWikispeechUtteranceExpirationTimestamp() : MWTimestamp {
+		$utteranceTimeToLiveDays = intval( MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' )
+			->get( 'WikispeechUtteranceTimeToLiveDays' ) );
+		$expirationDate = strtotime( '-' . $utteranceTimeToLiveDays . 'days' );
+		return MWTimestamp::getInstance( $expirationDate );
+	}
 }

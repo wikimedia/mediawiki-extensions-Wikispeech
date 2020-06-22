@@ -26,7 +26,7 @@ class CleanedText {
 	 * The XPath expression for the text node that this was created
 	 * from.
 	 *
-	 * @var array $path
+	 * @var string $path
 	 */
 
 	public $path;
@@ -38,7 +38,7 @@ class CleanedText {
 	 *
 	 * @since 0.0.1
 	 * @param string $string The string representation of this text.
-	 * @param array $path The path to the text node this was created from.
+	 * @param string $path The path to the text node this was created from.
 	 */
 	public function __construct( $string, $path = '' ) {
 		$this->string = $string;

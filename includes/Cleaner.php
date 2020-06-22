@@ -77,7 +77,7 @@ class Cleaner {
 		// Remove any segment break at the start or end of the array,
 		// since they won't do anything.
 		if (
-			count( $this->cleanedContent ) &&
+			$this->cleanedContent &&
 			$this->cleanedContent[0] instanceof SegmentBreak
 		) {
 			array_shift( $this->cleanedContent );
@@ -234,7 +234,7 @@ class Cleaner {
 	 *
 	 * @since 0.0.1
 	 * @param array $array The array to get the last element from.
-	 * @return The last element in the array, null if array is empty.
+	 * @return mixed|null The last element in the array, null if array is empty.
 	 */
 	private static function lastElement( $array ) {
 		if ( !count( $array ) ) {

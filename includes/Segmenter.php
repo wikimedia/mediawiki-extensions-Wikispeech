@@ -57,7 +57,7 @@ class Segmenter {
 	 * Split the content of a page into segments.
 	 *
 	 * @since 0.1.5
-	 * @param string $title
+	 * @param Title $title
 	 * @param array $removeTags HTML tags that should not be included.
 	 * @param array $segmentBreakingTags HTML tags that mark segment breaks.
 	 * @return array A list of segments each made up of `CleanedTest`
@@ -255,7 +255,7 @@ class Segmenter {
 	 * @since 0.0.1
 	 * @param string $string The string to look in.
 	 * @param int $offset The offset to start looking from.
-	 * @return int The offset of the first sentence final character
+	 * @return int|null The offset of the first sentence final character
 	 *  that was found, if any, else null.
 	 */
 	private static function getSentenceFinalOffset( $string, $offset ) {
@@ -300,14 +300,15 @@ class Segmenter {
 		if ( mb_strlen( $string ) > $index + 2 ) {
 			$characterAfterNext = mb_substr( $string, $index + 2, 1 );
 		}
-		if (
-			$character == '.' &&
-			( ( $nextCharacter == ' ' && self::isUpper( $characterAfterNext ) ) ||
-			$nextCharacter == '' ||
-			$nextCharacter == "\n" )
+		if ( $character == '.' && (
+				!$nextCharacter ||
+				$nextCharacter == "\n" || (
+					$nextCharacter == ' ' && (
+						!$characterAfterNext ||
+						self::isUpper( $characterAfterNext ) ) ) )
 		) {
-			// A dot is sentence final if it's followed by a space and a
-			// capital letter or at the end of string or line.
+			// A dot is sentence final if it's at the end of string or line
+			// or followed by a space and a capital letter.
 			return true;
 		} else {
 			return false;

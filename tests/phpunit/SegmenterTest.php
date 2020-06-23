@@ -18,7 +18,7 @@ require_once __DIR__ . '/Util.php';
 class SegmenterTest extends MediaWikiTestCase {
 
 	/**
-	 * @var Segmenter
+	 * @var TestingAccessWrapper
 	 */
 	private $segmenter;
 

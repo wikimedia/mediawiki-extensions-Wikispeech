@@ -29,7 +29,9 @@
 		"Segmenter": "includes/Segmenter.php",
 		"UtteranceStore": "includes/UtteranceStore.php",
 		"ApiWikispeech": "includes/ApiWikispeech.php",
-		"ApiWikispeechListen": "includes/ApiWikispeechListen.php"
+		"ApiWikispeechListen": "includes/ApiWikispeechListen.php",
+		"SpeechoidConnector": "includes/SpeechoidConnector.php",
+		"SpeechoidConnectorException": "includes/SpeechoidConnectorException.php"
 	},
 	"TestAutoloadClasses": {
 		"Util": "tests/phpunit/Util.php"

@@ -148,10 +148,12 @@
 			} );
 			utterance.request = self.requestTts( text );
 			utterance.request.done( function ( response ) {
-				audioUrl = response.wikispeechlisten.audio;
+				audioUrl = 'data:audio/ogg;base64,' +
+					response.wikispeechlisten.audio;
 				mw.log(
 					'Setting audio url for: [' + utteranceIndex + ']',
-					utterance, '=', audioUrl
+					utterance, '=',
+					response.wikispeechlisten.audio.length + ' base64 bytes'
 				);
 				utterance.audio.setAttribute( 'src', audioUrl );
 				utterance.audio.playbackRate =

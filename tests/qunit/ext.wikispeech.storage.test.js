@@ -79,7 +79,7 @@
 		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.setAttribute(
 			'src',
-			'http://server.url/audio'
+			'DummyBase64Audio='
 		);
 		sinon.spy( storage, 'loadAudio' );
 
@@ -148,7 +148,7 @@
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
 		assert.expect( 4 );
 		server.respondWith(
-			'{"wikispeechlisten": {"audio": "http://server.url/audio", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}}'
+			'{"wikispeechlisten": {"audio": "DummyBase64Audio=", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}}'
 		);
 		sinon.stub( storage, 'addTokens' );
 		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
@@ -157,7 +157,7 @@
 
 		assert.strictEqual(
 			storage.utterances[ 0 ].audio.src,
-			'http://server.url/audio'
+			'data:audio/ogg;base64,DummyBase64Audio='
 		);
 		sinon.assert.calledWith(
 			storage.addTokens,

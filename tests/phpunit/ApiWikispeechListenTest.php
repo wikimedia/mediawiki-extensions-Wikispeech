@@ -13,6 +13,7 @@ use Wikimedia\TestingAccessWrapper;
  * @covers ApiWikispeechListen
  */
 class ApiWikispeechListenTest extends ApiTestCase {
+
 	protected function setUp() : void {
 		parent::setUp();
 		// Should be implementable using
@@ -59,7 +60,6 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 	/**
 	 * @since 0.1.5
-	 * @throws ApiUsageException
 	 */
 	public function testValidInputLength() {
 		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
@@ -78,7 +78,6 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 	/**
 	 * @since 0.1.5
-	 * @throws ApiUsageException
 	 */
 	public function testInvalidInputLength() {
 		$this->expectException( ApiUsageException::class );
@@ -96,4 +95,157 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'voice' => ''
 		] );
 	}
+
+	/**
+	 * @since 0.1.5
+	 */
+	public function testGetUtterance_requestNewUtterance_speechoidConnectorExecuted() {
+		$synthesizeMetadataJson =
+			'[' .
+			'{"endtime": 0.295, "orth": "Word"}, ' .
+			'{"endtime": 0.51, "expanded": "one", "orth": "1"}, ' .
+			'{"endtime": 0.8, "orth": "Word"}, ' .
+			'{"endtime": 0.93, "expanded": "two", "orth": "2"}, ' .
+			'{"endtime": 1.215, "orth": "Word"}, ' .
+			'{"endtime": 1.565, "expanded": "three", "orth": "3"}, ' .
+			'{"endtime": 1.565, "orth": "."}, ' .
+			'{"endtime": 1.975, "orth": ""}' .
+			']';
+		$synthesizeMetadataArray = FormatJson::parse(
+			$synthesizeMetadataJson,
+			FormatJson::FORCE_ASSOC
+		)->getValue();
+		// this is a solution to avoid floating point conversion errors
+		$synthesizeMetadataJson =
+			FormatJson::encode( $synthesizeMetadataArray );
+
+		$api = TestingAccessWrapper::newFromObject(
+			new ApiWikispeechListen(
+				new ApiMain(),
+				null
+			)
+		);
+
+		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
+		$utteranceStoreMock
+			->method( 'findUtterance' )
+			->with(
+				// $pageId, $language, $voice, $segmentHash, $omitAudio = false
+				$this->equalTo( 2 ),
+				$this->equalTo( 'sv' ),
+				$this->equalTo( 'anna' ),
+				$this->equalTo( '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4' ),
+				$this->equalTo( false )
+			)
+			->willReturn( null );
+		$utteranceStoreMock
+			->method( 'createUtterance' )
+			->with(
+				// $pageId, $language, $voice, $segmentHash, $audio, $synthesisMetadata
+				$this->equalTo( 2 ),
+				$this->equalTo( 'sv' ),
+				$this->equalTo( 'anna' ),
+				$this->equalTo( '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4' ),
+				$this->equalTo( 'DummyBase64==' ),
+				$this->equalTo( $synthesizeMetadataJson )
+			);
+		$api->utteranceStore = $utteranceStoreMock;
+
+		$speechoidConnectorMock = $this->createMock( SpeechoidConnector::class );
+		$speechoidConnectorMock
+			->expects( $this->once() )
+			->method( 'synthesize' )
+			->with(
+				$this->equalTo( 'sv' ),
+				$this->equalTo( 'anna' ),
+				$this->equalTo( 'Word 1 Word 2 Word 3.' )
+			)
+			->willReturn(
+				'{ "audio_data": "DummyBase64==", "tokens": ' . $synthesizeMetadataJson . ' }'
+			);
+		$api->speechoidConnector = $speechoidConnectorMock;
+
+		$utterance = $api->getUtterance(
+			'anna',
+			'sv',
+			2,
+			'4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4',
+			'Word 1 Word 2 Word 3.'
+		);
+
+		$this->assertSame( 'DummyBase64==', $utterance['audio'] );
+		$this->assertSame( $synthesizeMetadataArray, $utterance['tokens'] );
+	}
+
+	/**
+	 * @since 0.1.5
+	 */
+	public function testGetUtterance_requestExistingUtterance_speechoidConnectorNotExecuted() {
+		$synthesizeMetadataJson =
+			'[' .
+			'{"endtime": 0.295, "orth": "Word"}, ' .
+			'{"endtime": 0.51, "expanded": "one", "orth": "1"}, ' .
+			'{"endtime": 0.8, "orth": "Word"}, ' .
+			'{"endtime": 0.93, "expanded": "two", "orth": "2"}, ' .
+			'{"endtime": 1.215, "orth": "Word"}, ' .
+			'{"endtime": 1.565, "expanded": "three", "orth": "3"}, ' .
+			'{"endtime": 1.565, "orth": "."}, ' .
+			'{"endtime": 1.975, "orth": ""}' .
+			']';
+		$synthesizeMetadataArray = FormatJson::parse(
+			$synthesizeMetadataJson,
+			FormatJson::FORCE_ASSOC
+		)->getValue();
+		// this is a solution to avoid floating point conversion errors
+		$synthesizeMetadataJson =
+			FormatJson::encode( $synthesizeMetadataArray );
+
+		$api = TestingAccessWrapper::newFromObject(
+			new ApiWikispeechListen(
+				new ApiMain(),
+				null
+			)
+		);
+
+		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
+		$utteranceStoreMock
+			->method( 'findUtterance' )
+			->with(
+				// $pageId, $language, $voice, $segmentHash, $omitAudio = false
+				$this->equalTo( 2 ),
+				$this->equalTo( 'sv' ),
+				$this->equalTo( 'anna' ),
+				$this->equalTo( '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4' ),
+				$this->equalTo( false )
+			)
+			->willReturn( [
+				'utteranceId' => 1,
+				'pageId' => 2,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'segmentHash' => '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4',
+				'dateStored' => MWTimestamp::getInstance( 20020101000000 ),
+				'audio' => 'DummyBase64==',
+				'synthesisMetadata' => $synthesizeMetadataJson,
+			] );
+		$api->utteranceStore = $utteranceStoreMock;
+
+		$speechoidConnectorMock = $this->createMock( SpeechoidConnector::class );
+		$speechoidConnectorMock
+			->expects( $this->never() )
+			->method( 'synthesize' );
+		$api->speechoidConnector = $speechoidConnectorMock;
+
+		$utterance = $api->getUtterance(
+			'anna',
+			'sv',
+			2,
+			'4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4',
+			'Word 1 Word 2 Word 3.'
+		);
+
+		$this->assertSame( 'DummyBase64==', $utterance['audio'] );
+		$this->assertSame( $synthesizeMetadataArray, $utterance['tokens'] );
+	}
+
 }

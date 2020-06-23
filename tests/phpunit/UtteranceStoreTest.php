@@ -59,7 +59,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			'voice' => 'bertil',
 			'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 			'audio' => 'DummyBase64Audio=',
-			'audioMetadata' =>
+			'synthesisMetadata' =>
 				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}'
 		];
 		$started = MWTimestamp::getInstance();
@@ -69,7 +69,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			$data['voice'],
 			$data['segmentHash'],
 			$data['audio'],
-			$data['audioMetadata']
+			$data['synthesisMetadata']
 		);
 		$this->assertTrue( is_int( $created[ 'utteranceId' ] ) );
 		$this->assertTrue( $started <= $created['dateStored'] );
@@ -100,7 +100,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			'voice' => 'bertil',
 			'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 			'audio' => 'DummyBase64Audio=',
-			'audioMetadata' =>
+			'synthesisMetadata' =>
 				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}'
 		];
 		$this->utteranceStore->createUtterance(
@@ -109,7 +109,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			$data['voice'],
 			$data['segmentHash'],
 			$data['audio'],
-			$data['audioMetadata']
+			$data['synthesisMetadata']
 		);
 		// find the utterance we created and ensure it matches.
 		$retrieved = $this->utteranceStore->findUtterance(
@@ -125,7 +125,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		$this->assertSame( $data['segmentHash'], $retrieved['segmentHash'] );
 		// assert values from file store is loaded
 		$this->assertEquals( $data['audio'], $retrieved['audio'] );
-		$this->assertEquals( $data['audioMetadata'], $retrieved['audioMetadata'] );
+		$this->assertEquals( $data['synthesisMetadata'], $retrieved['synthesisMetadata'] );
 	}
 
 	/**
@@ -231,7 +231,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			], [
 				'utteranceId' => null,
@@ -242,7 +242,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			],
 		];
@@ -269,7 +269,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			], [
 				'utteranceId' => null,
@@ -280,7 +280,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'bertil',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			], [
 				'utteranceId' => null,
@@ -291,7 +291,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			]
 		];
@@ -315,7 +315,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			], [
 				'utteranceId' => null,
@@ -326,7 +326,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'bertil',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			], [
 				'utteranceId' => null,
@@ -337,7 +337,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			]
 		];
@@ -361,7 +361,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			], [
 				'utteranceId' => null,
@@ -372,7 +372,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'voice' => 'anna',
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
-				'audioMetadata' =>
+				'synthesisMetadata' =>
 					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
 			]
 		];
@@ -421,18 +421,17 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'content' => $mockedUtterance['audio']
 			] )->isOK() );
 
-			// create metadata file
-			$audioMetadataUrl = $this->utteranceStore->audioMetadataUrlFactory(
-				$mockedUtterance['utteranceId']
-			);
+			// create synthesis metadata file
+			$synthesisMetadataUrl = $this->utteranceStore
+				->synthesisMetadataUrlFactory( $mockedUtterance['utteranceId'] );
 			$this->assertTrue( $this->utteranceStore->fileBackend->prepare( [
-				'dir' => dirname( $audioMetadataUrl ),
+				'dir' => dirname( $synthesisMetadataUrl ),
 				'noAccess' => 1,
 				'noListing' => 1
 			] )->isOK() );
 			$this->assertTrue( $this->utteranceStore->fileBackend->create( [
-				'dst' => $audioMetadataUrl,
-				'content' => $mockedUtterance['audioMetadata']
+				'dst' => $synthesisMetadataUrl,
+				'content' => $mockedUtterance['synthesisMetadata']
 			] )->isOK() );
 			$this->log->debug(
 				"Inserted utterance {utterance} from mock",
@@ -471,18 +470,23 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 
 		// ensure expected flushed utterances is gone.
 		foreach ( $mockedUtterances as $mockedUtterance ) {
-			$this->log->debug( 'Inspecting {mockedUtterance}', [ 'mockedUtterance' => $mockedUtterance ] );
+			$this->log->debug(
+				'Inspecting {mockedUtterance}',
+				[ 'mockedUtterance' => $mockedUtterance ]
+			);
 			$this->assertTrue( is_int( $mockedUtterance['utteranceId'] ) );
 			if ( $mockedUtterance['expectedToFlush'] ) {
 				// utterance should have been flushed out
 				$this->assertFalse(
 					$this->utteranceStore->fileBackend->fileExists(
-						[ 'src' => $this->utteranceStore->audioUrlFactory( $mockedUtterance['utteranceId'] ) ]
+						[ 'src' => $this->utteranceStore
+							->audioUrlFactory( $mockedUtterance['utteranceId'] ) ]
 					)
 				);
 				$this->assertFalse(
 					$this->utteranceStore->fileBackend->fileExists(
-						[ 'src' => $this->utteranceStore->audioMetadataUrlFactory( $mockedUtterance['utteranceId'] ) ]
+						[ 'src' => $this->utteranceStore
+							->synthesisMetadataUrlFactory( $mockedUtterance['utteranceId'] ) ]
 					)
 				);
 				$this->assertSelect(
@@ -495,12 +499,14 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				// utterance should not have been flushed out
 				$this->assertTrue(
 					$this->utteranceStore->fileBackend->fileExists(
-						[ 'src' => $this->utteranceStore->audioUrlFactory( $mockedUtterance['utteranceId'] ) ]
+						[ 'src' => $this->utteranceStore
+							->audioUrlFactory( $mockedUtterance['utteranceId'] ) ]
 					)
 				);
 				$this->assertTrue(
 					$this->utteranceStore->fileBackend->fileExists(
-						[ 'src' => $this->utteranceStore->audioMetadataUrlFactory( $mockedUtterance['utteranceId'] ) ]
+						[ 'src' => $this->utteranceStore
+							->synthesisMetadataUrlFactory( $mockedUtterance['utteranceId'] ) ]
 					)
 				);
 				$this->assertSelect(

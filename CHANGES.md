@@ -27,6 +27,8 @@ the match the new release version.
 
 ### 0.1.5-SNAPSHOT
 202Y-MM-DD
+
+* [T247395](https://phabricator.wikimedia.org/T247395) Limit input length in Speechoid requests.
 * [T248825](https://phabricator.wikimedia.org/T248825) Clean up segmenting
 * [T248469](https://phabricator.wikimedia.org/T248469) Create database for utterance data.
 * [T181780](https://phabricator.wikimedia.org/T181780) Use OOUI for the player controls.

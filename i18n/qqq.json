@@ -3,7 +3,8 @@
 		"authors": [
 			"FF11",
 			"Igor Leturia",
-			"Sebastian Berlin"
+			"Sebastian Berlin",
+			"Karl Wettin"
 		]
 	},
 	"wikispeech": "The name of the extension",
@@ -30,5 +31,6 @@
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",
-	"action-wikispeech-listen": "{{doc-action|wikispeech-listen}}"
+	"action-wikispeech-listen": "{{doc-action|wikispeech-listen}}",
+	"apierror-wikispeechlisten-invalid-input-too-long": "{{doc-apierror}}"
 }

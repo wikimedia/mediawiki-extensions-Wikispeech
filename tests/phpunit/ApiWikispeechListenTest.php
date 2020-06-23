@@ -6,6 +6,8 @@
  * @license GPL-2.0-or-later
  */
 
+use Wikimedia\TestingAccessWrapper;
+
 /**
  * @group medium
  * @covers ApiWikispeechListen
@@ -25,7 +27,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 					'en-voice2'
 				],
 				'sv' => [ 'sv-voice' ]
-			]
+			],
+			'wgWikispeechListenMaximumInputCharacters' => 60
 		] );
 	}
 
@@ -51,6 +54,46 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'input' => 'Utterance.',
 			'lang' => 'en',
 			'voice' => 'invalid-voice'
+		] );
+	}
+
+	/**
+	 * @since 0.1.5
+	 * @throws ApiUsageException
+	 */
+	public function testValidInputLength() {
+		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
+			new ApiMain(), null
+		) );
+		$api->validateParameters( [
+			'action' => 'wikispeechlisten',
+			'input' => 'This is a short sentence with less than 60 characters.',
+			'lang' => 'en',
+			'voice' => ''
+		] );
+		// What we really want to do here is to assert that
+		// ApiUsageException is not thrown.
+		$this->assertTrue( true );
+	}
+
+	/**
+	 * @since 0.1.5
+	 * @throws ApiUsageException
+	 */
+	public function testInvalidInputLength() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'Input text must not exceed 60 characters, but contained '
+			. '64 characters.'
+		);
+		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
+			new ApiMain(), null
+		) );
+		$api->validateParameters( [
+			'action' => 'wikispeechlisten',
+			'input' => 'This is a tiny bit longer sentence with more than 60 characters.',
+			'lang' => 'en',
+			'voice' => ''
 		] );
 	}
 }

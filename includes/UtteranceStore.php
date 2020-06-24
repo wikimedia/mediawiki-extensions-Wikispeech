@@ -9,6 +9,7 @@
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
+use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IResultWrapper;
 use Wikimedia\Timestamp\TimestampException;
 
@@ -30,7 +31,7 @@ class UtteranceStore {
 	public const UTTERANCE_TABLE = "wikispeech_utterance";
 
 	/** @var LoggerInterface */
-	private $log;
+	private $logger;
 
 	/**
 	 * Don't use this directly, access @see getFileBackend
@@ -39,7 +40,7 @@ class UtteranceStore {
 	private $fileBackend;
 
 	/**
-	 * @var \Wikimedia\Rdbms\ILoadBalancer
+	 * @var ILoadBalancer
 	 */
 	private $dbLoadBalancer;
 
@@ -47,7 +48,7 @@ class UtteranceStore {
 	private $fileBackendContainerName;
 
 	public function __construct() {
-		$this->log = LoggerFactory::getInstance( 'Wikispeech' );
+		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 
 		$this->fileBackendContainerName = MediaWikiServices::getInstance()
 			->getConfigFactory()
@@ -55,7 +56,7 @@ class UtteranceStore {
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( !$this->fileBackendContainerName ) {
 			$this->fileBackendContainerName = "wikispeech_utterances";
-			$this->log->info( 'Falling back on container name {containerName}', [
+			$this->logger->info( 'Falling back on container name {containerName}', [
 				'containerName' => $this->fileBackendContainerName
 			] );
 		}
@@ -77,7 +78,7 @@ class UtteranceStore {
 				->get( 'WikispeechUtteranceFileBackendName' );
 			if ( !$fileBackendName ) {
 				$fileBackendName = 'wikispeech-utterances';
-				$this->log->info( 'Falling back on file backend name {fileBackendName}', [
+				$this->logger->info( 'Falling back on file backend name {fileBackendName}', [
 					'fileBackendName' => $fileBackendName
 				] );
 				// @todo find out if this is ok or even normal behavior
@@ -85,7 +86,7 @@ class UtteranceStore {
 				if ( !file_exists( $tmpDir ) ) {
 					mkdir( $tmpDir );
 				}
-				$this->log->info(
+				$this->logger->info(
 					"No file backend named {name} defined in LocalSettings.php. "
 					. "Falling back on transient FS storage in {tmpDir}.", [
 						'name' => $fileBackendName,
@@ -104,7 +105,7 @@ class UtteranceStore {
 				if ( $fileBackend ) {
 					$this->fileBackend = $fileBackend;
 				} else {
-					$this->log->error(
+					$this->logger->error(
 						"No file backend group in LocalSettings.php named {fileBackendName}. "
 						. "Exceptions related to accessing files are to be expected very soon.",
 						[ 'fileBackendName' => $fileBackendName ]
@@ -151,7 +152,7 @@ class UtteranceStore {
 					'audio file'
 				);
 			} catch ( ExternalStoreException $e ) {
-				$this->log->warning( $e->getMessage() );
+				$this->logger->warning( $e->getMessage() );
 				return null;
 			}
 		}
@@ -164,7 +165,7 @@ class UtteranceStore {
 				'synthesis metadata file'
 			);
 		} catch ( ExternalStoreException $e ) {
-			$this->log->warning( $e->getMessage() );
+			$this->logger->warning( $e->getMessage() );
 			return null;
 		}
 
@@ -414,12 +415,12 @@ class UtteranceStore {
 				__METHOD__
 			);
 			if ( !$successfullyDeletedTableRow ) {
-				$this->log->warning(
+				$this->logger->warning(
 					"Failed to delete utterance {utteranceId} from database.",
 					[ 'utteranceId' => $utteranceId ]
 				);
 			} else {
-				$this->log->debug(
+				$this->logger->debug(
 					'Flushed out utterance with id {utteranceId} from database',
 					[ 'utteranceId' => $utteranceId ]
 				);
@@ -460,7 +461,7 @@ class UtteranceStore {
 		];
 		if ( $this->getFileBackend()->fileExists( $synthesisMetadataFile ) ) {
 			if ( !$this->getFileBackend()->delete( $synthesisMetadataFile )->isOK() ) {
-				$this->log->warning(
+				$this->logger->warning(
 					"Unable to delete {type} for utterance with identity {utteranceId}.",
 					[
 						'utteranceId' => $utteranceId,
@@ -472,7 +473,7 @@ class UtteranceStore {
 				$this->getFileBackend()->clean( [ 'dir' => $this->urlPathFactory( $utteranceId ) ] );
 			}
 		} else {
-			$this->log->warning(
+			$this->logger->warning(
 				"Attempted to delete non existing {type} for utterance {utteranceId}.",
 				[
 					'utteranceId' => $utteranceId,
@@ -481,7 +482,7 @@ class UtteranceStore {
 			);
 			return false;
 		}
-		$this->log->debug( 'Flushed out file {src}', [ 'src' => $src ] );
+		$this->logger->debug( 'Flushed out file {src}', [ 'src' => $src ] );
 		return true;
 	}
 

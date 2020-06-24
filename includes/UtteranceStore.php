@@ -116,8 +116,8 @@ class UtteranceStore {
 	}
 
 	/**
-	 * Retrieves an utterance from the database for a given segment in a page,
-	 * using a specific voice and language.
+	 * Retrieves an utterance for a given segment in a page, using a specific
+	 * voice and language.
 	 *
 	 * @since 0.1.5
 	 * @param int $pageId Mediawiki page ID.
@@ -128,6 +128,61 @@ class UtteranceStore {
 	 * @return array|null Utterance found, or null if non-existing.
 	 */
 	public function findUtterance( $pageId, $language, $voice, $segmentHash, $omitAudio = false ) {
+		$utterance = $this->retrieveUtteranceMetadata(
+				$pageId, $language, $voice, $segmentHash );
+		if ( !$utterance ) {
+			return null;
+		}
+
+		// load utterance audio and synthesis metadata
+
+		// @todo We might want to keep this as separate function calls,
+		// allowing the user to request when needed, and perhaps
+		// pass a stream straight down from file backend to user
+		// rather than bouncing it via RAM.
+		// Not sure if this is an existing thing in PHP though.
+
+		if ( !$omitAudio ) {
+			$audioSrc = $this->audioUrlFactory( $utterance['utteranceId'] );
+			try {
+				$utterance['audio'] = $this->retrieveFileContents(
+					$audioSrc,
+					$utterance['utteranceId'],
+					'audio file'
+				);
+			} catch ( ExternalStoreException $e ) {
+				$this->log->warning( $e->getMessage() );
+				return null;
+			}
+		}
+
+		$synthesisMetadataSrc = $this->synthesisMetadataUrlFactory( $utterance['utteranceId'] );
+		try {
+			$utterance['synthesisMetadata'] = $this->retrieveFileContents(
+				$synthesisMetadataSrc,
+				$utterance['utteranceId'],
+				'synthesis metadata file'
+			);
+		} catch ( ExternalStoreException $e ) {
+			$this->log->warning( $e->getMessage() );
+			return null;
+		}
+
+		return $utterance;
+	}
+
+	/**
+	 * Retrieves the utterance metadata from the database for a given segment in a page,
+	 * using a specific voice and language.
+	 *
+	 * @since 0.1.5
+	 * @param int $pageId Mediawiki page ID.
+	 * @param string $language ISO-639.
+	 * @param string $voice Name of synthesis voice.
+	 * @param string $segmentHash Hash of segment representing utterance.
+	 * @return array|null Utterance or null if not found in database
+	 */
+	public function retrieveUtteranceMetadata( $pageId, $language, $voice, $segmentHash ) {
 		$dbr = $this->dbLoadBalancer->getConnection( DB_REPLICA );
 		$res = $dbr->select( self::UTTERANCE_TABLE, [
 			'wsu_utterance_id',
@@ -162,48 +217,30 @@ class UtteranceStore {
 		];
 		$dbr->freeResult( $res );
 
-		// load utterance audio and synthesis metadata
-
-		// @todo We might want to keep this as separate function calls,
-		// allowing the user to request when needed, and perhaps
-		// pass a stream straight down from file backend to user
-		// rather than bouncing it via RAM.
-		// Not sure if this is an existing thing in PHP though.
-
-		if ( !$omitAudio ) {
-			$audioSrc = $this->audioUrlFactory( $utterance['utteranceId'] );
-			$utterance['audio'] = $this->getFileBackend()->getFileContents( [
-				'src' => $audioSrc
-			] );
-			if ( $utterance['audio'] == FileBackend::CONTENT_FAIL ) {
-				$this->log->warning(
-					"Inconsistency! Database contains utterance with ID {id} "
-					. "that does not exist as audio file named {src} in file backend.", [
-						'id' => $utterance['utteranceId'],
-						'src' => $audioSrc
-					]
-				);
-				// @todo mark system to flush inconsistencies from database
-				return null;
-			}
-		}
-
-		$synthesisMetadataSrc = $this->synthesisMetadataUrlFactory( $utterance['utteranceId'] );
-		$utterance['synthesisMetadata'] = $this->getFileBackend()->getFileContents( [
-			'src' => $synthesisMetadataSrc
-		] );
-		if ( $utterance['synthesisMetadata'] == FileBackend::CONTENT_FAIL ) {
-			$this->log->warning(
-				"Inconsistency! Database contains utterance with ID {id} "
-				. "that does not exist as synthesis metadata file named {src} in file backend.", [
-					'id' => $utterance['utteranceId'],
-					'src' => $synthesisMetadataSrc
-				]
-			);
-			// @todo mark system to flush inconsistencies from database
-			return null;
-		}
 		return $utterance;
+	}
+
+	/**
+	 * Retrieve the file contents from the backend.
+	 *
+	 * @since 0.1.5
+	 * @param string $src
+	 * @param int $utteranceId
+	 * @param string $type
+	 * @return mixed File contents
+	 * @throws ExternalStoreException
+	 */
+	public function retrieveFileContents( $src, $utteranceId, $type ) {
+		$content = $this->getFileBackend()->getFileContents( [
+			'src' => $src
+		] );
+		if ( $content == FileBackend::CONTENT_FAIL ) {
+			// @todo mark system to flush inconsistencies from database
+			throw new ExternalStoreException(
+				"Inconsistency! Database contains utterance with ID $utteranceId " .
+				"that does not exist as $type named $src in file backend." );
+		}
+		return $content;
 	}
 
 	/**
@@ -246,42 +283,45 @@ class UtteranceStore {
 		$utterance['utteranceId'] = $dbw->insertId();
 
 		// create audio file
-		$audioUrl = $this->audioUrlFactory( $utterance['utteranceId'] );
-		if ( !$this->getFileBackend()->prepare( [
-			'dir' => dirname( $audioUrl ),
-			'noAccess' => 1,
-			'noListing' => 1
-		] )->isOK() ) {
-			throw new ExternalStoreException( 'Failed to prepare audio file ' . $audioUrl );
-		}
-		if ( !$this->getFileBackend()->create( [
-			'dst' => $audioUrl,
-			'content' => $audio
-		] )->isOK() ) {
-			throw new ExternalStoreException( 'Failed to create audio file ' . $audioUrl );
-		}
+		$this->storeFile(
+			$this->audioUrlFactory( $utterance['utteranceId'] ),
+			$audio,
+			'audio file'
+		);
 
 		// create synthesis metadata file
-		$synthesisMetadataUrl = $this->synthesisMetadataUrlFactory( $utterance['utteranceId'] );
+		$this->storeFile(
+			$this->synthesisMetadataUrlFactory( $utterance['utteranceId'] ),
+			$synthesisMetadata,
+			'synthesis metadata file'
+		);
+
+		return $utterance;
+	}
+
+	/**
+	 * Store a file in the backend.
+	 *
+	 * @since 0.1.5
+	 * @param string $fileUrl
+	 * @param mixed $content
+	 * @param string $type
+	 * @throws ExternalStoreException
+	 */
+	public function storeFile( $fileUrl, $content, $type ) {
 		if ( !$this->getFileBackend()->prepare( [
-			'dir' => dirname( $synthesisMetadataUrl ),
+			'dir' => dirname( $fileUrl ),
 			'noAccess' => 1,
 			'noListing' => 1
 		] )->isOK() ) {
-			throw new ExternalStoreException(
-				'Failed to prepare synthesis metadata file ' . $synthesisMetadataUrl
-			);
+			throw new ExternalStoreException( "Failed to prepare $type: $fileUrl." );
 		}
 		if ( !$this->getFileBackend()->create( [
-			'dst' => $synthesisMetadataUrl,
-			'content' => $synthesisMetadata
+			'dst' => $fileUrl,
+			'content' => $content
 		] )->isOK() ) {
-			throw new ExternalStoreException(
-				'Failed to create synthesis metadata file ' . $synthesisMetadataUrl
-			);
+			throw new ExternalStoreException( "Failed to create $type: $fileUrl." );
 		}
-
-		return $utterance;
 	}
 
 	/**

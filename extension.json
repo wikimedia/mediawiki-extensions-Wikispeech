@@ -140,7 +140,7 @@
 		},
 		"WikispeechNamespaces": {
 			"description": [
-				"List of the [[https://www.mediawiki.org/Namespaces|namespace]] ",
+				"List of the [https://www.mediawiki.org/wiki/Namespaces namespace] ",
 				"indices, for which Wikispeech is activated."
 		],
 			"value": [ 0 ]

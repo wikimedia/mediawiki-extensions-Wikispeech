@@ -28,5 +28,6 @@
 	"prefs-wikispeech-speech-rate": "Konuşma oranı",
 	"prefs-wikispeech-enable": "Wikispeech'i etkinleştir",
 	"right-wikispeech-listen": "Sayfayı dinle",
-	"action-wikispeech-listen": "sayfayı dinle"
+	"action-wikispeech-listen": "sayfayı dinle",
+	"apierror-wikispeechlisten-invalid-input-too-long": "Giriş metni $1 karakteri geçmemeli, $2 karakter içermelidir."
 }

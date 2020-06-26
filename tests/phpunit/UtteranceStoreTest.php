@@ -7,6 +7,7 @@
  */
 
 use MediaWiki\Logger\LoggerFactory;
+use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -20,7 +21,10 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 	 */
 	private $utteranceStore;
 
-	private $log;
+	/**
+	 * @var LoggerInterface
+	 */
+	private $logger;
 
 	protected function setUp() : void {
 		parent::setUp();
@@ -32,7 +36,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			'name' => 'wikispeech_utterances',
 			'wikiId' => WikiMap::getCurrentWikiId()
 		] );
-		$this->log = LoggerFactory::getInstance( 'UtteranceStoreTest' );
+		$this->logger = LoggerFactory::getInstance( 'UtteranceStoreTest' );
 	}
 
 	/**
@@ -433,7 +437,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'dst' => $synthesisMetadataUrl,
 				'content' => $mockedUtterance['synthesisMetadata']
 			] )->isOK() );
-			$this->log->debug(
+			$this->logger->debug(
 				"Inserted utterance {utterance} from mock",
 				[ 'utterance' => $mockedUtterance ]
 			);
@@ -445,7 +449,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		foreach ( $mockedUtterances as $mockedUtterance ) {
 			if ( $mockedUtterance['expectedToFlush'] ) {
 				$expectedFlushCounter++;
-				$this->log->debug(
+				$this->logger->debug(
 					'Expecting to flush {mockedUtterance}',
 					[ 'mockedUtterance' => $mockedUtterance ]
 				);
@@ -470,7 +474,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 
 		// ensure expected flushed utterances is gone.
 		foreach ( $mockedUtterances as $mockedUtterance ) {
-			$this->log->debug(
+			$this->logger->debug(
 				'Inspecting {mockedUtterance}',
 				[ 'mockedUtterance' => $mockedUtterance ]
 			);

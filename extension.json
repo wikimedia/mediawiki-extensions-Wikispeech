@@ -116,7 +116,10 @@
 				"span": "mw-editsection",
 				"table": true,
 				"sup": "reference",
-				"div": [ "thumb", "toc" ]
+				"div": [
+					"thumb",
+					"toc"
+				]
 			}
 		},
 		"WikispeechSegmentBreakingTags": {
@@ -142,8 +145,10 @@
 			"description": [
 				"List of the [[https://www.mediawiki.org/Namespaces|namespace]] ",
 				"indices, for which Wikispeech is activated."
-		],
-			"value": [ 0 ]
+			],
+			"value": [
+				0
+			]
 		},
 		"WikispeechKeyboardShortcuts": {
 			"description": [

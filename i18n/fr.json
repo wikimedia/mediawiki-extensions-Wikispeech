@@ -31,5 +31,6 @@
 	"prefs-wikispeech-speech-rate": "Débit de parole",
 	"prefs-wikispeech-enable": "Activer Wikispeech",
 	"right-wikispeech-listen": "Écouter la page",
-	"action-wikispeech-listen": "écouter la page"
+	"action-wikispeech-listen": "écouter la page",
+	"apierror-wikispeechlisten-invalid-input-too-long": "Le texte saisi ne doit pas excéder $1 caractères, et contenir $2 caractères."
 }

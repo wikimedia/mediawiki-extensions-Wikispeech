@@ -4,10 +4,11 @@
 			"FF11",
 			"Igor Leturia",
 			"Karl Wettin",
-			"Sebastian Berlin"
+			"Sebastian Berlin",
+			"Umherirrender"
 		]
 	},
-	"wikispeech": "The name of the extension",
+	"wikispeech": "{{name}}\nThe name of the extension",
 	"wikispeech-desc": "{{desc|name=Wikispeech|url=https://www.mediawiki.org/wiki/Extension:Wikispeech}}",
 	"apihelp-wikispeech-summary": "{{doc-apihelp-summary|wikispeech}}",
 	"apihelp-wikispeech-param-page": "{{doc-apihelp-param|wikispeech|page}}",
@@ -18,9 +19,9 @@
 	"apierror-wikispeech-removetagsinvalidjson": "{{doc-apierror}}",
 	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}",
 	"apihelp-wikispeechlisten-summary": "{{doc-apihelp-summary|wikispeechlisten}}",
-	"apihelp-wikispeechlisten-param-lang": "{{doc-apihelp-param|wikispeech|lang}}",
-	"apihelp-wikispeechlisten-param-input": "{{doc-apihelp-param|wikispeech|input}}",
-	"apihelp-wikispeechlisten-param-voice": "{{doc-apihelp-param|wikispeech|voice}}",
+	"apihelp-wikispeechlisten-param-lang": "{{doc-apihelp-param|wikispeechlisten|lang}}",
+	"apihelp-wikispeechlisten-param-input": "{{doc-apihelp-param|wikispeechlisten|input}}",
+	"apihelp-wikispeechlisten-param-voice": "{{doc-apihelp-param|wikispeechlisten|voice}}",
 	"apierror-wikispeechlisten-notallowed": "{{doc-apierror}}",
 	"apierror-wikispeechlisten-invalid-language": "{{doc-apierror}}",
 	"apierror-wikispeechlisten-invalid-voice": "{{doc-apierror}}",

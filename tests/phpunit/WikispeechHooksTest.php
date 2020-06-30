@@ -21,7 +21,7 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$context = new RequestContext();
 		$context->setLanguage( 'en' );
 		$this->out = new OutputPage( $context );
-		$title = Title::newFromText( "Page" );
+		$title = Title::newFromText( 'Page' );
 		$this->out->setTitle( $title );
 		$this->out->setRevisionId( $title->getLatestRevId() );
 		$this->out->getUser()->setOption( 'wikispeechEnable', true );
@@ -41,7 +41,7 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 	}
 
 	public function testOnBeforePageDisplayDontLoadModulesIfWrongNamespace() {
-		$this->out->setTitle( Title::newFromText( "Page", NS_TALK ) );
+		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
 		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 	}

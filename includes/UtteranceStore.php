@@ -28,7 +28,7 @@ use Wikimedia\Timestamp\TimestampException;
 class UtteranceStore {
 
 	/** @var string Name of database table that keeps track of utterance metadata. */
-	public const UTTERANCE_TABLE = "wikispeech_utterance";
+	public const UTTERANCE_TABLE = 'wikispeech_utterance';
 
 	/** @var LoggerInterface */
 	private $logger;
@@ -56,8 +56,9 @@ class UtteranceStore {
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( !$this->fileBackendContainerName ) {
 			$this->fileBackendContainerName = "wikispeech-utterances";
-			$this->logger->info( 'Falling back on container name {containerName}', [
-				'containerName' => $this->fileBackendContainerName
+			$this->logger->info(
+				'Falling back on container name {containerName}', [
+					'containerName' => $this->fileBackendContainerName
 			] );
 		}
 
@@ -99,10 +100,10 @@ class UtteranceStore {
 					$this->fileBackend = $fileBackend;
 				} else {
 					$this->logger->error(
-						"No file backend group in LocalSettings.php named {fileBackendName}. "
-						. "Exceptions related to accessing files are to be expected very soon.",
-						[ 'fileBackendName' => $fileBackendName ]
-					);
+						'No file backend group in LocalSettings.php named {fileBackendName}. ' .
+						'Exceptions related to accessing files are to be expected very soon.', [
+							'fileBackendName' => $fileBackendName
+					] );
 				}
 			}
 		}
@@ -409,14 +410,14 @@ class UtteranceStore {
 			);
 			if ( !$successfullyDeletedTableRow ) {
 				$this->logger->warning(
-					"Failed to delete utterance {utteranceId} from database.",
-					[ 'utteranceId' => $utteranceId ]
-				);
+					'Failed to delete utterance {utteranceId} from database.', [
+						'utteranceId' => $utteranceId
+				] );
 			} else {
 				$this->logger->debug(
-					'Flushed out utterance with id {utteranceId} from database',
-					[ 'utteranceId' => $utteranceId ]
-				);
+					'Flushed out utterance with id {utteranceId} from database', [
+						'utteranceId' => $utteranceId
+				] );
 			}
 
 			// 2. delete in file store.
@@ -455,24 +456,20 @@ class UtteranceStore {
 		if ( $this->getFileBackend()->fileExists( $synthesisMetadataFile ) ) {
 			if ( !$this->getFileBackend()->delete( $synthesisMetadataFile )->isOK() ) {
 				$this->logger->warning(
-					"Unable to delete {type} for utterance with identity {utteranceId}.",
-					[
+					'Unable to delete {type} for utterance with identity {utteranceId}.', [
 						'utteranceId' => $utteranceId,
 						'type' => $type
-					]
-				);
+				] );
 				return false;
 			} else {
 				$this->getFileBackend()->clean( [ 'dir' => $this->urlPathFactory( $utteranceId ) ] );
 			}
 		} else {
 			$this->logger->warning(
-				"Attempted to delete non existing {type} for utterance {utteranceId}.",
-				[
+				'Attempted to delete non existing {type} for utterance {utteranceId}.', [
 					'utteranceId' => $utteranceId,
 					'type' => $type
-				]
-			);
+			] );
 			return false;
 		}
 		$this->logger->debug( 'Flushed out file {src}', [ 'src' => $src ] );

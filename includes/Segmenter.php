@@ -363,7 +363,7 @@ class Segmenter {
 		$hash = hash_final( $context );
 		// Uncommenting below block can be useful during creation of
 		// new test cases as you might need to figure out hashes.
-		//MediaWiki\Logger\LoggerFactory::getInstance( 'Segmenter' )->info( "{segement} : {hash}", [
+		//MediaWiki\Logger\LoggerFactory::getInstance( 'Segmenter' )->info( '{segement} : {hash}', [
 		//	'segment' => $segment,
 		//	'hash' => $hash
 		//] );

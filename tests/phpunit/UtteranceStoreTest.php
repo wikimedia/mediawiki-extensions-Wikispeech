@@ -438,9 +438,9 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 				'content' => $mockedUtterance['synthesisMetadata']
 			] )->isOK() );
 			$this->logger->debug(
-				"Inserted utterance {utterance} from mock",
-				[ 'utterance' => $mockedUtterance ]
-			);
+				'Inserted utterance {utterance} from mock', [
+					'utterance' => $mockedUtterance
+			] );
 		}
 		unset( $mockedUtterance );
 
@@ -450,9 +450,9 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			if ( $mockedUtterance['expectedToFlush'] ) {
 				$expectedFlushCounter++;
 				$this->logger->debug(
-					'Expecting to flush {mockedUtterance}',
-					[ 'mockedUtterance' => $mockedUtterance ]
-				);
+					'Expecting to flush {mockedUtterance}', [
+						'mockedUtterance' => $mockedUtterance
+				] );
 			}
 		}
 
@@ -475,9 +475,9 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		// ensure expected flushed utterances is gone.
 		foreach ( $mockedUtterances as $mockedUtterance ) {
 			$this->logger->debug(
-				'Inspecting {mockedUtterance}',
-				[ 'mockedUtterance' => $mockedUtterance ]
-			);
+				'Inspecting {mockedUtterance}', [
+					'mockedUtterance' => $mockedUtterance
+			] );
 			$this->assertTrue( is_int( $mockedUtterance['utteranceId'] ) );
 			if ( $mockedUtterance['expectedToFlush'] ) {
 				// utterance should have been flushed out

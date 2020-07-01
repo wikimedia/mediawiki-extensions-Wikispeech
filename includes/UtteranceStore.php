@@ -55,7 +55,7 @@ class UtteranceStore {
 			->makeConfig( 'wikispeech' )
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( !$this->fileBackendContainerName ) {
-			$this->fileBackendContainerName = "wikispeech_utterances";
+			$this->fileBackendContainerName = "wikispeech-utterances";
 			$this->logger->info( 'Falling back on container name {containerName}', [
 				'containerName' => $this->fileBackendContainerName
 			] );
@@ -69,6 +69,7 @@ class UtteranceStore {
 	 * @return FileBackend
 	 */
 	private function getFileBackend() {
+		global $wgUploadDirectory;
 		if ( !$this->fileBackend ) {
 
 			/** @var string Name of file backend group in LocalSettings.php to use. */
@@ -77,26 +78,18 @@ class UtteranceStore {
 				->makeConfig( 'wikispeech' )
 				->get( 'WikispeechUtteranceFileBackendName' );
 			if ( !$fileBackendName ) {
-				$fileBackendName = 'wikispeech-utterances';
-				$this->logger->info( 'Falling back on file backend name {fileBackendName}', [
-					'fileBackendName' => $fileBackendName
-				] );
-				// @todo find out if this is ok or even normal behavior
-				$tmpDir = sys_get_temp_dir() . 'wikispeech_utterances';
-				if ( !file_exists( $tmpDir ) ) {
-					mkdir( $tmpDir );
-				}
+				$fileBackendName = 'wikispeech-backend';
+				$fallbackDir = "$wgUploadDirectory/wikispeech_utterances";
 				$this->logger->info(
-					"No file backend named {name} defined in LocalSettings.php. "
-					. "Falling back on transient FS storage in {tmpDir}.", [
+					'No file backend defined in LocalSettings.php. Falling back ' .
+					'on FS storage backend named {name} in {dir}.', [
 						'name' => $fileBackendName,
-						'tmpDir' => $tmpDir
-					]
-				);
+						'dir' => $fallbackDir
+				] );
 				$this->fileBackend = new FSFileBackend( [
 					'name' => $fileBackendName,
 					'wikiId' => WikiMap::getCurrentWikiId(),
-					'basePath' => $tmpDir
+					'basePath' => $fallbackDir
 				] );
 			} else {
 				$fileBackend = MediaWikiServices::getInstance()

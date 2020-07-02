@@ -27,50 +27,60 @@ class WikispeechHooks {
 
 		$speechoidUrl = $config->get( 'WikispeechSpeechoidUrl' );
 		if ( !filter_var( $speechoidUrl, FILTER_VALIDATE_URL ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value for 'WikispeechSpeechoidUrl' is not a valid URL: {value}",
-				[ 'value' => $speechoidUrl ]
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value for ' .
+					'\'WikispeechSpeechoidUrl\' is not a valid URL: {value}',
+					[ 'value' => $speechoidUrl ]
 			);
 			$success = false;
 		}
 
-		$utteranceTimeToLiveDays = $config->get( 'WikispeechUtteranceTimeToLiveDays' );
+		$utteranceTimeToLiveDays = $config
+			->get( 'WikispeechUtteranceTimeToLiveDays' );
 		if ( !$utteranceTimeToLiveDays ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value for 'WikispeechUtteranceTimeToLiveDays' is missing"
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value for ' .
+					'\'WikispeechUtteranceTimeToLiveDays\' is missing.'
 			);
 			$success = false;
 		}
 		$utteranceTimeToLiveDays = intval( $utteranceTimeToLiveDays );
 		if ( $utteranceTimeToLiveDays < 0 ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value for 'WikispeechUtteranceTimeToLiveDays' must not be negative."
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value for ' .
+					'\'WikispeechUtteranceTimeToLiveDays\' must not be negative.'
 			);
 			$success = false;
 		}
 
 		$fileBackendName = $config->get( 'WikispeechUtteranceFileBackendName' );
 		if ( $fileBackendName == null ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value 'WikispeechUtteranceFileBackendName' is missing."
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ':  Configuration value ' .
+					'\'WikispeechUtteranceFileBackendName\' is missing.'
 			);
-			// this is not a failure. It will fall back on default, but admin should be aware.
+			// This is not a failure.
+			// It will fall back on default, but admin should be aware.
 		} elseif ( !is_string( $fileBackendName ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value 'WikispeechUtteranceFileBackendName' is not a string value."
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value ' .
+					'\'WikispeechUtteranceFileBackendName\' is not a string value.'
 			);
 			$success = false;
 		}
 
-		$fileBackendContainerName = $config->get( 'WikispeechUtteranceFileBackendContainerName' );
+		$fileBackendContainerName = $config
+			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( $fileBackendContainerName == null ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value 'WikispeechUtteranceFileBackendContainerName' is missing."
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value ' .
+					'\'WikispeechUtteranceFileBackendContainerName\' is missing.'
 			);
 			$success = false;
 		} elseif ( !is_string( $fileBackendContainerName ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->warning(
-				"Configuration value 'WikispeechUtteranceFileStore.type' is not a string value."
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value ' .
+					'\'WikispeechUtteranceFileStore.type\' is not a string value.'
 			);
 			$success = false;
 		}
@@ -96,12 +106,12 @@ class WikispeechHooks {
 			->getOption( $out->getUser(), 'wikispeechShowPlayer' );
 		if ( $showPlayer ) {
 			LoggerFactory::getInstance( 'Wikispeech' )->info(
-				'Loading player.'
+				__METHOD__ . ': Loading player.'
 			);
 			$out->addModules( [ 'ext.wikispeech' ] );
 		} else {
 			LoggerFactory::getInstance( 'Wikispeech' )->info(
-				'Adding option to load player.'
+				__METHOD__ . ': Adding option to load player.'
 			);
 			$out->addModules( [ 'ext.wikispeech.loader' ] );
 		}

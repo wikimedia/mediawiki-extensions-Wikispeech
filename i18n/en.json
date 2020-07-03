@@ -29,7 +29,9 @@
 	"prefs-wikispeech-voice": "Voice",
 	"prefs-wikispeech-speech-rate": "Speech rate",
 	"prefs-wikispeech-enable": "Enable Wikispeech",
+	"prefs-wikispeech-show-player": "Show player",
 	"right-wikispeech-listen": "Listen to page",
 	"action-wikispeech-listen": "listen to page",
-	"apierror-wikispeechlisten-invalid-input-too-long": "Input text must not exceed $1 characters, but contained $2 characters."
+	"apierror-wikispeechlisten-invalid-input-too-long": "Input text must not exceed $1 characters, but contained $2 characters.",
+	"wikispeech-listen": "Listen"
 }

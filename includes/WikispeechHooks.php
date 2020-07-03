@@ -88,30 +88,69 @@ class WikispeechHooks {
 	 *  added in MediaWiki 1.13.
 	 */
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
+		if ( !self::shouldWikispeechRun( $out ) ) {
+			return;
+		}
+		$showPlayer = MediaWikiServices::getInstance()
+			->getUserOptionsLookup()
+			->getOption( $out->getUser(), 'wikispeechShowPlayer' );
+		if ( $showPlayer ) {
+			LoggerFactory::getInstance( 'Wikispeech' )->info(
+				'Loading player.'
+			);
+			$out->addModules( [ 'ext.wikispeech' ] );
+		} else {
+			LoggerFactory::getInstance( 'Wikispeech' )->info(
+				'Adding option to load player.'
+			);
+			$out->addModules( [ 'ext.wikispeech.loader' ] );
+		}
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
+		$out->addJsConfigVars( [
+			'wgWikispeechKeyboardShortcuts' => $config->get( 'WikispeechKeyboardShortcuts' ),
+			'wgWikispeechContentSelector' => $config->get( 'WikispeechContentSelector' ),
+			'wgWikispeechSkipBackRewindsThreshold' => $config->get( 'WikispeechSkipBackRewindsThreshold' ),
+			'wgWikispeechHelpPage' => $config->get( 'WikispeechHelpPage' ),
+			'wgWikispeechFeedbackPage' => $config->get( 'WikispeechFeedbackPage' )
+		] );
+	}
+
+	/**
+	 * Checks if Wikispeech should run.
+	 *
+	 * Returns true if all of the following are true:
+	 * * User has enabled Wikispeech in the settings
+	 * * User is allowed to listen to pages
+	 * * Wikispeech configuration is valid
+	 * * Wikispeech is enabled for the page's namespace
+	 * * Revision is current
+	 * * Page's language is enabled for Wikispeech (@todo: broken see T257078)
+	 *
+	 * @since 0.1.5
+	 * @param OutputPage $out
+	 * @return bool
+	 */
+	private static function shouldWikispeechRun( OutputPage $out ) {
+		$wikispeechEnabled = MediaWikiServices::getInstance()
+			->getUserOptionsLookup()
+			->getOption( $out->getUser(), 'wikispeechEnable' );
 		$namespace = $out->getTitle()->getNamespace();
-		$config = MediaWikiServices::getInstance()->
-			getConfigFactory()->
-			makeConfig( 'wikispeech' );
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
 		$validNamespaces = $config->get( 'WikispeechNamespaces' );
 		$validLanguages = array_keys( $config->get( 'WikispeechVoices' ) );
-		if ( $out->getUser()->getOption( 'wikispeechEnable' ) &&
-			 $out->getUser()->isAllowed( 'wikispeech-listen' ) &&
-			 self::validateConfiguration() &&
-			 in_array( $namespace, $validNamespaces ) &&
-			 $out->isRevisionCurrent() &&
-			 in_array( $out->getLanguage()->getCode(), $validLanguages )
-		) {
-			$out->addModules( [
-				'ext.wikispeech'
-			] );
-			$out->addJsConfigVars( [
-				'wgWikispeechKeyboardShortcuts' => $config->get( 'WikispeechKeyboardShortcuts' ),
-				'wgWikispeechContentSelector' => $config->get( 'WikispeechContentSelector' ),
-				'wgWikispeechSkipBackRewindsThreshold' => $config->get( 'WikispeechSkipBackRewindsThreshold' ),
-				'wgWikispeechHelpPage' => $config->get( 'WikispeechHelpPage' ),
-				'wgWikispeechFeedbackPage' => $config->get( 'WikispeechFeedbackPage' )
-			] );
-		}
+		$isAllowed = MediaWikiServices::getInstance()
+			->getPermissionManager()
+			->userHasRight( $out->getUser(), 'wikispeech-listen' );
+		return $wikispeechEnabled &&
+			$isAllowed &&
+			self::validateConfiguration() &&
+			in_array( $namespace, $validNamespaces ) &&
+			$out->isRevisionCurrent() &&
+			in_array( $out->getLanguage()->getCode(), $validLanguages );
 	}
 
 	/**
@@ -151,22 +190,18 @@ class WikispeechHooks {
 	 * @param array &$preferences Preferences array.
 	 */
 	public static function onGetPreferences( $user, &$preferences ) {
-		self::addWikispeechEnable( $preferences );
-		self::addVoicePreferences( $preferences );
-		self::addSpeechRatePreferences( $preferences );
-	}
-
-	/**
-	 * Add preference for enabilng/disabling Wikispeech.
-	 *
-	 * @param array &$preferences Preferences array.
-	 */
-	private static function addWikispeechEnable( &$preferences ) {
 		$preferences['wikispeechEnable'] = [
 			'type' => 'toggle',
 			'label-message' => 'prefs-wikispeech-enable',
 			'section' => 'wikispeech'
 		];
+		$preferences['wikispeechShowPlayer'] = [
+			'type' => 'toggle',
+			'label-message' => 'prefs-wikispeech-show-player',
+			'section' => 'wikispeech'
+		];
+		self::addVoicePreferences( $preferences );
+		self::addSpeechRatePreferences( $preferences );
 	}
 
 	/**
@@ -238,6 +273,25 @@ class WikispeechHooks {
 	}
 
 	/**
+	 * Add tab for activating Wikispeech player.
+	 *
+	 * @since 0.1.5
+	 * @param SkinTemplate $skinTemplate The skin template on which
+	 *  the UI is built.
+	 * @param array &$links Navigation links.
+	 */
+	public static function onSkinTemplateNavigation( SkinTemplate $skinTemplate, array &$links ) {
+		$out = $skinTemplate->getOutput();
+		if ( self::shouldWikispeechRun( $out ) ) {
+			$links['actions']['listen'] = [
+				'class' => 'ext-wikispeech-listen',
+				'text' => $skinTemplate->msg( 'wikispeech-listen' )->text(),
+				'href' => '#'
+			];
+		}
+	}
+
+	/**
 	 * Creates utterance database tables.
 	 *
 	 * @since 0.1.5
@@ -249,5 +303,4 @@ class WikispeechHooks {
 			__DIR__ . '/../sql/wikispeech_utterance_v1.sql'
 		);
 	}
-
 }

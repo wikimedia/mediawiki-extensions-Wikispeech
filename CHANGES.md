@@ -27,6 +27,7 @@ the match the new release version.
 
 ### 0.1.5-SNAPSHOT
 202Y-MM-DD
+* [T243579](https://phabricator.wikimedia.org/T243579) Add a pre-loaded trigger for Wikispeech
 * [T199414](https://phabricator.wikimedia.org/T199414) Config variable `WikispeechServerUrl` renamed `WikispeechSpeechoidUrl`.
 * [T247395](https://phabricator.wikimedia.org/T247395) Limit input length in Speechoid requests.
 * [T248825](https://phabricator.wikimedia.org/T248825) Clean up segmenting

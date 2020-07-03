@@ -32,6 +32,11 @@
 		"ApiWikispeechListen": "includes/ApiWikispeechListen.php"
 	},
 	"ResourceModules": {
+		"ext.wikispeech.loader": {
+			"scripts": [
+				"ext.wikispeech.loader.js"
+			]
+		},
 		"ext.wikispeech": {
 			"scripts": [
 				"ext.wikispeech.highlighter.js",
@@ -87,7 +92,8 @@
 			"WikispeechHooks::onGetPreferences"
 		],
 		"ApiCheckCanExecute": "WikispeechHooks::onApiCheckCanExecute",
-		"LoadExtensionSchemaUpdates": "WikispeechHooks::onLoadExtensionSchemaUpdates"
+		"LoadExtensionSchemaUpdates": "WikispeechHooks::onLoadExtensionSchemaUpdates",
+		"SkinTemplateNavigation": "WikispeechHooks::onSkinTemplateNavigation"
 	},
 	"ConfigRegistry": {
 		"wikispeech": "GlobalVarConfig::newInstance"
@@ -268,6 +274,7 @@
 	},
 	"DefaultUserOptions": {
 		"wikispeechEnable": true,
+		"wikispeechShowPlayer": false,
 		"wikispeechVoiceAr": "",
 		"wikispeechVoiceEn": "",
 		"wikispeechVoiceSv": "",

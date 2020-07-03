@@ -31,7 +31,9 @@
 	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
+	"prefs-wikispeech-show-player": "Used in user preferences to always show the player where available",
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",
 	"action-wikispeech-listen": "{{doc-action|wikispeech-listen}}",
-	"apierror-wikispeechlisten-invalid-input-too-long": "{{doc-apierror}}"
+	"apierror-wikispeechlisten-invalid-input-too-long": "{{doc-apierror}}",
+	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood."
 }

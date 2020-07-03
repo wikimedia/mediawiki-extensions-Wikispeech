@@ -39,9 +39,6 @@
 
 	}
 
-	mw.wikispeech = mw.wikispeech || {};
-	mw.wikispeech.Main = Main;
-
 	mw.loader.using( [ 'mediawiki.api', 'ext.wikispeech' ] ).done(
 		function () {
 			var main = new Main();

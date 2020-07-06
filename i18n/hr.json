@@ -8,5 +8,6 @@
 	"wikispeech": "Wikigovor",
 	"prefs-wikispeech": "Wikigovor",
 	"prefs-wikispeech-enable": "Omogućavanje Wikigovora",
-	"apierror-wikispeechlisten-invalid-input-too-long": "Uneseni tekst ne smije premašiti broj znakova: $1, no sadržavao je $2."
+	"apierror-wikispeechlisten-invalid-input-too-long": "Uneseni tekst ne smije premašiti broj znakova: $1, no sadržavao je $2.",
+	"wikispeech-listen": "Poslušati"
 }

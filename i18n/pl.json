@@ -21,6 +21,8 @@
 	"prefs-wikispeech-voice": "Głos",
 	"prefs-wikispeech-speech-rate": "Przepustowość mowy",
 	"prefs-wikispeech-enable": "Włącz Wiki mowę",
+	"prefs-wikispeech-show-player": "Pokaż odtwarzacz",
 	"right-wikispeech-listen": "Słuchanie treści strony",
-	"action-wikispeech-listen": "słuchania treści strony"
+	"action-wikispeech-listen": "słuchania treści strony",
+	"wikispeech-listen": "Słuchaj"
 }

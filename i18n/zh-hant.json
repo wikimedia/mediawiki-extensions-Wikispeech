@@ -27,7 +27,9 @@
 	"prefs-wikispeech-voice": "語音",
 	"prefs-wikispeech-speech-rate": "發聲速度",
 	"prefs-wikispeech-enable": "啟用 Wikispeech",
+	"prefs-wikispeech-show-player": "顯示播放器",
 	"right-wikispeech-listen": "聆聽頁面",
 	"action-wikispeech-listen": "聆聽頁面",
-	"apierror-wikispeechlisten-invalid-input-too-long": "輸入文字包含了 $2 個字元，超過 $1 個字元上限。"
+	"apierror-wikispeechlisten-invalid-input-too-long": "輸入文字包含了 $2 個字元，超過 $1 個字元上限。",
+	"wikispeech-listen": "聆聽"
 }

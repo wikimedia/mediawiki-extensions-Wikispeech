@@ -4,12 +4,18 @@
 			"FF11"
 		]
 	},
-	"apihelp-wikispeech-param-page": "Der Titel der zu verarbeitenden Seite",
+	"wikispeech-desc": "Ein Text-zu-Sprache-Tool, um Wikimedia-Projekte für Personen zugänglicher zu machen, die aus verschiedenen Gründen Schwierigkeiten beim Lesen haben.",
+	"apihelp-wikispeech-summary": "Aufteilen des HTML-Inhaltes einer Seite in Segmente.",
+	"apihelp-wikispeech-param-page": "Der Titel der zu aufzuteilenden Seite.",
 	"apierror-wikispeech-removetagsinvalidjson": "<var>removetags</var> ist kein JSON-String.",
 	"apihelp-wikispeechlisten-param-lang": "Sprachcode.",
 	"apihelp-wikispeechlisten-param-voice": "Zu benutzende Stimme. Wenn nicht angegeben, wird die Standardstimme benutzt.",
 	"apihelp-wikispeechlisten-example-2": "Verwende eine vom Standard abweichende Stimme.",
 	"prefs-wikispeech-voice": "Stimme",
+	"prefs-wikispeech-speech-rate": "Sprechgeschwindigkeit",
+	"prefs-wikispeech-enable": "Wikispeech aktivieren",
+	"prefs-wikispeech-show-player": "Spieler einblenden",
 	"right-wikispeech-listen": "Einer Seite zuhören",
-	"action-wikispeech-listen": "der Seite zuzuhören"
+	"action-wikispeech-listen": "der Seite zuzuhören",
+	"wikispeech-listen": "Anhören"
 }

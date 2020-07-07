@@ -27,6 +27,8 @@
 	"prefs-wikispeech-voice": "Röst",
 	"prefs-wikispeech-speech-rate": "Talhastighet",
 	"prefs-wikispeech-enable": "Aktivera Wikispeech",
+	"prefs-wikispeech-show-player": "Visa spelare",
 	"right-wikispeech-listen": "Lyssna på sidan",
-	"action-wikispeech-listen": "lyssna på sidan"
+	"action-wikispeech-listen": "lyssna på sidan",
+	"wikispeech-listen": "Lyssna"
 }

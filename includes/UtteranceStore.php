@@ -56,7 +56,7 @@ class UtteranceStore {
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( !$this->fileBackendContainerName ) {
 			$this->fileBackendContainerName = "wikispeech-utterances";
-			$this->logger->info(
+			$this->logger->info( __METHOD__ . ': ' .
 				'Falling back on container name {containerName}', [
 					'containerName' => $this->fileBackendContainerName
 			] );
@@ -81,7 +81,7 @@ class UtteranceStore {
 			if ( !$fileBackendName ) {
 				$fileBackendName = 'wikispeech-backend';
 				$fallbackDir = "$wgUploadDirectory/wikispeech_utterances";
-				$this->logger->info(
+				$this->logger->info( __METHOD__ . ': ' .
 					'No file backend defined in LocalSettings.php. Falling back ' .
 					'on FS storage backend named {name} in {dir}.', [
 						'name' => $fileBackendName,
@@ -99,7 +99,7 @@ class UtteranceStore {
 				if ( $fileBackend ) {
 					$this->fileBackend = $fileBackend;
 				} else {
-					$this->logger->error(
+					$this->logger->error( __METHOD__ . ': ' .
 						'No file backend group in LocalSettings.php named {fileBackendName}. ' .
 						'Exceptions related to accessing files are to be expected very soon.', [
 							'fileBackendName' => $fileBackendName
@@ -146,7 +146,7 @@ class UtteranceStore {
 					'audio file'
 				);
 			} catch ( ExternalStoreException $e ) {
-				$this->logger->warning( $e->getMessage() );
+				$this->logger->warning( __METHOD__ . ': ' . $e->getMessage() );
 				return null;
 			}
 		}
@@ -159,7 +159,7 @@ class UtteranceStore {
 				'synthesis metadata file'
 			);
 		} catch ( ExternalStoreException $e ) {
-			$this->logger->warning( $e->getMessage() );
+			$this->logger->warning( __METHOD__ . ': ' . $e->getMessage() );
 			return null;
 		}
 
@@ -409,12 +409,12 @@ class UtteranceStore {
 				__METHOD__
 			);
 			if ( !$successfullyDeletedTableRow ) {
-				$this->logger->warning(
+				$this->logger->warning( __METHOD__ . ': ' .
 					'Failed to delete utterance {utteranceId} from database.', [
 						'utteranceId' => $utteranceId
 				] );
 			} else {
-				$this->logger->debug(
+				$this->logger->debug( __METHOD__ . ': ' .
 					'Flushed out utterance with id {utteranceId} from database', [
 						'utteranceId' => $utteranceId
 				] );
@@ -455,7 +455,7 @@ class UtteranceStore {
 		];
 		if ( $this->getFileBackend()->fileExists( $synthesisMetadataFile ) ) {
 			if ( !$this->getFileBackend()->delete( $synthesisMetadataFile )->isOK() ) {
-				$this->logger->warning(
+				$this->logger->warning( __METHOD__ . ': ' .
 					'Unable to delete {type} for utterance with identity {utteranceId}.', [
 						'utteranceId' => $utteranceId,
 						'type' => $type
@@ -465,14 +465,15 @@ class UtteranceStore {
 				$this->getFileBackend()->clean( [ 'dir' => $this->urlPathFactory( $utteranceId ) ] );
 			}
 		} else {
-			$this->logger->warning(
+			$this->logger->warning( __METHOD__ . ': ' .
 				'Attempted to delete non existing {type} for utterance {utteranceId}.', [
 					'utteranceId' => $utteranceId,
 					'type' => $type
 			] );
 			return false;
 		}
-		$this->logger->debug( 'Flushed out file {src}', [ 'src' => $src ] );
+		$this->logger->debug( __METHOD__ . ': ' .
+			'Flushed out file {src}', [ 'src' => $src ] );
 		return true;
 	}
 

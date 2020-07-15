@@ -31,6 +31,9 @@
 		"ApiWikispeech": "includes/ApiWikispeech.php",
 		"ApiWikispeechListen": "includes/ApiWikispeechListen.php"
 	},
+	"TestAutoloadClasses": {
+		"Util": "tests/phpunit/Util.php"
+	},
 	"ResourceModules": {
 		"ext.wikispeech.loader": {
 			"scripts": [

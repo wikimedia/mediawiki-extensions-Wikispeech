@@ -8,8 +8,6 @@
 
 use Wikimedia\TestingAccessWrapper;
 
-require_once __DIR__ . '/Util.php';
-
 /**
  * @group Database
  * @group medium

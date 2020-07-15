@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Dutchy45",
 			"PonkoSasuke"
 		]
 	},
@@ -27,6 +28,8 @@
 	"prefs-wikispeech-voice": "Stem",
 	"prefs-wikispeech-speech-rate": "Spreektempo",
 	"prefs-wikispeech-enable": "Schakel Wikispeech in",
+	"prefs-wikispeech-show-player": "Toon speler",
 	"right-wikispeech-listen": "Luister naar pagina",
-	"action-wikispeech-listen": "luister naar pagina"
+	"action-wikispeech-listen": "luister naar pagina",
+	"wikispeech-listen": "Beluisteren"
 }

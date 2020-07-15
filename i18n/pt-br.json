@@ -24,6 +24,7 @@
 	"prefs-wikispeech-voice": "Voz",
 	"prefs-wikispeech-speech-rate": "Taxa de fala",
 	"prefs-wikispeech-enable": "Ativar Wikispeech",
+	"prefs-wikispeech-show-player": "Mostrar reprodutor",
 	"right-wikispeech-listen": "Ouça a página",
 	"action-wikispeech-listen": "ouvir a página",
 	"apierror-wikispeechlisten-invalid-input-too-long": "O texto de entrada não deve exceder $1 caracteres, mas continha $2 caracteres.",

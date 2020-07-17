@@ -95,14 +95,14 @@
 		};
 
 		/**
-		* Add a control button.
-		*
-		* @param {OO.ui.ButtonGroupWidget} group Group to add button to.
-		* @param {string} icon Name of button icon.
-		* @param {Function|string} onClick Function to call or link.
-		* @param {string[]} classes CSS classes.
-		* @return {OO.ui.ButtonWidget}
-		*/
+		 * Add a control button.
+		 *
+		 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
+		 * @param {string} icon Name of button icon.
+		 * @param {Function|string} onClick Function to call or link.
+		 * @param {string[]} classes CSS classes.
+		 * @return {OO.ui.ButtonWidget}
+		 */
 
 		this.addButton = function ( group, icon, onClick, classes ) {
 			var button = new OO.ui.ButtonWidget( {
@@ -203,17 +203,17 @@
 		};
 
 		/**
-		* Add a button that takes the user to another page.
-		*
-		* The button gets the link destination from a supplied
-		* config variable. If the variable isn't specified, the button
-		* isn't added.
-		*
-		* @param {OO.ui.ButtonGroupWidget} group Group to add button to.
-		* @param {string} icon Name of button icon.
-		* @param {string} configVariable The config variable to get
-		*  link destination from.
-		*/
+		 * Add a button that takes the user to another page.
+		 *
+		 * The button gets the link destination from a supplied
+		 * config variable. If the variable isn't specified, the button
+		 * isn't added.
+		 *
+		 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
+		 * @param {string} icon Name of button icon.
+		 * @param {string} configVariable The config variable to get
+		 *  link destination from.
+		 */
 
 		this.addLinkButton = function ( toolbar, icon, configVariable ) {
 			var page;

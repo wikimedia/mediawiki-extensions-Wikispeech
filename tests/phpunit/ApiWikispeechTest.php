@@ -24,8 +24,7 @@ class ApiWikispeechTest extends ApiTestCase {
 	public function testSegmentText() {
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech',
-			'page' => 'Talk:' . TITLE,
-			'output' => 'segments'
+			'page' => 'Talk:' . TITLE
 		] );
 		$this->assertEquals( 2, count( $res[0]['wikispeech']['segments'] ) );
 		$this->assertEquals(
@@ -76,7 +75,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
-			'output' => 'cleanedtext',
 			'removetags' => 'not a JSON string'
 		] );
 	}
@@ -87,7 +85,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
-			'output' => 'cleanedtext',
 			'removetags' => '"not a JSON object"'
 		] );
 	}
@@ -98,7 +95,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
-			'output' => 'cleanedtext',
 			'removetags' => '{"tag": null}'
 		] );
 	}
@@ -109,7 +105,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
-			'output' => 'cleanedtext',
 			'removetags' => '[true]'
 		] );
 	}
@@ -120,7 +115,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => TITLE,
-			'output' => 'cleanedtext',
 			'removetags' => '{"tag": ["valid", false]}'
 		] );
 	}
@@ -133,7 +127,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => 'Not a page',
-			'output' => 'cleanedtext',
 			'removetags' => '{}'
 		] );
 	}
@@ -145,7 +138,6 @@ class ApiWikispeechTest extends ApiTestCase {
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech',
 			'page' => $title,
-			'output' => 'segments'
 		] );
 		$this->assertEquals( 2, count( $res[0]['wikispeech']['segments'] ) );
 		$this->assertEquals(

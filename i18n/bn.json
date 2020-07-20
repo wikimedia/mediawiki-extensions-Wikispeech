@@ -1,10 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
+			"Sibabrata Banerjee",
 			"আফতাবুজ্জামান"
 		]
 	},
 	"apihelp-wikispeechlisten-param-lang": "ভাষা কোড।",
 	"prefs-wikispeech-voice": "কণ্ঠ",
+	"prefs-wikispeech-show-player": "প্লেয়ার দেখান",
 	"wikispeech-listen": "শুনুন"
 }

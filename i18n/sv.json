@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Sabelöga",
 			"WikiPhoenix"
 		]
 	},
 	"wikispeech": "Wikispeech",
 	"wikispeech-desc": "Ett text-till-tal-verktyg som gör Wikimedias projekt tillgängliga för personer som av olika anledningar har lässvårigheter.",
-	"apihelp-wikispeech-summary": "Bearbeta en sida att användas av tillägget Wikispeech.",
+	"apihelp-wikispeech-summary": "Dela en sidas HTML-innehåll i bitar.",
 	"apihelp-wikispeech-param-page": "Titeln på sidan att bearbeta.",
 	"apihelp-wikispeech-param-removetags": "Taggarna som bör tas bort helt och hållet under städningen som ett JSON-objekt med följande format:\n<pre>{\n  \"taggnamn1\": true,\n  \"taggnamn2\": \"cssKlass\",\n  \"taggnamn3\": [\"cssKlass1\", \"cssKlass2\"]\n}</pre>\ndär <code>taggnamn1</code> alltid tas bort, <code>taggnamn2</code> tas endast bort om den även har CSS-klassen <code>cssKlass</code>, samt <code>taggnamn3</code> tas endast bort om den även har CSS-klassen <code>cssKlass2</code> eller <code>cssKlass1</code>.",
 	"apihelp-wikispeech-param-segmentbreakingtags": "Taggnamnen för taggar som bör lägga till segmentbrytpunkter.",

@@ -10,7 +10,7 @@ accepted
 
 The original implementation of Wikispeech stored the synthesized audio
 as files in a folder within the Speechoid service (in the
-wikispeech_mockup sub-service). The paths to these files, together
+wikispeech-server sub-service). The paths to these files, together
 with the related metadata were then passed on as a response to the
 MediaWiki extension.
 

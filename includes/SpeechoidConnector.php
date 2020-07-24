@@ -25,7 +25,7 @@ class SpeechoidConnector {
 	 * @param string $language
 	 * @param string $voice
 	 * @param string $text
-	 * @return string JSON response
+	 * @return array Response from Speechoid, parsed as associative array.
 	 * @throws SpeechoidConnectorException On Speechoid I/O errors.
 	 * @since 0.1.5
 	 */
@@ -33,7 +33,7 @@ class SpeechoidConnector {
 		$language,
 		$voice,
 		$text
-	): string {
+	): array {
 		$requestFactory =
 			MediaWikiServices::getInstance()->getHttpRequestFactory();
 		$requestParameters = [
@@ -48,7 +48,15 @@ class SpeechoidConnector {
 		if ( $responseString == null ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}
-		return $responseString;
+		$status = FormatJson::parse(
+			$responseString,
+			FormatJson::FORCE_ASSOC
+		);
+		if ( !$status->isOK() ) {
+			throw new SpeechoidConnectorException( 'Unexpected response from Speechoid.' );
+		}
+		$response = $status->getValue();
+		return $response;
 	}
 
 	/**

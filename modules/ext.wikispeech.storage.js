@@ -135,18 +135,14 @@
 		 */
 
 		this.loadAudio = function ( utterance, callback ) {
-			var text, audioUrl, utteranceIndex;
+			var audioUrl, utteranceIndex;
 
 			utteranceIndex = self.utterances.indexOf( utterance );
 			mw.log(
 				'Loading audio for utterance #' + utteranceIndex + ':',
 				utterance
 			);
-			text = '';
-			utterance.content.forEach( function ( item ) {
-				text += item.string;
-			} );
-			utterance.request = self.requestTts( text );
+			utterance.request = self.requestTts( utterance.hash );
 			utterance.request.done( function ( response ) {
 				audioUrl = 'data:audio/ogg;base64,' +
 					response.wikispeechlisten.audio;
@@ -177,12 +173,11 @@
 		 * Request is sent via the "wikispeechlisten" API action. Language to
 		 * use is retrieved from the current page.
 		 *
-		 * @param {string} text The utterance string to send in the
-		 *  request.
+		 * @param {string} segmentHash
 		 * @return {jQuery.Promise}
 		 */
 
-		this.requestTts = function ( text ) {
+		this.requestTts = function ( segmentHash ) {
 			var request, language, voiceKey, voice, options, api;
 
 			language = mw.config.get( 'wgPageContentLanguage' );
@@ -194,7 +189,8 @@
 			options = {
 				action: 'wikispeechlisten',
 				lang: language,
-				input: text
+				revision: mw.config.get( 'wgRevisionId' ),
+				segment: segmentHash
 			};
 			if ( voice !== '' ) {
 				// Set voice if not default.

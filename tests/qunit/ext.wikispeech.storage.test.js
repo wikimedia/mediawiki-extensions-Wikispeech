@@ -41,15 +41,45 @@
 	} );
 
 	QUnit.test( 'loadUtterances()', function ( assert ) {
-		assert.expect( 1 );
+		var response, expectedUtterances;
+		assert.expect( 2 );
 
+		sinon.stub( storage, 'prepareUtterance' );
 		mw.config.set( 'wgPageName', 'Page' );
+		response = {
+			wikispeech: {
+				segments: [ {
+					startOffset: 0,
+					endOffset: 3,
+					content: [ {
+						string: 'Page',
+						path: 'path'
+					} ],
+					hash: 'hash1234'
+				} ]
+			}
+		};
+		server.respondWith( JSON.stringify( response ) );
 
 		storage.loadUtterances();
 
 		assert.strictEqual(
 			decodeURIComponent( server.requests[ 0 ].requestBody ),
 			'action=wikispeech&format=json&page=Page'
+		);
+		expectedUtterances = [ {
+			startOffset: 0,
+			endOffset: 3,
+			content: [ {
+				string: 'Page',
+				path: 'path'
+			} ],
+			hash: 'hash1234',
+			audio: $( '<audio></audio>' ).get( 0 )
+		} ];
+		assert.deepEqual(
+			storage.utterances,
+			expectedUtterances
 		);
 	} );
 
@@ -133,15 +163,15 @@
 	} );
 
 	QUnit.test( 'loadAudio()', function ( assert ) {
-		assert.expect( 2 );
-		sinon.spy( storage, 'requestTts' );
+		assert.expect( 1 );
+		mw.config.set( 'wgRevisionId', 1 );
+		storage.utterances[ 0 ].hash = 'hash1234';
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
-		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'action=wikispeechlisten&format=json&lang=en&input=Utterance+zero.'
+			'action=wikispeechlisten&format=json&lang=en&revision=1&segment=hash1234'
 		);
 	} );
 
@@ -186,13 +216,15 @@
 		sinon.spy( storage, 'requestTts' );
 		mw.user.options.set( 'wikispeechVoiceEn', 'en-voice' );
 		mw.config.set( 'wgPageContentLanguage', 'en' );
+		mw.config.set( 'wgRevisionId', 1 );
+		storage.utterances[ 0 ].hash = 'hash1234';
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
 		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'action=wikispeechlisten&format=json&lang=en&input=Utterance+zero.&voice=en-voice'
+			'action=wikispeechlisten&format=json&lang=en&revision=1&segment=hash1234&voice=en-voice'
 		);
 	} );
 

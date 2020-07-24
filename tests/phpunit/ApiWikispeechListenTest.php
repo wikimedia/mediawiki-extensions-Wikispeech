@@ -20,7 +20,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		// $wgConfigRegistry['wikispeech'] see T255497
 		$this->setMwGlobals( [
 			// Make sure we don't send requests to an actual server.
-			'wgWikispeechServerUrl' => '',
+			'wgWikispeechSpeechoidUrl' => '',
 			'wgWikispeechVoices' => [
 				'ar' => [ 'ar-voice' ],
 				'en' => [
@@ -40,7 +40,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeechlisten',
-			'input' => 'Utterance.',
+			'text' => 'Text to listen to.',
 			'lang' => 'xx'
 		] );
 	}
@@ -52,7 +52,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeechlisten',
-			'input' => 'Utterance.',
+			'text' => 'Text to listen to.',
 			'lang' => 'en',
 			'voice' => 'invalid-voice'
 		] );
@@ -67,7 +67,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		) );
 		$api->validateParameters( [
 			'action' => 'wikispeechlisten',
-			'input' => 'This is a short sentence with less than 60 characters.',
+			'text' => 'This is a short sentence with less than 60 characters.',
 			'lang' => 'en',
 			'voice' => ''
 		] );
@@ -90,7 +90,48 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		) );
 		$api->validateParameters( [
 			'action' => 'wikispeechlisten',
-			'input' => 'This is a tiny bit longer sentence with more than 60 characters.',
+			'text' => 'This is a tiny bit longer sentence with more than 60 characters.',
+			'lang' => 'en',
+			'voice' => ''
+		] );
+	}
+
+	public function testRequest_revisionParameterAndNoSegmentParameter_exceptionRaised() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'The "revision" parameter may only be used with "segment".'
+		);
+		$this->doApiRequest( [
+			'action' => 'wikispeechlisten',
+			'revision' => 1,
+			'lang' => 'en',
+			'voice' => ''
+		] );
+	}
+
+	public function testRequest_segmentParameterAndNoRevisionParameter_exceptionRaised() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'The "segment" parameter may only be used with "revision".'
+		);
+		$this->doApiRequest( [
+			'action' => 'wikispeechlisten',
+			'segment' => 'hash1234',
+			'lang' => 'en',
+			'voice' => ''
+		] );
+	}
+
+	public function testRequest_revisionAndTextParametersGiven_exceptionRaised() {
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'The "text" parameter cannot be used with "revision".'
+		);
+		$this->doApiRequest( [
+			'action' => 'wikispeechlisten',
+			'revision' => 1,
+			'segment' => 'hash1234',
+			'text' => 'Text to listen to.',
 			'lang' => 'en',
 			'voice' => ''
 		] );
@@ -160,9 +201,10 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				$this->equalTo( 'anna' ),
 				$this->equalTo( 'Word 1 Word 2 Word 3.' )
 			)
-			->willReturn(
-				'{ "audio_data": "DummyBase64==", "tokens": ' . $synthesizeMetadataJson . ' }'
-			);
+			->willReturn( [
+				"audio_data" => "DummyBase64==",
+				"tokens" => $synthesizeMetadataArray
+			] );
 		$api->speechoidConnector = $speechoidConnectorMock;
 
 		$utterance = $api->getUtterance(
@@ -248,4 +290,27 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$this->assertSame( $synthesizeMetadataArray, $utterance['tokens'] );
 	}
 
+	public function testRequest_notCurrentRevision_throwsException() {
+		$page = Util::addPage( 'Page', 'Old' );
+		$oldId = $page->getRevisionRecord()->getId();
+		// Making an edit causes the initial revision to be non-current.
+		$page->doEditContent(
+			ContentHandler::makeContent(
+				'New',
+				$page->getTitle(),
+				CONTENT_MODEL_WIKITEXT
+			),
+			''
+		);
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'Only latest revision of a page may be used.'
+		);
+		$this->doApiRequest( [
+			'action' => 'wikispeechlisten',
+			'revision' => $oldId,
+			'segment' => 'hash',
+			'lang' => 'en'
+		] );
+	}
 }

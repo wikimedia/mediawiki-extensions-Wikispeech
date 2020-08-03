@@ -84,6 +84,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param string $segmentText
 	 * @return array Containing base64 'audio' and synthesisMetadata 'tokens'.
 	 * @throws ExternalStoreException
+	 * @throws ConfigException
 	 * @throws InvalidArgumentException
 	 * @throws SpeechoidConnectorException
 	 * @todo Would it make sense if $segmentHash and $segmentText
@@ -111,32 +112,16 @@ class ApiWikispeechListen extends ApiBase {
 			throw new InvalidArgumentException( 'Segment hash must be set.' );
 		}
 		if ( !$voice ) {
-			// This is unsafe. Since we don't know the name of the voice we
-			// will have the wrong voice cached in utterance store if default
-			// voice change in Speechoid.
-			$this->logger->warning( __METHOD__ . ': Unsafe use of default voice.' );
-			// @todo To make it safe
-			// we need to lookup the default voice for the selected language.
-			// 1. Check default language in WAN cache.
-			// 2. If not available, request default voice for language from Speechoid.
-			// 2.1 Set in cache. Rather short TTL.
-			// 3. Use this voice.
-			// @todo Consider what happens if default voice differs between deployed
-			// instances of Speechoid, e.g. during update. Should we perhaps pass down
-			// the default voice to the client on the initial request to ensure the
-			// same default voice per user session?
+			$voice = $this->utteranceStore->getDefaultVoice( $language );
+			if ( !$voice ) {
+				throw new ConfigException( "Invalid default voice configuration." );
+			}
 		}
-
-		// @todo Remove. This is a hack to handle default language even though
-		// we are unaware what the default language really is. See function top
-		// to implement handling requesting the default voice name.
-		$utteranceVoice = $voice ?: 'speechoid_default';
 
 		$utterance = $this->utteranceStore->findUtterance(
 			$pageId,
 			$language,
-			// @todo switch to $voice when implemented true default voice.
-			$utteranceVoice,
+			$voice,
 			$segmentHash
 		);
 		if ( !$utterance ) {
@@ -160,8 +145,7 @@ class ApiWikispeechListen extends ApiBase {
 			$this->utteranceStore->createUtterance(
 				$pageId,
 				$language,
-				// @todo switch to $voice when implemented true default voice.
-				$utteranceVoice,
+				$voice,
 				$segmentHash,
 				$speechoidResponse['audio_data'],
 				FormatJson::encode(

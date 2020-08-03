@@ -235,7 +235,11 @@
 			"value": "#mw-content-text"
 		},
 		"WikispeechVoices": {
-			"description": "Registered voices per language.",
+			"description": [
+				"Registered voices per language. ",
+				"System default voice falls back on the first registered voice for a language ",
+				"if not defined by Speechoid."
+			],
 			"value": {
 				"ar": [
 					"ar-nah-hsmm"

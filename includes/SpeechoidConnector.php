@@ -51,4 +51,12 @@ class SpeechoidConnector {
 		return $responseString;
 	}
 
+	/**
+	 * @return array Map language => voice
+	 * @since 0.1.5
+	 */
+	public function listDefaultVoicePerLanguage() {
+		// @todo awaits implementation in Speechoid Wikispeech-server
+		return [];
+	}
 }

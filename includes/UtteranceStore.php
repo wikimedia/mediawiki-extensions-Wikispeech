@@ -44,6 +44,11 @@ class UtteranceStore {
 	 */
 	private $dbLoadBalancer;
 
+	/**
+	 * @var SpeechoidConnector
+	 */
+	private $speechoidConnector;
+
 	/** @var string Name of container (sort of path prefix) used for files in backend. */
 	private $fileBackendContainerName;
 
@@ -63,6 +68,8 @@ class UtteranceStore {
 		}
 
 		$this->dbLoadBalancer = MediaWikiServices::getInstance()->getDBLoadBalancer();
+
+		$this->speechoidConnector = new SpeechoidConnector();
 	}
 
 	/**
@@ -533,5 +540,70 @@ class UtteranceStore {
 	 */
 	private function synthesisMetadataUrlFactory( $utteranceId ) {
 		return $this->audioUrlPrefixFactory( $utteranceId ) . '.json';
+	}
+
+	/**
+	 * Picks up the configured default voice for a language, or fallback on the
+	 * first registered voice for that language.
+	 *
+	 * @since 0.1.5
+	 * @param string $language
+	 * @return string|null Default language or null if language or no voices are registered.
+	 */
+	public function getDefaultVoice( $language ) {
+		// @todo Add cache with several hours long TTL for default voice per language. Days?
+		$defaultVoicePerLanguage = $this->speechoidConnector->listDefaultVoicePerLanguage();
+		$registeredVoicesPerLanguage = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' )
+			->get( 'WikispeechVoices' );
+		$defaultVoice = null;
+		if ( array_key_exists( $language, $defaultVoicePerLanguage ) ) {
+			// is defined as a language in list of default languages
+			$defaultVoice = $defaultVoicePerLanguage[$language];
+		}
+		if ( !$defaultVoice ) {
+			// unable to find a default voice for the language
+			if ( !array_key_exists( $language, $registeredVoicesPerLanguage ) ) {
+				// not a registered language
+				$this->logger->error( __METHOD__ . ': ' .
+					'Not a registered language: {language}',
+					[ 'language' => $language ]
+				);
+				return null;
+			}
+			$languageVoices = $registeredVoicesPerLanguage[$language];
+			if ( !$languageVoices ) {
+				// no voices registered to the language
+				$this->logger->error( __METHOD__ . ': ' .
+					'No voices registered to language: {language}',
+					[ 'language' => $language ]
+				);
+				return null;
+			}
+			// falling back on first registered voice as default
+			return $languageVoices[0];
+		}
+		// make sure defaultVoice is a registered voice
+		if ( !array_key_exists( $language, $registeredVoicesPerLanguage ) ) {
+			// language registered with default voice but not a as language with voices.
+			$this->logger->error( __METHOD__ . ': ' .
+				'Default voice found but language not registered in config: {language}',
+				[ 'language' => $language ]
+			);
+			return null;
+		}
+		$languageVoices = $registeredVoicesPerLanguage[$language];
+		if ( !in_array( $defaultVoice, $languageVoices ) ) {
+			$this->logger->error( __METHOD__ . ': ' .
+				'Default voice not registered to language: {voice} {language}',
+				[
+					'voice' => $defaultVoice,
+					'language' => $language
+				]
+			);
+			return null;
+		}
+		return $defaultVoice;
 	}
 }

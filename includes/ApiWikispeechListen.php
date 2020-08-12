@@ -198,9 +198,9 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws ApiUsageException
 	 */
 	private function validateParameters( $parameters ) {
-		$config = MediaWikiServices::getInstance()->
-			getConfigFactory()->
-			makeConfig( 'wikispeech' );
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
 		$voices = $config->get( 'WikispeechVoices' );
 		$language = $parameters['lang'];
 

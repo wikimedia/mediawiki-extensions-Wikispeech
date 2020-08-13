@@ -29,8 +29,8 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 	protected function setUp() : void {
 		parent::setUp();
 		$this->setMwGlobals( [
-			'WikispeechUtteranceFileBackendContainerName' => 'foo_container',
-			'WikispeechUtteranceFileBackendName' => '',
+			'wgWikispeechUtteranceFileBackendContainerName' => 'foo_container',
+			'wgWikispeechUtteranceFileBackendName' => '',
 		] );
 		$this->tablesUsed[] = UtteranceStore::UTTERANCE_TABLE;
 		$this->utteranceStore = TestingAccessWrapper::newFromObject( new UtteranceStore() );

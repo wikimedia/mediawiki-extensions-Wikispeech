@@ -31,7 +31,9 @@
 		"ApiWikispeech": "includes/ApiWikispeech.php",
 		"ApiWikispeechListen": "includes/ApiWikispeechListen.php",
 		"SpeechoidConnector": "includes/SpeechoidConnector.php",
-		"SpeechoidConnectorException": "includes/SpeechoidConnectorException.php"
+		"SpeechoidConnectorException": "includes/SpeechoidConnectorException.php",
+		"FlushUtterancesByExpirationDateOnFileFromFileBackendJob": "includes/FlushUtterancesByExpirationDateOnFileFromFileBackendJob.php",
+		"FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue": "includes/FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue.php"
 	},
 	"TestAutoloadClasses": {
 		"Util": "tests/phpunit/Util.php"

@@ -58,17 +58,29 @@ class Segmenter {
 	 *
 	 * @since 0.1.5
 	 * @param Title $title
-	 * @param array $removeTags HTML tags that should not be included.
-	 * @param array $segmentBreakingTags HTML tags that mark segment breaks.
+	 * @param array|null $removeTags HTML tags that should not be
+	 *  included, defaults to config variable "WikispeechRemoveTags".
+	 * @param array|null $segmentBreakingTags HTML tags that mark
+	 *  segment breaks, defaults to config variable
+	 *  "WikispeechSegmentBreakingTags".
 	 * @return array A list of segments each made up of `CleanedTest`
 	 *  objects and with start and end offset.
 	 * @throws MWException If failing to create WikiPage from title.
 	 */
 	public function segmentPage(
 		$title,
-		$removeTags,
-		$segmentBreakingTags
+		$removeTags = null,
+		$segmentBreakingTags = null
 	) {
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
+		if ( $removeTags === null ) {
+			$removeTags = $config->get( 'WikispeechRemoveTags' );
+		}
+		if ( $segmentBreakingTags === null ) {
+			$segmentBreakingTags = $config->get( 'WikispeechSegmentBreakingTags' );
+		}
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$page = WikiPage::factory( $title );
 		$revisionId = $page->getLatest();

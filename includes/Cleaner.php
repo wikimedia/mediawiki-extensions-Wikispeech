@@ -39,18 +39,12 @@ class Cleaner {
 	private $cleanedContent;
 
 	/**
-	 * @param array|null $removeTags An array of tags that should be removed
-	 *  completely during cleaning.
-	 * @param array|null $segmentBreakingTags An array of `CleanedText`s and
-	 *  `SegmentBreak`s.
+	 * @param array $removeTags An array of tags that should be
+	 *  removed completely during cleaning.
+	 * @param array $segmentBreakingTags An array of `CleanedText`s
+	 *  and `SegmentBreak`s.
 	 */
 	public function __construct( $removeTags, $segmentBreakingTags ) {
-		if ( $removeTags == null ) {
-			$removeTags = [];
-		}
-		if ( $segmentBreakingTags == null ) {
-			$segmentBreakingTags = [];
-		}
 		$this->removeTags = $removeTags;
 		$this->segmentBreakingTags = $segmentBreakingTags;
 	}

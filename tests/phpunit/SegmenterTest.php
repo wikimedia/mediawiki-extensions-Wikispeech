@@ -446,4 +446,39 @@ class SegmenterTest extends MediaWikiTestCase {
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [] );
 	}
 
+	public function testSegmentPage_noTagParametersGiven_defaultUsed() {
+		$this->setMwGlobals( [
+			'wgWikispeechSegmentBreakingTags' => [ 'br' ],
+			'wgWikispeechRemoveTags' => [ 'del' => true ]
+		] );
+		$titleString = 'Page';
+		$content = 'one<br />two<del>three</del>';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$expectedSegments = [
+			[
+				'startOffset' => 0,
+				'endOffset' => 3,
+				'content' => [ new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ) ],
+				'hash' => 'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
+			],
+			[
+				'startOffset' => 0,
+				'endOffset' => 2,
+				'content' => [ new CleanedText( 'one', './div/p/text()[1]' ) ],
+				'hash' => '2c8b08da5ce60398e1f19af0e5dccc744df274b826abe585eaba68c525434806'
+			],
+			[
+				'startOffset' => 0,
+				'endOffset' => 1,
+				'content' => [
+					new CleanedText( 'two', './div/p/text()[2]' ),
+					new CleanedText( "\n\n", './div/text()[3]' )
+				],
+				'hash' => 'ce53a6624b8515fa2bcf28d50690e8a52b77de083bb166879fb81d737af09cb1'
+			]
+		];
+		$segments = $this->segmenter->segmentPage( $title );
+		$this->assertEquals( $expectedSegments, $segments );
+	}
 }

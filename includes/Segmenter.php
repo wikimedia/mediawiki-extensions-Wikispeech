@@ -100,7 +100,6 @@ class Segmenter {
 	) {
 		// Clean HTML.
 		$cleanedText = null;
-		$cleanedTextString = '';
 		// Parse latest revision, using parser cache.
 		$popts = $page->makeParserOptions( $this->context );
 		$pout = $page->getParserOutput( $popts );

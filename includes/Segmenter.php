@@ -72,9 +72,13 @@ class Segmenter {
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$page = WikiPage::factory( $title );
 		$revisionId = $page->getLatest();
-		$cacheKey = $cache->makeKey( 'Wikispeech.segments', $revisionId );
+		$cacheKey = $cache->makeKey(
+			'Wikispeech.segments',
+			$revisionId,
+			var_export( $removeTags, true ),
+			implode( '-', $segmentBreakingTags ) );
 		$segments = $cache->get( $cacheKey );
-		if ( $segments == null ) {
+		if ( $segments === false ) {
 			$cleanedText =
 				$this->cleanPage( $page, $removeTags, $segmentBreakingTags );
 			$segments = $this->segmentSentences( $cleanedText );
@@ -93,7 +97,7 @@ class Segmenter {
 	 * @return array Title and content represented as `CleanedText`s
 	 *  and `SegmentBreak`s
 	 */
-	private function cleanPage(
+	protected function cleanPage(
 		$page,
 		$removeTags,
 		$segmentBreakingTags

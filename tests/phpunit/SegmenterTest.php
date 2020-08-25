@@ -381,4 +381,69 @@ class SegmenterTest extends MediaWikiTestCase {
 		$this->assertEquals( $expectedHash, $hash );
 	}
 
+	/**
+	 * Activates a WANCache previously disabled by MediaWikiTestCase
+	 *
+	 * @since 0.1.5
+	 */
+	private function activateWanCache() {
+		$this->setMwGlobals( [
+			'wgMainWANCache' => 'hash',
+			'wgWANObjectCaches' => [
+				'hash' => [
+					'class'    => WANObjectCache::class,
+					'cacheId'  => 'hash',
+					'channels' => []
+				]
+			]
+		] );
+	}
+
+	public function testSegmentPage_repeatedRequest_useCache() {
+		// make sure we have a working cache
+		$this->activateWanCache();
+		// mock cleanPage
+		$segmenterMock = $this->getMockBuilder( Segmenter::class )
+			->setConstructorArgs( [ new RequestContext() ] )
+			->onlyMethods( [ 'cleanPage' ] )
+			->getMock();
+		$segmenterMock
+			->expects( $this->once() )
+			->method( 'cleanPage' )
+			->will( $this->returnValue( [] ) );
+		$this->segmenter = $segmenterMock;
+
+		$titleString = 'Page';
+		$content = 'Foo';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$segments = $this->segmenter->segmentPage( $title, [], [] );
+
+		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [] );
+		$this->assertEquals( $segments, $segmentsAgain );
+	}
+
+	public function testSegmentPage_differentParameters_dontUseCache() {
+		// make sure we have a working cache
+		$this->activateWanCache();
+		// mock cleanPage
+		$segmenterMock = $this->getMockBuilder( Segmenter::class )
+			->setConstructorArgs( [ new RequestContext() ] )
+			->onlyMethods( [ 'cleanPage' ] )
+			->getMock();
+		$segmenterMock
+			->expects( $this->exactly( 3 ) )
+			->method( 'cleanPage' )
+			->will( $this->returnValue( [] ) );
+		$this->segmenter = $segmenterMock;
+
+		$titleString = 'Page';
+		$content = 'Foo';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$this->segmenter->segmentPage( $title, [], [] );
+		$this->segmenter->segmentPage( $title, [], [ 'br' ] );
+		$this->segmenter->segmentPage( $title, [ 'del' => true ], [] );
+	}
+
 }

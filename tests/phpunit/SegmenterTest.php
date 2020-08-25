@@ -435,10 +435,8 @@ class SegmenterTest extends MediaWikiTestCase {
 		// mock cleanPage with single call
 		$this->mockCleanPage( 1 );
 
-		$titleString = 'Page';
-		$content = 'Foo';
-		Util::addPage( $titleString, $content );
-		$title = Title::newFromText( $titleString );
+		$page = Util::addPage( 'Page', 'Foo' );
+		$title = $page->getTitle();
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
 
 		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [] );
@@ -451,10 +449,8 @@ class SegmenterTest extends MediaWikiTestCase {
 		// mock cleanPage with three calls
 		$this->mockCleanPage( 3 );
 
-		$titleString = 'Page';
-		$content = 'Foo';
-		Util::addPage( $titleString, $content );
-		$title = Title::newFromText( $titleString );
+		$page = Util::addPage( 'Page', 'Foo' );
+		$title = $page->getTitle();
 		$this->segmenter->segmentPage( $title, [], [] );
 		$this->segmenter->segmentPage( $title, [], [ 'br' ] );
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [] );
@@ -494,5 +490,51 @@ class SegmenterTest extends MediaWikiTestCase {
 		];
 		$segments = $this->segmenter->segmentPage( $title );
 		$this->assertEquals( $expectedSegments, $segments );
+	}
+
+	public function testSegmentPage_missmatchedRevision_throwException() {
+		// mock cleanPage with no calls
+		$this->mockCleanPage( 0 );
+		$this->expectException( MWException::class );
+
+		$content = 'Foo';
+		$page1 = Util::addPage( 'Page1', $content );
+		$page2 = Util::addPage( 'Page2', $content );
+		$title1 = $page1->getTitle();
+
+		$revisionId2 = $page2->getLatest();
+		$this->segmenter->segmentPage( $title1, [], [], $revisionId2 );
+	}
+
+	public function testSegmentPage_uncachedOldRevision_throwException() {
+		// mock cleanPage with no calls
+		$this->mockCleanPage( 0 );
+		$this->expectException( MWException::class );
+
+		$page = Util::addPage( 'Page', 'Foo' );
+		$title = $page->getTitle();
+		$revisionId = $page->getLatest();
+
+		Util::editPage( $page, 'Bar' );
+		$this->assertNotEquals( $revisionId, $page->getLatest() );
+		$this->segmenter->segmentPage( $title, [], [], $revisionId );
+	}
+
+	public function testSegmentPage_cachedOldRevision_useCache() {
+		// make sure we have a working cache
+		$this->activateWanCache();
+		// mock cleanPage with single calls
+		$this->mockCleanPage( 1 );
+
+		$page = Util::addPage( 'Page', 'Foo' );
+		$title = $page->getTitle();
+		$revisionId = $page->getLatest();
+		$segments = $this->segmenter->segmentPage( $title, [], [], $revisionId );
+
+		Util::editPage( $page, 'Bar' );
+		$this->assertNotEquals( $revisionId, $page->getLatest() );
+		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [], $revisionId );
+
+		$this->assertEquals( $segments, $segmentsAgain );
 	}
 }

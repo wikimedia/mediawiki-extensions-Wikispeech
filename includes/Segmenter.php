@@ -56,6 +56,8 @@ class Segmenter {
 	/**
 	 * Split the content of a page into segments.
 	 *
+	 * Non-latest revisions are only handled if already in the cache.
+	 *
 	 * @since 0.1.5
 	 * @param Title $title
 	 * @param array|null $removeTags HTML tags that should not be
@@ -63,14 +65,17 @@ class Segmenter {
 	 * @param array|null $segmentBreakingTags HTML tags that mark
 	 *  segment breaks, defaults to config variable
 	 *  "WikispeechSegmentBreakingTags".
+	 * @param int|null $revisionId Revision to be segmented
 	 * @return array A list of segments each made up of `CleanedTest`
 	 *  objects and with start and end offset.
-	 * @throws MWException If failing to create WikiPage from title.
+	 * @throws MWException If failing to create WikiPage from title or an
+	 *  invalid or non-cached and outdated revision was provided.
 	 */
 	public function segmentPage(
 		$title,
 		$removeTags = null,
-		$segmentBreakingTags = null
+		$segmentBreakingTags = null,
+		$revisionId = null
 	) {
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
@@ -83,7 +88,9 @@ class Segmenter {
 		}
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$page = WikiPage::factory( $title );
-		$revisionId = $page->getLatest();
+		if ( $revisionId == null ) {
+			$revisionId = $page->getLatest();
+		}
 		$cacheKey = $cache->makeKey(
 			'Wikispeech.segments',
 			$revisionId,
@@ -91,6 +98,9 @@ class Segmenter {
 			implode( '-', $segmentBreakingTags ) );
 		$segments = $cache->get( $cacheKey );
 		if ( $segments === false ) {
+			if ( $revisionId != $page->getLatest() ) {
+				throw new MWException( 'An outdated or invalid revision id was provided' );
+			}
 			$cleanedText =
 				$this->cleanPage( $page, $removeTags, $segmentBreakingTags );
 			$segments = $this->segmentSentences( $cleanedText );

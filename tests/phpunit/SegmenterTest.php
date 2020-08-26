@@ -382,7 +382,7 @@ class SegmenterTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * Activates a WANCache previously disabled by MediaWikiTestCase
+	 * Activates a WANCache previously disabled by MediaWikiTestCase.
 	 *
 	 * @since 0.1.5
 	 */
@@ -399,19 +399,41 @@ class SegmenterTest extends MediaWikiTestCase {
 		] );
 	}
 
-	public function testSegmentPage_repeatedRequest_useCache() {
-		// make sure we have a working cache
-		$this->activateWanCache();
-		// mock cleanPage
+	/**
+	 * Replace Segmenter instance by one where cleanPage is mocked.
+	 *
+	 * @since 0.1.5
+	 * @param int|null $occurences If provided adds an assertion that cleanPage
+	 *  is called exactly this many times.
+	 * @throws InvalidArgumentException If occurences is not a positive integer.
+	 */
+	private function mockCleanPage( $occurences = null ) {
+		$expects = null;
+		if ( $occurences === null ) {
+			$expects = $this->any();
+		} elseif ( !is_int( $occurences ) || $occurences < 0 ) {
+			throw new InvalidArgumentException(
+				'$occurences must be a positive integer' );
+		} else {
+			$expects = $this->exactly( $occurences );
+		}
+
 		$segmenterMock = $this->getMockBuilder( Segmenter::class )
 			->setConstructorArgs( [ new RequestContext() ] )
 			->onlyMethods( [ 'cleanPage' ] )
 			->getMock();
 		$segmenterMock
-			->expects( $this->once() )
+			->expects( $expects )
 			->method( 'cleanPage' )
 			->will( $this->returnValue( [] ) );
 		$this->segmenter = $segmenterMock;
+	}
+
+	public function testSegmentPage_repeatedRequest_useCache() {
+		// make sure we have a working cache
+		$this->activateWanCache();
+		// mock cleanPage with single call
+		$this->mockCleanPage( 1 );
 
 		$titleString = 'Page';
 		$content = 'Foo';
@@ -426,16 +448,8 @@ class SegmenterTest extends MediaWikiTestCase {
 	public function testSegmentPage_differentParameters_dontUseCache() {
 		// make sure we have a working cache
 		$this->activateWanCache();
-		// mock cleanPage
-		$segmenterMock = $this->getMockBuilder( Segmenter::class )
-			->setConstructorArgs( [ new RequestContext() ] )
-			->onlyMethods( [ 'cleanPage' ] )
-			->getMock();
-		$segmenterMock
-			->expects( $this->exactly( 3 ) )
-			->method( 'cleanPage' )
-			->will( $this->returnValue( [] ) );
-		$this->segmenter = $segmenterMock;
+		// mock cleanPage with three calls
+		$this->mockCleanPage( 3 );
 
 		$titleString = 'Page';
 		$content = 'Foo';

@@ -444,13 +444,18 @@ class SegmenterTest extends MediaWikiTestCase {
 	}
 
 	public function testSegmentPage_differentParameters_dontUseCache() {
+		$this->setMwGlobals( [
+			'wgWikispeechSegmentBreakingTags' => [ 'br' ],
+			'wgWikispeechRemoveTags' => [ 'del' => true ]
+		] );
 		// make sure we have a working cache
 		$this->activateWanCache();
-		// mock cleanPage with three calls
-		$this->mockCleanPage( 3 );
+		// mock cleanPage with four calls
+		$this->mockCleanPage( 4 );
 
 		$page = Util::addPage( 'Page', 'Foo' );
 		$title = $page->getTitle();
+		$this->segmenter->segmentPage( $title );
 		$this->segmenter->segmentPage( $title, [], [] );
 		$this->segmenter->segmentPage( $title, [], [ 'br' ] );
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [] );
@@ -536,5 +541,21 @@ class SegmenterTest extends MediaWikiTestCase {
 		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [], $revisionId );
 
 		$this->assertEquals( $segments, $segmentsAgain );
+	}
+
+	public function testSegmentPage_provideDefaultParameters_useCache() {
+		$this->setMwGlobals( [
+			'wgWikispeechSegmentBreakingTags' => [ 'br' ],
+			'wgWikispeechRemoveTags' => [ 'del' => true ]
+		] );
+		// make sure we have a working cache
+		$this->activateWanCache();
+		// mock cleanPage with one call
+		$this->mockCleanPage( 1 );
+
+		$page = Util::addPage( 'Page', 'Foo' );
+		$title = $page->getTitle();
+		$this->segmenter->segmentPage( $title );
+		$this->segmenter->segmentPage( $title, [ 'del' => true ], [ 'br' ] );
 	}
 }

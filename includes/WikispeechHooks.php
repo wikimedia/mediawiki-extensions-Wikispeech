@@ -296,7 +296,7 @@ class WikispeechHooks {
 			$links['actions']['listen'] = [
 				'class' => 'ext-wikispeech-listen',
 				'text' => $skinTemplate->msg( 'wikispeech-listen' )->text(),
-				'href' => '#'
+				'href' => 'javascript:void(0)'
 			];
 		}
 	}

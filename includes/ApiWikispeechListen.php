@@ -95,7 +95,7 @@ class ApiWikispeechListen extends ApiBase {
 			$revisionRecord->getPageAsLinkTarget()
 		);
 		$segmenter = new Segmenter( $this->getContext() );
-		$segment = $segmenter->getSegment( $title, $segmentHash );
+		$segment = $segmenter->getSegment( $title, $segmentHash, $revisionId );
 
 		$response = $this->getUtterance(
 			$voice,
@@ -319,14 +319,19 @@ class ApiWikispeechListen extends ApiBase {
 	 * @since 0.1.5
 	 * @param int $revisionId
 	 * @return RevisionRecord
-	 * @throws ApiUsageException if the revision is not the current one.
+	 * @throws ApiUsageException if the revision is deleted or supressed.
 	 */
 	private function getRevisionRecord( $revisionId ) {
 		$revisionStore = MediaWikiServices::getInstance()->getRevisionStore();
 		$revisionRecord = $revisionStore->getRevisionById( $revisionId );
-		if ( !$revisionRecord->isCurrent() ) {
-			$this->dieWithError( 'apierror-wikispeechlisten-non-latest-revision' );
+		if ( !$revisionRecord || !$revisionRecord->audienceCan(
+			RevisionRecord::DELETED_TEXT,
+			RevisionRecord::FOR_THIS_USER,
+			$this->getContext()->getUser()
+		) ) {
+			$this->dieWithError( 'apierror-wikispeechlisten-deleted-revision' );
 		}
+		// @phan-suppress-next-line PhanTypeMismatchReturnNullable T240141
 		return $revisionRecord;
 	}
 

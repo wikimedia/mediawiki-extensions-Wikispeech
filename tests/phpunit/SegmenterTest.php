@@ -585,8 +585,9 @@ class SegmenterTest extends MediaWikiTestCase {
 	public function testGetSegment_segmentExists_returnSegment() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
-		Util::addPage( $titleString, $content );
-		$title = Title::newFromText( $titleString );
+		$page = Util::addPage( $titleString, $content );
+		$title = $page->getTitle();
+		$revisionId = $page->getLatest();
 		$hash = '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac';
 		$expectedSegment = [
 			'startOffset' => 12,
@@ -594,17 +595,18 @@ class SegmenterTest extends MediaWikiTestCase {
 			'content' => [ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
 			'hash' => $hash
 		];
-		$segment = $this->segmenter->getSegment( $title, $hash );
+		$segment = $this->segmenter->getSegment( $title, $hash, $revisionId );
 		$this->assertEquals( $expectedSegment, $segment );
 	}
 
 	public function testGetSegment_segmentDoesntExists_returnNull() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
-		Util::addPage( $titleString, $content );
-		$title = Title::newFromText( $titleString );
+		$page = Util::addPage( $titleString, $content );
+		$title = $page->getTitle();
+		$revisionId = $page->getLatest();
 		$hash = 'ThisHashMatchesNoSegment';
-		$segment = $this->segmenter->getSegment( $title, $hash );
+		$segment = $this->segmenter->getSegment( $title, $hash, $revisionId );
 		$this->assertNull( $segment );
 	}
 }

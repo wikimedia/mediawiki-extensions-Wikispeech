@@ -29,6 +29,7 @@ the match the new release version.
 YYYY-MM-DD
 Speechoid: M.m.p
 
+* [T261753](https://phabricator.wikimedia.org/T261753) Allow listening to page even if edited.
 * [T262655](https://phabricator.wikimedia.org/T262655) Versioning of Speechoid.
 * [T257078](https://phabricator.wikimedia.org/T257078) Trigger Wikispeech UI on PageContentLanguage, not interface language.
 

@@ -411,11 +411,12 @@ class Segmenter {
 	 *
 	 * @since 0.1.5
 	 * @param Title $title
-	 * @param string $hash Hash of the segment to get
+	 * @param string $hash Hash of the segment to get.
+	 * @param int $revisionId Revision of the page where the segment was found.
 	 * @return array The segment matching $hash.
 	 */
-	public function getSegment( $title, $hash ) {
-		$segments = $this->segmentPage( $title );
+	public function getSegment( $title, $hash, $revisionId ) {
+		$segments = $this->segmentPage( $title, null, null, $revisionId );
 		foreach ( $segments as $segment ) {
 			if ( $segment['hash'] === $hash ) {
 				return $segment;

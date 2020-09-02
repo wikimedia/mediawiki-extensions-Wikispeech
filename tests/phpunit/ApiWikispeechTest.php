@@ -131,42 +131,4 @@ class ApiWikispeechTest extends ApiTestCase {
 		] );
 	}
 
-	public function testSegmentTextHandleDisplayTitle() {
-		$title = 'Title';
-		$content = '{{DISPLAYTITLE:title}}Some content text.';
-		Util::addPage( $title, $content );
-		$res = $this->doApiRequest( [
-			'action' => 'wikispeech',
-			'page' => $title,
-		] );
-		$this->assertEquals( 2, count( $res[0]['wikispeech']['segments'] ) );
-		$this->assertEquals(
-			[
-				'startOffset' => 0,
-				'endOffset' => 4,
-				'content' => [
-					[
-						'string' => 'title',
-						'path' => '//h1[@id="firstHeading"]//text()'
-					]
-				],
-				'hash' => '1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'
-			],
-			$res[0]['wikispeech']['segments'][0]
-		);
-		$this->assertEquals(
-			[
-				'startOffset' => 0,
-				'endOffset' => 17,
-				'content' => [
-					[
-						'string' => 'Some content text.',
-						'path' => './div/p/text()'
-					]
-				],
-				'hash' => '3eb8e91dc31a98b63aebe35a1229364deced3f3abbc26eb09fe67394e5cd5c0f'
-			],
-			$res[0]['wikispeech']['segments'][1]
-		);
-	}
 }

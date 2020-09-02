@@ -62,6 +62,29 @@ class SegmenterTest extends MediaWikiTestCase {
 		$this->assertEquals( $expectedSegments, $segments );
 	}
 
+	public function testSegmentPage_setDisplayTitle_segmentDisplayTitle() {
+		$titleString = 'Title';
+		$content = '{{DISPLAYTITLE:title}}Some content text.';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$expectedSegments = [
+			[
+				'startOffset' => 0,
+				'endOffset' => 4,
+				'content' => [ new CleanedText( 'title', '//h1[@id="firstHeading"]//text()' ) ],
+				'hash' => '1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'
+			],
+			[
+				'startOffset' => 0,
+				'endOffset' => 17,
+				'content' => [ new CleanedText( 'Some content text.', './div/p/text()' ) ],
+				'hash' => '3eb8e91dc31a98b63aebe35a1229364deced3f3abbc26eb09fe67394e5cd5c0f'
+			]
+		];
+		$segments = $this->segmenter->segmentPage( $title, [], [] );
+		$this->assertEquals( $expectedSegments, $segments );
+	}
+
 	public function testCleanPage() {
 		$content = 'Content';
 		Util::addPage( 'Page', $content );

@@ -8,6 +8,7 @@
 
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionRecord;
 use Psr\Log\LoggerInterface;
 
 class ApiWikispeechListen extends ApiBase {
@@ -45,35 +46,91 @@ class ApiWikispeechListen extends ApiBase {
 		$inputParameters = $this->extractRequestParams();
 		self::validateParameters( $inputParameters );
 
-		// @todo Get pageId from input parameters.
-		// The only effect we get from using 0 is that there might be more mismatches
-		// on segment hashing. It should still work for now though.
-		$pageId = 0;
 		$language = $inputParameters['lang'];
 		$voice = $inputParameters['voice'];
-		// @todo Get segmentHash from input parameters.
-		// @todo This is a hack to convert input text back to a segment
-		// so that we get the correct segment hash value.
-		// Will be dropped with the implementation of T248162.
-		$segmenter = \Wikimedia\TestingAccessWrapper::newFromObject(
-			new Segmenter( new RequestContext() )
-		);
-		$segments = $segmenter->segmentSentences( [
-			new CleanedText( $inputParameters['input'] )
-		] );
-		$segmentHash = $segments[0]['hash'];
-		$response = $this->getUtterance(
-			$voice,
-			$language,
-			$pageId,
-			$segmentHash,
-			$inputParameters['input']
-		);
+		if ( isset( $inputParameters['revision'] ) ) {
+			$response = $this->getResponseForRevisionAndSegment(
+				$voice,
+				$language,
+				$inputParameters['revision'],
+				$inputParameters['segment']
+			);
+		} else {
+			$speechoidResponse = $this->speechoidConnector->synthesize(
+				$language,
+				$voice,
+				$inputParameters['text']
+			);
+			$response = [
+				'audio' => $speechoidResponse['audio_data'],
+				'tokens' => $speechoidResponse['tokens']
+			];
+		}
 		$this->getResult()->addValue(
 			null,
 			$this->getModuleName(),
 			$response
 		);
+	}
+
+	/**
+	 * @param string $voice
+	 * @param string $language
+	 * @param int $revisionId
+	 * @param string $segmentHash
+	 * @return array
+	 * @since 0.1.5
+	 */
+	private function getResponseForRevisionAndSegment(
+		$voice,
+		$language,
+		$revisionId,
+		$segmentHash
+	) {
+		$revisionRecord = $this->getRevisionRecord( $revisionId );
+		$pageId = $revisionRecord->getPageId();
+		$title = Title::newFromLinkTarget(
+			$revisionRecord->getPageAsLinkTarget()
+		);
+		$segmenter = new Segmenter( $this->getContext() );
+		$segment = $segmenter->getSegment( $title, $segmentHash );
+
+		// Make a string of all the segment contents.
+		$text = '';
+		foreach ( $segment['content'] as $content ) {
+			$text .= $content->string;
+		}
+		$this->validateText( $text );
+		$response = $this->getUtterance(
+			$voice,
+			$language,
+			$pageId,
+			$segmentHash,
+			$text
+		);
+		return $response;
+	}
+
+	/**
+	 * Validate input text.
+	 *
+	 * @param string $text
+	 * @throws ApiUsageException
+	 * @since 0.1.5
+	 */
+	private function validateText( $text ) {
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
+		$numberOfCharactersInInput = mb_strlen( $text );
+		$maximumNumberOfCharacterInInput = $config->get( 'WikispeechListenMaximumInputCharacters' );
+		if ( $numberOfCharactersInInput > $maximumNumberOfCharacterInInput ) {
+			$this->dieWithError( [
+				'apierror-wikispeechlisten-invalid-input-too-long',
+				$maximumNumberOfCharacterInInput,
+				$numberOfCharactersInInput
+			] );
+		}
 	}
 
 	/**
@@ -129,19 +186,11 @@ class ApiWikispeechListen extends ApiBase {
 				'pageId' => $pageId,
 				'segmentHash' => $segmentHash
 			] );
-			$speechoidResponseJson = $this->speechoidConnector->synthesize(
+			$speechoidResponse = $this->speechoidConnector->synthesize(
 				$language,
 				$voice,
 				$segmentText
 			);
-			$status = FormatJson::parse(
-				$speechoidResponseJson,
-				FormatJson::FORCE_ASSOC
-			);
-			if ( !$status->isOK() ) {
-				throw new SpeechoidConnectorException( 'Unexpected response from Speechoid.' );
-			}
-			$speechoidResponse = $status->getValue();
 			$this->utteranceStore->createUtterance(
 				$pageId,
 				$language,
@@ -182,6 +231,36 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws ApiUsageException
 	 */
 	private function validateParameters( $parameters ) {
+		if (
+			isset( $parameters['revision'] ) &&
+			!isset( $parameters['segment'] )
+		) {
+			$this->dieWithError( [
+				'apierror-invalidparammix-mustusewith',
+				'revision',
+				'segment'
+			] );
+		}
+		if (
+			isset( $parameters['segment'] ) &&
+			!isset( $parameters['revision'] )
+		) {
+			$this->dieWithError( [
+				'apierror-invalidparammix-mustusewith',
+				'segment',
+				'revision'
+			] );
+		}
+		if (
+			isset( $parameters['revision'] ) &&
+			isset( $parameters['text'] )
+		) {
+			$this->dieWithError( [
+				'apierror-invalidparammix-cannotusewith',
+				'text',
+				'revision'
+			] );
+		}
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
@@ -212,16 +291,8 @@ class ApiWikispeechListen extends ApiBase {
 		}
 
 		// Validate input text.
-		$input = $parameters['input'];
-		$numberOfCharactersInInput = mb_strlen( $input );
-		$maximumNumberOfCharacterInInput = $config->get( 'WikispeechListenMaximumInputCharacters' );
-		if ( $numberOfCharactersInInput > $maximumNumberOfCharacterInInput ) {
-			$this->dieWithError( [
-				'apierror-wikispeechlisten-invalid-input-too-long',
-				$maximumNumberOfCharacterInInput,
-				$numberOfCharactersInInput
-			] );
-		}
+		$input = $parameters['text'];
+		$this->validateText( $input );
 	}
 
 	/**
@@ -245,6 +316,23 @@ class ApiWikispeechListen extends ApiBase {
 	}
 
 	/**
+	 * Get the page id for a revision id.
+	 *
+	 * @since 0.1.5
+	 * @param int $revisionId
+	 * @return RevisionRecord
+	 * @throws ApiUsageException if the revision is not the current one.
+	 */
+	private function getRevisionRecord( $revisionId ) {
+		$revisionStore = MediaWikiServices::getInstance()->getRevisionStore();
+		$revisionRecord = $revisionStore->getRevisionById( $revisionId );
+		if ( !$revisionRecord->isCurrent() ) {
+			$this->dieWithError( 'apierror-wikispeechlisten-non-latest-revision' );
+		}
+		return $revisionRecord;
+	}
+
+	/**
 	 * Specify what parameters the API accepts.
 	 *
 	 * @since 0.1.3
@@ -258,9 +346,14 @@ class ApiWikispeechListen extends ApiBase {
 					ApiBase::PARAM_TYPE => 'string',
 					ApiBase::PARAM_REQUIRED => true
 				],
-				'input' => [
-					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_REQUIRED => true
+				'text' => [
+					ApiBase::PARAM_TYPE => 'string'
+				],
+				'revision' => [
+					ApiBase::PARAM_TYPE => 'integer'
+				],
+				'segment' => [
+					ApiBase::PARAM_TYPE => 'string'
 				],
 				'voice' => [
 					ApiBase::PARAM_TYPE => 'string'
@@ -278,10 +371,12 @@ class ApiWikispeechListen extends ApiBase {
 	 */
 	public function getExamplesMessages() {
 		return [
-			'action=wikispeechlisten&format=json&lang=en&input=Read this'
+			'action=wikispeechlisten&format=json&lang=en&text=Read this'
 			=> 'apihelp-wikispeechlisten-example-1',
-			'action=wikispeechlisten&format=json&lang=en&input=Read this&voice=cmu-slt-flite'
-			=> 'apihelp-wikispeechlisten-example-2'
+			'action=wikispeechlisten&format=json&lang=en&text=Read this&voice=cmu-slt-flite'
+			=> 'apihelp-wikispeechlisten-example-2',
+			'action=wikispeechlisten&format=json&lang=en&revision=1&segment=hash1234'
+			=> 'apihelp-wikispeechlisten-example-3',
 		];
 	}
 }

@@ -6,6 +6,7 @@
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 
 /**
@@ -98,6 +99,11 @@ class Segmenter {
 			implode( '-', $segmentBreakingTags ) );
 		$segments = $cache->get( $cacheKey );
 		if ( $segments === false ) {
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->info(
+					__METHOD__ . ': Segmenting page: {title}',
+					[ 'title' => $title ]
+				);
 			if ( $revisionId != $page->getLatest() ) {
 				throw new MWException( 'An outdated or invalid revision id was provided' );
 			}
@@ -388,7 +394,7 @@ class Segmenter {
 		$hash = hash_final( $context );
 		// Uncommenting below block can be useful during creation of
 		// new test cases as you might need to figure out hashes.
-		//MediaWiki\Logger\LoggerFactory::getInstance( 'Segmenter' )
+		//LoggerFactory::getInstance( 'Segmenter' )
 		//	->info( __METHOD__ . ': {segement} : {hash}', [
 		//		'segment' => $segment,
 		//		'hash' => $hash
@@ -396,4 +402,20 @@ class Segmenter {
 		return $hash;
 	}
 
+	/**
+	 * Get a segment from a page.
+	 *
+	 * @since 0.1.5
+	 * @param Title $title
+	 * @param string $hash Hash of the segment to get
+	 * @return array The segment matching $hash.
+	 */
+	public function getSegment( $title, $hash ) {
+		$segments = $this->segmentPage( $title );
+		foreach ( $segments as $segment ) {
+			if ( $segment['hash'] === $hash ) {
+				return $segment;
+			}
+		}
+	}
 }

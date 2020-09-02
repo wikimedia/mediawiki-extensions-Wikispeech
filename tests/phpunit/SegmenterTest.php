@@ -558,4 +558,30 @@ class SegmenterTest extends MediaWikiTestCase {
 		$this->segmenter->segmentPage( $title );
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [ 'br' ] );
 	}
+
+	public function testGetSegment_segmentExists_returnSegment() {
+		$titleString = 'Page';
+		$content = 'Sentence 1. Sentence 2. Sentence 3.';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$hash = '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac';
+		$expectedSegment = [
+			'startOffset' => 12,
+			'endOffset' => 22,
+			'content' => [ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
+			'hash' => $hash
+		];
+		$segment = $this->segmenter->getSegment( $title, $hash );
+		$this->assertEquals( $expectedSegment, $segment );
+	}
+
+	public function testGetSegment_segmentDoesntExists_returnNull() {
+		$titleString = 'Page';
+		$content = 'Sentence 1. Sentence 2. Sentence 3.';
+		Util::addPage( $titleString, $content );
+		$title = Title::newFromText( $titleString );
+		$hash = 'ThisHashMatchesNoSegment';
+		$segment = $this->segmenter->getSegment( $title, $hash );
+		$this->assertNull( $segment );
+	}
 }

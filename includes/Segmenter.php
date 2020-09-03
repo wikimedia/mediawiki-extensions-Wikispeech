@@ -59,6 +59,10 @@ class Segmenter {
 	 *
 	 * Non-latest revisions are only handled if already in the cache.
 	 *
+	 * @note This provides access to current page content and (cached) older
+	 * revisions. No audience checks are applied and it will therefore not fail
+	 * due to access restrictions.
+	 *
 	 * @since 0.1.5
 	 * @param Title $title
 	 * @param array|null $removeTags HTML tags that should not be

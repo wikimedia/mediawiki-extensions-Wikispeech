@@ -15,6 +15,7 @@
 	"apierror-wikispeechlisten-notallowed": "Nie posiadasz uprawnień do wywoływania tej akcji API.",
 	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> nie jest poprawnym językiem. Dostępne są: $2.",
 	"apierror-wikispeechlisten-invalid-voice": "<code>$1</code> nie jest poprawnym głosem. Dostępne są: $2.",
+	"apierror-wikispeechlisten-non-latest-revision": "Użyta może zostać jedynie najnowsza wersja strony.",
 	"apihelp-wikispeechlisten-example-1": "Syntezuj wypowiedź w języki angielskim.",
 	"apihelp-wikispeechlisten-example-2": "Użyj niestandardowego głosu.",
 	"prefs-wikispeech": "Wiki mowa",

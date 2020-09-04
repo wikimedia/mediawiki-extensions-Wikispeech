@@ -136,7 +136,7 @@ class WikispeechHooks {
 	 * * Wikispeech configuration is valid
 	 * * Wikispeech is enabled for the page's namespace
 	 * * Revision is current
-	 * * Page's language is enabled for Wikispeech (@todo: broken see T257078)
+	 * * Page's language is enabled for Wikispeech
 	 *
 	 * @since 0.1.5
 	 * @param OutputPage $out
@@ -146,21 +146,33 @@ class WikispeechHooks {
 		$wikispeechEnabled = MediaWikiServices::getInstance()
 			->getUserOptionsLookup()
 			->getOption( $out->getUser(), 'wikispeechEnable' );
+
 		$namespace = $out->getTitle()->getNamespace();
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
 		$validNamespaces = $config->get( 'WikispeechNamespaces' );
+
+		$pageContentLanguage = null;
+		if ( $namespace == NS_MEDIA || $namespace < 0 ) {
+			// cannot get pageContentLanguage of e.g. a Special page or a
+			// virtual page. These should all use the interface language.
+			$pageContentLanguage = $out->getLanguage();
+		} else {
+			$pageContentLanguage = $out->getWikiPage()->getTitle()->getPageLanguage();
+		}
+
 		$validLanguages = array_keys( $config->get( 'WikispeechVoices' ) );
-		$isAllowed = MediaWikiServices::getInstance()
+
+		$userIsAllowed = MediaWikiServices::getInstance()
 			->getPermissionManager()
 			->userHasRight( $out->getUser(), 'wikispeech-listen' );
 		return $wikispeechEnabled &&
-			$isAllowed &&
+			$userIsAllowed &&
 			self::validateConfiguration() &&
 			in_array( $namespace, $validNamespaces ) &&
 			$out->isRevisionCurrent() &&
-			in_array( $out->getLanguage()->getCode(), $validLanguages );
+			in_array( $pageContentLanguage->getCode(), $validLanguages );
 	}
 
 	/**

@@ -22,9 +22,12 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 			'wgWikispeechContentSelector' => 'selector',
 			'wgWikispeechSkipBackRewindsThreshold' => 'threshold',
 			'wgWikispeechHelpPage' => 'help',
-			'wgWikispeechFeedbackPage' => 'feedback'
+			'wgWikispeechFeedbackPage' => 'feedback',
+			// content language
+			'wgLanguageCode', 'en'
 		] );
 		$context = new RequestContext();
+		// Interface language
 		$context->setLanguage( 'en' );
 		$this->out = new OutputPage( $context );
 		$title = Title::newFromText( 'Page' );
@@ -103,11 +106,18 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$this->assertFalse( $this->configLoaded() );
 	}
 
-	public function testOnBeforePageDisplayDontLoadModulesIfInvalidPageLanguage() {
-		$this->out->getContext()->setLanguage( 'sv' );
+	public function testOnBeforePageDisplay_invalidPageContentLanguage_dontLoadModule() {
+		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
 		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
+	}
+
+	public function testOnBeforePageDisplay_differentInterfaceLanguage_loadModule() {
+		$this->out->getContext()->setLanguage( 'sv' );
+		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->assertNotEmpty( $this->out->getModules() );
+		$this->assertTrue( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_showPlayerNotSet_loadLoader() {
@@ -173,8 +183,8 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_invalidPageLanguage_dontAddListenTab() {
-		$this->out->getContext()->setLanguage( 'sv' );
+	public function testOnSkinTemplateNavigation_invalidPageContentLanguage_dontAddListenTab() {
+		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
 		$links = [ 'actions' => [] ];
 		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );

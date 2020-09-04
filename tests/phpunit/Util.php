@@ -9,7 +9,7 @@
 class Util {
 
 	/**
-	 * Create a new page
+	 * Create a new page.
 	 *
 	 * @since 0.1.5
 	 * @param string|Title $title
@@ -38,7 +38,7 @@ class Util {
 	}
 
 	/**
-	 * Edit an existing page
+	 * Edit an existing page.
 	 *
 	 * @since 0.1.5
 	 * @param WikiPage $page

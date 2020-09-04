@@ -1,14 +1,19 @@
 <?php
 
+/**
+ * @file
+ * @ingroup Extensions
+ * @license GPL-2.0-or-later
+ */
+
 use MediaWiki\MediaWikiServices;
 
 /**
- * Class SpeechoidConnector
+ * Provide Speechoid access.
  *
- * Speechoid access
+ * @todo List supported languages, voices and default voice per language.
+ *
  * @since 0.1.5
- *
- * @todo list supported languages, voices and default voice per language.
  */
 class SpeechoidConnector {
 
@@ -22,12 +27,14 @@ class SpeechoidConnector {
 	}
 
 	/**
+	 * Make a request to Speechoid to synthesize the provided text.
+	 *
+	 * @since 0.1.5
 	 * @param string $language
 	 * @param string $voice
 	 * @param string $text
 	 * @return array Response from Speechoid, parsed as associative array.
 	 * @throws SpeechoidConnectorException On Speechoid I/O errors.
-	 * @since 0.1.5
 	 */
 	public function synthesize(
 		$language,
@@ -60,11 +67,13 @@ class SpeechoidConnector {
 	}
 
 	/**
-	 * @return array Map language => voice
+	 * Retrieve default voice setup from Speechoid.
+	 *
 	 * @since 0.1.5
+	 * @return array Map language => voice
 	 */
 	public function listDefaultVoicePerLanguage() {
-		// @todo awaits implementation in Speechoid Wikispeech-server
+		// @todo Awaits implementation in Speechoid Wikispeech-server.
 		return [];
 	}
 }

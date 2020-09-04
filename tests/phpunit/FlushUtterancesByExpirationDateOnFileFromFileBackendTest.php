@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ * @ingroup Extensions
+ * @license GPL-2.0-or-later
+ */
+
 declare( strict_types = 1 );
 
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
@@ -9,9 +15,7 @@ require_once __DIR__ . '/../../maintenance/flushUtterancesByExpirationDateOnFile
 
 /**
  * @covers FlushUtterancesByExpirationDateOnFileFromFileBackend
- *
  * @since 0.1.5
- * @license GPL-2.0-or-later
  */
 class FlushUtterancesByExpirationDateOnFileFromFileBackendTest
 	extends MaintenanceBaseTestCase {

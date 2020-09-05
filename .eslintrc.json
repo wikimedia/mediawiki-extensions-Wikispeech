@@ -9,5 +9,7 @@
 		"mediaWiki": false,
 		"OO": false
 	},
-	"rules": {}
+	"rules": {
+		"no-shadow": "warn"
+	}
 }

@@ -234,6 +234,18 @@ class WikispeechHooks {
 	 * @param array &$preferences Preferences array.
 	 */
 	public static function onGetPreferences( $user, &$preferences ) {
+		$logger = LoggerFactory::getInstance( 'Wikispeech' );
+		$config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
+		$speechoidConnector = new SpeechoidConnector();
+		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$voiceHandler = new VoiceHandler(
+			$logger,
+			$config,
+			$speechoidConnector,
+			$cache
+		);
 		$preferences['wikispeechEnable'] = [
 			'type' => 'toggle',
 			'label-message' => 'prefs-wikispeech-enable',
@@ -244,7 +256,7 @@ class WikispeechHooks {
 			'label-message' => 'prefs-wikispeech-show-player',
 			'section' => 'wikispeech'
 		];
-		self::addVoicePreferences( $preferences );
+		self::addVoicePreferences( $preferences, $voiceHandler );
 		self::addSpeechRatePreferences( $preferences );
 	}
 
@@ -252,14 +264,21 @@ class WikispeechHooks {
 	 * Add preferences for selecting voices per language.
 	 *
 	 * @param array &$preferences Preferences array.
+	 * @param VoiceHandler $voiceHandler
 	 */
-	private static function addVoicePreferences( &$preferences ) {
+	private static function addVoicePreferences( &$preferences, $voiceHandler ) {
 		global $wgWikispeechVoices;
 		foreach ( $wgWikispeechVoices as $language => $voices ) {
 			$languageKey = 'wikispeechVoice' . ucfirst( $language );
 			$mwLanguage = MediaWikiServices::getInstance()->getLanguageFactory()->getLanguage( 'en' );
 			$languageName = $mwLanguage->getVariantname( $language );
-			$options = [ 'Default' => '' ];
+			$options = [];
+			try {
+				$defaultVoice = $voiceHandler->getDefaultVoice( $language );
+				$options["Default ($defaultVoice)"] = '';
+			} catch ( Exception $e ) {
+				$options["Default"] = '';
+			}
 			foreach ( $voices as $voice ) {
 				$options[$voice] = $voice;
 			}

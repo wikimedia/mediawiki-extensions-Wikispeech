@@ -74,12 +74,14 @@ class ApiWikispeechListen extends ApiBase {
 	}
 
 	/**
+	 * Given a revision ID and a segment hash retrieve the matching utterance.
+	 *
+	 * @since 0.1.5
 	 * @param string $voice
 	 * @param string $language
 	 * @param int $revisionId
 	 * @param string $segmentHash
 	 * @return array
-	 * @since 0.1.5
 	 */
 	private function getResponseForRevisionAndSegment(
 		$voice,
@@ -114,9 +116,9 @@ class ApiWikispeechListen extends ApiBase {
 	/**
 	 * Validate input text.
 	 *
+	 * @since 0.1.5
 	 * @param string $text
 	 * @throws ApiUsageException
-	 * @since 0.1.5
 	 */
 	private function validateText( $text ) {
 		$config = MediaWikiServices::getInstance()
@@ -134,6 +136,17 @@ class ApiWikispeechListen extends ApiBase {
 	}
 
 	/**
+	 * Return the utterance corresponding to the request.
+	 *
+	 * These are either retrieved from storage or synthesize (and then stored).
+	 *
+	 * @todo Would it make sense if $segmentHash and $segmentText
+	 *  was replaced by $segmentIndex passed on from the client, leaving
+	 *  the segmenting etc to this method? That way we wouldn't have to
+	 *  pass along a bunch of text that never would be used for the cases
+	 *  where the segment already exists in utterance store.
+	 *
+	 * @since 0.1.5
 	 * @param string $voice
 	 * @param string $language
 	 * @param int $pageId
@@ -144,13 +157,6 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws ConfigException
 	 * @throws InvalidArgumentException
 	 * @throws SpeechoidConnectorException
-	 * @todo Would it make sense if $segmentHash and $segmentText
-	 * was replaced by $segmentIndex passed on from the client, leaving
-	 * the segmenting etc to this method? That way we wouldn't have to
-	 * pass along a bunch of text that never would be used for the cases
-	 * where the segment already exists in utterance store.
-	 *
-	 * @since 0.1.5
 	 */
 	private function getUtterance(
 		$voice,

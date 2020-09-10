@@ -559,7 +559,12 @@ class UtteranceStore {
 			$language
 		);
 		$defaultVoicePerLanguage = $cache->get( $cacheKey );
-		if ( !$defaultVoicePerLanguage ) {
+		if (
+			// not set
+			$defaultVoicePerLanguage === null ||
+			// cache error
+			$defaultVoicePerLanguage === false
+		) {
 			$defaultVoicePerLanguage = $this->speechoidConnector->listDefaultVoicePerLanguage();
 			// One hour TTL.
 			// I.e. it will take one hour for a new default language in Speechoid to be selected.

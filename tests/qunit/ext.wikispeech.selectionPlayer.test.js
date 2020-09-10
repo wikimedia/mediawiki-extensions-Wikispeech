@@ -53,7 +53,7 @@
 	 * different text node, the third argument is the end node and the
 	 * fourth is the end offset.
 	 *
-	 * Note that the end offset of the resulting `Selection` object is
+	 * @note The end offset of the resulting `Selection` object is
 	 * the position after the supplied end offset parameter. This is
 	 * because the visual selection reaches up to but not including
 	 * the end offset.

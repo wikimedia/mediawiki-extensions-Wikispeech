@@ -97,18 +97,11 @@ class ApiWikispeechListen extends ApiBase {
 		$segmenter = new Segmenter( $this->getContext() );
 		$segment = $segmenter->getSegment( $title, $segmentHash );
 
-		// Make a string of all the segment contents.
-		$text = '';
-		foreach ( $segment['content'] as $content ) {
-			$text .= $content->string;
-		}
-		$this->validateText( $text );
 		$response = $this->getUtterance(
 			$voice,
 			$language,
 			$pageId,
-			$segmentHash,
-			$text
+			$segment
 		);
 		return $response;
 	}
@@ -140,18 +133,11 @@ class ApiWikispeechListen extends ApiBase {
 	 *
 	 * These are either retrieved from storage or synthesize (and then stored).
 	 *
-	 * @todo Would it make sense if $segmentHash and $segmentText
-	 *  was replaced by $segmentIndex passed on from the client, leaving
-	 *  the segmenting etc to this method? That way we wouldn't have to
-	 *  pass along a bunch of text that never would be used for the cases
-	 *  where the segment already exists in utterance store.
-	 *
 	 * @since 0.1.5
 	 * @param string $voice
 	 * @param string $language
 	 * @param int $pageId
-	 * @param string $segmentHash
-	 * @param string $segmentText
+	 * @param array $segment A segments made up of `CleanedTest`bjects
 	 * @return array Containing base64 'audio' and synthesisMetadata 'tokens'.
 	 * @throws ExternalStoreException
 	 * @throws ConfigException
@@ -162,17 +148,13 @@ class ApiWikispeechListen extends ApiBase {
 		$voice,
 		$language,
 		$pageId,
-		$segmentHash,
-		$segmentText
+		$segment
 	) {
-		if ( !$language ) {
-			throw new InvalidArgumentException( 'Language must be set.' );
-		}
 		if ( $pageId !== 0 && !$pageId ) {
 			throw new InvalidArgumentException( 'Page ID must be set.' );
 		}
-		if ( !$segmentHash ) {
-			throw new InvalidArgumentException( 'Segment hash must be set.' );
+		if ( !$segment ) {
+			throw new InvalidArgumentException( 'Segment must be set.' );
 		}
 		if ( !$voice ) {
 			$voice = $this->utteranceStore->getDefaultVoice( $language );
@@ -180,6 +162,8 @@ class ApiWikispeechListen extends ApiBase {
 				throw new ConfigException( "Invalid default voice configuration." );
 			}
 		}
+
+		$segmentHash = $segment['hash'];
 
 		$utterance = $this->utteranceStore->findUtterance(
 			$pageId,
@@ -192,6 +176,14 @@ class ApiWikispeechListen extends ApiBase {
 				'pageId' => $pageId,
 				'segmentHash' => $segmentHash
 			] );
+
+			// Make a string of all the segment contents.
+			$segmentText = '';
+			foreach ( $segment['content'] as $content ) {
+				$segmentText .= $content->string;
+			}
+			$this->validateText( $segmentText );
+
 			$speechoidResponse = $this->speechoidConnector->synthesize(
 				$language,
 				$voice,

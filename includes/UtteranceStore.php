@@ -546,13 +546,25 @@ class UtteranceStore {
 	 * Picks up the configured default voice for a language, or fallback on the
 	 * first registered voice for that language.
 	 *
+	 * Default voice per language response from Speechoid is cached for one hour.
+	 *
 	 * @since 0.1.5
 	 * @param string $language
 	 * @return string|null Default language or null if language or no voices are registered.
 	 */
 	public function getDefaultVoice( $language ) {
-		// @todo Add cache with several hours long TTL for default voice per language. Days?
-		$defaultVoicePerLanguage = $this->speechoidConnector->listDefaultVoicePerLanguage();
+		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$cacheKey = $cache->makeKey(
+			'Wikispeech.utteranceStore.defaultVoicePerLanguage',
+			$language
+		);
+		$defaultVoicePerLanguage = $cache->get( $cacheKey );
+		if ( !$defaultVoicePerLanguage ) {
+			$defaultVoicePerLanguage = $this->speechoidConnector->listDefaultVoicePerLanguage();
+			// One hour TTL.
+			// I.e. it will take one hour for a new default language in Speechoid to be selected.
+			$cache->set( $cacheKey, $defaultVoicePerLanguage, 3600 );
+		}
 		$registeredVoicesPerLanguage = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' )

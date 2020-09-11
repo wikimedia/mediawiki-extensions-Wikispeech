@@ -141,6 +141,14 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	 * @since 0.1.5
 	 */
 	public function testGetUtterance_requestNewUtterance_speechoidConnectorExecuted() {
+		$hash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
+		$content = 'Word 1 Word 2 Word 3.';
+		$segment = [
+			'startOffset' => 12,
+			'endOffset' => 22,
+			'content' => [ new CleanedText( $content, './div/p/text()' ) ],
+			'hash' => $hash
+		];
 		$synthesizeMetadataJson =
 			'[' .
 			'{"endtime": 0.295, "orth": "Word"}, ' .
@@ -175,7 +183,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				$this->equalTo( 2 ),
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
-				$this->equalTo( '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4' ),
+				$this->equalTo( $hash ),
 				$this->equalTo( false )
 			)
 			->willReturn( null );
@@ -186,7 +194,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				$this->equalTo( 2 ),
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
-				$this->equalTo( '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4' ),
+				$this->equalTo( $hash ),
 				$this->equalTo( 'DummyBase64==' ),
 				$this->equalTo( $synthesizeMetadataJson )
 			);
@@ -199,7 +207,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			->with(
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
-				$this->equalTo( 'Word 1 Word 2 Word 3.' )
+				$this->equalTo( $content )
 			)
 			->willReturn( [
 				"audio_data" => "DummyBase64==",
@@ -211,8 +219,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'anna',
 			'sv',
 			2,
-			'4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4',
-			'Word 1 Word 2 Word 3.'
+			$segment
 		);
 
 		$this->assertSame( 'DummyBase64==', $utterance['audio'] );
@@ -223,6 +230,14 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	 * @since 0.1.5
 	 */
 	public function testGetUtterance_requestExistingUtterance_speechoidConnectorNotExecuted() {
+		$hash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
+		$content = 'Word 1 Word 2 Word 3.';
+		$segment = [
+			'startOffset' => 12,
+			'endOffset' => 22,
+			'content' => [ new CleanedText( $content, './div/p/text()' ) ],
+			'hash' => $hash
+		];
 		$synthesizeMetadataJson =
 			'[' .
 			'{"endtime": 0.295, "orth": "Word"}, ' .
@@ -257,7 +272,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				$this->equalTo( 2 ),
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
-				$this->equalTo( '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4' ),
+				$this->equalTo( $hash ),
 				$this->equalTo( false )
 			)
 			->willReturn( [
@@ -265,7 +280,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				'pageId' => 2,
 				'language' => 'sv',
 				'voice' => 'anna',
-				'segmentHash' => '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4',
+				'segmentHash' => $hash,
 				'dateStored' => MWTimestamp::getInstance( 20020101000000 ),
 				'audio' => 'DummyBase64==',
 				'synthesisMetadata' => $synthesizeMetadataJson,
@@ -282,8 +297,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'anna',
 			'sv',
 			2,
-			'4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4',
-			'Word 1 Word 2 Word 3.'
+			$segment
 		);
 
 		$this->assertSame( 'DummyBase64==', $utterance['audio'] );

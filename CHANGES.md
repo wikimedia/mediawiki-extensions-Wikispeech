@@ -28,10 +28,11 @@ the match the new release version.
 ### 0.1.6-SNAPSHOT
 YYYY-MM-DD
 
+* [T257078](https://phabricator.wikimedia.org/T257078) Trigger Wikispeech UI on PageContentLanguage, not interface language.
+
 ### 0.1.5
 2020-09-03
 
-* [T257078](https://phabricator.wikimedia.org/T257078) Trigger Wikispeech UI on PageContentLanguage, not interface language.
 * [T248162](https://phabricator.wikimedia.org/T248162) Use revision and segment ID as input for synthesizing speech.
 * [T260891](https://phabricator.wikimedia.org/T260891) Allow historical revisions to be accessed in Segmenter cache.
 * [T260875](https://phabricator.wikimedia.org/T260875) Enable using default parameters for segmenting.

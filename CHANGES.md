@@ -27,11 +27,14 @@ the match the new release version.
 
 ### 0.1.6-SNAPSHOT
 YYYY-MM-DD
+Speechoid: M.m.p
 
+* [T262655](https://phabricator.wikimedia.org/T262655) Versioning of Speechoid.
 * [T257078](https://phabricator.wikimedia.org/T257078) Trigger Wikispeech UI on PageContentLanguage, not interface language.
 
 ### 0.1.5
 2020-09-03
+Speechoid: 0.1.1
 
 * [T248162](https://phabricator.wikimedia.org/T248162) Use revision and segment ID as input for synthesizing speech.
 * [T260891](https://phabricator.wikimedia.org/T260891) Allow historical revisions to be accessed in Segmenter cache.
@@ -47,6 +50,7 @@ YYYY-MM-DD
 
 ### 0.1.4
 2020-05-19
+Speechoid: 0.1.0
 
 * [T248472](https://phabricator.wikimedia.org/T248472) Create segment hasher.
 * [T246079](https://phabricator.wikimedia.org/T246079) Add cache to segmenter.
@@ -54,5 +58,6 @@ YYYY-MM-DD
 
 ### 0.1.3
 2018-09-12
+Speechoid: 0.1.0
 
 * Version 0.1.3 and earlier is not documented in this file.

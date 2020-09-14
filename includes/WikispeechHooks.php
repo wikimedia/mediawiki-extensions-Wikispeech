@@ -37,7 +37,7 @@ class WikispeechHooks {
 
 		$utteranceTimeToLiveDays = $config
 			->get( 'WikispeechUtteranceTimeToLiveDays' );
-		if ( !$utteranceTimeToLiveDays ) {
+		if ( $utteranceTimeToLiveDays === null ) {
 			LoggerFactory::getInstance( 'Wikispeech' )
 				->warning( __METHOD__ . ': Configuration value for ' .
 					'\'WikispeechUtteranceTimeToLiveDays\' is missing.'
@@ -54,7 +54,7 @@ class WikispeechHooks {
 		}
 
 		$fileBackendName = $config->get( 'WikispeechUtteranceFileBackendName' );
-		if ( $fileBackendName == null ) {
+		if ( $fileBackendName === null ) {
 			LoggerFactory::getInstance( 'Wikispeech' )
 				->warning( __METHOD__ . ':  Configuration value ' .
 					'\'WikispeechUtteranceFileBackendName\' is missing.'
@@ -71,7 +71,7 @@ class WikispeechHooks {
 
 		$fileBackendContainerName = $config
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
-		if ( $fileBackendContainerName == null ) {
+		if ( $fileBackendContainerName === null ) {
 			LoggerFactory::getInstance( 'Wikispeech' )
 				->warning( __METHOD__ . ': Configuration value ' .
 					'\'WikispeechUtteranceFileBackendContainerName\' is missing.'

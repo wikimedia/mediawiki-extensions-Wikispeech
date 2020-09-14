@@ -145,7 +145,7 @@
 		player.stopUtterance( storage.utterances[ 0 ] );
 
 		sinon.assert.called( storage.utterances[ 0 ].audio.pause );
-		assert.strictEqual( storage.utterances[ 0 ].audio.currentTime, 0.0 );
+		assert.strictEqual( storage.utterances[ 0 ].audio.currentTime, 0 );
 		sinon.assert.called( highlighter.clearHighlighting );
 		sinon.assert.calledWith(
 			ui.removeCanPlayListener,
@@ -200,7 +200,7 @@
 
 		assert.strictEqual(
 			storage.utterances[ 0 ].audio.currentTime,
-			0.0
+			0
 		);
 		sinon.assert.notCalled( storage.utterances[ 0 ].audio.pause );
 	} );
@@ -216,7 +216,7 @@
 
 		assert.strictEqual(
 			storage.utterances[ 1 ].audio.currentTime,
-			0.0
+			0
 		);
 		sinon.assert.neverCalledWith(
 			player.playUtterance, storage.utterances[ 0 ]
@@ -230,16 +230,16 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			},
 			{
-				startTime: 2.0,
-				endTime: 3.0
+				startTime: 2000,
+				endTime: 3000
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 1.1;
@@ -257,16 +257,16 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			},
 			{
-				startTime: 2.0,
-				endTime: 3.0
+				startTime: 2000,
+				endTime: 3000
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 0.1;
@@ -284,16 +284,16 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			},
 			{
-				startTime: 2.0,
-				endTime: 3.0
+				startTime: 2000,
+				endTime: 3000
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 2.1;
@@ -311,12 +311,12 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 2.0;
@@ -334,16 +334,16 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 1.0
+				startTime: 1000,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
@@ -364,16 +364,16 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 1.0
+				startTime: 1000,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 1.1;
@@ -388,12 +388,12 @@
 		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 		player.playUtterance( storage.utterances[ 0 ] );
@@ -415,8 +415,8 @@
 		assert.expect( 1 );
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			}
 		];
 		player.play();
@@ -432,12 +432,12 @@
 		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 		player.playUtterance( storage.utterances[ 0 ] );
@@ -450,7 +450,7 @@
 
 		assert.strictEqual(
 			storage.utterances[ 0 ].audio.currentTime,
-			0.0
+			0
 		);
 		sinon.assert.calledWith(
 			highlighter.startTokenHighlighting,
@@ -462,18 +462,18 @@
 		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 		storage.utterances[ 1 ].tokens = [
 			{
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			}
 		];
 		player.playUtterance( storage.utterances[ 1 ] );

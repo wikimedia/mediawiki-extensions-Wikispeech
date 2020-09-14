@@ -110,8 +110,8 @@
 				string: 'Utterance',
 				items: [ storage.utterances[ 0 ].content[ 0 ] ],
 				utterance: storage.utterances[ 0 ],
-				startTime: 0.0,
-				endTime: 1.0,
+				startTime: 0,
+				endTime: 1000,
 				startOffset: 0,
 				endOffset: 8
 			},
@@ -119,8 +119,8 @@
 				string: 'with',
 				items: [ storage.utterances[ 0 ].content[ 0 ] ],
 				utterance: storage.utterances[ 0 ],
-				startTime: 1.0,
-				endTime: 2.0,
+				startTime: 1000,
+				endTime: 2000,
 				startOffset: 10,
 				endOffset: 13
 			},
@@ -128,8 +128,8 @@
 				string: 'selected',
 				items: [ storage.utterances[ 0 ].content[ 0 ] ],
 				utterance: storage.utterances[ 0 ],
-				startTime: 2.0,
-				endTime: 3.0,
+				startTime: 2000,
+				endTime: 3000,
 				startOffset: 15,
 				endOffset: 22
 			},
@@ -137,8 +137,8 @@
 				string: 'text',
 				items: [ storage.utterances[ 0 ].content[ 0 ] ],
 				utterance: storage.utterances[ 0 ],
-				startTime: 3.0,
-				endTime: 3.5,
+				startTime: 3000,
+				endTime: 3500,
 				startOffset: 24,
 				endOffset: 27
 			}
@@ -159,12 +159,12 @@
 		sinon.assert.calledWith(
 			selectionPlayer.setStartTime,
 			storage.utterances[ 0 ],
-			2.0
+			2000
 		);
 		sinon.assert.calledWith(
 			selectionPlayer.setEndTime,
 			storage.utterances[ 0 ],
-			3.5
+			3500
 		);
 	} );
 
@@ -211,8 +211,8 @@
 				string: 'Utterance',
 				items: [ storage.utterances[ 0 ].content[ 0 ] ],
 				utterance: storage.utterances[ 0 ],
-				startTime: 0.0,
-				endTime: 1.0,
+				startTime: 0,
+				endTime: 1000,
 				startOffset: 0,
 				endOffset: 8
 			},
@@ -220,8 +220,8 @@
 				string: 'with',
 				items: [ storage.utterances[ 0 ].content[ 0 ] ],
 				utterance: storage.utterances[ 0 ],
-				startTime: 1.0,
-				endTime: 2.0,
+				startTime: 1000,
+				endTime: 2000,
 				startOffset: 10,
 				endOffset: 13
 			},
@@ -231,7 +231,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 15,
 				endOffset: 22,
-				startTime: 3.0
+				startTime: 3000
 			},
 			{
 				string: 'text',
@@ -239,7 +239,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 0,
 				endOffset: 3,
-				endTime: 5.0
+				endTime: 5000
 			},
 			{
 				string: '.',
@@ -247,7 +247,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 4,
 				endOffset: 4,
-				endTime: 3.0
+				endTime: 3000
 			}
 		];
 		storage.getStartUtterance.returns( storage.utterances[ 0 ] );
@@ -262,12 +262,12 @@
 		sinon.assert.calledWith(
 			selectionPlayer.setStartTime,
 			storage.utterances[ 0 ],
-			3.0
+			3000
 		);
 		sinon.assert.calledWith(
 			selectionPlayer.setEndTime,
 			storage.utterances[ 0 ],
-			5.0
+			5000
 		);
 	} );
 
@@ -297,7 +297,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 15,
 				endOffset: 22,
-				startTime: 1.0
+				startTime: 1000
 			},
 			{
 				string: 'text',
@@ -305,7 +305,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 14,
 				endOffset: 17,
-				endTime: 2.0
+				endTime: 2000
 			}
 		];
 		storage.getStartUtterance.returns( storage.utterances[ 0 ] );
@@ -320,12 +320,12 @@
 		sinon.assert.calledWith(
 			selectionPlayer.setStartTime,
 			storage.utterances[ 0 ],
-			1.0
+			1000
 		);
 		sinon.assert.calledWith(
 			selectionPlayer.setEndTime,
 			storage.utterances[ 0 ],
-			2.0
+			2000
 		);
 	} );
 
@@ -349,7 +349,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 0,
 				endOffset: 8,
-				startTime: 1.0
+				startTime: 1000
 			},
 			{
 				string: 'zero',
@@ -364,7 +364,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 14,
 				endOffset: 14,
-				endTime: 2.0
+				endTime: 2000
 			}
 		];
 		storage.getStartUtterance.returns( storage.utterances[ 0 ] );
@@ -379,12 +379,12 @@
 		sinon.assert.calledWith(
 			selectionPlayer.setStartTime,
 			storage.utterances[ 0 ],
-			1.0
+			1000
 		);
 		sinon.assert.calledWith(
 			selectionPlayer.setEndTime,
 			storage.utterances[ 0 ],
-			2.0
+			2000
 		);
 	} );
 
@@ -408,7 +408,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 0,
 				endOffset: 8,
-				startTime: 1.0
+				startTime: 1000
 			},
 			{
 				string: 'zero',
@@ -423,7 +423,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 14,
 				endOffset: 14,
-				endTime: 2.0
+				endTime: 2000
 			}
 		];
 		storage.getStartUtterance.returns( storage.utterances[ 0 ] );
@@ -438,12 +438,12 @@
 		sinon.assert.calledWith(
 			selectionPlayer.setStartTime,
 			storage.utterances[ 0 ],
-			1.0
+			1000
 		);
 		sinon.assert.calledWith(
 			selectionPlayer.setEndTime,
 			storage.utterances[ 0 ],
-			2.0
+			2000
 		);
 	} );
 
@@ -480,7 +480,7 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [ {} ];
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
-		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.5 );
+		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
 		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
 
@@ -495,7 +495,7 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [ {} ];
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
-		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.5 );
+		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
 		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
 		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
@@ -511,7 +511,7 @@
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [ {} ];
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
-		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.5 );
+		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
 		mw.user.options.set( 'wikispeechSpeechRate', 0.5 );
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
 
@@ -549,7 +549,7 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 15,
 				endOffset: 22,
-				startTime: 2.0
+				startTime: 2000
 			},
 			{
 				string: 'text',
@@ -557,10 +557,10 @@
 				utterance: storage.utterances[ 0 ],
 				startOffset: 24,
 				endOffset: 27,
-				endTime: 4.0
+				endTime: 4000
 			}
 		];
-		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1.0 );
+		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1000 );
 		selectionPlayer.previousEndUtterance = storage.utterances[ 0 ];
 		selectionPlayer.resetPreviousEndUtterance();
 		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );

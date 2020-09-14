@@ -240,7 +240,7 @@
 				if ( i === 0 ) {
 					// The first token in an utterance always start on
 					// time zero.
-					startTime = 0.0;
+					startTime = 0;
 				} else {
 					// Since the response only contains end times for
 					// token, the start time for a token is set to the

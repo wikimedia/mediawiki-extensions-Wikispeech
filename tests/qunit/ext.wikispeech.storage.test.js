@@ -268,15 +268,15 @@
 		tokens = [
 			{
 				orth: 'Utterance',
-				endtime: 1.0
+				endtime: 1000
 			},
 			{
 				orth: 'zero',
-				endtime: 2.0
+				endtime: 2000
 			},
 			{
 				orth: '.',
-				endtime: 3.0
+				endtime: 3000
 			}
 		];
 
@@ -287,8 +287,8 @@
 				{
 					string: 'Utterance',
 					utterance: storage.utterances[ 0 ],
-					startTime: 0.0,
-					endTime: 1.0,
+					startTime: 0,
+					endTime: 1000,
 					items: [ storage.utterances[ 0 ].content[ 0 ] ],
 					startOffset: 0,
 					endOffset: 8
@@ -296,8 +296,8 @@
 				{
 					string: 'zero',
 					utterance: storage.utterances[ 0 ],
-					startTime: 1.0,
-					endTime: 2.0,
+					startTime: 1000,
+					endTime: 2000,
 					items: [ storage.utterances[ 0 ].content[ 0 ] ],
 					startOffset: 10,
 					endOffset: 13
@@ -305,8 +305,8 @@
 				{
 					string: '.',
 					utterance: storage.utterances[ 0 ],
-					startTime: 2.0,
-					endTime: 3.0,
+					startTime: 2000,
+					endTime: 3000,
 					items: [ storage.utterances[ 0 ].content[ 0 ] ],
 					startOffset: 14,
 					endOffset: 14
@@ -327,19 +327,19 @@
 		tokens = [
 			{
 				orth: 'Utterance',
-				endtime: 1.0
+				endtime: 1000
 			},
 			{
 				orth: 'with',
-				endtime: 2.0
+				endtime: 2000
 			},
 			{
 				orth: 'tag',
-				endtime: 3.0
+				endtime: 3000
 			},
 			{
 				orth: '.',
-				endtime: 4.0
+				endtime: 4000
 			}
 		];
 
@@ -383,15 +383,15 @@
 		tokens = [
 			{
 				orth: 'Utterance',
-				endtime: 1.0
+				endtime: 1000
 			},
 			{
 				orth: 'with',
-				endtime: 2.0
+				endtime: 2000
 			},
 			{
 				orth: '.',
-				endtime: 3.0
+				endtime: 3000
 			}
 		];
 
@@ -566,8 +566,8 @@
 		assert.expect( 1 );
 		token = {
 			string: 'no duration',
-			startTime: 1.0,
-			endTime: 1.0
+			startTime: 1000,
+			endTime: 1000
 		};
 		actual = storage.isSilent( token );
 
@@ -580,8 +580,8 @@
 		assert.expect( 1 );
 		token = {
 			string: '',
-			startTime: 1.0,
-			endTime: 2.0
+			startTime: 1000,
+			endTime: 2000
 		};
 		actual = storage.isSilent( token );
 
@@ -594,8 +594,8 @@
 		assert.expect( 1 );
 		token = {
 			string: 'token',
-			startTime: 1.0,
-			endTime: 2.0
+			startTime: 1000,
+			endTime: 2000
 		};
 		actual = storage.isSilent( token );
 
@@ -610,14 +610,14 @@
 			{
 				string: 'original',
 				utterance: storage.utterances[ 0 ],
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
 				string: 'next',
 				utterance: storage.utterances[ 0 ],
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 
@@ -635,26 +635,26 @@
 			{
 				string: 'starting token',
 				utterance: storage.utterances[ 0 ],
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
 				string: 'no duration',
 				utterance: storage.utterances[ 0 ],
-				startTime: 1.0,
-				endTime: 1.0
+				startTime: 1000,
+				endTime: 1000
 			},
 			{
 				string: '',
 				utterance: storage.utterances[ 0 ],
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			},
 			{
 				string: 'goal',
 				utterance: storage.utterances[ 0 ],
-				startTime: 2.0,
-				endTime: 3.0
+				startTime: 2000,
+				endTime: 3000
 			}
 		];
 
@@ -672,14 +672,14 @@
 			{
 				string: 'previous',
 				utterance: storage.utterances[ 0 ],
-				startTime: 0.0,
-				endTime: 1.0
+				startTime: 0,
+				endTime: 1000
 			},
 			{
 				string: 'original',
 				utterance: storage.utterances[ 0 ],
-				startTime: 1.0,
-				endTime: 2.0
+				startTime: 1000,
+				endTime: 2000
 			}
 		];
 
@@ -696,26 +696,26 @@
 		storage.utterances[ 0 ].tokens = [
 			{
 				string: 'goal',
-				startTime: 0.0,
-				endTime: 1.0,
+				startTime: 0,
+				endTime: 1000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: 'no duration',
-				startTime: 1.0,
-				endTime: 1.0,
+				startTime: 1000,
+				endTime: 1000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: '',
-				startTime: 1.0,
-				endTime: 2.0,
+				startTime: 1000,
+				endTime: 2000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: 'starting token',
-				startTime: 2.0,
-				endTime: 3.0,
+				startTime: 2000,
+				endTime: 3000,
 				utterance: storage.utterances[ 0 ]
 			}
 		];
@@ -734,14 +734,14 @@
 		storage.utterances[ 0 ].tokens = [
 			{
 				string: 'token',
-				startTime: 0.0,
-				endTime: 1.0,
+				startTime: 0,
+				endTime: 1000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: 'last',
-				startTime: 1.0,
-				endTime: 2.0,
+				startTime: 1000,
+				endTime: 2000,
 				utterance: storage.utterances[ 0 ]
 			}
 		];
@@ -759,26 +759,26 @@
 		storage.utterances[ 0 ].tokens = [
 			{
 				string: 'token',
-				startTime: 0.0,
-				endTime: 1.0,
+				startTime: 0,
+				endTime: 1000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: 'last',
-				startTime: 1.0,
-				endTime: 2.0,
+				startTime: 1000,
+				endTime: 2000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: 'no duration',
-				startTime: 2.0,
-				endTime: 2.0,
+				startTime: 2000,
+				endTime: 2000,
 				utterance: storage.utterances[ 0 ]
 			},
 			{
 				string: '',
-				startTime: 2.0,
-				endTime: 3.0,
+				startTime: 2000,
+				endTime: 3000,
 				utterance: storage.utterances[ 0 ]
 			}
 		];

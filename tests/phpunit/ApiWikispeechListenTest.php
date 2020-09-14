@@ -151,22 +151,26 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		];
 		$synthesizeMetadataJson =
 			'[' .
-			'{"endtime": 0.295, "orth": "Word"}, ' .
-			'{"endtime": 0.51, "expanded": "one", "orth": "1"}, ' .
-			'{"endtime": 0.8, "orth": "Word"}, ' .
-			'{"endtime": 0.93, "expanded": "two", "orth": "2"}, ' .
-			'{"endtime": 1.215, "orth": "Word"}, ' .
-			'{"endtime": 1.565, "expanded": "three", "orth": "3"}, ' .
-			'{"endtime": 1.565, "orth": "."}, ' .
-			'{"endtime": 1.975, "orth": ""}' .
+			'{"endtime": 295, "orth": "Word"}, ' .
+			'{"endtime": 510, "expanded": "one", "orth": "1"}, ' .
+			'{"endtime": 800, "orth": "Word"}, ' .
+			'{"endtime": 930, "expanded": "two", "orth": "2"}, ' .
+			'{"endtime": 1215, "orth": "Word"}, ' .
+			'{"endtime": 1565, "expanded": "three", "orth": "3"}, ' .
+			'{"endtime": 1565, "orth": "."}, ' .
+			'{"endtime": 1975, "orth": ""}' .
 			']';
 		$synthesizeMetadataArray = FormatJson::parse(
 			$synthesizeMetadataJson,
 			FormatJson::FORCE_ASSOC
 		)->getValue();
-		// this is a solution to avoid floating point conversion errors
-		$synthesizeMetadataJson =
-			FormatJson::encode( $synthesizeMetadataArray );
+
+		// Ensure that JSON string is formatted the same way as in utterance store.
+		// This is to match the string expected in the mocked UtteranceStore#createUtterance,
+		// as the value from the mocked Speechoid connector
+		// (the de-serialized JSON synthesis metadata PHP array)
+		// will be re-serialized to a JSON string and then passed on to the createUtterance function.
+		$synthesizeMetadataJson = FormatJson::encode( $synthesizeMetadataArray );
 
 		$api = TestingAccessWrapper::newFromObject(
 			new ApiWikispeechListen(
@@ -196,6 +200,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				$this->equalTo( 'anna' ),
 				$this->equalTo( $hash ),
 				$this->equalTo( 'DummyBase64==' ),
+				// this is the reason for re-serializing the JSON string .
 				$this->equalTo( $synthesizeMetadataJson )
 			);
 		$api->utteranceStore = $utteranceStoreMock;
@@ -240,22 +245,19 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		];
 		$synthesizeMetadataJson =
 			'[' .
-			'{"endtime": 0.295, "orth": "Word"}, ' .
-			'{"endtime": 0.51, "expanded": "one", "orth": "1"}, ' .
-			'{"endtime": 0.8, "orth": "Word"}, ' .
-			'{"endtime": 0.93, "expanded": "two", "orth": "2"}, ' .
-			'{"endtime": 1.215, "orth": "Word"}, ' .
-			'{"endtime": 1.565, "expanded": "three", "orth": "3"}, ' .
-			'{"endtime": 1.565, "orth": "."}, ' .
-			'{"endtime": 1.975, "orth": ""}' .
+			'{"endtime": 295, "orth": "Word"}, ' .
+			'{"endtime": 510, "expanded": "one", "orth": "1"}, ' .
+			'{"endtime": 800, "orth": "Word"}, ' .
+			'{"endtime": 930, "expanded": "two", "orth": "2"}, ' .
+			'{"endtime": 1215, "orth": "Word"}, ' .
+			'{"endtime": 1565, "expanded": "three", "orth": "3"}, ' .
+			'{"endtime": 1565, "orth": "."}, ' .
+			'{"endtime": 1975, "orth": ""}' .
 			']';
 		$synthesizeMetadataArray = FormatJson::parse(
 			$synthesizeMetadataJson,
 			FormatJson::FORCE_ASSOC
 		)->getValue();
-		// this is a solution to avoid floating point conversion errors
-		$synthesizeMetadataJson =
-			FormatJson::encode( $synthesizeMetadataArray );
 
 		$api = TestingAccessWrapper::newFromObject(
 			new ApiWikispeechListen(

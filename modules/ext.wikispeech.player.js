@@ -94,7 +94,7 @@
 		this.stopUtterance = function ( utterance ) {
 			utterance.audio.pause();
 			// Rewind audio for next time it plays.
-			utterance.audio.currentTime = 0.0;
+			utterance.audio.currentTime = 0;
 			mw.wikispeech.ui.removeCanPlayListener( $( utterance.audio ) );
 			mw.wikispeech.highlighter.clearHighlighting();
 		};
@@ -138,7 +138,7 @@
 				// threshold. The threshold is based on position in
 				// the audio, rather than time played. This means it
 				// scales with speech rate.
-				currentUtterance.audio.currentTime = 0.0;
+				currentUtterance.audio.currentTime = 0;
 			} else {
 				previousUtterance =
 					mw.wikispeech.storage.getPreviousUtterance(
@@ -160,10 +160,10 @@
 
 			currentToken = null;
 			tokens = currentUtterance.tokens;
-			currentTime = currentUtterance.audio.currentTime;
+			currentTime = currentUtterance.audio.currentTime * 1000;
 			tokensWithDuration = tokens.filter( function ( token ) {
 				duration = token.endTime - token.startTime;
-				return duration > 0.0;
+				return duration > 0;
 			} );
 			lastTokenWithDuration =
 				mw.wikispeech.util.getLast( tokensWithDuration );
@@ -196,7 +196,7 @@
 				if ( !nextToken ) {
 					self.skipAheadUtterance();
 				} else {
-					currentUtterance.audio.currentTime = nextToken.startTime;
+					currentUtterance.audio.currentTime = nextToken.startTime / 1000;
 					mw.wikispeech.highlighter.startTokenHighlighting(
 						nextToken
 					);
@@ -222,7 +222,7 @@
 					previousToken =
 						mw.wikispeech.storage.getLastToken( currentUtterance );
 				}
-				currentUtterance.audio.currentTime = previousToken.startTime;
+				currentUtterance.audio.currentTime = previousToken.startTime / 1000;
 				mw.wikispeech.highlighter.startTokenHighlighting(
 					previousToken
 				);

@@ -5,7 +5,8 @@
 			"Igor Leturia",
 			"Karl Wettin",
 			"Sebastian Berlin",
-			"Umherirrender"
+			"Umherirrender",
+			"André Costa"
 		]
 	},
 	"wikispeech": "{{name}}\nThe name of the extension",
@@ -20,7 +21,9 @@
 	"apierror-wikispeech-removetagsinvalid": "{{doc-apierror}}",
 	"apihelp-wikispeechlisten-summary": "{{doc-apihelp-summary|wikispeechlisten}}",
 	"apihelp-wikispeechlisten-param-lang": "{{doc-apihelp-param|wikispeechlisten|lang}}",
-	"apihelp-wikispeechlisten-param-input": "{{doc-apihelp-param|wikispeechlisten|input}}",
+	"apihelp-wikispeechlisten-param-revision": "{{doc-apihelp-param|wikispeechlisten|revision}}",
+	"apihelp-wikispeechlisten-param-segment": "{{doc-apihelp-param|wikispeechlisten|segment}}",
+	"apihelp-wikispeechlisten-param-text": "{{doc-apihelp-param|wikispeechlisten|text}}",
 	"apihelp-wikispeechlisten-param-voice": "{{doc-apihelp-param|wikispeechlisten|voice}}",
 	"apierror-wikispeechlisten-notallowed": "{{doc-apierror}}",
 	"apierror-wikispeechlisten-invalid-language": "{{doc-apierror}}",

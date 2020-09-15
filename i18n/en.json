@@ -3,7 +3,8 @@
 		"authors": [
 			"Sebastian Berlin",
 			"Igor Leturia",
-			"Karl Wettin"
+			"Karl Wettin",
+			"André Costa"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -18,7 +19,9 @@
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>.",
 	"apihelp-wikispeechlisten-summary": "Synthesize speech.",
 	"apihelp-wikispeechlisten-param-lang": "Language code.",
-	"apihelp-wikispeechlisten-param-input": "Text to synthesize.",
+	"apihelp-wikispeechlisten-param-revision": "Page revision on which the segment is found.",
+	"apihelp-wikispeechlisten-param-segment": "Hash of the segment synthesize.",
+	"apihelp-wikispeechlisten-param-text": "Text to synthesize.",
 	"apihelp-wikispeechlisten-param-voice": "Voice to use. If not provided the default voice for the language will be used.",
 	"apierror-wikispeechlisten-notallowed": "You do not have the rights to call this API action.",
 	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> is not a valid language. Should be one of: $2.",

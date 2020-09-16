@@ -304,21 +304,17 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$this->assertSame( $synthesizeMetadataArray, $utterance['tokens'] );
 	}
 
-	public function testRequest_notCurrentRevision_throwsException() {
+	public function testRequest_notCurrentRevision_passedToSegmenter() {
 		$page = Util::addPage( 'Page', 'Old' );
-		$oldId = $page->getRevisionRecord()->getId();
+		$oldId = $page->getLatest();
+
 		// Making an edit causes the initial revision to be non-current.
-		$page->doEditContent(
-			ContentHandler::makeContent(
-				'New',
-				$page->getTitle(),
-				CONTENT_MODEL_WIKITEXT
-			),
-			''
-		);
-		$this->expectException( ApiUsageException::class );
+		Util::editPage( $page, 'New' );
+
+		// Purposefully hit the Segmenter Exception to avoid actual synthesis
+		$this->expectException( MWException::class );
 		$this->expectExceptionMessage(
-			'Only latest revision of a page may be used.'
+			'An outdated or invalid revision id was provided'
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeechlisten',
@@ -326,5 +322,108 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'segment' => 'hash',
 			'lang' => 'en'
 		] );
+	}
+
+	public function testRequest_deletedRevision_throwsException() {
+		$testUser = self::getTestUser()->getUser();
+		$page = Util::addPage( 'Page', 'Old' );
+		$oldId = $page->getLatest();
+		// Delete the page and by extension the revision.
+		$page->doDeleteArticleReal(
+			'No reason',
+			$testUser,
+			false
+		);
+
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'Deleted revisons cannot be listened to.'
+		);
+		$this->doApiRequest( [
+			'action' => 'wikispeechlisten',
+			'revision' => $oldId,
+			'segment' => 'hash',
+			'lang' => 'en'
+		] );
+	}
+
+	public function testRequest_suppressedRevision_throwsException() {
+		// Set up a user with permission to supress revisions
+		$this->mergeMwGlobalArrayValue(
+			'wgGroupPermissions',
+			[ 'sysop' => [ 'deleterevision' => true ] ]
+		);
+		$testSysop = $this->getTestSysop()->getUser();
+
+		$page = Util::addPage( 'Page', 'Old' );
+		$oldId = $page->getLatest();
+
+		// Making an edit causes the initial revision to be non-current.
+		Util::editPage( $page, 'New' );
+
+		// supress the old revision
+		$this->doApiRequest( [
+			'action' => 'revisiondelete',
+			'type' => 'revision',
+			'target' => $page->getTitle()->getDbKey(),
+			'ids' => $oldId,
+			'hide' => 'content',
+			'token' => $testSysop->getEditToken(),
+		] );
+
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage(
+			'Deleted revisons cannot be listened to.'
+		);
+		$this->doApiRequest( [
+			'action' => 'wikispeechlisten',
+			'revision' => $oldId,
+			'segment' => 'hash',
+			'lang' => 'en'
+		] );
+	}
+
+	public function testRequest_suppressedRevisionAllowedUser_throwsException() {
+		// Set up a user with permission to supress revisions and view the same
+		$this->mergeMwGlobalArrayValue(
+			'wgGroupPermissions',
+			[ 'sysop' => [
+				'deleterevision' => true,
+				'deletedtext' => true
+			] ]
+		);
+		$testSysop = $this->getTestSysop()->getUser();
+
+		$page = Util::addPage( 'Page', 'Old' );
+		$oldId = $page->getLatest();
+
+		// Making an edit causes the initial revision to be non-current.
+		Util::editPage( $page, 'New' );
+
+		// supress the old revision
+		$this->doApiRequest( [
+			'action' => 'revisiondelete',
+			'type' => 'revision',
+			'target' => $page->getTitle()->getDbKey(),
+			'ids' => $oldId,
+			'hide' => 'content',
+			'token' => $testSysop->getEditToken(),
+		] );
+
+		// Purposefully hit the Segmenter Exception to avoid actual synthesis
+		$this->expectException( MWException::class );
+		$this->expectExceptionMessage(
+			'An outdated or invalid revision id was provided'
+		);
+		// do request as $testSysop
+		$this->doApiRequest(
+			[
+				'action' => 'wikispeechlisten',
+				'revision' => $oldId,
+				'segment' => 'hash',
+				'lang' => 'en'
+			],
+			null, false, $testSysop
+	 );
 	}
 }

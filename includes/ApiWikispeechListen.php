@@ -56,6 +56,12 @@ class ApiWikispeechListen extends ApiBase {
 				$inputParameters['segment']
 			);
 		} else {
+			if ( !$voice ) {
+				$voice = $this->utteranceStore->getDefaultVoice( $language );
+				if ( !$voice ) {
+					throw new ConfigException( "Invalid default voice configuration." );
+				}
+			}
 			$speechoidResponse = $this->speechoidConnector->synthesize(
 				$language,
 				$voice,

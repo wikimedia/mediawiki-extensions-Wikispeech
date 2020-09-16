@@ -52,7 +52,7 @@ class SpeechoidConnector {
 			$this->url,
 			[ 'postData' => $requestParameters ]
 		);
-		if ( $responseString == null ) {
+		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}
 		$status = FormatJson::parse(

@@ -248,7 +248,7 @@
 				],
 				"en": [
 					"dfki-spike-hsmm",
-					"cmu-slt-flite"
+					"cmu-slt-hsmm"
 				],
 				"sv": [
 					"stts_sv_nst-hsmm"

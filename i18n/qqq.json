@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"André Costa",
 			"FF11",
 			"Igor Leturia",
 			"Karl Wettin",
+			"Raymond",
 			"Sebastian Berlin",
-			"Umherirrender",
-			"André Costa"
+			"Umherirrender"
 		]
 	},
 	"wikispeech": "{{name}}\nThe name of the extension",
@@ -23,7 +24,7 @@
 	"apihelp-wikispeechlisten-param-lang": "{{doc-apihelp-param|wikispeechlisten|lang}}",
 	"apihelp-wikispeechlisten-param-revision": "{{doc-apihelp-param|wikispeechlisten|revision}}",
 	"apihelp-wikispeechlisten-param-segment": "{{doc-apihelp-param|wikispeechlisten|segment}}",
-	"apihelp-wikispeechlisten-param-text": "{{doc-apihelp-param|wikispeechlisten|text}}",
+	"apihelp-wikispeechlisten-param-text": "{{doc-apihelp-param|wikispeechlisten|input}}",
 	"apihelp-wikispeechlisten-param-voice": "{{doc-apihelp-param|wikispeechlisten|voice}}",
 	"apierror-wikispeechlisten-deleted-revision": "{{doc-apierror}}",
 	"apierror-wikispeechlisten-notallowed": "{{doc-apierror}}",

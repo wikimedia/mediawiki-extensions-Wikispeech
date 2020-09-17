@@ -17,7 +17,7 @@
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is geen geldig formaat. Het moet een object zijn met booleans, strings of stringreeksen als waarden. Om geen labels te verwijderen, set <var>removetags</var> naar leeg object, <code>{}</code>.",
 	"apihelp-wikispeechlisten-summary": "Synthethiseer spraak.",
 	"apihelp-wikispeechlisten-param-lang": "Taalcode.",
-	"apihelp-wikispeechlisten-param-input": "Te synthethiseren text.",
+	"apihelp-wikispeechlisten-param-text": "Te synthethiseren text.",
 	"apihelp-wikispeechlisten-param-voice": "Te gebruiken stem. Indien niet voorzien zal de standaardstem van de taal gebruikt worden.",
 	"apierror-wikispeechlisten-notallowed": "Je hebt niet de rechten om deze API actie af te roepen.",
 	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> is geen geldige taal. Moet één zijn van: $2.",

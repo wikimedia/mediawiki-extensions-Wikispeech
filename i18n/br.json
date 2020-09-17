@@ -16,7 +16,7 @@
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> n'eo ket ur furmad reizh. Rankout a ra bezañ un draezenn dezhi talvoudoù boulean, neudennadoù pe heuliadoù neudennadoù. Kuit da zilemel tikedenn ebet, merkañ <var>removetags</var> evel un draezenn c'houllo, <code>{}</code>.",
 	"apihelp-wikispeechlisten-summary": "Yezh kenaozet.",
 	"apihelp-wikispeechlisten-param-lang": "Kod yezh.",
-	"apihelp-wikispeechlisten-param-input": "Testenn da genaozañ.",
+	"apihelp-wikispeechlisten-param-text": "Testenn da genaozañ.",
 	"apihelp-wikispeechlisten-param-voice": "Mouezh da vezañ implijet. Ma n'eo ket spisaet e vo graet gant ar vouezh dre ziouer evit ar yezh.",
 	"apierror-wikispeechlisten-notallowed": "N'hoc'h eus ket ar gwir da c'hervel an oberiadenn-mañ eus an API.",
 	"apierror-wikispeechlisten-invalid-language": "N'eo ket <code>$1</code> ur c'hod yezh reizh. Unan e-touez ar re-mañ e tlefe bezañ : $2.",

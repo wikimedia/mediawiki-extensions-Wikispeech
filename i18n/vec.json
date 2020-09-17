@@ -15,7 +15,7 @@
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> is not of a valid format. It must be an object with the values being booleans, strings or arrays of strings. To not remove any tags, set <var>removetags</var> to empty object, <code>{}</code>.",
 	"apihelp-wikispeechlisten-summary": "Sintetixa el discorso",
 	"apihelp-wikispeechlisten-param-lang": "Còdaxe łéngua",
-	"apihelp-wikispeechlisten-param-input": "Testo da sintetixar",
+	"apihelp-wikispeechlisten-param-text": "Testo da sintetixar",
 	"apihelp-wikispeechlisten-param-voice": "Voxe da doparar. Se no vien definio, vegnarà doparada ła voxe predefinia par ła łéngua de scolto.",
 	"apierror-wikispeechlisten-notallowed": "No te ghè i deriti par ciamar sta asion API.",
 	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> no ła xe na łéngua vàłida. Garia da èsar una de ste cuà: $2.",

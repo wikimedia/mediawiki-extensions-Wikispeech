@@ -16,7 +16,7 @@
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> geçerli bir biçime sahip değil. Değerleri boole, dize veya dize dizisi olan bir nesne olmalıdır. Hiçbir etiketi kaldırmak için <var>removetags</var> boş nesneye <code>{}</code> ayarlayın.",
 	"apihelp-wikispeechlisten-summary": "Konuşmayı sentezler.",
 	"apihelp-wikispeechlisten-param-lang": "Dil kodu.",
-	"apihelp-wikispeechlisten-param-input": "Sentezlenecek metin.",
+	"apihelp-wikispeechlisten-param-text": "Sentezlenecek metin.",
 	"apihelp-wikispeechlisten-param-voice": "Kullanılacak ses. Sağlanmazsa, dil için varsayılan ses kullanılır.",
 	"apierror-wikispeechlisten-notallowed": "Bu API eylemini arama haklarına sahip değilsiniz.",
 	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> geçerli bir dil değil. Şunlardan biri olmalı: $2.",

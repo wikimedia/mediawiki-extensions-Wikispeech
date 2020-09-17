@@ -6,7 +6,7 @@
 	},
 	"apihelp-wikispeech-param-page": "El título de la página por procesar.",
 	"apihelp-wikispeechlisten-param-lang": "Código de idioma.",
-	"apihelp-wikispeechlisten-param-input": "Texto por sintetizar.",
+	"apihelp-wikispeechlisten-param-text": "Texto por sintetizar.",
 	"apihelp-wikispeechlisten-example-2": "Utilizar una voz distinta de la predeterminada.",
 	"prefs-wikispeech-voice": "Voz",
 	"prefs-wikispeech-show-player": "Mostrar reproductor",

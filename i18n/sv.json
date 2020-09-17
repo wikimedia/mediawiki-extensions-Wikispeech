@@ -17,7 +17,7 @@
 	"apierror-wikispeech-removetagsinvalid": "<var>removetags</var> har inte ett giltigt format. Den måste vara ett objekt med värden som är booleska, strängar eller strängarrayer. Ta inte bort några taggar, utan ändra <var>removetags</var> till ett tomt objekt, d.v.s. <code>{}</code>.",
 	"apihelp-wikispeechlisten-summary": "Syntetisera tal.",
 	"apihelp-wikispeechlisten-param-lang": "Språkkod.",
-	"apihelp-wikispeechlisten-param-input": "Text att syntetisera.",
+	"apihelp-wikispeechlisten-param-text": "Text att syntetisera.",
 	"apihelp-wikispeechlisten-param-voice": "Rösten att använda. Om detta inte anges kommer standardrösten för språket att användas.",
 	"apierror-wikispeechlisten-notallowed": "Du har inte rättigheterna för att anropa denna API-åtgärd.",
 	"apierror-wikispeechlisten-invalid-language": "<code>$1</code> är inte ett giltigt språk. Bör vara en av följande: $2.",

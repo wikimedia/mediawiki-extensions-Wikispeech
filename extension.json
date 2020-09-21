@@ -39,7 +39,8 @@
 		"FlushUtterancesFromStoreByLanguageAndVoiceJob": "includes/FlushUtterancesFromStoreByLanguageAndVoiceJob.php",
 		"FlushUtterancesFromStoreByLanguageAndVoiceJobQueue": "includes/FlushUtterancesFromStoreByLanguageAndVoiceJobQueue.php",
 		"FlushUtterancesFromStoreByPageIdJob": "includes/FlushUtterancesFromStoreByPageIdJob.php",
-		"FlushUtterancesFromStoreByPageIdJobQueue": "includes/FlushUtterancesFromStoreByPageIdJobQueue.php"
+		"FlushUtterancesFromStoreByPageIdJobQueue": "includes/FlushUtterancesFromStoreByPageIdJobQueue.php",
+		"VoiceHandler": "includes/VoiceHandler.php"
 	},
 	"TestAutoloadClasses": {
 		"Util": "tests/phpunit/Util.php"

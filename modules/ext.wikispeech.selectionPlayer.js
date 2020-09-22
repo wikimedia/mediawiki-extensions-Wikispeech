@@ -203,12 +203,12 @@
 		 *
 		 * @param {Object} utterance The utterance to set start time
 		 *  for.
-		 * @param {number} startTime The time in seconds to start
-		 *  playing at.
+		 * @param {number} startTime The time in milliseconds
+		 *  to start playing at.
 		 */
 
 		this.setStartTime = function ( utterance, startTime ) {
-			utterance.audio.currentTime = startTime;
+			utterance.audio.currentTime = startTime / 1000;
 		};
 
 		/**
@@ -253,21 +253,20 @@
 		 * the end time is reached, stopping playback.
 		 *
 		 * @param {Object} utterance The utterance to set end time for.
-		 * @param {number} endTime The time in seconds to stop playing
-		 *  after.
+		 * @param {number} endTime The time in milliseconds to stop
+		 *  playing after.
 		 */
 
 		this.setEndTime = function ( utterance, endTime ) {
 			$( utterance.audio ).one( 'playing.end', function () {
-				var timeLeft = endTime - utterance.audio.currentTime;
+				var timeLeft = endTime - utterance.audio.currentTime * 1000;
 				utterance.stopTimeout =
 					window.setTimeout(
 						function () {
 							mw.wikispeech.player.stop();
 							self.resetPreviousEndUtterance();
 						},
-						timeLeft * 1000 /
-							mw.user.options.get( 'wikispeechSpeechRate' )
+						timeLeft / mw.user.options.get( 'wikispeechSpeechRate' )
 					);
 			} );
 		};

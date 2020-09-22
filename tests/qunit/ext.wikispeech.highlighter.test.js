@@ -425,7 +425,7 @@
 		assert.expect( 1 );
 		highlightedToken = {
 			utterance: storage.utterances[ 0 ],
-			endTime: 1.0
+			endTime: 1000
 		};
 		nextToken = { utterance: storage.utterances[ 0 ] };
 		storage.utterances[ 0 ].tokens = [
@@ -447,7 +447,7 @@
 		assert.expect( 1 );
 		highlightedToken = {
 			utterance: storage.utterances[ 0 ],
-			endTime: 1.0
+			endTime: 1000
 		};
 		nextToken = { utterance: storage.utterances[ 0 ] };
 		storage.utterances[ 0 ].tokens = [
@@ -470,7 +470,7 @@
 		assert.expect( 1 );
 		highlightedToken = {
 			utterance: storage.utterances[ 0 ],
-			endTime: 1.0
+			endTime: 1000
 		};
 		nextToken = { utterance: storage.utterances[ 0 ] };
 		storage.utterances[ 0 ].tokens = [

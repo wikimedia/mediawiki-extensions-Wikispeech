@@ -25,11 +25,16 @@ the match the new release version.
 
 ## Versions
 
-### 0.1.6-SNAPSHOT
+### 0.1.7-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
 
-* [T262948](https://phabricator.wikimedia.org/T262948) Request default voice per language from Speechoid. 
+### 0.1.6
+2020-09-22
+Speechoid: 0.1.2
+
+* [T262387](https://phabricator.wikimedia.org/T262387) Update to use Speechoid 0.1.2.
+* [T262948](https://phabricator.wikimedia.org/T262948) Request default voice per language from Speechoid.
 * [T261753](https://phabricator.wikimedia.org/T261753) Allow listening to page even if edited.
 * [T262655](https://phabricator.wikimedia.org/T262655) Versioning of Speechoid.
 * [T257078](https://phabricator.wikimedia.org/T257078) Trigger Wikispeech UI on PageContentLanguage, not interface language.

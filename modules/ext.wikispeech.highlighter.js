@@ -200,7 +200,7 @@
 		this.setHighlightTokenTimer = function ( token ) {
 			var currentTime, duration, nextToken;
 
-			currentTime = token.utterance.audio.currentTime;
+			currentTime = token.utterance.audio.currentTime * 1000;
 			// The duration of the timer is the duration of the
 			// current token.
 			duration = token.endTime - currentTime;
@@ -216,8 +216,7 @@
 						// starts playing.
 						self.setHighlightTokenTimer( nextToken );
 					},
-					duration * 1000 /
-						mw.user.options.get( 'wikispeechSpeechRate' )
+					duration / mw.user.options.get( 'wikispeechSpeechRate' )
 				);
 			}
 		};

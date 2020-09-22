@@ -21,7 +21,7 @@
 	"apihelp-wikispeechlisten-summary": "Langage de synthèse.",
 	"apihelp-wikispeechlisten-param-lang": "Code de langue.",
 	"apihelp-wikispeechlisten-param-revision": "Révision de la page sur laquelle se trouve le segment.",
-	"apihelp-wikispeechlisten-param-segment": "Hachage du synthèse du segment.",
+	"apihelp-wikispeechlisten-param-segment": "Hachage de la synthèse du segment.",
 	"apihelp-wikispeechlisten-param-text": "Texte à synthétiser.",
 	"apihelp-wikispeechlisten-param-voice": "Voix à utiliser. Si non fourni, la voix par défaut pour la langue sera utilisée.",
 	"apierror-wikispeechlisten-deleted-revision": "Les révisions supprimées ne peuvent pas être écoutées.",

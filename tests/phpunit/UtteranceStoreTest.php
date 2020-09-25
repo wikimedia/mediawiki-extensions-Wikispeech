@@ -694,13 +694,13 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		}
 	}
 
-	public function testFlushUtteranceFilesByExpirationDateOnFileFromFileBackend_emptyFileBackend_success() {
+	public function testFlushUtterancesByExpirationDateOnFile_emptyFileBackend_success() {
 		$this->assertSame( 0, $this->utteranceStore
-			->flushUtterancesByExpirationDateOnFileFromFileBackend( MWTimestamp::getInstance() ) );
+			->flushUtterancesByExpirationDateOnFile( MWTimestamp::getInstance() ) );
 	}
 
 	// phpcs:ignore Generic.Files.LineLength
-	public function testFlushUtteranceFilesByExpirationDateOnFileFromFileBackend_fastForwardClock_firstKeptThenRemoved() {
+	public function testFlushUtterancesByExpirationDateOnFile_fastForwardClock_firstKeptThenRemoved() {
 		$before = new MWTimestamp( strtotime( '-15 minutes' ) );
 
 		// create audio file
@@ -739,7 +739,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		] )->isOK() );
 
 		$this->assertSame( 0, $this->utteranceStore
-			->flushUtterancesByExpirationDateOnFileFromFileBackend( $before ) );
+			->flushUtterancesByExpirationDateOnFile( $before ) );
 
 		// assert files are still there
 		$this->assertTrue(
@@ -754,7 +754,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		$future = strtotime( '+15 minutes' );
 
 		$this->assertSame( 2, $this->utteranceStore
-			->flushUtterancesByExpirationDateOnFileFromFileBackend( new MWTimestamp( $future ) ) );
+			->flushUtterancesByExpirationDateOnFile( new MWTimestamp( $future ) ) );
 
 		// assert files are deleted
 		$this->assertFalse(

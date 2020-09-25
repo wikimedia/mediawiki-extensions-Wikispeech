@@ -29,6 +29,10 @@ the match the new release version.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T260905](https://phabricator.wikimedia.org/T260905) Refactored (shortened) name of flushUtterancesByExpirationDateOnFileFromFileBackend.
+  @since tags on renamed methods and classes is bumped from 0.1.5 to 0.1.7,
+  but due to the pre-release state of the project
+  we did not keep and deprecate the previous method names.
 * [T251261](https://phabricator.wikimedia.org/T251261) Mechanisms for executing flushing of utterances from the store.
 * [T254737](https://phabricator.wikimedia.org/T254737) Rename APIs to wikispeech-listen and wikispeech-segment.
 

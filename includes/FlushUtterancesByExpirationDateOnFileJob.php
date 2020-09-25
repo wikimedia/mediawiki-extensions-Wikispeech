@@ -7,16 +7,17 @@
  */
 
 /**
- * @since 0.1.5
+ * @since 0.1.7
  */
-class FlushUtterancesByExpirationDateOnFileFromFileBackendJob extends Job {
+class FlushUtterancesByExpirationDateOnFileJob extends Job {
 
 	/**
+	 * @since 0.1.7
 	 * @return bool success
 	 */
 	public function run() {
 		$utteranceStore = new UtteranceStore();
-		$utteranceStore->flushUtterancesByExpirationDateOnFileFromFileBackend();
+		$utteranceStore->flushUtterancesByExpirationDateOnFile();
 		return true;
 	}
 

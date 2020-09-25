@@ -13,22 +13,22 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 /**
- * Class FlushOrphanedUtterancesFromFileBackendMaintenance
+ * Class FlushUtterancesByExpirationDateOnFile
  *
  * Maintenance script to manually execute
  * {@link UtteranceStore::flushUtterancesByExpirationDateOnFile()}.
  * Used to clear out orphaned files (i.e. not tracked by utterance database).
  *
- * php extensions/Wikispeech/maintenance/flushUtterancesByExpirationDateOnFileFromFileBackend.php
+ * php extensions/Wikispeech/maintenance/flushUtterancesByExpirationDateOnFile.php
  *
- * @since 0.1.5
+ * @since 0.1.7
  */
-class FlushUtterancesByExpirationDateOnFileFromFileBackend extends Maintenance {
+class FlushUtterancesByExpirationDateOnFile extends Maintenance {
 
 	/** @var UtteranceStore */
 	private $utteranceStore;
 
-	/** @var FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue */
+	/** @var FlushUtterancesByExpirationDateOnFileJobQueue */
 	private $jobQueue;
 
 	public function __construct() {
@@ -55,12 +55,12 @@ class FlushUtterancesByExpirationDateOnFileFromFileBackend extends Maintenance {
 			$this->utteranceStore = new UtteranceStore();
 		}
 		if ( !$this->jobQueue ) {
-			$this->jobQueue = new FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue();
+			$this->jobQueue = new FlushUtterancesByExpirationDateOnFileJobQueue();
 		}
 
 		$force = $this->hasOption( 'force' );
 		if ( $force ) {
-			$this->utteranceStore->flushUtterancesByExpirationDateOnFileFromFileBackend();
+			$this->utteranceStore->flushUtterancesByExpirationDateOnFile();
 		} else {
 			$this->jobQueue->queueJob();
 		}
@@ -69,6 +69,6 @@ class FlushUtterancesByExpirationDateOnFileFromFileBackend extends Maintenance {
 
 }
 
-$maintClass = FlushUtterancesByExpirationDateOnFileFromFileBackend::class;
+$maintClass = FlushUtterancesByExpirationDateOnFile::class;
 
 require_once RUN_MAINTENANCE_IF_MAIN;

@@ -627,13 +627,12 @@ class UtteranceStore {
 	}
 
 	/**
-	 * Removes expired utterance and synthesis metadata from the file backend.
-	 *
-	 * @since 0.1.5
-	 * @param MWTimestamp|null $expiredTimestamp File timestamp <= to this value is expired. Defaults to config value.
+	 * @since 0.1.7
+	 * @param MWTimestamp|null $expiredTimestamp File timestamp <= to this value is orphaned.
+	 *  Defaults to config value.
 	 * @return int Number of expired files flushed
 	 */
-	public function flushUtterancesByExpirationDateOnFileFromFileBackend( $expiredTimestamp = null ) {
+	public function flushUtterancesByExpirationDateOnFile( $expiredTimestamp = null ) {
 		// @note Either this method, or the job,
 		// should probably call `flushUtterancesByExpirationDate`
 		// to ensure we are not deleting a bunch of files
@@ -643,7 +642,7 @@ class UtteranceStore {
 			$expiredTimestamp = self::getWikispeechUtteranceExpirationTimestamp();
 		}
 		$fileBackend = $this->getFileBackend();
-		return $this->recurseFlushUtterancesByExpirationDateOnFileFromFileBackend(
+		return $this->recurseFlushUtterancesByExpirationDateOnFile(
 			$fileBackend,
 			$this->getFileBackend()
 				->getContainerStoragePath( $this->fileBackendContainerName ),
@@ -652,13 +651,13 @@ class UtteranceStore {
 	}
 
 	/**
-	 * @since 0.1.5
+	 * @since 0.1.7
 	 * @param FileBackend $fileBackend
 	 * @param string $directory
 	 * @param MWTimestamp $expiredTimestamp
 	 * @return int Number of expired files flushed
 	 */
-	private function recurseFlushUtterancesByExpirationDateOnFileFromFileBackend(
+	private function recurseFlushUtterancesByExpirationDateOnFile(
 		$fileBackend,
 		$directory,
 		$expiredTimestamp
@@ -672,7 +671,7 @@ class UtteranceStore {
 		] );
 		if ( $subdirectories ) {
 			foreach ( $subdirectories as $subdirectory ) {
-				$removedFilesCounter += $this->recurseFlushUtterancesByExpirationDateOnFileFromFileBackend(
+				$removedFilesCounter += $this->recurseFlushUtterancesByExpirationDateOnFile(
 					$fileBackend,
 					$directory . '/' . $subdirectory,
 					$expiredTimestamp

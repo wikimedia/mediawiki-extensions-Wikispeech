@@ -283,11 +283,11 @@ class WikispeechHooks {
 	 */
 	public static function onApiCheckCanExecute( $module, $user, &$message ) {
 		if (
-			$module->getModuleName() == 'wikispeechlisten' &&
+			$module->getModuleName() == 'wikispeech-listen' &&
 			!$user->isAllowed( 'wikispeech-listen' )
 		) {
 			$message = ApiMessage::create(
-				'apierror-wikispeechlisten-notallowed'
+				'apierror-wikispeech-listen-notallowed'
 			);
 			return false;
 		}

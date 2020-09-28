@@ -6,6 +6,6 @@
 	},
 	"apihelp-wikispeechlisten-param-lang": "언어 코드입니다.",
 	"prefs-wikispeech-speech-rate": "말하기 속도",
-	"prefs-wikispeech-show-player": "플레이어 표시",
+	"prefs-wikispeech-show-player": "플레이어 무조건 표시",
 	"wikispeech-listen": "듣기"
 }

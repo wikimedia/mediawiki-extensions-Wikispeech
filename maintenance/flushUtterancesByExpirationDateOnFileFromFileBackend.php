@@ -33,8 +33,6 @@ class FlushUtterancesByExpirationDateOnFileFromFileBackend extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
-		$this->utteranceStore = new UtteranceStore();
-		$this->jobQueue = new FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue();
 		$this->requireExtension( 'Wikispeech' );
 		$this->addDescription( 'Flush orphaned utterances from file backend.' );
 		$this->addOption(
@@ -50,6 +48,16 @@ class FlushUtterancesByExpirationDateOnFileFromFileBackend extends Maintenance {
 	 * @return bool success
 	 */
 	public function execute() {
+		// Non PHP core classes aren't available prior to this point,
+		// i.e. we can't initialize the fields in the constructor,
+		// and we have to be lenient for mocked instances set by tests.
+		if ( !$this->utteranceStore ) {
+			$this->utteranceStore = new UtteranceStore();
+		}
+		if ( !$this->jobQueue ) {
+			$this->jobQueue = new FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue();
+		}
+
 		$force = $this->hasOption( 'force' );
 		if ( $force ) {
 			$this->utteranceStore->flushUtterancesByExpirationDateOnFileFromFileBackend();

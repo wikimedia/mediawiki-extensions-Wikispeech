@@ -29,7 +29,7 @@
 			page = mw.config.get( 'wgPageName' );
 			api.post(
 				{
-					action: 'wikispeech',
+					action: 'wikispeech-segment',
 					page: [ page ]
 				},
 				{
@@ -44,7 +44,7 @@
 				var utterance, i;
 
 				mw.log( 'Segments received:', data );
-				self.utterances = data.wikispeech.segments;
+				self.utterances = data[ 'wikispeech-segment' ].segments;
 				for ( i = 0; i < self.utterances.length; i++ ) {
 					utterance = self.utterances[ i ];
 					utterance.audio = $( '<audio></audio>' ).get( 0 );
@@ -145,17 +145,17 @@
 			utterance.request = self.requestTts( utterance.hash );
 			utterance.request.done( function ( response ) {
 				audioUrl = 'data:audio/ogg;base64,' +
-					response.wikispeechlisten.audio;
+					response[ 'wikispeech-listen' ].audio;
 				mw.log(
 					'Setting audio url for: [' + utteranceIndex + ']',
 					utterance, '=',
-					response.wikispeechlisten.audio.length + ' base64 bytes'
+					response[ 'wikispeech-listen' ].audio.length + ' base64 bytes'
 				);
 				utterance.audio.setAttribute( 'src', audioUrl );
 				utterance.audio.playbackRate =
 					mw.user.options.get( 'wikispeechSpeechRate' );
 
-				self.addTokens( utterance, response.wikispeechlisten.tokens );
+				self.addTokens( utterance, response[ 'wikispeech-listen' ].tokens );
 				if ( callback ) {
 					callback();
 				}
@@ -170,7 +170,7 @@
 		/**
 		 * Send a request to the Speechoid service.
 		 *
-		 * Request is sent via the "wikispeechlisten" API action. Language to
+		 * Request is sent via the "wikispeech-listen" API action. Language to
 		 * use is retrieved from the current page.
 		 *
 		 * @param {string} segmentHash
@@ -187,7 +187,7 @@
 				language.slice( 1 );
 			voice = mw.user.options.get( voiceKey );
 			options = {
-				action: 'wikispeechlisten',
+				action: 'wikispeech-listen',
 				lang: language,
 				revision: mw.config.get( 'wgRevisionId' ),
 				segment: segmentHash

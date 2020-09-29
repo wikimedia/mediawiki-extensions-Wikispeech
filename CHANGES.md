@@ -29,6 +29,8 @@ the match the new release version.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T254737](https://phabricator.wikimedia.org/T254737) Rename APIs to wikispeech-listen and wikispeech-segment.
+
 ### 0.1.6
 2020-09-22
 Speechoid: 0.1.2

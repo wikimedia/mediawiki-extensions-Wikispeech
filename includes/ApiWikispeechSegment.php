@@ -6,7 +6,7 @@
  * @license GPL-2.0-or-later
  */
 
-class ApiWikispeech extends ApiBase {
+class ApiWikispeechSegment extends ApiBase {
 
 	/**
 	 * Execute an API request.
@@ -30,11 +30,11 @@ class ApiWikispeech extends ApiBase {
 			FormatJson::FORCE_ASSOC
 		);
 		if ( !$result->isGood() ) {
-			$this->dieWithError( 'apierror-wikispeech-removetagsinvalidjson' );
+			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalidjson' );
 		}
 		$removeTags = $result->getValue();
 		if ( !$this->isValidRemoveTags( $removeTags ) ) {
-			$this->dieWithError( 'apierror-wikispeech-removetagsinvalid' );
+			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
 		$segmenter = new Segmenter( $this->getContext() );
 		$segments = $segmenter->segmentPage(
@@ -129,11 +129,11 @@ class ApiWikispeech extends ApiBase {
 	 */
 	public function getExamplesMessages() {
 		return [
-			'action=wikispeech&format=json&page=Main_Page'
-			=> 'apihelp-wikispeech-example-1',
+			'action=wikispeech-segment&format=json&page=Main_Page'
+			=> 'apihelp-wikispeech-segment-example-1',
 			// phpcs:ignore Generic.Files.LineLength
-			'action=wikispeech&format=json&page=Main_Page&removetags={"sup": true, "div": "toc"}&segmentbreakingtags=h1|h2'
-			=> 'apihelp-wikispeech-example-2'
+			'action=wikispeech-segment&format=json&page=Main_Page&removetags={"sup": true, "div": "toc"}&segmentbreakingtags=h1|h2'
+			=> 'apihelp-wikispeech-segment-example-2'
 		];
 	}
 }

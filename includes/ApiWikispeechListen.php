@@ -127,7 +127,7 @@ class ApiWikispeechListen extends ApiBase {
 		$maximumNumberOfCharacterInInput = $config->get( 'WikispeechListenMaximumInputCharacters' );
 		if ( $numberOfCharactersInInput > $maximumNumberOfCharacterInInput ) {
 			$this->dieWithError( [
-				'apierror-wikispeechlisten-invalid-input-too-long',
+				'apierror-wikispeech-listen-invalid-input-too-long',
 				$maximumNumberOfCharacterInInput,
 				$numberOfCharactersInInput
 			] );
@@ -275,7 +275,7 @@ class ApiWikispeechListen extends ApiBase {
 		$validLanguages = array_keys( $voices );
 		if ( !in_array( $language, $validLanguages ) ) {
 			$this->dieWithError( [
-				'apierror-wikispeechlisten-invalid-language',
+				'apierror-wikispeech-listen-invalid-language',
 				$language,
 				self::makeValuesString( $validLanguages )
 			] );
@@ -287,7 +287,7 @@ class ApiWikispeechListen extends ApiBase {
 			$validVoices = $voices[$language];
 			if ( !in_array( $voice, $validVoices ) ) {
 				$this->dieWithError( [
-					'apierror-wikispeechlisten-invalid-voice',
+					'apierror-wikispeech-listen-invalid-voice',
 					$voice,
 					self::makeValuesString( $validVoices )
 				] );
@@ -335,7 +335,7 @@ class ApiWikispeechListen extends ApiBase {
 			RevisionRecord::FOR_THIS_USER,
 			$this->getContext()->getUser()
 		) ) {
-			$this->dieWithError( 'apierror-wikispeechlisten-deleted-revision' );
+			$this->dieWithError( 'apierror-wikispeech-listen-deleted-revision' );
 		}
 		// @phan-suppress-next-line PhanTypeMismatchReturnNullable T240141
 		return $revisionRecord;
@@ -380,12 +380,12 @@ class ApiWikispeechListen extends ApiBase {
 	 */
 	public function getExamplesMessages() {
 		return [
-			'action=wikispeechlisten&format=json&lang=en&text=Read this'
-			=> 'apihelp-wikispeechlisten-example-1',
-			'action=wikispeechlisten&format=json&lang=en&text=Read this&voice=cmu-slt-flite'
-			=> 'apihelp-wikispeechlisten-example-2',
-			'action=wikispeechlisten&format=json&lang=en&revision=1&segment=hash1234'
-			=> 'apihelp-wikispeechlisten-example-3',
+			'action=wikispeech-listen&format=json&lang=en&text=Read this'
+			=> 'apihelp-wikispeech-listen-example-1',
+			'action=wikispeech-listen&format=json&lang=en&text=Read this&voice=cmu-slt-flite'
+			=> 'apihelp-wikispeech-listen-example-2',
+			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234'
+			=> 'apihelp-wikispeech-listen-example-3',
 		];
 	}
 }

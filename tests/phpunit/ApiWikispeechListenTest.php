@@ -39,7 +39,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'"xx" is not a valid language. Should be one of: "ar", "en", "sv".'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'text' => 'Text to listen to.',
 			'lang' => 'xx'
 		] );
@@ -51,7 +51,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'"invalid-voice" is not a valid voice. Should be one of: "en-voice1", "en-voice2".'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'text' => 'Text to listen to.',
 			'lang' => 'en',
 			'voice' => 'invalid-voice'
@@ -66,7 +66,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			new ApiMain(), null
 		) );
 		$api->validateParameters( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'text' => 'This is a short sentence with less than 60 characters.',
 			'lang' => 'en',
 			'voice' => ''
@@ -89,7 +89,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			new ApiMain(), null
 		) );
 		$api->validateParameters( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'text' => 'This is a tiny bit longer sentence with more than 60 characters.',
 			'lang' => 'en',
 			'voice' => ''
@@ -102,7 +102,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'The "revision" parameter may only be used with "segment".'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'revision' => 1,
 			'lang' => 'en',
 			'voice' => ''
@@ -115,7 +115,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'The "segment" parameter may only be used with "revision".'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'segment' => 'hash1234',
 			'lang' => 'en',
 			'voice' => ''
@@ -128,7 +128,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'The "text" parameter cannot be used with "revision".'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'revision' => 1,
 			'segment' => 'hash1234',
 			'text' => 'Text to listen to.',
@@ -319,7 +319,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'An outdated or invalid revision id was provided'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'revision' => $oldId,
 			'segment' => 'hash',
 			'lang' => 'en'
@@ -342,7 +342,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'Deleted revisons cannot be listened to.'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'revision' => $oldId,
 			'segment' => 'hash',
 			'lang' => 'en'
@@ -378,7 +378,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'Deleted revisons cannot be listened to.'
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeechlisten',
+			'action' => 'wikispeech-listen',
 			'revision' => $oldId,
 			'segment' => 'hash',
 			'lang' => 'en'
@@ -420,7 +420,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		// do request as $testSysop
 		$this->doApiRequest(
 			[
-				'action' => 'wikispeechlisten',
+				'action' => 'wikispeech-listen',
 				'revision' => $oldId,
 				'segment' => 'hash',
 				'lang' => 'en'

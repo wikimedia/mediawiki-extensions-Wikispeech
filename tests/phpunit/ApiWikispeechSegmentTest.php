@@ -11,9 +11,9 @@ define( 'TITLE', 'Test_Page' );
 /**
  * @group Database
  * @group medium
- * @covers ApiWikispeech
+ * @covers ApiWikispeechSegment
  */
-class ApiWikispeechTest extends ApiTestCase {
+class ApiWikispeechSegmentTest extends ApiTestCase {
 	public function addDBDataOnce() {
 		$content = "Text ''italic'' '''bold'''";
 		Util::addPage( TITLE, $content );
@@ -23,10 +23,10 @@ class ApiWikispeechTest extends ApiTestCase {
 
 	public function testSegmentText() {
 		$res = $this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => 'Talk:' . TITLE
 		] );
-		$this->assertEquals( 2, count( $res[0]['wikispeech']['segments'] ) );
+		$this->assertCount( 2, $res[0]['wikispeech-segment']['segments'] );
 		$this->assertEquals(
 			[
 				'startOffset' => 0,
@@ -39,7 +39,7 @@ class ApiWikispeechTest extends ApiTestCase {
 				],
 				'hash' => '50c0083861b4c8bc5e6c1402bbb18ab093cfdf930aa8f5ef9297764e01137a26'
 			],
-			$res[0]['wikispeech']['segments'][0]
+			$res[0]['wikispeech-segment']['segments'][0]
 		);
 		$this->assertEquals(
 			[
@@ -65,7 +65,7 @@ class ApiWikispeechTest extends ApiTestCase {
 				],
 				'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'
 			],
-			$res[0]['wikispeech']['segments'][1]
+			$res[0]['wikispeech-segment']['segments'][1]
 		);
 	}
 
@@ -73,7 +73,7 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not a valid JSON string.' );
 		$this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => TITLE,
 			'removetags' => 'not a JSON string'
 		] );
@@ -83,7 +83,7 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => TITLE,
 			'removetags' => '"not a JSON object"'
 		] );
@@ -93,7 +93,7 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => TITLE,
 			'removetags' => '{"tag": null}'
 		] );
@@ -103,7 +103,7 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => TITLE,
 			'removetags' => '[true]'
 		] );
@@ -113,7 +113,7 @@ class ApiWikispeechTest extends ApiTestCase {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => TITLE,
 			'removetags' => '{"tag": ["valid", false]}'
 		] );
@@ -125,7 +125,7 @@ class ApiWikispeechTest extends ApiTestCase {
 			"The page you specified doesn't exist."
 		);
 		$this->doApiRequest( [
-			'action' => 'wikispeech',
+			'action' => 'wikispeech-segment',
 			'page' => 'Not a page',
 			'removetags' => '{}'
 		] );

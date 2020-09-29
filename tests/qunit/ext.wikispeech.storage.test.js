@@ -47,7 +47,7 @@
 		sinon.stub( storage, 'prepareUtterance' );
 		mw.config.set( 'wgPageName', 'Page' );
 		response = {
-			wikispeech: {
+			'wikispeech-segment': {
 				segments: [ {
 					startOffset: 0,
 					endOffset: 3,
@@ -65,7 +65,7 @@
 
 		assert.strictEqual(
 			decodeURIComponent( server.requests[ 0 ].requestBody ),
-			'action=wikispeech&format=json&page=Page'
+			'action=wikispeech-segment&format=json&page=Page'
 		);
 		expectedUtterances = [ {
 			startOffset: 0,
@@ -171,14 +171,14 @@
 
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'action=wikispeechlisten&format=json&lang=en&revision=1&segment=hash1234'
+			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234'
 		);
 	} );
 
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
 		assert.expect( 4 );
 		server.respondWith(
-			'{"wikispeechlisten": {"audio": "DummyBase64Audio=", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}}'
+			'{"wikispeech-listen": {"audio": "DummyBase64Audio=", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}}'
 		);
 		sinon.stub( storage, 'addTokens' );
 		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
@@ -224,7 +224,7 @@
 		sinon.assert.called( storage.requestTts );
 		assert.strictEqual(
 			server.requests[ 0 ].requestBody,
-			'action=wikispeechlisten&format=json&lang=en&revision=1&segment=hash1234&voice=en-voice'
+			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234&voice=en-voice'
 		);
 	} );
 

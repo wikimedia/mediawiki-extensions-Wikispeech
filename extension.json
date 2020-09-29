@@ -28,7 +28,7 @@
 		"Cleaner": "includes/Cleaner.php",
 		"Segmenter": "includes/Segmenter.php",
 		"UtteranceStore": "includes/UtteranceStore.php",
-		"ApiWikispeech": "includes/ApiWikispeech.php",
+		"ApiWikispeechSegment": "includes/ApiWikispeechSegment.php",
 		"ApiWikispeechListen": "includes/ApiWikispeechListen.php",
 		"SpeechoidConnector": "includes/SpeechoidConnector.php",
 		"SpeechoidConnectorException": "includes/SpeechoidConnectorException.php",
@@ -292,8 +292,8 @@
 		"wikispeechSpeechRate": 1.0
 	},
 	"APIModules": {
-		"wikispeech": "ApiWikispeech",
-		"wikispeechlisten": "ApiWikispeechListen"
+		"wikispeech-segment": "ApiWikispeechSegment",
+		"wikispeech-listen": "ApiWikispeechListen"
 	},
 	"AvailableRights": [
 		"wikispeech-listen"

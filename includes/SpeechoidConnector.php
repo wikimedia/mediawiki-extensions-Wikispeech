@@ -11,8 +11,6 @@ use MediaWiki\MediaWikiServices;
 /**
  * Provide Speechoid access.
  *
- * @todo List supported languages, voices and default voice per language.
- *
  * @since 0.1.5
  */
 class SpeechoidConnector {

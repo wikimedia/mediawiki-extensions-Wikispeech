@@ -138,7 +138,7 @@ class UtteranceStore {
 
 		// load utterance audio and synthesis metadata
 
-		// @todo We might want to keep this as separate function calls,
+		// @note We might want to keep this as separate function calls,
 		// allowing the user to request when needed, and perhaps
 		// pass a stream straight down from file backend to user
 		// rather than bouncing it via RAM.
@@ -237,7 +237,7 @@ class UtteranceStore {
 			'src' => $src
 		] );
 		if ( $content == FileBackend::CONTENT_FAIL ) {
-			// @todo mark system to flush inconsistencies from database
+			// @note Consider queuing job to flush inconsistencies from database.
 			throw new ExternalStoreException(
 				"Inconsistency! Database contains utterance with ID $utteranceId " .
 				"that does not exist as $type named $src in file backend." );
@@ -389,14 +389,15 @@ class UtteranceStore {
 	 * In order for return value to increase, the utterance must have been
 	 * successfully deleted in all layers, i.e. utterance metadata database row,
 	 * utterance audio and synthesis metadata from file store.
-	 * E.g. if the utterance audio file is missing and thus not explicitally removed,
+	 * E.g. if the utterance audio file is missing and thus not explicitly removed,
 	 * but at the same time we managed to remove the utterance metadata from database
 	 * and also removed the synthesis metadata file, this will not count as a
 	 * successfully removed utterance. It would however be removed from all layers
 	 * and it would also cause an out-of-sync warning in the log.
 	 *
+	 * @note Consider if database should be flushing within a transaction.
+	 *
 	 * @since 0.1.5
-	 * @todo Consider if use of database should be transactional flushing.
 	 * @param IDatabase $dbw Writable database connection.
 	 * @param IResultWrapper $results Result set.
 	 * @return int Number of utterances that were successfully flushed in all layers.
@@ -630,7 +631,7 @@ class UtteranceStore {
 	 * @return int Number of expired files flushed
 	 */
 	public function flushUtterancesByExpirationDateOnFileFromFileBackend( $expiredTimestamp = null ) {
-		// @todo Either this method, or the job,
+		// @note Either this method, or the job,
 		// should probably call `flushUtterancesByExpirationDate`
 		// to ensure we are not deleting a bunch of files
 		// which were scheduled to be deleted together with their db-entries anyway.

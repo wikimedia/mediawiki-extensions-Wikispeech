@@ -6,7 +6,7 @@
 			"আফতাবুজ্জামান"
 		]
 	},
-	"apihelp-wikispeechlisten-param-lang": "ভাষা কোড।",
+	"apihelp-wikispeech-listen-param-lang": "ভাষা কোড।",
 	"prefs-wikispeech-voice": "কণ্ঠ",
 	"prefs-wikispeech-show-player": "সর্বাদা প্লেয়ার দেখান",
 	"wikispeech-listen": "শুনুন"

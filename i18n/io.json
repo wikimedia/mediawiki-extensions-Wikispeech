@@ -4,8 +4,8 @@
 			"Joao Xavier"
 		]
 	},
-	"apihelp-wikispeech-param-page": "Titulo di la pagino por traktar.",
-	"apihelp-wikispeechlisten-param-lang": "Linguala kodexo.",
+	"apihelp-wikispeech-segment-param-page": "Titulo di la pagino por traktar.",
+	"apihelp-wikispeech-listen-param-lang": "Linguala kodexo.",
 	"prefs-wikispeech": "Wiki-naraco",
 	"prefs-wikispeech-voice": "Voco",
 	"prefs-wikispeech-speech-rate": "Rapideso di la naraco",

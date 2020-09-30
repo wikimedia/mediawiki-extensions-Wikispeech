@@ -4,7 +4,7 @@
 			"Joseba"
 		]
 	},
-	"apihelp-wikispeechlisten-param-lang": "hizkuntza-kodea",
+	"apihelp-wikispeech-listen-param-lang": "hizkuntza-kodea",
 	"prefs-wikispeech-voice": "ahotsa",
 	"prefs-wikispeech-speech-rate": "Hizketa-tasa"
 }

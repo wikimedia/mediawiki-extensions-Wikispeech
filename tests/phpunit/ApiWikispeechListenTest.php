@@ -6,6 +6,7 @@
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\Revision\RevisionStore;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -62,9 +63,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	 * @since 0.1.5
 	 */
 	public function testValidInputLength() {
-		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
-			new ApiMain(), null
-		) );
+		$api = $this->mockApi();
 		$api->validateParameters( [
 			'action' => 'wikispeech-listen',
 			'text' => 'This is a short sentence with less than 60 characters.',
@@ -77,6 +76,21 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	}
 
 	/**
+	 * Create a mocked API object.
+	 *
+	 * @since 0.1.7
+	 * @return ApiWikispeechListen
+	 */
+	private function mockApi() {
+		$wanObjectCache = $this->createStub( WanObjectCache::class );
+		$revisionStore = $this->createStub( RevisionStore::class );
+		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
+			new ApiMain(), '', $wanObjectCache, $revisionStore
+		) );
+		return $api;
+	}
+
+	/**
 	 * @since 0.1.5
 	 */
 	public function testInvalidInputLength() {
@@ -85,9 +99,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'Input text must not exceed 60 characters, but contained '
 			. '64 characters.'
 		);
-		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
-			new ApiMain(), null
-		) );
+		$api = $this->mockApi();
 		$api->validateParameters( [
 			'action' => 'wikispeech-listen',
 			'text' => 'This is a tiny bit longer sentence with more than 60 characters.',
@@ -172,12 +184,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		// will be re-serialized to a JSON string and then passed on to the createUtterance function.
 		$synthesizeMetadataJson = FormatJson::encode( $synthesizeMetadataArray );
 
-		$api = TestingAccessWrapper::newFromObject(
-			new ApiWikispeechListen(
-				new ApiMain(),
-				null
-			)
-		);
+		$api = $this->mockApi();
 
 		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
 		$utteranceStoreMock
@@ -259,12 +266,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			FormatJson::FORCE_ASSOC
 		)->getValue();
 
-		$api = TestingAccessWrapper::newFromObject(
-			new ApiWikispeechListen(
-				new ApiMain(),
-				null
-			)
-		);
+		$api = $this->mockApi();
 
 		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
 		$utteranceStoreMock

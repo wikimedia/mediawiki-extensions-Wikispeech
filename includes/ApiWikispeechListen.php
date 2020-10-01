@@ -7,11 +7,20 @@
  */
 
 use MediaWiki\Logger\LoggerFactory;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Revision\RevisionStore;
 use Psr\Log\LoggerInterface;
 
 class ApiWikispeechListen extends ApiBase {
+
+	/** @var Config */
+	private $config;
+
+	/** @var WANObjectCache */
+	private $cache;
+
+	/** @var RevisionStore */
+	private $revisionStore;
 
 	/** @var LoggerInterface */
 	private $logger;
@@ -28,9 +37,20 @@ class ApiWikispeechListen extends ApiBase {
 	 * @since 0.1.5
 	 * @param ApiMain $mainModule
 	 * @param string $moduleName
+	 * @param WANObjectCache $cache
+	 * @param RevisionStore $revisionStore
 	 * @param string $modulePrefix
 	 */
-	public function __construct( ApiMain $mainModule, $moduleName, $modulePrefix = '' ) {
+	public function __construct(
+		ApiMain $mainModule,
+		string $moduleName,
+		WANObjectCache $cache,
+		RevisionStore $revisionStore,
+		string $modulePrefix = ''
+	) {
+		$this->config = $this->getConfig();
+		$this->cache = $cache;
+		$this->revisionStore = $revisionStore;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->speechoidConnector = new SpeechoidConnector();
 		$this->utteranceStore = new UtteranceStore();
@@ -120,11 +140,9 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws ApiUsageException
 	 */
 	private function validateText( $text ) {
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
 		$numberOfCharactersInInput = mb_strlen( $text );
-		$maximumNumberOfCharacterInInput = $config->get( 'WikispeechListenMaximumInputCharacters' );
+		$maximumNumberOfCharacterInInput =
+			$this->config->get( 'WikispeechListenMaximumInputCharacters' );
 		if ( $numberOfCharactersInInput > $maximumNumberOfCharacterInInput ) {
 			$this->dieWithError( [
 				'apierror-wikispeech-listen-invalid-input-too-long',
@@ -265,10 +283,7 @@ class ApiWikispeechListen extends ApiBase {
 				'revision'
 			] );
 		}
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
-		$voices = $config->get( 'WikispeechVoices' );
+		$voices = $this->config->get( 'WikispeechVoices' );
 		$language = $parameters['lang'];
 
 		// Validate language.
@@ -328,8 +343,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws ApiUsageException if the revision is deleted or supressed.
 	 */
 	private function getRevisionRecord( $revisionId ) {
-		$revisionStore = MediaWikiServices::getInstance()->getRevisionStore();
-		$revisionRecord = $revisionStore->getRevisionById( $revisionId );
+		$revisionRecord = $this->revisionStore->getRevisionById( $revisionId );
 		if ( !$revisionRecord || !$revisionRecord->audienceCan(
 			RevisionRecord::DELETED_TEXT,
 			RevisionRecord::FOR_THIS_USER,

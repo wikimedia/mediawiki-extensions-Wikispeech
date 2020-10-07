@@ -315,7 +315,13 @@
 	},
 	"APIModules": {
 		"wikispeech-segment": "ApiWikispeechSegment",
-		"wikispeech-listen": "ApiWikispeechListen"
+		"wikispeech-listen": {
+			"class": "ApiWikispeechListen",
+			"services": [
+				"MainWANObjectCache",
+				"RevisionStore"
+			]
+		}
 	},
 	"AvailableRights": [
 		"wikispeech-listen"

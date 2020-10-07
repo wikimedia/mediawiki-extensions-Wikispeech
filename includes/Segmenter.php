@@ -40,12 +40,17 @@ class Segmenter {
 
 	private $currentSegment;
 
+	/** @var WANObjectCache */
+	private $cache;
+
 	/**
 	 * @since 0.0.1
 	 * @param IContextSource $context
+	 * @param WANObjectCache $cache
 	 */
-	public function __construct( $context ) {
+	public function __construct( $context, $cache ) {
 		$this->context = $context;
+		$this->cache = $cache;
 		$this->segments = [];
 		$this->currentSegment = [
 			'content' => [],
@@ -91,17 +96,16 @@ class Segmenter {
 		if ( $segmentBreakingTags === null ) {
 			$segmentBreakingTags = $config->get( 'WikispeechSegmentBreakingTags' );
 		}
-		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$page = WikiPage::factory( $title );
 		if ( $revisionId == null ) {
 			$revisionId = $page->getLatest();
 		}
-		$cacheKey = $cache->makeKey(
+		$cacheKey = $this->cache->makeKey(
 			'Wikispeech.segments',
 			$revisionId,
 			var_export( $removeTags, true ),
 			implode( '-', $segmentBreakingTags ) );
-		$segments = $cache->get( $cacheKey );
+		$segments = $this->cache->get( $cacheKey );
 		if ( $segments === false ) {
 			LoggerFactory::getInstance( 'Wikispeech' )
 				->info(
@@ -114,7 +118,7 @@ class Segmenter {
 			$cleanedText =
 				$this->cleanPage( $page, $removeTags, $segmentBreakingTags );
 			$segments = $this->segmentSentences( $cleanedText );
-			$cache->set( $cacheKey, $segments, 3600 );
+			$this->cache->set( $cacheKey, $segments, 3600 );
 		}
 		return $segments;
 	}

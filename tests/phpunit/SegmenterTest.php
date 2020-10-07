@@ -6,6 +6,7 @@
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\MediaWikiServices;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -23,7 +24,10 @@ class SegmenterTest extends MediaWikiTestCase {
 	protected function setUp() : void {
 		parent::setUp();
 		$this->segmenter = TestingAccessWrapper::newFromObject(
-			new Segmenter( new RequestContext() )
+			new Segmenter(
+				new RequestContext(),
+				MediaWikiServices::getInstance()->getMainWANObjectCache()
+			)
 		);
 	}
 
@@ -420,6 +424,8 @@ class SegmenterTest extends MediaWikiTestCase {
 				]
 			]
 		] );
+		$this->segmenter->cache =
+			MediaWikiServices::getInstance()->getMainWANObjectCache();
 	}
 
 	/**
@@ -442,7 +448,10 @@ class SegmenterTest extends MediaWikiTestCase {
 		}
 
 		$segmenterMock = $this->getMockBuilder( Segmenter::class )
-			->setConstructorArgs( [ new RequestContext() ] )
+			->setConstructorArgs( [
+				new RequestContext(),
+				MediaWikiServices::getInstance()->getMainWANObjectCache()
+			] )
 			->onlyMethods( [ 'cleanPage' ] )
 			->getMock();
 		$segmenterMock

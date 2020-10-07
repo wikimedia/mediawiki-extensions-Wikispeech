@@ -314,7 +314,12 @@
 		"wikispeechSpeechRate": 1.0
 	},
 	"APIModules": {
-		"wikispeech-segment": "ApiWikispeechSegment",
+		"wikispeech-segment": {
+			"class": "ApiWikispeechSegment",
+			"services": [
+				"MainWANObjectCache"
+			]
+		},
 		"wikispeech-listen": {
 			"class": "ApiWikispeechListen",
 			"services": [

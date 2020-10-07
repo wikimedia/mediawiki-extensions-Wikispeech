@@ -34,6 +34,17 @@ class WikispeechHooks {
 			);
 			$success = false;
 		}
+		$speechoidResponseTimeoutSeconds = $config
+			->get( 'WikispeechSpeechoidResponseTimeoutSeconds' );
+		if ( $speechoidResponseTimeoutSeconds &&
+			!is_int( $speechoidResponseTimeoutSeconds ) ) {
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value ' .
+					'\'WikispeechSpeechoidResponseTimeoutSeconds\' ' .
+					'is not a falsy or integer value.'
+				);
+			$success = false;
+		}
 
 		$utteranceTimeToLiveDays = $config
 			->get( 'WikispeechUtteranceTimeToLiveDays' );
@@ -102,7 +113,7 @@ class WikispeechHooks {
 		} elseif ( !is_string( $fileBackendContainerName ) ) {
 			LoggerFactory::getInstance( 'Wikispeech' )
 				->warning( __METHOD__ . ': Configuration value ' .
-					'\'WikispeechUtteranceFileStore.type\' is not a string value.'
+					'\'WikispeechUtteranceFileStore\' is not a string value.'
 			);
 			$success = false;
 		}

@@ -51,12 +51,19 @@ class UtteranceStore {
 	/** @var string Name of container (sort of path prefix) used for files in backend. */
 	private $fileBackendContainerName;
 
+	/** @var Config */
+	private $config;
+
 	public function __construct() {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 
-		$this->fileBackendContainerName = MediaWikiServices::getInstance()
+		// @todo don't create, add as constructor parameter
+		// Refer to https://phabricator.wikimedia.org/T264165
+		$this->config = MediaWikiServices::getInstance()
 			->getConfigFactory()
-			->makeConfig( 'wikispeech' )
+			->makeConfig( 'wikispeech' );
+
+		$this->fileBackendContainerName = $this->config
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( !$this->fileBackendContainerName ) {
 			$this->fileBackendContainerName = "wikispeech-utterances";
@@ -68,7 +75,7 @@ class UtteranceStore {
 
 		$this->dbLoadBalancer = MediaWikiServices::getInstance()->getDBLoadBalancer();
 
-		$this->speechoidConnector = new SpeechoidConnector();
+		$this->speechoidConnector = new SpeechoidConnector( $this->config );
 	}
 
 	/**
@@ -80,10 +87,7 @@ class UtteranceStore {
 		if ( !$this->fileBackend ) {
 
 			/** @var string Name of file backend group in LocalSettings.php to use. */
-			$fileBackendName = MediaWikiServices::getInstance()
-				->getConfigFactory()
-				->makeConfig( 'wikispeech' )
-				->get( 'WikispeechUtteranceFileBackendName' );
+			$fileBackendName = $this->config->get( 'WikispeechUtteranceFileBackendName' );
 			if ( !$fileBackendName ) {
 				$fileBackendName = 'wikispeech-backend';
 				$fallbackDir = "$wgUploadDirectory/wikispeech_utterances";
@@ -642,10 +646,9 @@ class UtteranceStore {
 	 * @return MWTimestamp Utterance parts with timestamp <= this is expired.
 	 */
 	public function getWikispeechUtteranceExpirationTimestamp() : MWTimestamp {
-		$utteranceTimeToLiveDays = intval( MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' )
-			->get( 'WikispeechUtteranceTimeToLiveDays' ) );
+		$utteranceTimeToLiveDays = intval(
+			$this->config->get( 'WikispeechUtteranceTimeToLiveDays' )
+		);
 		$expirationDate = strtotime( '-' . $utteranceTimeToLiveDays . 'days' );
 		return MWTimestamp::getInstance( $expirationDate );
 	}

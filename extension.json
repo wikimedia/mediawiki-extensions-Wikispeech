@@ -123,6 +123,13 @@
 			"description": "The URL to use for the Speechoid service.",
 			"value": ""
 		},
+		"WikispeechSpeechoidResponseTimeoutSeconds": {
+			"description": [
+				"Default number of seconds to await an HTTP response from Speechoid. ",
+				"Falsy value defaults to MediaWiki default."
+			],
+			"value": null
+		},
 		"WikispeechListenMaximumInputCharacters": {
 			"description": "Maximum number of characters in the input (a segment) sent to the Speechoid service.",
 			"value": 2048

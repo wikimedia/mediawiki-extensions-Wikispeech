@@ -60,7 +60,7 @@ class ApiWikispeechListen extends ApiBase {
 		$this->config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
-		$this->speechoidConnector = new SpeechoidConnector();
+		$this->speechoidConnector = new SpeechoidConnector( $this->config );
 		$this->utteranceStore = new UtteranceStore();
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$this->voiceHandler = new VoiceHandler(

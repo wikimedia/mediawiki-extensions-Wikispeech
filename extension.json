@@ -33,7 +33,13 @@
 		"SpeechoidConnector": "includes/SpeechoidConnector.php",
 		"SpeechoidConnectorException": "includes/SpeechoidConnectorException.php",
 		"FlushUtterancesByExpirationDateOnFileFromFileBackendJob": "includes/FlushUtterancesByExpirationDateOnFileFromFileBackendJob.php",
-		"FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue": "includes/FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue.php"
+		"FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue": "includes/FlushUtterancesByExpirationDateOnFileFromFileBackendJobQueue.php",
+		"FlushUtterancesFromStoreByExpirationJob": "includes/FlushUtterancesFromStoreByExpirationJob.php",
+		"FlushUtterancesFromStoreByExpirationJobQueue": "includes/FlushUtterancesFromStoreByExpirationJobQueue.php",
+		"FlushUtterancesFromStoreByLanguageAndVoiceJob": "includes/FlushUtterancesFromStoreByLanguageAndVoiceJob.php",
+		"FlushUtterancesFromStoreByLanguageAndVoiceJobQueue": "includes/FlushUtterancesFromStoreByLanguageAndVoiceJobQueue.php",
+		"FlushUtterancesFromStoreByPageIdJob": "includes/FlushUtterancesFromStoreByPageIdJob.php",
+		"FlushUtterancesFromStoreByPageIdJobQueue": "includes/FlushUtterancesFromStoreByPageIdJobQueue.php"
 	},
 	"TestAutoloadClasses": {
 		"Util": "tests/phpunit/Util.php"
@@ -104,6 +110,12 @@
 	},
 	"ConfigRegistry": {
 		"wikispeech": "GlobalVarConfig::newInstance"
+	},
+	"JobClasses": {
+		"flushUtterancesByExpirationDateOnFileFromFileBackend": "FlushUtterancesByExpirationDateOnFileFromFileBackendJob",
+		"flushUtterancesFromStoreByExpiration": "FlushUtterancesFromStoreByExpirationJob",
+		"flushUtterancesFromStoreByLanguageAndVoice": "FlushUtterancesFromStoreByLanguageAndVoiceJob",
+		"flushUtterancesFromStoreByPageId": "FlushUtterancesFromStoreByPageIdJob"
 	},
 	"config": {
 		"WikispeechSpeechoidUrl": {
@@ -255,6 +267,18 @@
 				]
 			}
 		},
+		"WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs": {
+			"description": [
+				"Minimum number of minutes between queuing jobs that ",
+				"automatically flushes expired utterances from the utterance store. ",
+				"The job will be queued during creation of a new utterance, ",
+				"given that enough minutes has passed since the previous queuing of the job. ",
+				"Disable automatic flushing by setting value to a falsy value (0, false, null, etc). ",
+				"To avoid running the flush job too often, see the MW job documentation: ",
+				"https://www.mediawiki.org/wiki/Manual:Job_queue#Job_execution_on_page_requests"
+			],
+			"value": 30
+		},
 		"WikispeechUtteranceTimeToLiveDays": {
 			"description": [
 				"Minimum number of days for an utterance to live before being ",
@@ -264,9 +288,7 @@
 				"requested text segments to be re-synthesized more often with a CPU cost.",
 				"Setting this value too high will block improvements to the voice synthesis. ",
 				"Setting this value to 0 will in effect turn off the cache ",
-				"and thus flush all utterances as soon as possible.",
-				"To avoid running the flush job too often, see the MW job documentation: ",
-				"https://www.mediawiki.org/wiki/Manual:Job_queue#Job_execution_on_page_requests"
+				"and thus flush all utterances as soon as possible."
 			],
 			"value": 31
 		},

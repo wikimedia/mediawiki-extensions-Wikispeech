@@ -11,7 +11,6 @@ use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IResultWrapper;
-use Wikimedia\Timestamp\TimestampException;
 
 /**
  * Keeps track of utterances in persistent layers.
@@ -298,6 +297,9 @@ class UtteranceStore {
 			'synthesis metadata file'
 		);
 
+		$jobQueue = new FlushUtterancesFromStoreByExpirationJobQueue();
+		$jobQueue->maybeQueueJob();
+
 		return $utterance;
 	}
 
@@ -327,12 +329,11 @@ class UtteranceStore {
 	}
 
 	/**
-	 * Clears database of utterances older than a given age.
+	 * Clears database and file backend of utterances older than a given age.
 	 *
 	 * @since 0.1.5
 	 * @param MWTimestamp $expirationDate
 	 * @return int Number of utterances flushed.
-	 * @throws TimestampException In case of {@see TS_MW} no longer is valid, i.e. never.
 	 */
 	public function flushUtterancesByExpirationDate( $expirationDate ) {
 		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
@@ -344,7 +345,7 @@ class UtteranceStore {
 	}
 
 	/**
-	 * Clears database of all utterances for a given page.
+	 * Clears database and file backend of all utterances for a given page.
 	 *
 	 * @since 0.1.5
 	 * @param int $pageId Mediawiki page ID.
@@ -360,7 +361,7 @@ class UtteranceStore {
 	}
 
 	/**
-	 * Clears database of all utterances for a given language and voice.
+	 * Clears database and file backend of all utterances for a given language and voice.
 	 * If no voice is set, then all voices will be removed.
 	 *
 	 * @since 0.1.5
@@ -626,8 +627,10 @@ class UtteranceStore {
 	}
 
 	/**
+	 * Removes expired utterance and synthesis metadata from the file backend.
+	 *
 	 * @since 0.1.5
-	 * @param MWTimestamp|null $expiredTimestamp File timestamp <= to this value is orphaned. Defaults to config value.
+	 * @param MWTimestamp|null $expiredTimestamp File timestamp <= to this value is expired. Defaults to config value.
 	 * @return int Number of expired files flushed
 	 */
 	public function flushUtterancesByExpirationDateOnFileFromFileBackend( $expiredTimestamp = null ) {
@@ -702,7 +705,7 @@ class UtteranceStore {
 						);
 					} else {
 						$this->logger->warning( __METHOD__ . ': ' .
-							'Unable to delete orphaned file {file}',
+							'Unable to delete expired file {file}',
 							[ 'file' => $file ]
 						);
 					}

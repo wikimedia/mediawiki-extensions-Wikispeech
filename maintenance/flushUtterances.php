@@ -1,0 +1,178 @@
+<?php
+
+/**
+ * @file
+ * @ingroup Extensions
+ * @license GPL-2.0-or-later
+ */
+
+$IP = getenv( 'MW_INSTALL_PATH' );
+if ( $IP === false ) {
+	$IP = __DIR__ . '/../../..';
+}
+require_once "$IP/maintenance/Maintenance.php";
+
+/**
+ * Class FlushUtterances
+ *
+ * Maintenance script to manually execute
+ * {@link UtteranceStore} flush methods.
+ *
+ * php extensions/Wikispeech/maintenance/flushUtterances.php
+ *
+ * @since 0.1.7
+ */
+class FlushUtterances extends Maintenance {
+
+	/** @var UtteranceStore */
+	private $utteranceStore;
+
+	/** @var FlushUtterancesFromStoreByExpirationJobQueue */
+	private $flushUtterancesFromStoreByExpirationJobQueue;
+
+	/** @var FlushUtterancesFromStoreByLanguageAndVoiceJobQueue */
+	private $flushUtterancesFromStoreByLanguageAndVoiceJobQueue;
+
+	/** @var FlushUtterancesFromStoreByPageIdJobQueue */
+	private $flushUtterancesFromStoreByPageIdJobQueue;
+
+	public function __construct() {
+		parent::__construct();
+
+		$this->requireExtension( 'Wikispeech' );
+		$this->addDescription( 'Flush utterances that expired with age; ' .
+			'by language and optionally voice; or page id.' );
+		$this->addOption(
+			'expire',
+			'Flush all utterances that have expired according to configuration.',
+			false,
+			false,
+			'e'
+		);
+		$this->addOption(
+			'language',
+			'Flush all utterances with this language.',
+			false,
+			true,
+			'l'
+		);
+		$this->addOption(
+			'voice',
+			'Flush all utterances with this voice (language required).',
+			false,
+			true,
+			'v'
+		);
+		$this->addOption(
+			'page',
+			'Flush all utterances for all languages and voices on this page (id).',
+			false,
+			true,
+			'p'
+		);
+		$this->addOption(
+			'force',
+			'Forces flushing in current thread rather than queuing as job.',
+			false,
+			false,
+			'f'
+		);
+	}
+
+	/**
+	 * @return bool success
+	 */
+	public function execute() {
+		// Non PHP core classes aren't available prior to this point,
+		// i.e. we can't initialize the fields in the constructor,
+		// and we have to be lenient for mocked instances set by tests.
+		if ( !$this->utteranceStore ) {
+			$this->utteranceStore = new UtteranceStore();
+		}
+		if ( !$this->flushUtterancesFromStoreByExpirationJobQueue ) {
+			$this->flushUtterancesFromStoreByExpirationJobQueue
+				= new FlushUtterancesFromStoreByExpirationJobQueue();
+		}
+		if ( !$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue ) {
+			$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue
+				= new FlushUtterancesFromStoreByLanguageAndVoiceJobQueue();
+		}
+		if ( !$this->flushUtterancesFromStoreByPageIdJobQueue ) {
+			$this->flushUtterancesFromStoreByPageIdJobQueue
+				= new FlushUtterancesFromStoreByPageIdJobQueue();
+		}
+
+		$flushedCount = 0;
+
+		$expire = $this->hasOption( 'expire' );
+		$language = $this->getOption( 'language', null );
+		$voice = $this->getOption( 'voice', null );
+		$pageId = $this->getOption( 'page', null );
+		$force = $this->hasOption( 'force' );
+
+		$supportedSetOfOptions = true;
+		if ( !$expire && !$language && !$voice && !$pageId ) {
+			$supportedSetOfOptions = false;
+		} elseif ( $expire && ( $language || $voice || $pageId ) ) {
+			$supportedSetOfOptions = false;
+		} elseif ( $language && ( $expire || $pageId ) ) {
+			$supportedSetOfOptions = false;
+		} elseif ( $voice && ( $expire || $pageId ) ) {
+			$supportedSetOfOptions = false;
+		} elseif ( $pageId && ( $expire || $language || $voice ) ) {
+			$supportedSetOfOptions = false;
+		}
+		if ( !$supportedSetOfOptions ) {
+			$this->output( "Unsupported set of options!" );
+			$this->showHelp();
+			return false;
+		}
+
+		if ( $expire ) {
+			if ( $force ) {
+				$flushedCount = $this->utteranceStore
+					->flushUtterancesByExpirationDate(
+						$this->utteranceStore->getWikispeechUtteranceExpirationTimestamp()
+					);
+			} else {
+				$this->flushUtterancesFromStoreByExpirationJobQueue
+					->queueJob();
+			}
+		} elseif ( $language ) {
+			if ( $force ) {
+				$flushedCount = $this->utteranceStore
+					->flushUtterancesByLanguageAndVoice( $language, $voice );
+			} else {
+				$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue
+					->queueJob( $language, $voice );
+			}
+		} elseif ( $pageId ) {
+			if ( $force ) {
+				$flushedCount = $this->utteranceStore
+					->flushUtterancesByPage( intval( $pageId ) );
+			} else {
+				$this->flushUtterancesFromStoreByPageIdJobQueue
+					->queueJob( intval( $pageId ) );
+			}
+		} else {
+			// Fallback in case of future bad code in supported set of options.
+			$this->output( "Unsupported set of options! (This might be a developer error.)" );
+			$this->showHelp();
+			return false;
+		}
+
+		if ( $force ) {
+			$this->output( "Flushed $flushedCount utterances." );
+		} else {
+			$this->output( "Flush job has been queued and will be executed " .
+				"in accordance with your MediaWiki configuration." );
+		}
+
+		return true;
+	}
+
+}
+
+$maintClass = FlushUtterances::class;
+
+require_once RUN_MAINTENANCE_IF_MAIN;

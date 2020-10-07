@@ -53,6 +53,28 @@ class WikispeechHooks {
 			$success = false;
 		}
 
+		$minimumMinutesBetweenFlushExpiredUtterancesJobs = $config
+			->get( 'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' );
+		if ( $minimumMinutesBetweenFlushExpiredUtterancesJobs === null ) {
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value for ' .
+					'\'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs\' ' .
+					'is missing.'
+			);
+			$success = false;
+		}
+		$minimumMinutesBetweenFlushExpiredUtterancesJobs = intval(
+			$minimumMinutesBetweenFlushExpiredUtterancesJobs
+		);
+		if ( $minimumMinutesBetweenFlushExpiredUtterancesJobs < 0 ) {
+			LoggerFactory::getInstance( 'Wikispeech' )
+				->warning( __METHOD__ . ': Configuration value for ' .
+					'\'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs\'' .
+					' must not be negative.'
+			);
+			$success = false;
+		}
+
 		$fileBackendName = $config->get( 'WikispeechUtteranceFileBackendName' );
 		if ( $fileBackendName === null ) {
 			LoggerFactory::getInstance( 'Wikispeech' )

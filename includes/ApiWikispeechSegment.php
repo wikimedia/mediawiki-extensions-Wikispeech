@@ -1,5 +1,7 @@
 <?php
 
+use Wikimedia\ParamValidator\ParamValidator;
+
 /**
  * @file
  * @ingroup Extensions
@@ -100,19 +102,19 @@ class ApiWikispeechSegment extends ApiBase {
 			parent::getAllowedParams(),
 			[
 				'page' => [
-					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_REQUIRED => true
+					ParamValidator::PARAM_TYPE => 'string',
+					ParamValidator::PARAM_REQUIRED => true
 				],
 				'removetags' => [
-					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_DFLT => json_encode(
+					ParamValidator::PARAM_TYPE => 'string',
+					ParamValidator::PARAM_DEFAULT => json_encode(
 						$wgWikispeechRemoveTags
 					)
 				],
 				'segmentbreakingtags' => [
-					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_ISMULTI => true,
-					ApiBase::PARAM_DFLT => implode(
+					ParamValidator::PARAM_TYPE => 'string',
+					ParamValidator::PARAM_ISMULTI => true,
+					ParamValidator::PARAM_DEFAULT => implode(
 						'|',
 						$wgWikispeechSegmentBreakingTags
 					)

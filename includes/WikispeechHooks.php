@@ -257,7 +257,7 @@ class WikispeechHooks {
 		global $wgWikispeechVoices;
 		foreach ( $wgWikispeechVoices as $language => $voices ) {
 			$languageKey = 'wikispeechVoice' . ucfirst( $language );
-			$mwLanguage = Language::factory( 'en' );
+			$mwLanguage = MediaWikiServices::getInstance()->getLanguageFactory()->getLanguage( 'en' );
 			$languageName = $mwLanguage->getVariantname( $language );
 			$options = [ 'Default' => '' ];
 			foreach ( $voices as $voice ) {
@@ -306,7 +306,8 @@ class WikispeechHooks {
 	public static function onApiCheckCanExecute( $module, $user, &$message ) {
 		if (
 			$module->getModuleName() == 'wikispeech-listen' &&
-			!$user->isAllowed( 'wikispeech-listen' )
+			!MediaWikiServices::getInstance()->getPermissionManager()
+				->userHasRight( $user, 'wikispeech-listen' )
 		) {
 			$message = ApiMessage::create(
 				'apierror-wikispeech-listen-notallowed'

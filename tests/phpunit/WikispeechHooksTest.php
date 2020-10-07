@@ -6,14 +6,35 @@
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\User\UserOptionsManager;
+use PHPUnit\Framework\MockObject\Stub;
 
 /**
  * @covers WikispeechHooks
  */
 class WikispeechHooksTest extends MediaWikiTestCase {
+
+	/** @var OutputPage */
+	private $out;
+
+	/** @var Stub|SkinTemplate */
+	private $skin;
+
+	/** @var HookContainer */
+	private $hookContainer;
+
+	/** @var UserOptionsManager */
+	private $userOptionsManager;
+
+	/** @var PermissionManager */
+	private $permissionsManager;
+
 	protected function setUp() : void {
 		parent::setUp();
+
 		$this->setMwGlobals( [
 			'wgWikispeechSpeechoidUrl' => 'https://server.domain',
 			'wgWikispeechVoices' => [ 'en' => 'en-voice' ],
@@ -33,20 +54,27 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$title = Title::newFromText( 'Page' );
 		$this->out->setTitle( $title );
 		$this->out->setRevisionId( $title->getLatestRevId() );
-		$this->out->getUser()->setOption( 'wikispeechEnable', true );
-		$this->out->getUser()->setOption( 'wikispeechShowPlayer', true );
-		MediaWikiServices::getInstance()
-			->getPermissionManager()
-			->overrideUserRightsForTesting(
-				$this->out->getUser(),
-				'wikispeech-listen'
-			);
+
+		$this->userOptionsManager = MediaWikiServices::getInstance()
+			->getUserOptionsManager();
+		$this->userOptionsManager
+			->setOption( $this->out->getUser(), 'wikispeechEnable', true );
+		$this->userOptionsManager
+			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', true );
+
+		$this->permissionsManager = MediaWikiServices::getInstance()
+			->getPermissionManager();
+		$this->permissionsManager->overrideUserRightsForTesting(
+			$this->out->getUser(),
+			'wikispeech-listen'
+		);
 		$this->skin = $this->createStub( SkinTemplate::class );
 		$this->skin->method( 'getOutput' )->willReturn( $this->out );
+		$this->hookContainer = MediaWikiServices::getInstance()->getHookContainer();
 	}
 
 	public function testOnBeforePageDisplayLoadModules() {
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertContains( 'ext.wikispeech', $this->out->getModules() );
 		$this->assertTrue( $this->configLoaded() );
 	}
@@ -67,23 +95,23 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 
 	public function testOnBeforePageDisplayDontLoadModulesIfWrongNamespace() {
 		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplayDontLoadModulesIfWikispeechDisabled() {
-		$this->out->getUser()->setOption( 'wikispeechEnable', false );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->userOptionsManager
+			->setOption( $this->out->getUser(), 'wikispeechEnable', false );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplayDontLoadModulesIfLackingRights() {
-		MediaWikiServices::getInstance()
-			->getPermissionManager()
+		$this->permissionsManager
 			->overrideUserRightsForTesting( $this->out->getUser(), [] );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
@@ -93,7 +121,7 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 			'wgWikispeechSpeechoidUrl',
 			'invalid-url'
 		);
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
@@ -101,28 +129,29 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 	public function testOnBeforePageDisplayDontLoadModulesIfRevisionNotAccessible() {
 		$inaccessibleRevisionId = $this->out->getTitle()->getLatestRevId() - 1;
 		$this->out->setRevisionId( $inaccessibleRevisionId );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_invalidPageContentLanguage_dontLoadModule() {
 		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertEmpty( $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_differentInterfaceLanguage_loadModule() {
 		$this->out->getContext()->setLanguage( 'sv' );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertNotEmpty( $this->out->getModules() );
 		$this->assertTrue( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_showPlayerNotSet_loadLoader() {
-		$this->out->getUser()->setOption( 'wikispeechShowPlayer', false );
-		Hooks::run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->userOptionsManager
+			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', false );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertContains(
 			'ext.wikispeech.loader',
 			$this->out->getModules()
@@ -136,25 +165,26 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$this->skin->method( 'msg' )->willReturn(
 			Message::newFromKey( 'wikispeech-listen' )
 		);
-		$this->out->getUser()->setOption( 'wikispeechShowPlayer', false );
+		$this->userOptionsManager
+			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', false );
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation_wikispeechDisabled_dontAddListenTab() {
-		$this->out->getUser()->setOption( 'wikispeechEnable', false );
+		$this->userOptionsManager
+			->setOption( $this->out->getUser(), 'wikispeechEnable', false );
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation_lackingRights_dontAddListenTab() {
-		MediaWikiServices::getInstance()
-			->getPermissionManager()
+		$this->permissionsManager
 			->overrideUserRightsForTesting( $this->out->getUser(), [] );
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
@@ -164,14 +194,14 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 			'invalid-url'
 		);
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation_wrongNamespace_dontAddListenTab() {
 		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
@@ -179,14 +209,14 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$inaccessibleRevisionId = $this->out->getTitle()->getLatestRevId() - 1;
 		$this->out->setRevisionId( $inaccessibleRevisionId );
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation_invalidPageContentLanguage_dontAddListenTab() {
 		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
 		$links = [ 'actions' => [] ];
-		Hooks::run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 }

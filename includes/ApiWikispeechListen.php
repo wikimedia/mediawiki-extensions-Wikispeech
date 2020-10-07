@@ -10,6 +10,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use Psr\Log\LoggerInterface;
+use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiWikispeechListen extends ApiBase {
 
@@ -366,20 +367,20 @@ class ApiWikispeechListen extends ApiBase {
 			parent::getAllowedParams(),
 			[
 				'lang' => [
-					ApiBase::PARAM_TYPE => 'string',
-					ApiBase::PARAM_REQUIRED => true
+					ParamValidator::PARAM_TYPE => 'string',
+					ParamValidator::PARAM_REQUIRED => true
 				],
 				'text' => [
-					ApiBase::PARAM_TYPE => 'string'
+					ParamValidator::PARAM_TYPE => 'string'
 				],
 				'revision' => [
-					ApiBase::PARAM_TYPE => 'integer'
+					ParamValidator::PARAM_TYPE => 'integer'
 				],
 				'segment' => [
-					ApiBase::PARAM_TYPE => 'string'
+					ParamValidator::PARAM_TYPE => 'string'
 				],
 				'voice' => [
-					ApiBase::PARAM_TYPE => 'string'
+					ParamValidator::PARAM_TYPE => 'string'
 				]
 
 			]

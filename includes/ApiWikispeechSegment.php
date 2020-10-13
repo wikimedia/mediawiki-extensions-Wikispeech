@@ -10,6 +10,26 @@ use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiWikispeechSegment extends ApiBase {
 
+	/** @var WANObjectCache */
+	private $cache;
+
+	/**
+	 * @since 0.1.7
+	 * @param ApiMain $mainModule
+	 * @param string $moduleName
+	 * @param WANObjectCache $cache
+	 * @param string $modulePrefix
+	 */
+	public function __construct(
+		ApiMain $mainModule,
+		string $moduleName,
+		WANObjectCache $cache,
+		string $modulePrefix = ''
+	) {
+		parent::__construct( $mainModule, $moduleName, $modulePrefix );
+		$this->cache = $cache;
+	}
+
 	/**
 	 * Execute an API request.
 	 *
@@ -38,7 +58,7 @@ class ApiWikispeechSegment extends ApiBase {
 		if ( !$this->isValidRemoveTags( $removeTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
-		$segmenter = new Segmenter( $this->getContext() );
+		$segmenter = new Segmenter( $this->getContext(), $this->cache );
 		$segments = $segmenter->segmentPage(
 			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 			$title,

@@ -135,7 +135,7 @@ class ApiWikispeechListen extends ApiBase {
 		$title = Title::newFromLinkTarget(
 			$revisionRecord->getPageAsLinkTarget()
 		);
-		$segmenter = new Segmenter( $this->getContext() );
+		$segmenter = new Segmenter( $this->getContext(), $this->cache );
 		$segment = $segmenter->getSegment( $title, $segmentHash, $revisionId );
 
 		$response = $this->getUtterance(

@@ -1,6 +1,15 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Api;
+
+use ApiBase;
+use ApiMain;
+use FormatJson;
+use Title;
+use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
+
+use MediaWiki\Wikispeech\Segment\Segmenter;
 
 /**
  * @file

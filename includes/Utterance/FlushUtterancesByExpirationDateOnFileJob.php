@@ -1,5 +1,9 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Utterance;
+
+use Job;
+
 /**
  * @file
  * @ingroup Extensions

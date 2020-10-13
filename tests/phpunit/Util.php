@@ -1,5 +1,11 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
+use ContentHandler;
+use Title;
+use WikiPage;
+
 /**
  * @file
  * @ingroup Extensions

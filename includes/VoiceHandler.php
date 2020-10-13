@@ -1,10 +1,15 @@
 <?php
 
+namespace MediaWiki\Wikispeech;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use Config;
+use WANObjectCache;
 use Psr\Log\LoggerInterface;
 
 /**

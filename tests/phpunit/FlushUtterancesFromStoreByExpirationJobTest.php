@@ -1,15 +1,22 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use MediaWikiTestCase;
+use Title;
 use Wikimedia\TestingAccessWrapper;
 
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+
 /**
- * @covers FlushUtterancesFromStoreByExpirationJob
+ * @covers \MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob
  *
  * @since 0.1.7
  */

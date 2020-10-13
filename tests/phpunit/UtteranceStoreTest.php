@@ -1,18 +1,27 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use MediaWikiTestCase;
+use MemoryFileBackend;
+use MWException;
+use MWTimestamp;
+use WikiMap;
 use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+
 /**
  * @group Database
- * @covers UtteranceStore
+ * @covers \MediaWiki\Wikispeech\Utterance\UtteranceStore
  */
 class UtteranceStoreTest extends MediaWikiTestCase {
 

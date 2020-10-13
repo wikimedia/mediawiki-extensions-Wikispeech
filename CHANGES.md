@@ -29,6 +29,7 @@ the match the new release version.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T265335](https://phabricator.wikimedia.org/T265335) Introduce PHP namespaces.
 * [T264899](https://phabricator.wikimedia.org/T264899) Introduce configurable response timeout in SpeechoidConnector.
 * [T263115](https://phabricator.wikimedia.org/T263115) Break out getDefaultVoice() to separate class.
 * [T260905](https://phabricator.wikimedia.org/T260905) Refactored (shortened) name of flushUtterancesByExpirationDateOnFileFromFileBackend.

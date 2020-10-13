@@ -1,15 +1,23 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests\Unit;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use HashBagOStuff;
+use HashConfig;
+use MediaWikiUnitTestCase;
 use Psr\Log\AbstractLogger;
 
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\VoiceHandler;
+
 /**
- * @covers VoiceHandler
+ * @covers \MediaWiki\Wikispeech\VoiceHandler
  */
 class VoiceHandlerTest extends MediaWikiUnitTestCase {
 	protected function setUp() : void {

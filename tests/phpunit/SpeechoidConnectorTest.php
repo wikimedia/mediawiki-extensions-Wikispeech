@@ -1,5 +1,11 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
+use MediaWikiIntegrationTestCase;
+
+use MediaWiki\Wikispeech\SpeechoidConnector;
+
 /**
  * @file
  * @ingroup Extensions
@@ -8,7 +14,7 @@
 
 /**
  * @group medium
- * @covers SpeechoidConnector
+ * @covers \MediaWiki\Wikispeech\SpeechoidConnector
  */
 class SpeechoidConnectorTest extends MediaWikiIntegrationTestCase {
 

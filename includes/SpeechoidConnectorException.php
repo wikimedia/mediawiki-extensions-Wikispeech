@@ -1,5 +1,9 @@
 <?php
 
+namespace MediaWiki\Wikispeech;
+
+use MWException;
+
 /**
  * Class SpeechoidConnectorException
  * @since 0.1.5

@@ -1,17 +1,36 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Api;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use InvalidArgumentException;
+
+use ApiBase;
+use ApiMain;
+use ApiUsageException;
+use Config;
+use ConfigException;
+use ExternalStoreException;
+use FormatJson;
+use Title;
+use WANObjectCache;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use Psr\Log\LoggerInterface;
 use Wikimedia\ParamValidator\ParamValidator;
+
+use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\SpeechoidConnectorException;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+use MediaWiki\Wikispeech\VoiceHandler;
 
 class ApiWikispeechListen extends ApiBase {
 

@@ -1,11 +1,15 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Utterance;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use Job;
+use Title;
 use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
 

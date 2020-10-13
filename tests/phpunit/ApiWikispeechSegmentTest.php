@@ -1,5 +1,10 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
+use ApiTestCase;
+use ApiUsageException;
+
 /**
  * @file
  * @ingroup Extensions
@@ -11,7 +16,7 @@ define( 'TITLE', 'Test_Page' );
 /**
  * @group Database
  * @group medium
- * @covers ApiWikispeechSegment
+ * @covers \MediaWiki\Wikispeech\Api\ApiWikispeechSegment
  */
 class ApiWikispeechSegmentTest extends ApiTestCase {
 	public function addDBDataOnce() {

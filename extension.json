@@ -21,29 +21,11 @@
 	"requires": {
 		"MediaWiki": ">= 1.35"
 	},
-	"AutoloadClasses": {
-		"WikispeechHooks": "includes/WikispeechHooks.php",
-		"CleanedText": "includes/CleanedText.php",
-		"SegmentBreak": "includes/SegmentBreak.php",
-		"Cleaner": "includes/Cleaner.php",
-		"Segmenter": "includes/Segmenter.php",
-		"UtteranceStore": "includes/UtteranceStore.php",
-		"ApiWikispeechSegment": "includes/ApiWikispeechSegment.php",
-		"ApiWikispeechListen": "includes/ApiWikispeechListen.php",
-		"SpeechoidConnector": "includes/SpeechoidConnector.php",
-		"SpeechoidConnectorException": "includes/SpeechoidConnectorException.php",
-		"FlushUtterancesByExpirationDateOnFileJob": "includes/FlushUtterancesByExpirationDateOnFileJob.php",
-		"FlushUtterancesByExpirationDateOnFileJobQueue": "includes/FlushUtterancesByExpirationDateOnFileJobQueue.php",
-		"FlushUtterancesFromStoreByExpirationJob": "includes/FlushUtterancesFromStoreByExpirationJob.php",
-		"FlushUtterancesFromStoreByExpirationJobQueue": "includes/FlushUtterancesFromStoreByExpirationJobQueue.php",
-		"FlushUtterancesFromStoreByLanguageAndVoiceJob": "includes/FlushUtterancesFromStoreByLanguageAndVoiceJob.php",
-		"FlushUtterancesFromStoreByLanguageAndVoiceJobQueue": "includes/FlushUtterancesFromStoreByLanguageAndVoiceJobQueue.php",
-		"FlushUtterancesFromStoreByPageIdJob": "includes/FlushUtterancesFromStoreByPageIdJob.php",
-		"FlushUtterancesFromStoreByPageIdJobQueue": "includes/FlushUtterancesFromStoreByPageIdJobQueue.php",
-		"VoiceHandler": "includes/VoiceHandler.php"
+	"AutoloadNamespaces": {
+		"MediaWiki\\Wikispeech\\": "includes/"
 	},
-	"TestAutoloadClasses": {
-		"Util": "tests/phpunit/Util.php"
+	"TestAutoloadNamespaces": {
+		"MediaWiki\\Wikispeech\\Tests\\": "tests/phpunit/"
 	},
 	"ResourceModules": {
 		"ext.wikispeech.loader": {
@@ -96,18 +78,18 @@
 	},
 	"Hooks": {
 		"BeforePageDisplay": [
-			"WikispeechHooks::onBeforePageDisplay"
+			"\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onBeforePageDisplay"
 		],
-		"ApiBeforeMain": "WikispeechHooks::onApiBeforeMain",
+		"ApiBeforeMain": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onApiBeforeMain",
 		"ResourceLoaderGetConfigVars": [
-			"WikispeechHooks::onResourceLoaderGetConfigVars"
+			"\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onResourceLoaderGetConfigVars"
 		],
 		"GetPreferences": [
-			"WikispeechHooks::onGetPreferences"
+			"\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onGetPreferences"
 		],
-		"ApiCheckCanExecute": "WikispeechHooks::onApiCheckCanExecute",
-		"LoadExtensionSchemaUpdates": "WikispeechHooks::onLoadExtensionSchemaUpdates",
-		"SkinTemplateNavigation": "WikispeechHooks::onSkinTemplateNavigation"
+		"ApiCheckCanExecute": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onApiCheckCanExecute",
+		"LoadExtensionSchemaUpdates": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onLoadExtensionSchemaUpdates",
+		"SkinTemplateNavigation": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onSkinTemplateNavigation"
 	},
 	"ConfigRegistry": {
 		"wikispeech": "GlobalVarConfig::newInstance"
@@ -323,13 +305,13 @@
 	},
 	"APIModules": {
 		"wikispeech-segment": {
-			"class": "ApiWikispeechSegment",
+			"class": "\\MediaWiki\\Wikispeech\\Api\\ApiWikispeechSegment",
 			"services": [
 				"MainWANObjectCache"
 			]
 		},
 		"wikispeech-listen": {
-			"class": "ApiWikispeechListen",
+			"class": "\\MediaWiki\\Wikispeech\\Api\\ApiWikispeechListen",
 			"services": [
 				"MainWANObjectCache",
 				"RevisionStore"

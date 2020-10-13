@@ -1,11 +1,18 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Segment;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use IContextSource;
+use MWException;
+use Title;
+use WANObjectCache;
+use WikiPage;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 

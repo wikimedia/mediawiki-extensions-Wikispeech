@@ -1,20 +1,26 @@
 <?php
 
+declare( strict_types = 1 );
+
+namespace MediaWiki\Wikispeech\Tests;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
-declare( strict_types = 1 );
-
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
+
+use MediaWiki\Wikispeech\FlushUtterancesByExpirationDateOnFile;
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesByExpirationDateOnFileJobQueue;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
 // files in maintenance/ are not autoloaded to avoid accidental usage, so load explicitly
 require_once __DIR__ . '/../../maintenance/flushUtterancesByExpirationDateOnFile.php';
 
 /**
- * @covers FlushUtterancesByExpirationDateOnFile
+ * @covers \MediaWiki\Wikispeech\FlushUtterancesByExpirationDateOnFile
  * @since 0.1.7
  */
 class FlushUtterancesByExpirationDateOnFileTest

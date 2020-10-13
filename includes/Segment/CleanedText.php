@@ -1,5 +1,7 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Segment;
+
 /**
  * @file
  * @ingroup Extensions

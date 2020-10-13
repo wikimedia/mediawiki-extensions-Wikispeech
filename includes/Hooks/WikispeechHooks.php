@@ -1,13 +1,28 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Hooks;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use Exception;
+
+use ApiBase;
+use ApiMain;
+use ApiMessage;
+use DatabaseUpdater;
+use OutputPage;
+use Skin;
+use SkinTemplate;
+use User;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\VoiceHandler;
 
 class WikispeechHooks {
 
@@ -375,7 +390,7 @@ class WikispeechHooks {
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
 		$updater->addExtensionTable(
 			'wikispeech_utterance',
-			__DIR__ . '/../sql/wikispeech_utterance_v1.sql'
+			__DIR__ . '/../../sql/wikispeech_utterance_v1.sql'
 		);
 	}
 }

@@ -1,18 +1,32 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use InvalidArgumentException;
+
+use MediaWikiTestCase;
+use MWException;
+use RequestContext;
+use Title;
+use WANObjectCache;
+use WikiPage;
 use MediaWiki\MediaWikiServices;
 use Wikimedia\TestingAccessWrapper;
+
+use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\SegmentBreak;
+use MediaWiki\Wikispeech\Segment\Segmenter;
 
 /**
  * @group Database
  * @group medium
- * @covers Segmenter
+ * @covers \MediaWiki\Wikispeech\Segment\Segmenter
  */
 class SegmenterTest extends MediaWikiTestCase {
 

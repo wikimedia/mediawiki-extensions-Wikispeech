@@ -1,15 +1,23 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use DateTime;
+
+use MediaWikiTestCase;
+use WANObjectCache;
 use MediaWiki\MediaWikiServices;
 
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
+
 /**
- * @covers FlushUtterancesFromStoreByExpirationJobQueue
+ * @covers \MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue
  *
  * @since 0.1.7
  */

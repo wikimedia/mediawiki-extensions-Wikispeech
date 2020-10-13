@@ -1,11 +1,19 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use MediaWikiTestCase;
+use Message;
+use OutputPage;
+use RequestContext;
+use SkinTemplate;
+use Title;
 use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
@@ -13,7 +21,7 @@ use MediaWiki\User\UserOptionsManager;
 use PHPUnit\Framework\MockObject\Stub;
 
 /**
- * @covers WikispeechHooks
+ * @covers \MediaWiki\Wikispeech\Hooks\WikispeechHooks
  */
 class WikispeechHooksTest extends MediaWikiTestCase {
 

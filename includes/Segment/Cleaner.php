@@ -1,5 +1,12 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Segment;
+
+use DOMComment;
+use DOMDocument;
+use DOMNode;
+use DOMXPath;
+
 /**
  * @file
  * @ingroup Extensions

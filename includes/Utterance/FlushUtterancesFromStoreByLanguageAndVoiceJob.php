@@ -1,21 +1,25 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Utterance;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use Job;
+use Title;
 use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
 
 /**
- * @see UtteranceStore::flushUtterancesByPage()
- * @see FlushUtterancesFromStoreByPageIdJobQueue
+ * @see UtteranceStore::flushUtterancesByLanguageAndVoice()
+ * @see FlushUtterancesFromStoreByLanguageAndVoiceJobQueue
  *
  * @since 0.1.7
  */
-class FlushUtterancesFromStoreByPageIdJob extends Job {
+class FlushUtterancesFromStoreByLanguageAndVoiceJob extends Job {
 
 	/** @var LoggerInterface */
 	private $logger;
@@ -23,21 +27,25 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 	/** @var UtteranceStore */
 	private $utteranceStore;
 
-	/** @var int */
-	private $pageId;
+	/** @var string */
+	private $language;
+
+	/** @var string */
+	private $voice;
 
 	/**
-	 * FlushUtterancesFromStoreByPageIdJob constructor.
+	 * FlushUtterancesFromStoreByLanguageAndVoiceJob constructor.
 	 *
 	 * @since 0.1.7
 	 * @param Title $title
-	 * @param array $params [ 'pageId' => int ]
+	 * @param array $params [ 'language' => string, 'voice' => string|null ]
 	 */
 	public function __construct( $title, $params ) {
-		parent::__construct( 'flushUtterancesFromStoreByPageId', $title, $params );
+		parent::__construct( 'flushUtterancesFromStoreByLanguageAndVoice', $title, $params );
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->utteranceStore = new UtteranceStore();
-		$this->pageId = $params['pageId'];
+		$this->language = $params['language'];
+		$this->voice = $params['voice'];
 	}
 
 	/**
@@ -47,8 +55,9 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 	 * @return bool success
 	 */
 	public function run() {
-		$flushedUtterances = $this->utteranceStore->flushUtterancesByPage(
-			$this->pageId
+		$flushedUtterances = $this->utteranceStore->flushUtterancesByLanguageAndVoice(
+			$this->language,
+			$this->voice
 		);
 		$this->logger->info(
 			"Flushed {flushedUtterances} expired utterances from store.",

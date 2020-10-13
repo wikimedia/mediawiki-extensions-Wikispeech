@@ -2,13 +2,21 @@
 
 declare( strict_types = 1 );
 
+namespace MediaWiki\Wikispeech\Tests;
+
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
+
+use MediaWiki\Wikispeech\FlushUtterances;
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByLanguageAndVoiceJobQueue;
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByPageIdJobQueue;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
 // files in maintenance/ are not autoloaded to avoid accidental usage, so load explicitly
 require_once __DIR__ . '/../../maintenance/flushUtterances.php';
 
 /**
- * @covers FlushUtterances
+ * @covers \MediaWiki\Wikispeech\FlushUtterances
  *
  * @since 0.1.7
  * @license GPL-2.0-or-later

@@ -1,5 +1,10 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Utterance;
+
+use JobQueueGroup;
+use Title;
+
 /**
  * @file
  * @ingroup Extensions

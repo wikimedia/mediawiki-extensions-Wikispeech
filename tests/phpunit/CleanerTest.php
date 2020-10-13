@@ -1,5 +1,13 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Tests;
+
+use MediaWikiTestCase;
+
+use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Cleaner;
+use MediaWiki\Wikispeech\Segment\SegmentBreak;
+
 /**
  * @file
  * @ingroup Extensions
@@ -7,7 +15,7 @@
  */
 
 /**
- * @covers Cleaner
+ * @covers \MediaWiki\Wikispeech\Segment\Cleaner
  */
 class CleanerTest extends MediaWikiTestCase {
 	protected function setUp() : void {

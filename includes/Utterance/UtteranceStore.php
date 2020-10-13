@@ -1,16 +1,27 @@
 <?php
 
+namespace MediaWiki\Wikispeech\Utterance;
+
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
 
+use Config;
+use ExternalStoreException;
+use FileBackend;
+use FSFileBackend;
+use MWTimestamp;
+use WikiMap;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
+use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IResultWrapper;
+
+use MediaWiki\Wikispeech\SpeechoidConnector;
 
 /**
  * Keeps track of utterances in persistent layers.

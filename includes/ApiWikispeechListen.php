@@ -7,6 +7,7 @@
  */
 
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use Psr\Log\LoggerInterface;
@@ -32,6 +33,9 @@ class ApiWikispeechListen extends ApiBase {
 	/** @var UtteranceStore */
 	private $utteranceStore;
 
+	/** @var VoiceHandler */
+	private $voiceHandler;
+
 	/**
 	 * ApiWikispeechListen constructor.
 	 *
@@ -53,8 +57,18 @@ class ApiWikispeechListen extends ApiBase {
 		$this->cache = $cache;
 		$this->revisionStore = $revisionStore;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
+		$this->config = MediaWikiServices::getInstance()
+			->getConfigFactory()
+			->makeConfig( 'wikispeech' );
 		$this->speechoidConnector = new SpeechoidConnector();
 		$this->utteranceStore = new UtteranceStore();
+		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$this->voiceHandler = new VoiceHandler(
+			$this->logger,
+			$this->config,
+			$this->speechoidConnector,
+			$cache
+		);
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 	}
 
@@ -78,7 +92,7 @@ class ApiWikispeechListen extends ApiBase {
 			);
 		} else {
 			if ( !$voice ) {
-				$voice = $this->utteranceStore->getDefaultVoice( $language );
+				$voice = $this->voiceHandler->getDefaultVoice( $language );
 				if ( !$voice ) {
 					throw new ConfigException( "Invalid default voice configuration." );
 				}
@@ -182,7 +196,7 @@ class ApiWikispeechListen extends ApiBase {
 			throw new InvalidArgumentException( 'Segment must be set.' );
 		}
 		if ( !$voice ) {
-			$voice = $this->utteranceStore->getDefaultVoice( $language );
+			$voice = $this->voiceHandler->getDefaultVoice( $language );
 			if ( !$voice ) {
 				throw new ConfigException( "Invalid default voice configuration." );
 			}

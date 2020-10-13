@@ -29,6 +29,7 @@ the match the new release version.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T263115](https://phabricator.wikimedia.org/T263115) Break out getDefaultVoice() to separate class.
 * [T260905](https://phabricator.wikimedia.org/T260905) Refactored (shortened) name of flushUtterancesByExpirationDateOnFileFromFileBackend.
   @since tags on renamed methods and classes is bumped from 0.1.5 to 0.1.7,
   but due to the pre-release state of the project

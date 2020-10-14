@@ -110,9 +110,13 @@ class SpeechoidConnector {
 	 *
 	 * @since 0.1.6
 	 * @return string JSON response
-	 * @throws SpeechoidConnectorException On Speechoid I/O error.
+	 * @throws SpeechoidConnectorException On Speechoid I/O error or
+	 *  if URL is invalid.
 	 */
 	public function requestDefaultVoices(): string {
+		if ( !filter_var( $this->url, FILTER_VALIDATE_URL ) ) {
+			throw new SpeechoidConnectorException( 'No Speechoid URL provided.' );
+		}
 		$requestFactory = MediaWikiServices::getInstance()->getHttpRequestFactory();
 		$responseString = $requestFactory->get( $this->url . '/default_voices' );
 		if ( !$responseString ) {

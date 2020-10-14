@@ -249,7 +249,7 @@ class WikispeechHooks {
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
-		$speechoidConnector = new SpeechoidConnector();
+		$speechoidConnector = new SpeechoidConnector( $config );
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$voiceHandler = new VoiceHandler(
 			$logger,

@@ -67,10 +67,14 @@ class FlushUtterancesByExpirationDateOnFile extends Maintenance {
 
 		$force = $this->hasOption( 'force' );
 		if ( $force ) {
-			$this->utteranceStore->flushUtterancesByExpirationDateOnFile();
+			$flushedCount = $this->utteranceStore->flushUtterancesByExpirationDateOnFile();
+			$this->output( "Flushed $flushedCount utterances.\n" );
 		} else {
 			$this->jobQueue->queueJob();
+			$this->output( 'Flush job has been queued and will be executed ' .
+				"in accordance with your MediaWiki configuration.\n" );
 		}
+
 		return true;
 	}
 

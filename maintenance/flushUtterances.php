@@ -123,7 +123,7 @@ class FlushUtterances extends Maintenance {
 			$supportedSetOfOptions = false;
 		}
 		if ( !$supportedSetOfOptions ) {
-			$this->output( "Unsupported set of options!" );
+			$this->output( "Unsupported set of options!\n" );
 			$this->showHelp();
 			return false;
 		}
@@ -156,16 +156,16 @@ class FlushUtterances extends Maintenance {
 			}
 		} else {
 			// Fallback in case of future bad code in supported set of options.
-			$this->output( "Unsupported set of options! (This might be a developer error.)" );
+			$this->output( "Unsupported set of options! (This might be a developer error.)\n" );
 			$this->showHelp();
 			return false;
 		}
 
 		if ( $force ) {
-			$this->output( "Flushed $flushedCount utterances." );
+			$this->output( "Flushed $flushedCount utterances.\n" );
 		} else {
-			$this->output( "Flush job has been queued and will be executed " .
-				"in accordance with your MediaWiki configuration." );
+			$this->output( 'Flush job has been queued and will be executed ' .
+				"in accordance with your MediaWiki configuration.\n" );
 		}
 
 		return true;

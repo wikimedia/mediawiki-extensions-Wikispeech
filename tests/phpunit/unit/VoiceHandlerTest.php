@@ -11,6 +11,7 @@ namespace MediaWiki\Wikispeech\Tests\Unit;
 use HashBagOStuff;
 use HashConfig;
 use MediaWikiUnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\AbstractLogger;
 
 use MediaWiki\Wikispeech\SpeechoidConnector;
@@ -20,6 +21,16 @@ use MediaWiki\Wikispeech\VoiceHandler;
  * @covers \MediaWiki\Wikispeech\VoiceHandler
  */
 class VoiceHandlerTest extends MediaWikiUnitTestCase {
+
+	/** @var HashConfig */
+	private $config;
+
+	/** @var VoiceHandler */
+	private $voiceHandler;
+
+	/** @var MockObject|SpeechoidConnector */
+	private $speechoidConnectorMock;
+
 	protected function setUp() : void {
 		parent::setUp();
 		$logger = $this->createStub( AbstractLogger::class );

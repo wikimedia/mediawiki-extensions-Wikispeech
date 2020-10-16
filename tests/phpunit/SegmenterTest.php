@@ -31,7 +31,7 @@ use MediaWiki\Wikispeech\Segment\Segmenter;
 class SegmenterTest extends MediaWikiTestCase {
 
 	/**
-	 * @var TestingAccessWrapper
+	 * @var TestingAccessWrapper|Segmenter
 	 */
 	private $segmenter;
 

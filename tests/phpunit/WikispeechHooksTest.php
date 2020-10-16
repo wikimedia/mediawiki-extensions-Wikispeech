@@ -156,6 +156,13 @@ class WikispeechHooksTest extends MediaWikiTestCase {
 		$this->assertTrue( $this->configLoaded() );
 	}
 
+	public function testOnBeforePageDisplay_actionIsntView_dontLoadModule() {
+		$this->out->getRequest()->setVal( 'action', 'not-view' );
+		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
+		$this->assertEmpty( $this->out->getModules() );
+		$this->assertFalse( $this->configLoaded() );
+	}
+
 	public function testOnBeforePageDisplay_showPlayerNotSet_loadLoader() {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', false );

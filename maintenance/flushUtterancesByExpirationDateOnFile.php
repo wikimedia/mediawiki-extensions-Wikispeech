@@ -20,8 +20,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 /**
- * Class FlushUtterancesByExpirationDateOnFile
- *
  * Maintenance script to manually execute
  * {@link UtteranceStore::flushUtterancesByExpirationDateOnFile()}.
  * Used to clear out orphaned files (i.e. not tracked by utterance database).

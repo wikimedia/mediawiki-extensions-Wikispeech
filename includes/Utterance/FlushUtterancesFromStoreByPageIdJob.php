@@ -31,8 +31,6 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 	private $pageId;
 
 	/**
-	 * FlushUtterancesFromStoreByPageIdJob constructor.
-	 *
 	 * @since 0.1.7
 	 * @param Title $title
 	 * @param array $params [ 'pageId' => int ]

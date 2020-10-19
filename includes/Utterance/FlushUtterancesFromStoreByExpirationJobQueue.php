@@ -66,7 +66,6 @@ class FlushUtterancesFromStoreByExpirationJobQueue {
 	private $minimumMinutesBetweenFlushExpiredUtterancesJobs;
 
 	/**
-	 * FlushUtterancesFromStoreByExpirationJobQueue constructor.
 	 * @since 0.1.7
 	 */
 	public function __construct() {

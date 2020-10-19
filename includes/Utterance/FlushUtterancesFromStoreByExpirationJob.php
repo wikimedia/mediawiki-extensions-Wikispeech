@@ -28,8 +28,6 @@ class FlushUtterancesFromStoreByExpirationJob extends Job {
 	private $utteranceStore;
 
 	/**
-	 * FlushUtterancesFromStoreByExpirationJob constructor.
-	 *
 	 * @since 0.1.7
 	 * @param Title $title
 	 * @param array|null $params Ignored

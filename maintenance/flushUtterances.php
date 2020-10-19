@@ -22,8 +22,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 
 /**
- * Class FlushUtterances
- *
  * Maintenance script to manually execute
  * {@link UtteranceStore} flush methods.
  *

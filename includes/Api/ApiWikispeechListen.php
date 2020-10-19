@@ -56,8 +56,6 @@ class ApiWikispeechListen extends ApiBase {
 	private $voiceHandler;
 
 	/**
-	 * ApiWikispeechListen constructor.
-	 *
 	 * @since 0.1.5
 	 * @param ApiMain $mainModule
 	 * @param string $moduleName

@@ -34,8 +34,6 @@ class FlushUtterancesFromStoreByLanguageAndVoiceJob extends Job {
 	private $voice;
 
 	/**
-	 * FlushUtterancesFromStoreByLanguageAndVoiceJob constructor.
-	 *
 	 * @since 0.1.7
 	 * @param Title $title
 	 * @param array $params [ 'language' => string, 'voice' => string|null ]

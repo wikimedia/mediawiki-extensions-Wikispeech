@@ -23,10 +23,16 @@ then replace all @since 0.1.2 tags in the code to 0.2.0 using a new task.
 Update [mediawiki.org documentation](https://www.mediawiki.org/wiki/Extension:Wikispeech)
 the match the new release version.
 
+Update version in extension.json.
+
 ## Versions
 
-### 0.1.7-SNAPSHOT
+### 0.1.8-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+### 0.1.7
+2020-10-19
 Speechoid: 0.1.2
 
 * [T265335](https://phabricator.wikimedia.org/T265335) Introduce PHP namespaces.

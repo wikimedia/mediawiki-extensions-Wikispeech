@@ -1,8 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"Steeve815"
+			"Steeve815",
+			"YaronSh"
 		]
 	},
+	"wikispeech-desc": "כלי המרת טקסט לדיבור כדי להפוך את המיזמים של ויקימדיה לנגישים יותר עבור כאלו שמסיבות שונות ומשונות חווים קשיים בקריאה.",
+	"apihelp-wikispeech-segment-summary": "פיצול תוכן ה־HTML של הדף למקטעים.",
+	"apihelp-wikispeech-segment-param-page": "כותרת הדף לחלוקה למקטעים.",
+	"apihelp-wikispeech-segment-param-removetags": "תגיות HTML שאמורות להימחק לחלוטין במהלך הניקוי בתצורת עצם JSON שנראה כך:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nכאשר <code>tag1</code> יימחק תמיד, <code>tag2</code> יימחק רק אם יש לו את מחלקת ה־CSS <code>css-class</code> ו־<code>tag3</code> יימחק רק אם יש לו את אחת ממחלקות ה־CSS{כ} <code>css-class-1</code> או <code>css-class-2</code>.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "תגיות HTML שלא אמורות לקטוע.",
+	"prefs-wikispeech-voice": "קול",
+	"prefs-wikispeech-speech-rate": "מהירות דיבור",
 	"wikispeech-listen": "להקשיב"
 }

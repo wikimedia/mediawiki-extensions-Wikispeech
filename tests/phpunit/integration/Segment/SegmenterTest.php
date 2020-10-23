@@ -49,6 +49,54 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * Activates a WANCache previously disabled by MediaWikiTestCase.
+	 *
+	 * @since 0.1.8
+	 */
+	private function activateWanCache() {
+		$this->setMwGlobals( [
+			'wgMainWANCache' => 'hash',
+			'wgWANObjectCaches' => [
+				'hash' => [
+					'class'    => WANObjectCache::class,
+					'cacheId'  => 'hash',
+					'channels' => []
+				]
+			]
+		] );
+		$this->segmenter->cache =
+			MediaWikiServices::getInstance()->getMainWANObjectCache();
+	}
+
+	/**
+	 * Replace Segmenter instance by one where cleanPage is mocked.
+	 *
+	 * @since 0.1.8
+	 * @param int $occurences If provided adds an assertion that cleanPage is
+	 *  called exactly this many times.
+	 * @throws InvalidArgumentException If occurences is not a positive integer.
+	 */
+	private function mockCleanPage( $occurences = null ) {
+		if ( !is_int( $occurences ) || $occurences < 0 ) {
+			throw new InvalidArgumentException(
+				'$occurences must be a positive integer' );
+		}
+
+		$segmenterMock = $this->getMockBuilder( Segmenter::class )
+			->setConstructorArgs( [
+				new RequestContext(),
+				MediaWikiServices::getInstance()->getMainWANObjectCache()
+			] )
+			->onlyMethods( [ 'cleanPage' ] )
+			->getMock();
+		$segmenterMock
+			->expects( $this->exactly( $occurences ) )
+			->method( 'cleanPage' )
+			->will( $this->returnValue( [] ) );
+		$this->segmenter = $segmenterMock;
+	}
+
 	public function testSegmentPage_contentContainsSentences_giveTitleAndContent() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
@@ -105,76 +153,6 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		];
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
 		$this->assertEquals( $expectedSegments, $segments );
-	}
-
-	public function testCleanPage_pageWithContent_giveCleanedTextArray() {
-		$content = 'Content';
-		WikiPageTestUtil::addPage( 'Page', $content );
-		$title = Title::newFromText( 'Page' );
-		$page = WikiPage::factory( $title );
-
-		$cleanedText = $this->segmenter->cleanPage( $page, [], [] );
-
-		$this->assertEquals(
-			[
-				new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ),
-				new SegmentBreak(),
-				new CleanedText( "Content\n", './div/p/text()' )
-			],
-			// For some reason, there are a number of HTML nodes
-			// containing only newlines, which adds extra
-			// CleanText's. They don't cause any issues in the end
-			// though. See T255152.
-			array_slice( $cleanedText, 0, 3 )
-		);
-	}
-
-	/**
-	 * Activates a WANCache previously disabled by MediaWikiTestCase.
-	 *
-	 * @since 0.1.8
-	 */
-	private function activateWanCache() {
-		$this->setMwGlobals( [
-			'wgMainWANCache' => 'hash',
-			'wgWANObjectCaches' => [
-				'hash' => [
-					'class'    => WANObjectCache::class,
-					'cacheId'  => 'hash',
-					'channels' => []
-				]
-			]
-		] );
-		$this->segmenter->cache =
-			MediaWikiServices::getInstance()->getMainWANObjectCache();
-	}
-
-	/**
-	 * Replace Segmenter instance by one where cleanPage is mocked.
-	 *
-	 * @since 0.1.8
-	 * @param int $occurences If provided adds an assertion that cleanPage is
-	 *  called exactly this many times.
-	 * @throws InvalidArgumentException If occurences is not a positive integer.
-	 */
-	private function mockCleanPage( $occurences = null ) {
-		if ( !is_int( $occurences ) || $occurences < 0 ) {
-			throw new InvalidArgumentException(
-				'$occurences must be a positive integer' );
-		}
-
-		$segmenterMock = $this->getMockBuilder( Segmenter::class )
-			->setConstructorArgs( [
-				new RequestContext(),
-				MediaWikiServices::getInstance()->getMainWANObjectCache()
-			] )
-			->onlyMethods( [ 'cleanPage' ] )
-			->getMock();
-		$segmenterMock
-			->expects( $this->exactly( $occurences ) )
-			->method( 'cleanPage' )
-			->will( $this->returnValue( [] ) );
-		$this->segmenter = $segmenterMock;
 	}
 
 	public function testSegmentPage_repeatedRequest_useCache() {
@@ -309,6 +287,28 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$title = $page->getTitle();
 		$this->segmenter->segmentPage( $title );
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [ 'br' ] );
+	}
+
+	public function testCleanPage_pageWithContent_giveCleanedTextArray() {
+		$content = 'Content';
+		WikiPageTestUtil::addPage( 'Page', $content );
+		$title = Title::newFromText( 'Page' );
+		$page = WikiPage::factory( $title );
+
+		$cleanedText = $this->segmenter->cleanPage( $page, [], [] );
+
+		$this->assertEquals(
+			[
+				new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ),
+				new SegmentBreak(),
+				new CleanedText( "Content\n", './div/p/text()' )
+			],
+			// For some reason, there are a number of HTML nodes
+			// containing only newlines, which adds extra
+			// CleanText's. They don't cause any issues in the end
+			// though. See T255152.
+			array_slice( $cleanedText, 0, 3 )
+		);
 	}
 
 	public function testGetSegment_segmentExists_returnSegment() {

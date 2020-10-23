@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Hooks;
 
 use Exception;
 
+use Action;
 use ApiBase;
 use ApiMain;
 use ApiMessage;
@@ -185,21 +186,50 @@ class WikispeechHooks {
 	 * * Wikispeech is enabled for the page's namespace
 	 * * Revision is current
 	 * * Page's language is enabled for Wikispeech
+	 * * The action is "view"
 	 *
 	 * @since 0.1.5
 	 * @param OutputPage $out
 	 * @return bool
 	 */
 	private static function shouldWikispeechRun( OutputPage $out ) {
+		$logger = LoggerFactory::getInstance( 'Wikispeech' );
+
 		$wikispeechEnabled = MediaWikiServices::getInstance()
 			->getUserOptionsLookup()
 			->getOption( $out->getUser(), 'wikispeechEnable' );
+		if ( !$wikispeechEnabled ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: disabled by user.' );
+			return false;
+		}
+
+		$userIsAllowed = MediaWikiServices::getInstance()
+			->getPermissionManager()
+			->userHasRight( $out->getUser(), 'wikispeech-listen' );
+		if ( !$userIsAllowed ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: user lacks right "wikispeech-listen".' );
+			return false;
+		}
+
+		if ( !self::validateConfiguration() ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: config invalid.' );
+			return false;
+		}
 
 		$namespace = $out->getTitle()->getNamespace();
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
 		$validNamespaces = $config->get( 'WikispeechNamespaces' );
+		if ( !in_array( $namespace, $validNamespaces ) ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported namespace.' );
+			return false;
+		}
+
+		if ( !$out->isRevisionCurrent() ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: non-current revision.' );
+			return false;
+		}
 
 		$pageContentLanguage = null;
 		if ( $namespace == NS_MEDIA || $namespace < 0 ) {
@@ -209,18 +239,19 @@ class WikispeechHooks {
 		} else {
 			$pageContentLanguage = $out->getWikiPage()->getTitle()->getPageLanguage();
 		}
-
 		$validLanguages = array_keys( $config->get( 'WikispeechVoices' ) );
+		if ( !in_array( $pageContentLanguage->getCode(), $validLanguages ) ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported language.' );
+			return false;
+		}
 
-		$userIsAllowed = MediaWikiServices::getInstance()
-			->getPermissionManager()
-			->userHasRight( $out->getUser(), 'wikispeech-listen' );
-		return $wikispeechEnabled &&
-			$userIsAllowed &&
-			self::validateConfiguration() &&
-			in_array( $namespace, $validNamespaces ) &&
-			$out->isRevisionCurrent() &&
-			in_array( $pageContentLanguage->getCode(), $validLanguages );
+		$actionName = Action::getActionName( $out );
+		if ( $actionName !== 'view' ) {
+			$logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported action.' );
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

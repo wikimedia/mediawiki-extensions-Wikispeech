@@ -3,6 +3,7 @@
 namespace MediaWiki\Wikispeech\Utterance;
 
 use Job;
+use Title;
 
 /**
  * @file
@@ -14,6 +15,15 @@ use Job;
  * @since 0.1.7
  */
 class FlushUtterancesByExpirationDateOnFileJob extends Job {
+
+	/**
+	 * @since 0.1.8
+	 * @param Title $title
+	 * @param array|null $params Ignored
+	 */
+	public function __construct( $title, $params ) {
+		parent::__construct( 'flushUtterancesByExpirationDateOnFile', $title, $params );
+	}
 
 	/**
 	 * @since 0.1.7

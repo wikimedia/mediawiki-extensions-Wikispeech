@@ -29,7 +29,8 @@ class FlushUtterancesByExpirationDateOnFileJobQueue {
 	public function queueJob() {
 		JobQueueGroup::singleton()
 			->push( new FlushUtterancesByExpirationDateOnFileJob(
-				Title::newMainPage(), null
+				Title::newMainPage(),
+				[]
 			) );
 	}
 }

@@ -95,7 +95,7 @@
 		"wikispeech": "GlobalVarConfig::newInstance"
 	},
 	"JobClasses": {
-		"flushUtterancesByExpirationDateOnFileFromFileBackend": "FlushUtterancesByExpirationDateOnFileFromFileBackendJob",
+		"flushUtterancesByExpirationDateOnFile": "FlushUtterancesByExpirationDateOnFileJob",
 		"flushUtterancesFromStoreByExpiration": "FlushUtterancesFromStoreByExpirationJob",
 		"flushUtterancesFromStoreByLanguageAndVoice": "FlushUtterancesFromStoreByLanguageAndVoiceJob",
 		"flushUtterancesFromStoreByPageId": "FlushUtterancesFromStoreByPageIdJob"

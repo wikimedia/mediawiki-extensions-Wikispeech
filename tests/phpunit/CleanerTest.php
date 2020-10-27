@@ -18,6 +18,10 @@ use MediaWiki\Wikispeech\Segment\SegmentBreak;
  * @covers \MediaWiki\Wikispeech\Segment\Cleaner
  */
 class CleanerTest extends MediaWikiTestCase {
+
+	/** @var Cleaner */
+	private $cleaner;
+
 	protected function setUp() : void {
 		parent::setUp();
 		$removeTags = [

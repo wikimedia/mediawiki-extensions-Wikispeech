@@ -35,6 +35,7 @@ class FlushUtterancesFromStoreByExpirationJobTest extends MediaWikiTestCase {
 			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 60
 		] );
 
+		/** @var FlushUtterancesFromStoreByExpirationJob|TestingAccessWrapper $job */
 		$job = TestingAccessWrapper::newFromObject(
 			new FlushUtterancesFromStoreByExpirationJob(
 				Title::newMainPage(),

@@ -26,7 +26,7 @@ use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 class UtteranceStoreTest extends MediaWikiTestCase {
 
 	/**
-	 * @var TestingAccessWrapper $utteranceStore wrapped instance of {@link UtteranceStore}
+	 * @var TestingAccessWrapper|UtteranceStore
 	 */
 	private $utteranceStore;
 

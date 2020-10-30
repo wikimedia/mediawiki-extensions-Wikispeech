@@ -23,7 +23,7 @@
 	"apihelp-wikispeech-listen-param-segment": "Hash of the segment synthesize.",
 	"apihelp-wikispeech-listen-param-text": "Text to synthesize.",
 	"apihelp-wikispeech-listen-param-voice": "Voice to use. If not provided the default voice for the language will be used.",
-	"apierror-wikispeech-listen-deleted-revision": "Deleted revisons cannot be listened to.",
+	"apierror-wikispeech-listen-deleted-revision": "Deleted revisions cannot be listened to.",
 	"apierror-wikispeech-listen-notallowed": "You do not have the rights to call this API action.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is not a valid language. Should be one of: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> is not a valid voice. Should be one of: $2.",

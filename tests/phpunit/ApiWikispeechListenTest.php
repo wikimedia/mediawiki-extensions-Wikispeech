@@ -355,7 +355,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
-			'Deleted revisons cannot be listened to.'
+			'Deleted revisions cannot be listened to.'
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeech-listen',
@@ -391,7 +391,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
-			'Deleted revisons cannot be listened to.'
+			'Deleted revisions cannot be listened to.'
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeech-listen',

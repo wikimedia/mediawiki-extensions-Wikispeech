@@ -67,40 +67,28 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$this->assertEquals( $expectedSegments, $segments );
 	}
 
-	public function testDontSegmentByEllipses() {
-		$cleanedContent = [ new CleanedText( 'This is... one sentence.' ) ];
+	/**
+	 * Tests that a given string is not segmented.
+	 *
+	 * @dataProvider provideTestDontSegment
+	 * @param string $text The string to be tested.
+	 */
+	public function testDontSegment( $text ) {
+		$cleanedContent = [ new CleanedText( $text ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
-			[ new CleanedText( 'This is... one sentence.' ) ],
+			[ new CleanedText( $text ) ],
 			$segments[0]['content']
 		);
 	}
 
-	public function testDontSegmentByAbbreviations() {
-		$cleanedContent = [ new CleanedText( 'One sentence i.e. one segment.' ) ];
-		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertEquals(
-			[ new CleanedText( 'One sentence i.e. one segment.' ) ],
-			$segments[0]['content']
-		);
-	}
-
-	public function testDontSegmentByDotDirectlyFollowedByComma() {
-		$cleanedContent = [ new CleanedText( 'As with etc., jr. and friends.' ) ];
-		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertEquals(
-			[ new CleanedText( 'As with etc., jr. and friends.' ) ],
-			$segments[0]['content']
-		);
-	}
-
-	public function testDontSegmentByDecimalDot() {
-		$cleanedContent = [ new CleanedText( 'In numbers like 2.9.' ) ];
-		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertEquals(
-			[ new CleanedText( 'In numbers like 2.9.' ) ],
-			$segments[0]['content']
-		);
+	public function provideTestDontSegment() {
+		return [
+			'ellipses' => [ 'This is... one sentence.' ],
+			'abbreviations' => [ 'One sentence i.e. one segment.' ],
+			'dot directly followed by comma' => [ 'As with etc., jr. and friends.' ],
+			'decimal dot' => [ 'In numbers like 2.9.' ],
+		];
 	}
 
 	public function testKeepLastSegmentEvenIfNotEndingWithSentenceFinalCharacter() {

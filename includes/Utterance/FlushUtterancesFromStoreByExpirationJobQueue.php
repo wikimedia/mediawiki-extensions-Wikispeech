@@ -10,11 +10,11 @@ namespace MediaWiki\Wikispeech\Utterance;
 
 use DateTime;
 use JobQueueGroup;
-use Title;
-use WANObjectCache;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
+use Title;
+use WANObjectCache;
 
 /**
  * Periodically flushes out old utterances from the utterance store.

@@ -10,12 +10,11 @@ namespace MediaWiki\Wikispeech\Tests\Unit;
 
 use HashBagOStuff;
 use HashConfig;
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\VoiceHandler;
 use MediaWikiUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\AbstractLogger;
-
-use MediaWiki\Wikispeech\SpeechoidConnector;
-use MediaWiki\Wikispeech\VoiceHandler;
 
 /**
  * @covers \MediaWiki\Wikispeech\VoiceHandler

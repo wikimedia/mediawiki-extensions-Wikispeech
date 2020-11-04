@@ -12,16 +12,15 @@ use ApiMain;
 use ApiTestCase;
 use ApiUsageException;
 use FormatJson;
-use MWException;
-use MWTimestamp;
-use WANObjectCache;
 use MediaWiki\Revision\RevisionStore;
-use Wikimedia\TestingAccessWrapper;
-
 use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+use MWException;
+use MWTimestamp;
+use WANObjectCache;
+use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group medium

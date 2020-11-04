@@ -9,13 +9,12 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Segment;
  */
 
 use HashBagOStuff;
-use MediaWikiUnitTestCase;
-use RequestContext;
-use Wikimedia\TestingAccessWrapper;
-
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWikiUnitTestCase;
+use RequestContext;
+use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group Database

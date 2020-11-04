@@ -9,12 +9,12 @@ namespace MediaWiki\Wikispeech\Segment;
  */
 
 use IContextSource;
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use MWException;
 use Title;
 use WANObjectCache;
 use WikiPage;
-use MediaWiki\Logger\LoggerFactory;
-use MediaWiki\MediaWikiServices;
 
 /**
  * Used for dividing text into segments, that can then be sent to the
@@ -27,14 +27,14 @@ use MediaWiki\MediaWikiServices;
 class Segmenter {
 
 	/**
-	 * @var IContextSource $context
+	 * @var IContextSource
 	 */
 	private $context;
 
 	/**
 	 * An array to which finished segments are added.
 	 *
-	 * @var array $segments
+	 * @var array
 	 */
 
 	private $segments;

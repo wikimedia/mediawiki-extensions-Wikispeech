@@ -10,12 +10,11 @@ namespace MediaWiki\Wikispeech;
 
 use EmptyBagOStuff;
 use Maintenance;
-use RequestContext;
-use Title;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-
 use MediaWiki\Wikispeech\Segment\Segmenter;
+use RequestContext;
+use Title;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {

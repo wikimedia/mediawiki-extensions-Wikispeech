@@ -9,8 +9,8 @@ namespace MediaWiki\Wikispeech;
  */
 
 use Config;
-use WANObjectCache;
 use Psr\Log\LoggerInterface;
+use WANObjectCache;
 
 /**
  * Handles voice information.

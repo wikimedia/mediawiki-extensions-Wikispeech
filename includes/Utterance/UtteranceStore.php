@@ -12,16 +12,15 @@ use Config;
 use ExternalStoreException;
 use FileBackend;
 use FSFileBackend;
-use MWTimestamp;
-use WikiMap;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MWTimestamp;
 use Psr\Log\LoggerInterface;
+use WikiMap;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IResultWrapper;
-
-use MediaWiki\Wikispeech\SpeechoidConnector;
 
 /**
  * Keeps track of utterances in persistent layers.

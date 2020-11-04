@@ -19,7 +19,7 @@ class CleanedText {
 	/**
 	 * The text content from the text node this was created from.
 	 *
-	 * @var string $string
+	 * @var string
 	 */
 
 	public $string;
@@ -28,7 +28,7 @@ class CleanedText {
 	 * The XPath expression for the text node that this was created
 	 * from.
 	 *
-	 * @var string $path
+	 * @var string
 	 */
 
 	public $path;

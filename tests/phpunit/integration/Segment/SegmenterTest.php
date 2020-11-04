@@ -9,20 +9,18 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
  */
 
 use InvalidArgumentException;
-
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\SegmentBreak;
+use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Wikispeech\Tests\Util;
 use MediaWikiIntegrationTestCase;
 use MWException;
 use RequestContext;
 use Title;
 use WANObjectCache;
-use WikiPage;
-use MediaWiki\MediaWikiServices;
 use Wikimedia\TestingAccessWrapper;
-
-use MediaWiki\Wikispeech\Tests\Util;
-use MediaWiki\Wikispeech\Segment\CleanedText;
-use MediaWiki\Wikispeech\Segment\SegmentBreak;
-use MediaWiki\Wikispeech\Segment\Segmenter;
+use WikiPage;
 
 /**
  * @group Database

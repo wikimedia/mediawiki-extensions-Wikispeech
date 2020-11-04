@@ -2,9 +2,8 @@
 
 namespace MediaWiki\Wikispeech\Tests;
 
-use MediaWikiIntegrationTestCase;
-
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWikiIntegrationTestCase;
 
 /**
  * @file

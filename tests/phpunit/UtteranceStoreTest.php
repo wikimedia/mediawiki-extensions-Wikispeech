@@ -8,16 +8,15 @@ namespace MediaWiki\Wikispeech\Tests;
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiTestCase;
 use MemoryFileBackend;
 use MWException;
 use MWTimestamp;
-use WikiMap;
-use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
+use WikiMap;
 use Wikimedia\TestingAccessWrapper;
-
-use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
 /**
  * @group Database

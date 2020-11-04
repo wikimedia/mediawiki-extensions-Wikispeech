@@ -8,12 +8,11 @@ namespace MediaWiki\Wikispeech\Tests;
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiTestCase;
 use Title;
 use Wikimedia\TestingAccessWrapper;
-
-use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob;
-use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
 /**
  * @covers \MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob

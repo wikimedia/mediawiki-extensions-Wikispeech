@@ -2,11 +2,10 @@
 
 namespace MediaWiki\Wikispeech\Tests;
 
-use MediaWikiTestCase;
-
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
+use MediaWikiTestCase;
 
 /**
  * @file

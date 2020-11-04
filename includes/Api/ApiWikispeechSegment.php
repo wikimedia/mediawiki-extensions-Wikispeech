@@ -5,11 +5,10 @@ namespace MediaWiki\Wikispeech\Api;
 use ApiBase;
 use ApiMain;
 use FormatJson;
+use MediaWiki\Wikispeech\Segment\Segmenter;
 use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
-
-use MediaWiki\Wikispeech\Segment\Segmenter;
 
 /**
  * @file

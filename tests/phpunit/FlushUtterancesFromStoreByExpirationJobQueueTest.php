@@ -9,12 +9,10 @@ namespace MediaWiki\Wikispeech\Tests;
  */
 
 use DateTime;
-
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
 use MediaWikiTestCase;
 use WANObjectCache;
-use MediaWiki\MediaWikiServices;
-
-use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
 
 /**
  * @covers \MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue

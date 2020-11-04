@@ -24,7 +24,7 @@ class Cleaner {
 	/**
 	 * An array of tags that should be removed completely during cleaning.
 	 *
-	 * @var array $removeTags
+	 * @var array
 	 */
 
 	private $removeTags;
@@ -32,7 +32,7 @@ class Cleaner {
 	/**
 	 * An array of tags that should add a segment break during cleaning.
 	 *
-	 * @var array $segmentBreakingTags
+	 * @var array
 	 */
 
 	private $segmentBreakingTags;
@@ -40,7 +40,7 @@ class Cleaner {
 	/**
 	 * An array of `CleanedText`s and `SegmentBreak`s.
 	 *
-	 * @var array $cleanedContent
+	 * @var array
 	 */
 
 	private $cleanedContent;

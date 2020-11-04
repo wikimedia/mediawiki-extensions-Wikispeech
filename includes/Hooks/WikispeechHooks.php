@@ -8,22 +8,20 @@ namespace MediaWiki\Wikispeech\Hooks;
  * @license GPL-2.0-or-later
  */
 
-use Exception;
-
 use Action;
 use ApiBase;
 use ApiMain;
 use ApiMessage;
 use DatabaseUpdater;
+use Exception;
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\VoiceHandler;
 use OutputPage;
 use Skin;
 use SkinTemplate;
 use User;
-use MediaWiki\Logger\LoggerFactory;
-use MediaWiki\MediaWikiServices;
-
-use MediaWiki\Wikispeech\SpeechoidConnector;
-use MediaWiki\Wikispeech\VoiceHandler;
 
 class WikispeechHooks {
 

@@ -9,9 +9,9 @@ namespace MediaWiki\Wikispeech\Utterance;
  */
 
 use Job;
-use Title;
 use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
+use Title;
 
 /**
  * @see UtteranceStore::flushUtterancesByLanguageAndVoice()

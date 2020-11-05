@@ -38,5 +38,6 @@
 	"right-wikispeech-listen": "Listen to page",
 	"action-wikispeech-listen": "listen to page",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Input text must not exceed $1 characters, but contained $2 characters.",
-	"wikispeech-listen": "Listen"
+	"wikispeech-listen": "Listen",
+	"wikispeech-dont-listen": "Don't listen"
 }

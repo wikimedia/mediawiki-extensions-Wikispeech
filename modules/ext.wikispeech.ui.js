@@ -239,7 +239,10 @@
 				.on( 'click', mw.wikispeech.player.playOrStop );
 			$( document.body ).append( self.selectionPlayer.$element );
 			$( document ).on( 'mouseup', function () {
-				if ( mw.wikispeech.selectionPlayer.isSelectionValid() ) {
+				if (
+					self.isShown() &&
+					mw.wikispeech.selectionPlayer.isSelectionValid()
+				) {
 					self.showSelectionPlayer();
 				} else {
 					$( '.ext-wikispeech-selection-player' )
@@ -255,6 +258,16 @@
 						.css( 'visibility', 'hidden' );
 				}
 			} );
+		};
+
+		/**
+		 * Check if control panel is shown
+		 *
+		 * @return {boolean} Visibility of control panel.
+		 */
+
+		this.isShown = function () {
+			return $( '.ext-wikispeech-control-panel' ).css( 'visibility' ) === 'visible';
 		};
 
 		/**
@@ -378,6 +391,24 @@
 				event.ctrlKey === shortcut.modifiers.indexOf( 'ctrl' ) >= 0 &&
 				event.altKey === shortcut.modifiers.indexOf( 'alt' ) >= 0 &&
 				event.shiftKey === shortcut.modifiers.indexOf( 'shift' ) >= 0;
+		};
+
+		/**
+		 * Toggle GUI visibility
+		 *
+		 * Hides or shows control panel which also dictates whether
+		 * the selection player should be shown.
+		 */
+
+		this.toggleVisibility = function () {
+			var newVisibility;
+			if ( self.isShown() ) {
+				newVisibility = 'hidden';
+			} else {
+				newVisibility = 'visible';
+			}
+			$( '.ext-wikispeech-control-panel' )
+				.css( 'visibility', newVisibility );
 		};
 	}
 

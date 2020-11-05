@@ -8,6 +8,7 @@
 	bottom: 0;
 	width: 100%;
 	text-align: center;
+	visibility: visible;
 }
 
 .ext-wikispeech-control-panel .oo-ui-toolbar-actions {

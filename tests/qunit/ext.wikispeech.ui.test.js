@@ -96,23 +96,10 @@
 		assert.expect( 3 );
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
+		self.addControlPanel();
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( true );
-		sandbox.stub( window, 'getSelection' ).returns( {
-			rangeCount: 1,
-			getRangeAt: function () {
-				return {
-					getClientRects: function () {
-						return [ {
-							right: 15,
-							bottom: 10
-						} ];
-					},
-					startContainer: textNode,
-					endContainer: textNode
-				};
-			}
-		} );
+		self.stubGetSelection( textNode, textNode, { right: 15, bottom: 10 } );
 		expectedLeft =
 			15 -
 			$( '.ext-wikispeech-selection-player' ).width() +
@@ -135,6 +122,36 @@
 		);
 	} );
 
+	/**
+	 * Add a mocked control panel for tests that need to check if it's visible
+	 */
+	this.addControlPanel = function () {
+		$( '<div></div>' ).addClass( 'ext-wikispeech-control-panel' )
+			.appendTo( $( '#qunit-fixture' ) );
+	};
+
+	/**
+	 * Stub window.getSelection
+	 *
+	 * @param {Node} startContainer Node where selection starts.
+	 * @param {Node} endContainer Node where selection ends.
+	 * @param {DOMRect} rect The selection rectangle.
+	 */
+	this.stubGetSelection = function ( startContainer, endContainer, rect ) {
+		sandbox.stub( window, 'getSelection' ).returns( {
+			rangeCount: 1,
+			getRangeAt: function () {
+				return {
+					getClientRects: function () {
+						return [ rect ];
+					},
+					startContainer: startContainer,
+					endContainer: endContainer
+				};
+			}
+		} );
+	};
+
 	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function ( assert ) {
 		var textNode, event;
 
@@ -143,23 +160,10 @@
 			'<b style="direction: rtl">RTL text.</b>'
 		);
 		textNode = $( contentSelector + ' b' ).contents().get( 0 );
+		self.addControlPanel();
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( true );
-		sandbox.stub( window, 'getSelection' ).returns( {
-			rangeCount: 1,
-			getRangeAt: function () {
-				return {
-					getClientRects: function () {
-						return [ {
-							left: 15,
-							bottom: 10
-						} ];
-					},
-					startContainer: textNode,
-					endContainer: textNode
-				};
-			}
-		} );
+		self.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
 		event = $.Event( 'mouseup' );
 
 		$( document ).trigger( event );
@@ -204,16 +208,9 @@
 		);
 		notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
 		utteranceNode = $( contentSelector ).contents().get( 1 );
+		self.addControlPanel();
 		ui.addSelectionPlayer();
-		sandbox.stub( window, 'getSelection' ).returns( {
-			rangeCount: 1,
-			getRangeAt: function () {
-				return {
-					startContainer: notUtteranceNode,
-					endContainer: utteranceNode
-				};
-			}
-		} );
+		self.stubGetSelection( notUtteranceNode, utteranceNode );
 		$( '.ext-wikispeech-selection-player' ).css( 'visibility', 'visible' );
 		event = $.Event( 'mouseup' );
 
@@ -234,19 +231,31 @@
 		);
 		notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
 		utteranceNode = $( contentSelector ).contents().get( 0 );
+		self.addControlPanel();
 		ui.addSelectionPlayer();
-		sandbox.stub( window, 'getSelection' ).returns( {
-			rangeCount: 1,
-			getRangeAt: function () {
-				return {
-					startContainer: utteranceNode,
-					endContainer: notUtteranceNode
-				};
-			}
-		} );
+		self.stubGetSelection( utteranceNode, notUtteranceNode );
 		$( '.ext-wikispeech-selection-player' ).css( 'visibility', 'visible' );
 		event = $.Event( 'mouseup' );
 
+		$( document ).trigger( event );
+
+		assert.strictEqual(
+			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
+			'hidden'
+		);
+	} );
+
+	QUnit.test( "addSelectionPlayer(): don't show if UI is hidden", function ( assert ) {
+		var textNode, event;
+
+		assert.expect( 1 );
+		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
+		textNode = $( contentSelector ).contents().get( 0 );
+		ui.addSelectionPlayer();
+		selectionPlayer.isSelectionValid.returns( true );
+		self.stubGetSelection( textNode, textNode );
+
+		event = $.Event( 'mouseup' );
 		$( document ).trigger( event );
 
 		assert.strictEqual(
@@ -338,5 +347,26 @@
 
 	QUnit.skip( 'Pressing keyboard shortcut for skipping back word', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipBackToken', 38, 'c' );
+	} );
+
+	QUnit.test( 'toggleVisibility(): hide', function ( assert ) {
+		assert.expect( 1 );
+		$( '<div></div>' ).addClass( 'ext-wikispeech-control-panel' )
+			.appendTo( $( '#qunit-fixture' ) );
+
+		ui.toggleVisibility();
+
+		assert.strictEqual( $( '.ext-wikispeech-control-panel' ).css( 'visibility' ), 'hidden' );
+	} );
+
+	QUnit.test( 'toggleVisibility(): show', function ( assert ) {
+		assert.expect( 1 );
+		$( '<div></div>' ).addClass( 'ext-wikispeech-control-panel' )
+			.appendTo( $( '#qunit-fixture' ) );
+		$( '.ext-wikispeech-control-panel' ).css( 'visibility', 'hidden' );
+
+		ui.toggleVisibility();
+
+		assert.strictEqual( $( '.ext-wikispeech-control-panel' ).css( 'visibility' ), 'visible' );
 	} );
 }( mediaWiki, jQuery ) );

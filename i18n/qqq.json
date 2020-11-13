@@ -41,5 +41,6 @@
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",
 	"action-wikispeech-listen": "{{doc-action|wikispeech-listen}}",
 	"apierror-wikispeech-listen-invalid-input-too-long": "{{doc-apierror}}",
-	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood."
+	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-dont-listen}}",
+	"wikispeech-dont-listen": "The text of the tab that hides the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-listen}}"
 }

@@ -33,5 +33,6 @@
 	"right-wikispeech-listen": "Einer Seite zuhören",
 	"action-wikispeech-listen": "der Seite zuzuhören",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Der eingegebene Text darf nicht mehr als $1 Zeichen enthalten, er enthält aber $2 Zeichen.",
-	"wikispeech-listen": "Anhören"
+	"wikispeech-listen": "Anhören",
+	"wikispeech-dont-listen": "Nicht anhören"
 }

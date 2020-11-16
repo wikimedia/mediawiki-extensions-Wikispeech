@@ -36,5 +36,6 @@
 	"right-wikispeech-listen": "Sayfayı dinle",
 	"action-wikispeech-listen": "sayfayı dinle",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Giriş metni $1 karakteri geçmemeli, $2 karakter içermelidir.",
-	"wikispeech-listen": "Dinle"
+	"wikispeech-listen": "Dinle",
+	"wikispeech-dont-listen": "Dinlemeyin"
 }

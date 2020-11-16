@@ -5,6 +5,7 @@
 			"Gomoko",
 			"Pamputt",
 			"Thibaut120094",
+			"Verdy p",
 			"Wladek92"
 		]
 	},
@@ -39,5 +40,6 @@
 	"right-wikispeech-listen": "Écouter la page",
 	"action-wikispeech-listen": "écouter la page",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Le texte saisi ne doit pas excéder $1 caractères, mais il en contient $2.",
-	"wikispeech-listen": "Écouter"
+	"wikispeech-listen": "Écouter",
+	"wikispeech-dont-listen": "Ne pas écouter"
 }

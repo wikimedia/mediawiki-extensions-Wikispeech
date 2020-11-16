@@ -24,5 +24,6 @@
 	"prefs-wikispeech-show-player": "Zawsze pokazuj odtwarzacz",
 	"right-wikispeech-listen": "Słuchanie treści strony",
 	"action-wikispeech-listen": "słuchania treści strony",
-	"wikispeech-listen": "Słuchaj"
+	"wikispeech-listen": "Słuchaj",
+	"wikispeech-dont-listen": "Nie słuchaj"
 }

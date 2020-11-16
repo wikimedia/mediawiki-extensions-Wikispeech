@@ -36,5 +36,6 @@
 	"right-wikispeech-listen": "Ouça a página",
 	"action-wikispeech-listen": "ouvir a página",
 	"apierror-wikispeech-listen-invalid-input-too-long": "O texto de entrada não deve exceder $1 caracteres, mas continha $2 caracteres.",
-	"wikispeech-listen": "Ouvir"
+	"wikispeech-listen": "Ouvir",
+	"wikispeech-dont-listen": "Não escutar"
 }

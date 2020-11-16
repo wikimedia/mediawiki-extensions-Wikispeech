@@ -8,5 +8,6 @@
 	"apierror-wikispeech-listen-deleted-revision": "삭제된 판은 청취가 불가능합니다.",
 	"prefs-wikispeech-speech-rate": "말하기 속도",
 	"prefs-wikispeech-show-player": "플레이어 무조건 표시",
-	"wikispeech-listen": "듣기"
+	"wikispeech-listen": "듣기",
+	"wikispeech-dont-listen": "듣지 않음"
 }

@@ -3,7 +3,9 @@
 	"--processes": "0",
 	"--external": [
 		"QUnit.*",
-		"jQuery"
+		"jQuery",
+		"jQuery.Promise",
+		"OO.ui.*"
 	],
 	"--warnings-exit-nonzero": true,
 	"--warnings": [

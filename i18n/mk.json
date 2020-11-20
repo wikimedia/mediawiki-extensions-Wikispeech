@@ -35,5 +35,6 @@
 	"right-wikispeech-listen": "Преслушување на страницата",
 	"action-wikispeech-listen": "преслушување на страницата",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Внесениот текст не смее да надминува $1 знаци, но содржи $2.",
-	"wikispeech-listen": "Преслушување"
+	"wikispeech-listen": "Преслушување",
+	"wikispeech-dont-listen": "Не преслушувај"
 }

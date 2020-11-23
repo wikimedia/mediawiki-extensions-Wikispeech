@@ -85,7 +85,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 		// What we really want to do here is to assert that
 		// ApiUsageException is not thrown.
-		$this->assertTrue( true );
+		$this->addToAssertionCount( 1 );
 	}
 
 	/**

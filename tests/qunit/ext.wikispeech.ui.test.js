@@ -1,8 +1,8 @@
-( function ( mw, $ ) {
+( function () {
 	var sandbox, contentSelector, selectionPlayer, player, ui;
 
 	QUnit.module( 'ext.wikispeech.ui', {
-		setup: function () {
+		beforeEach: function () {
 			mw.wikispeech.player = sinon.stub( new mw.wikispeech.Player() );
 			player = mw.wikispeech.player;
 			mw.wikispeech.selectionPlayer =
@@ -10,15 +10,15 @@
 			selectionPlayer = mw.wikispeech.selectionPlayer;
 			ui = new mw.wikispeech.Ui();
 			$( '#qunit-fixture' ).append(
-				$( '<div></div>' ).attr( 'id', 'content' ),
-				$( '<div></div>' ).attr( 'id', 'footer' )
+				$( '<div>' ).attr( 'id', 'content' ),
+				$( '<div>' ).attr( 'id', 'footer' )
 			);
 			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 			contentSelector =
 				mw.config.get( 'wgWikispeechContentSelector' );
 			sandbox = sinon.sandbox.create();
 		},
-		teardown: function () {
+		afterEach: function () {
 			sandbox.restore();
 			// Remove the event listeners to not trigger them after
 			// the tests have run.
@@ -29,7 +29,6 @@
 	} );
 
 	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
-		assert.expect( 1 );
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
 
@@ -44,7 +43,6 @@
 	} );
 
 	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
-		assert.expect( 1 );
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
 
@@ -61,7 +59,6 @@
 	QUnit.test( 'showBufferingIconIfAudioIsLoading()', function ( assert ) {
 		var mockAudio;
 
-		assert.expect( 1 );
 		ui.addControlPanel();
 		ui.addBufferingIcon();
 		mockAudio = { readyState: 0 };
@@ -77,7 +74,6 @@
 	QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function ( assert ) {
 		var mockAudio;
 
-		assert.expect( 1 );
 		ui.addControlPanel();
 		ui.addBufferingIcon();
 		mockAudio = { readyState: 2 };
@@ -93,7 +89,6 @@
 	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function ( assert ) {
 		var textNode, expectedLeft, event;
 
-		assert.expect( 3 );
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
 		self.addControlPanel();
@@ -126,7 +121,7 @@
 	 * Add a mocked control panel for tests that need to check if it's visible
 	 */
 	this.addControlPanel = function () {
-		$( '<div></div>' ).addClass( 'ext-wikispeech-control-panel' )
+		$( '<div>' ).addClass( 'ext-wikispeech-control-panel' )
 			.appendTo( $( '#qunit-fixture' ) );
 	};
 
@@ -155,7 +150,6 @@
 	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function ( assert ) {
 		var textNode, event;
 
-		assert.expect( 3 );
 		mw.wikispeech.test.util.setContentHtml(
 			'<b style="direction: rtl">RTL text.</b>'
 		);
@@ -185,7 +179,6 @@
 	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function ( assert ) {
 		var event;
 
-		assert.expect( 1 );
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( false );
 		$( '.ext-wikispeech-selection-player' ).css( 'visibility', 'visible' );
@@ -202,7 +195,6 @@
 	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function ( assert ) {
 		var notUtteranceNode, utteranceNode, event;
 
-		assert.expect( 1 );
 		mw.wikispeech.test.util.setContentHtml(
 			'<del>Not an utterance.</del> An utterance.'
 		);
@@ -225,7 +217,6 @@
 	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function ( assert ) {
 		var notUtteranceNode, utteranceNode, event;
 
-		assert.expect( 1 );
 		mw.wikispeech.test.util.setContentHtml(
 			'An utterance. <del>Not an utterance.</del>'
 		);
@@ -248,7 +239,6 @@
 	QUnit.test( "addSelectionPlayer(): don't show if UI is hidden", function ( assert ) {
 		var textNode, event;
 
-		assert.expect( 1 );
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
 		ui.addSelectionPlayer();
@@ -294,7 +284,6 @@
 	 *  for ctrl, alt and shift, respectively.
 	 */
 	function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
-		assert.expect( 1 );
 		mw.config.set(
 			'wgWikispeechKeyboardShortcuts', {
 				playStop: {
@@ -350,8 +339,7 @@
 	} );
 
 	QUnit.test( 'toggleVisibility(): hide', function ( assert ) {
-		assert.expect( 1 );
-		$( '<div></div>' ).addClass( 'ext-wikispeech-control-panel' )
+		$( '<div>' ).addClass( 'ext-wikispeech-control-panel' )
 			.appendTo( $( '#qunit-fixture' ) );
 
 		ui.toggleVisibility();
@@ -360,8 +348,7 @@
 	} );
 
 	QUnit.test( 'toggleVisibility(): show', function ( assert ) {
-		assert.expect( 1 );
-		$( '<div></div>' ).addClass( 'ext-wikispeech-control-panel' )
+		$( '<div>' ).addClass( 'ext-wikispeech-control-panel' )
 			.appendTo( $( '#qunit-fixture' ) );
 		$( '.ext-wikispeech-control-panel' ).css( 'visibility', 'hidden' );
 
@@ -369,4 +356,4 @@
 
 		assert.strictEqual( $( '.ext-wikispeech-control-panel' ).css( 'visibility' ), 'visible' );
 	} );
-}( mediaWiki, jQuery ) );
+}() );

@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 
 	/**
 	 * Handles highlighting parts of the page when reciting.
@@ -34,7 +34,9 @@
 			textNodes = utterance.content.map( function ( item ) {
 				return mw.wikispeech.storage.getNodeForItem( item );
 			} );
-			span = $( '<span></span>' )
+			// Class name is documented above
+			// eslint-disable-next-line mediawiki/class-doc
+			span = $( '<span>' )
 				.addClass( self.utteranceHighlightingClass )
 				.get( 0 );
 			self.wrapTextNodes(
@@ -62,7 +64,7 @@
 		 *
 		 * @param {HTMLElement} wrapper The element used to wrap the
 		 *  text nodes.
-		 * @param {TextNode[]} textNodes The text nodes to wrap.
+		 * @param {Text[]} textNodes The text nodes to wrap.
 		 * @param {number} startOffset The start offset in the first
 		 *  text node.
 		 * @param {number} endOffset The end offset in the last text
@@ -133,7 +135,7 @@
 		this.highlightToken = function ( token ) {
 			var span, textNodes, startOffset, endOffset;
 
-			span = $( '<span></span>' )
+			span = $( '<span>' )
 				.addClass( 'ext-wikispeech-highlight-word' )
 				.get( 0 );
 			textNodes = token.items.map( function ( item ) {
@@ -243,7 +245,10 @@
 			if ( parents.length > 0 ) {
 				// Merge first and last text nodes, if the original was
 				// divided by adding the <span>.
+				// ESLint thinks this is String.normalize, not Text.normalize
+				// eslint-disable-next-line no-restricted-properties
 				parents[ 0 ].normalize();
+				// eslint-disable-next-line no-restricted-properties
 				parents[ parents.length - 1 ].normalize();
 			}
 		};
@@ -272,4 +277,4 @@
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.highlighter = new Highlighter();
 	mw.wikispeech.Highlighter = Highlighter;
-}( mediaWiki, jQuery ) );
+}() );

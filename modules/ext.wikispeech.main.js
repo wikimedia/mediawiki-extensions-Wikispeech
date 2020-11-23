@@ -1,4 +1,4 @@
-( function ( mw ) {
+( function () {
 
 	/**
 	 * Main class for the Wikispeech extension.
@@ -33,6 +33,7 @@
 				'wikispeech-dont-listen'
 			] )
 				.done( function () {
+					// eslint-disable-next-line no-jquery/no-global-selector
 					$toggleVisibility = $( '.ext-wikispeech-listen a' );
 					// Set label to hide message since the player is
 					// visible when loaded.
@@ -92,4 +93,4 @@
 			main.init();
 		}
 	);
-}( mediaWiki ) );
+}() );

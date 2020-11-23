@@ -8,7 +8,8 @@ module.exports = function ( grunt ) {
 	grunt.initConfig( {
 		eslint: {
 			options: {
-				cache: true
+				cache: true,
+				fix: grunt.option( 'fix' )
 			},
 			all: [
 				'*.js',
@@ -26,7 +27,7 @@ module.exports = function ( grunt ) {
 				ignoreDisables: false,
 				failOnError: true,
 				outputFile: '',
-				reportNeedlessDisables: false,
+				reportNeedlessDisables: true,
 				syntax: ''
 			},
 			all: 'modules/**/*.{css,less}'

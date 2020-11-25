@@ -1,7 +1,9 @@
 ( function ( mw ) {
 
 	/**
-	 * Add an option to load Wikispeech modules.
+	 * A small helper script to trigger the loading of the Wikispeech modules.
+	 *
+	 * @class ext.wikispeech.loader
 	 */
 
 	$( '.ext-wikispeech-listen a' ).one( 'click', function () {

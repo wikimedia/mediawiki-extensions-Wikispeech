@@ -4,6 +4,12 @@ declare( strict_types = 1 );
 
 namespace MediaWiki\Wikispeech\Tests;
 
+/**
+ * @file
+ * @ingroup Extensions
+ * @license GPL-2.0-or-later
+ */
+
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
 
 use MediaWiki\Wikispeech\FlushUtterances;

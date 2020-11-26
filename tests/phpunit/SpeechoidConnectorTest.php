@@ -2,14 +2,14 @@
 
 namespace MediaWiki\Wikispeech\Tests;
 
-use MediaWiki\Wikispeech\SpeechoidConnector;
-use MediaWikiIntegrationTestCase;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWikiIntegrationTestCase;
 
 /**
  * @group medium

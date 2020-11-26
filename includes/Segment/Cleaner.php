@@ -2,16 +2,16 @@
 
 namespace MediaWiki\Wikispeech\Segment;
 
-use DOMComment;
-use DOMDocument;
-use DOMNode;
-use DOMXPath;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use DOMComment;
+use DOMDocument;
+use DOMNode;
+use DOMXPath;
 
 /**
  * Used for cleaning text with HTML markup. The cleaned text is used

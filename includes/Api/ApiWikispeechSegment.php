@@ -2,6 +2,12 @@
 
 namespace MediaWiki\Wikispeech\Api;
 
+/**
+ * @file
+ * @ingroup Extensions
+ * @license GPL-2.0-or-later
+ */
+
 use ApiBase;
 use ApiMain;
 use FormatJson;
@@ -9,12 +15,6 @@ use MediaWiki\Wikispeech\Segment\Segmenter;
 use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
-
-/**
- * @file
- * @ingroup Extensions
- * @license GPL-2.0-or-later
- */
 
 class ApiWikispeechSegment extends ApiBase {
 

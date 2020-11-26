@@ -2,14 +2,14 @@
 
 namespace MediaWiki\Wikispeech\Utterance;
 
-use Job;
-use Title;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use Job;
+use Title;
 
 /**
  * @since 0.1.7

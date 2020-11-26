@@ -2,16 +2,16 @@
 
 namespace MediaWiki\Wikispeech;
 
-use Maintenance;
-
-use MediaWiki\Wikispeech\Utterance\FlushUtterancesByExpirationDateOnFileJobQueue;
-use MediaWiki\Wikispeech\Utterance\UtteranceStore;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use Maintenance;
+
+use MediaWiki\Wikispeech\Utterance\FlushUtterancesByExpirationDateOnFileJobQueue;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {

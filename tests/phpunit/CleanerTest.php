@@ -2,16 +2,16 @@
 
 namespace MediaWiki\Wikispeech\Tests;
 
-use MediaWiki\Wikispeech\Segment\CleanedText;
-use MediaWiki\Wikispeech\Segment\Cleaner;
-use MediaWiki\Wikispeech\Segment\SegmentBreak;
-use MediaWikiTestCase;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Cleaner;
+use MediaWiki\Wikispeech\Segment\SegmentBreak;
+use MediaWikiTestCase;
 
 /**
  * @covers \MediaWiki\Wikispeech\Segment\Cleaner

@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 	function Util() {
 		/**
 		 * Set the text of the MW content div.
@@ -15,7 +15,7 @@
 				$( '#qunit-fixture ' + contentSelector ).html( html );
 			} else {
 				$( '#qunit-fixture' ).append(
-					$( '<div></div>' )
+					$( '<div>' )
 						// Remove the leading "#".
 						.attr( 'id', contentSelector.slice( 1 ) )
 						.html( html )
@@ -26,4 +26,4 @@
 
 	mw.wikispeech.test = mw.wikispeech.test || {};
 	mw.wikispeech.test.util = new Util();
-}( mediaWiki, jQuery ) );
+}() );

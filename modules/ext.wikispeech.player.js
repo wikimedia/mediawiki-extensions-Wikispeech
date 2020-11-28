@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 
 	/**
 	 * Play, stop and navigate in the recitation.
@@ -172,6 +172,8 @@
 				// last token, the last token is the current.
 				currentToken = lastTokenWithDuration;
 			} else {
+				// TODO: Array.prototype.find is not supported in IE11
+				// eslint-disable-next-line no-restricted-syntax
 				currentToken = tokensWithDuration.find( function ( token ) {
 					return token.startTime <= currentTime &&
 						token.endTime > currentTime;
@@ -233,4 +235,4 @@
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.Player = Player;
 	mw.wikispeech.player = new Player();
-}( mediaWiki, jQuery ) );
+}() );

@@ -1,8 +1,8 @@
-( function ( mw, $ ) {
+( function () {
 	var player, storage, selectionPlayer, highlighter, ui;
 
 	QUnit.module( 'ext.wikispeech.player', {
-		setup: function () {
+		beforeEach: function () {
 			mw.wikispeech.highlighter =
 				sinon.stub( new mw.wikispeech.Highlighter() );
 			highlighter = mw.wikispeech.highlighter;
@@ -39,7 +39,6 @@
 	} );
 
 	QUnit.test( 'playOrStop(): play', function ( assert ) {
-		assert.expect( 1 );
 		sinon.spy( player, 'play' );
 
 		player.playOrStop();
@@ -48,7 +47,6 @@
 	} );
 
 	QUnit.test( 'playOrStop(): stop', function ( assert ) {
-		assert.expect( 1 );
 		player.play();
 		sinon.spy( player, 'stop' );
 
@@ -57,8 +55,7 @@
 		assert.strictEqual( player.stop.called, true );
 	} );
 
-	QUnit.test( 'stop()', function ( assert ) {
-		assert.expect( 3 );
+	QUnit.test( 'stop()', function () {
 		player.play();
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.spy( player, 'stopUtterance' );
@@ -72,8 +69,7 @@
 		sinon.assert.called( ui.hideBufferingIcon );
 	} );
 
-	QUnit.test( 'play()', function ( assert ) {
-		assert.expect( 2 );
+	QUnit.test( 'play()', function () {
 		selectionPlayer.playSelectionIfValid.returns( false );
 		sinon.spy( storage.utterances[ 0 ].audio, 'play' );
 
@@ -83,8 +79,7 @@
 		sinon.assert.called( ui.setPlayStopIconToStop );
 	} );
 
-	QUnit.test( 'play(): do not play utterance when selection is valid', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'play(): do not play utterance when selection is valid', function () {
 		sinon.spy( player, 'playUtterance' );
 		selectionPlayer.playSelectionIfValid.returns( true );
 
@@ -93,8 +88,7 @@
 		sinon.assert.notCalled( player.playUtterance );
 	} );
 
-	QUnit.test( 'play(): play from beginning when selection is invalid', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'play(): play from beginning when selection is invalid', function () {
 		sinon.spy( player, 'playUtterance' );
 		selectionPlayer.playSelectionIfValid.returns( false );
 
@@ -106,8 +100,7 @@
 		);
 	} );
 
-	QUnit.test( 'playUtterance()', function ( assert ) {
-		assert.expect( 3 );
+	QUnit.test( 'playUtterance()', function () {
 		sinon.spy( storage.utterances[ 0 ].audio, 'play' );
 
 		player.playUtterance( storage.utterances[ 0 ] );
@@ -123,8 +116,7 @@
 		);
 	} );
 
-	QUnit.test( 'playUtterance(): stop playing utterance', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'playUtterance(): stop playing utterance', function () {
 		player.playUtterance( storage.utterances[ 0 ] );
 		sinon.spy( player, 'stopUtterance' );
 
@@ -137,7 +129,6 @@
 	} );
 
 	QUnit.test( 'stopUtterance()', function ( assert ) {
-		assert.expect( 4 );
 		player.playUtterance( storage.utterances[ 0 ] );
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.spy( storage.utterances[ 0 ].audio, 'pause' );
@@ -153,8 +144,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadUtterance()', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'skipAheadUtterance()', function () {
 		sinon.spy( player, 'playUtterance' );
 		storage.getNextUtterance.returns( storage.utterances[ 1 ] );
 
@@ -166,8 +156,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadUtterance(): stop if no next utterance', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'skipAheadUtterance(): stop if no next utterance', function () {
 		sinon.spy( player, 'stop' );
 		storage.getNextUtterance.returns( null );
 
@@ -176,8 +165,7 @@
 		sinon.assert.called( player.stop );
 	} );
 
-	QUnit.test( 'skipBackUtterance()', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'skipBackUtterance()', function () {
 		sinon.spy( player, 'playUtterance' );
 		player.playUtterance( storage.utterances[ 1 ] );
 		storage.getPreviousUtterance.returns( storage.utterances[ 0 ] );
@@ -191,7 +179,6 @@
 	} );
 
 	QUnit.test( 'skipBackUtterance(): restart if first utterance', function ( assert ) {
-		assert.expect( 2 );
 		player.playUtterance( storage.utterances[ 0 ] );
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.spy( storage.utterances[ 0 ].audio, 'pause' );
@@ -206,7 +193,6 @@
 	} );
 
 	QUnit.test( 'skipBackUtterance(): restart if played long enough', function ( assert ) {
-		assert.expect( 2 );
 		player.playUtterance( storage.utterances[ 1 ] );
 		storage.utterances[ 1 ].audio.currentTime = 3.1;
 		sinon.spy( player, 'playUtterance' );
@@ -226,7 +212,6 @@
 	QUnit.test( 'getCurrentToken()', function ( assert ) {
 		var token;
 
-		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -253,7 +238,6 @@
 	QUnit.test( 'getCurrentToken(): get first token', function ( assert ) {
 		var token;
 
-		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -280,7 +264,6 @@
 	QUnit.test( 'getCurrentToken(): get the last token', function ( assert ) {
 		var token;
 
-		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -307,7 +290,6 @@
 	QUnit.test( 'getCurrentToken(): get the last token when current time is equal to last tokens end time', function ( assert ) {
 		var token;
 
-		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -330,7 +312,6 @@
 	QUnit.test( 'getCurrentToken(): ignore tokens with no duration', function ( assert ) {
 		var token;
 
-		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -360,7 +341,6 @@
 	QUnit.test( 'getCurrentToken(): give correct token if there are tokens with no duration', function ( assert ) {
 		var token;
 
-		assert.expect( 1 );
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -385,7 +365,6 @@
 	} );
 
 	QUnit.test( 'skipAheadToken()', function ( assert ) {
-		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -411,8 +390,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', function ( assert ) {
-		assert.expect( 1 );
+	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', function () {
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -429,7 +407,6 @@
 	} );
 
 	QUnit.test( 'skipBackToken()', function ( assert ) {
-		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -459,7 +436,6 @@
 	} );
 
 	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', function ( assert ) {
-		assert.expect( 2 );
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -490,4 +466,4 @@
 			1.0
 		);
 	} );
-}( mediaWiki, jQuery ) );
+}() );

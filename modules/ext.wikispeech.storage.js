@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 
 	/**
 	 * Loads and stores objects used by the extension.
@@ -47,7 +47,7 @@
 				self.utterances = data[ 'wikispeech-segment' ].segments;
 				for ( i = 0; i < self.utterances.length; i++ ) {
 					utterance = self.utterances[ i ];
-					utterance.audio = $( '<audio></audio>' ).get( 0 );
+					utterance.audio = $( '<audio>' ).get( 0 );
 				}
 				self.prepareUtterance( self.utterances[ 0 ] );
 			} );
@@ -62,7 +62,7 @@
 		 * done, the next utterance is played. This is meant to be a
 		 * balance between not having to pause between utterance and
 		 * not requesting more than needed.
-
+		 *
 		 * @param {Object} utterance The utterance to prepare.
 		 * @param {Function} callback A function to call when the
 		 *  utterance is ready to play. Fires immediately if the
@@ -386,22 +386,25 @@
 			// The concatenation of the strings from items. Used to
 			// find tokens that span multiple text nodes.
 			concatenatedText = '';
-			$.each( content, function () {
+			content.every( function ( item ) {
 				// Look through the items until we find a
 				// substring matching the token.
-				concatenatedText += this.string;
-				items.push( this );
+				concatenatedText += item.string;
+				items.push( item );
 				if ( searchOffset > concatenatedText.length ) {
 					// Don't look in text elements that end before
 					// where we start looking.
-					return;
+					// continue
+					return true;
 				}
 				startOffsetInUtteranceString = concatenatedText.indexOf(
 					token, searchOffset
 				);
 				if ( startOffsetInUtteranceString >= 0 ) {
+					// break
 					return false;
 				}
+				return true;
 			} );
 			return startOffsetInUtteranceString;
 		};
@@ -553,7 +556,7 @@
 		 *  text nodes.
 		 * @param {boolean} inUtterance If true, the first text node
 		 *  that is also in an utterance is returned.
-		 * @return {TextNode} The first text node under `node`,
+		 * @return {Text} The first text node under `node`,
 		 *  undefined if there are no text nodes.
 		 */
 
@@ -586,7 +589,7 @@
 		 * rather use XPath expressions to find the nodes that were used
 		 * when creating them.
 		 *
-		 * @param {TextNode} node The text node to check.
+		 * @param {Text} node The text node to check.
 		 * @return {boolean} true if the node is in any utterance, else false.
 		 */
 
@@ -621,7 +624,7 @@
 		 * are checked. This happens if the offset falls between two
 		 * utterances.
 		 *
-		 * @param {TextNode} node The first node to check.
+		 * @param {Text} node The first node to check.
 		 * @param {number} offset The offset in the node.
 		 * @return {Object} The matching utterance.
 		 */
@@ -661,7 +664,7 @@
 		 * matching item is found, checks if the offset falls between
 		 * the given min and max values.
 		 *
-		 * @param {TextNode} node The node to check.
+		 * @param {Text} node The node to check.
 		 * @param {Object[]} items Item objects containing a path to
 		 *  the node they were created from.
 		 * @param {number} offset Offset in the node.
@@ -725,9 +728,9 @@
 		/**
 		 * Get the first text node after a given node.
 		 *
-		 * @param {HTMLElement|TextNode} node Get the text node after
+		 * @param {HTMLElement|Text} node Get the text node after
 		 * this one.
-		 * @return {TextNode} The first node after `node`.
+		 * @return {Text} The first node after `node`.
 		 */
 
 		this.getNextTextNode = function ( node ) {
@@ -767,7 +770,7 @@
 		 * tokens.
 		 *
 		 * @param {Object} utterance The utterance to look for tokens in.
-		 * @param {TextNode} node The node that contains the token.
+		 * @param {Text} node The node that contains the token.
 		 * @param {number} offset The offset in the node.
 		 * @param {Object} The first token found.
 		 */
@@ -809,7 +812,7 @@
 		 *  text nodes.
 		 * @param {boolean} inUtterance If true, the last text node
 		 *  that is also in an utterance is returned.
-		 * @return {TextNode} The last text node under `node`,
+		 * @return {Text} The last text node under `node`,
 		 *  undefined if there are no text nodes.
 		 */
 
@@ -847,7 +850,7 @@
 		 * nodes are checked. This happens if the offset falls between
 		 * two utterances.
 		 *
-		 * @param {TextNode} node The first node to check.
+		 * @param {Text} node The first node to check.
 		 * @param {number} offset The offset in the node.
 		 * @return {Object} The matching utterance.
 		 */
@@ -885,9 +888,9 @@
 		/**
 		 * Get the first text node before a given node.
 		 *
-		 * @param {HTMLElement|TextNode} node Get the text node before
+		 * @param {HTMLElement|Text} node Get the text node before
 		 *  this one.
-		 * @return {TextNode} The first node before `node`.
+		 * @return {Text} The first node before `node`.
 		 */
 
 		this.getPreviousTextNode = function ( node ) {
@@ -927,7 +930,7 @@
 		 * two tokens.
 		 *
 		 * @param {Object} utterance The utterance to look for tokens in.
-		 * @param {TextNode} node The node that contains the token.
+		 * @param {Text} node The node that contains the token.
 		 * @param {number} offset The offset in the node.
 		 * @param {Object} The first token found.
 		 */
@@ -966,7 +969,7 @@
 		 * that is used to traverse the DOM tree.
 		 *
 		 * @param {Object} item The item to find the text node for.
-		 * @return {TextNode} The text node associated with the item.
+		 * @return {Text} The text node associated with the item.
 		 */
 
 		this.getNodeForItem = function ( item ) {
@@ -990,4 +993,4 @@
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.Storage = Storage;
 	mw.wikispeech.storage = new Storage();
-}( mediaWiki, jQuery ) );
+}() );

@@ -1,8 +1,8 @@
-( function ( mw, $ ) {
+( function () {
 	var contentSelector, util, highlighter, storage;
 
 	QUnit.module( 'ext.wikispeech.highlighter', {
-		setup: function () {
+		beforeEach: function () {
 			util = mw.wikispeech.test.util;
 			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
@@ -15,20 +15,19 @@
 					startOffset: 0,
 					endOffset: 14,
 					content: [ { path: './text()' } ],
-					audio: $( '<audio></audio>' ).get( 0 )
+					audio: $( '<audio>' ).get( 0 )
 				}
 			];
 			highlighter = new mw.wikispeech.Highlighter();
 			this.clock = sinon.useFakeTimers();
 		},
-		teardown: function () {
+		afterEach: function () {
 			this.clock.restore();
 			mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 		}
 	} );
 
 	QUnit.test( 'highlightUtterance()', function ( assert ) {
-		assert.expect( 2 );
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 0 )
 		);
@@ -46,7 +45,6 @@
 	} );
 
 	QUnit.test( 'highlightUtterance(): multiple utterances', function ( assert ) {
-		assert.expect( 1 );
 		util.setContentHtml(
 			'Utterance zero. Utterance one. Utterance two.'
 		);
@@ -68,7 +66,6 @@
 	} );
 
 	QUnit.test( 'highlightUtterance(): with tags', function ( assert ) {
-		assert.expect( 1 );
 		util.setContentHtml(
 			'<p>Utterance with <b>a</b> tag.</p>'
 		);
@@ -100,7 +97,6 @@
 	} );
 
 	QUnit.test( 'highlightUtterance(): wrap middle text nodes properly', function ( assert ) {
-		assert.expect( 1 );
 		util.setContentHtml( 'First<br />middle<br />last. Next utterance.' );
 		storage.getNodeForItem.onCall( 0 ).returns(
 			$( contentSelector ).contents().get( 0 )
@@ -130,7 +126,6 @@
 	} );
 
 	QUnit.test( 'removeWrappers()', function ( assert ) {
-		assert.expect( 2 );
 		util.setContentHtml( '<span class="wrapper">Utterance zero.</span>' );
 
 		highlighter.removeWrappers( '.wrapper' );
@@ -143,7 +138,6 @@
 	} );
 
 	QUnit.test( 'removeWrappers(): restore text nodes as one', function ( assert ) {
-		assert.expect( 3 );
 		util.setContentHtml( 'prefix <span class="wrapper">Utterance zero.</span> suffix' );
 
 		highlighter.removeWrappers( '.wrapper' );
@@ -156,7 +150,6 @@
 	} );
 
 	QUnit.test( 'removeWrappers(): restore text nodes as one with inner wrapper', function ( assert ) {
-		assert.expect( 2 );
 		util.setContentHtml( '<span class="outer-wrapper">Utterance <span class="inner-wrapper">zero</span>.</span>' );
 
 		highlighter.removeWrappers( '.outer-wrapper' );
@@ -169,7 +162,6 @@
 	} );
 
 	QUnit.test( 'removeWrappers(): multiple wrappers', function ( assert ) {
-		assert.expect( 3 );
 		util.setContentHtml( '<span class="wrapper">Utterance</span> <span class="wrapper">zero.</span>' );
 
 		highlighter.removeWrappers( '.wrapper' );
@@ -185,7 +177,6 @@
 	QUnit.test( 'highlightToken()', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 0 )
 		);
@@ -208,7 +199,6 @@
 	QUnit.test( 'highlightToken(): multiple utterances', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( 'Utterance zero. Utterance one.' );
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 0 )
@@ -236,7 +226,6 @@
 	QUnit.test( 'highlightToken(): with utterance highlighting', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Utterance with token.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()' );
@@ -259,7 +248,6 @@
 	QUnit.test( 'highlightToken(): with utterance highlighting and multiple utterances', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml(
 			'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>'
 		);
@@ -288,7 +276,6 @@
 	QUnit.test( 'highlightToken(): with utterance highlighting and other spans', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( '<span><span class="ext-wikispeech-highlight-sentence">Utterance with token.</span></span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './span/text()' );
@@ -312,7 +299,6 @@
 	QUnit.test( 'highlightToken(): with tags', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( 'Utterance with <br />token.' );
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 2 )
@@ -337,7 +323,6 @@
 	QUnit.test( 'highlightToken(): with multiple utterance highlightings', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Phrase </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">, phrase two.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.get( 2 ).textPath = './text()[2]';
@@ -361,7 +346,6 @@
 	QUnit.test( 'highlightToken(): with multiple utterance highlightings and text nodes', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( 'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()[2]' );
@@ -388,7 +372,6 @@
 	QUnit.test( 'highlightToken(): utterance highlighting starts in a new text node', function ( assert ) {
 		var highlightedToken;
 
-		assert.expect( 1 );
 		util.setContentHtml( 'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' ).get( 1 ).textPath =
 			'./b/text()';
@@ -419,10 +402,9 @@
 		);
 	} );
 
-	QUnit.test( 'setHighlightTokenTimer()', function ( assert ) {
+	QUnit.test( 'setHighlightTokenTimer()', function () {
 		var highlightedToken, nextToken;
 
-		assert.expect( 1 );
 		highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			endTime: 1000
@@ -441,10 +423,9 @@
 		sinon.assert.calledWith( highlighter.highlightToken, nextToken );
 	} );
 
-	QUnit.test( 'setHighlightTokenTimer(): faster speech rate', function ( assert ) {
+	QUnit.test( 'setHighlightTokenTimer(): faster speech rate', function () {
 		var highlightedToken, nextToken;
 
-		assert.expect( 1 );
 		highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			endTime: 1000
@@ -464,10 +445,9 @@
 		sinon.assert.calledWith( highlighter.highlightToken, nextToken );
 	} );
 
-	QUnit.test( 'setHighlightTokenTimer(): slower speech rate', function ( assert ) {
+	QUnit.test( 'setHighlightTokenTimer(): slower speech rate', function () {
 		var highlightedToken, nextToken;
 
-		assert.expect( 1 );
 		highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			endTime: 1000
@@ -486,4 +466,4 @@
 
 		sinon.assert.neverCalledWith( highlighter.highlightToken, nextToken );
 	} );
-}( mediaWiki, jQuery ) );
+}() );

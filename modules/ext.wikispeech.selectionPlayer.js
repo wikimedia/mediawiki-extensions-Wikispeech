@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 
 	/**
 	 * The player that appears when the user selects a bit of text.
@@ -80,7 +80,7 @@
 		 *
 		 * Corrects node and offset that is sometimes incorrect in Firefox.
 		 *
-		 * @return {TextNode} The first node in the selection.
+		 * @return {Text} The first node in the selection.
 		 */
 
 		this.getFirstNodeInSelection = function () {
@@ -217,7 +217,7 @@
 		 * Corrects node and offset that is sometimes incorrect in
 		 * Firefox.
 		 *
-		 * @return {TextNode} The last node in the selection.
+		 * @return {Text} The last node in the selection.
 		 */
 
 		this.getLastNodeInSelection = function () {
@@ -292,4 +292,4 @@
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.selectionPlayer = new SelectionPlayer();
 	mw.wikispeech.SelectionPlayer = SelectionPlayer;
-}( mediaWiki, jQuery ) );
+}() );

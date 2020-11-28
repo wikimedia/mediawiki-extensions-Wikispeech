@@ -1,4 +1,4 @@
-( function ( mw ) {
+( function () {
 
 	/**
 	 * Contains general help functions that are used by multiple modules.
@@ -22,4 +22,4 @@
 
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.util = new Util();
-}( mediaWiki ) );
+}() );

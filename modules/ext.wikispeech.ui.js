@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 
 	/**
 	 * Creates and controls the UI for the extension.
@@ -29,7 +29,9 @@
 		 */
 
 		this.addControlPanel = function () {
-			var toolFactory, toolGroupFactory, toolbar, playerGroup, linkGroup, height, padding;
+			var toolFactory, toolGroupFactory, toolbar, playerGroup, linkGroup, height, padding,
+				// eslint-disable-next-line no-jquery/no-global-selector
+				$footer = $( '#footer' );
 			toolFactory = new OO.ui.ToolFactory();
 			toolGroupFactory = new OO.ui.ToolGroupFactory();
 			toolbar = new OO.ui.Toolbar(
@@ -90,8 +92,8 @@
 			// the player cover anything.
 			height = toolbar.$element.height();
 			padding =
-				Number( $( '#footer' ).css( 'padding-bottom' ).slice( 0, -2 ) );
-			$( '#footer' ).css( 'padding-bottom', padding + height );
+				Number( $footer.css( 'padding-bottom' ).slice( 0, -2 ) );
+			$footer.css( 'padding-bottom', padding + height );
 		};
 
 		/**
@@ -105,6 +107,7 @@
 		 */
 
 		this.addButton = function ( group, icon, onClick, classes ) {
+			// eslint-disable-next-line mediawiki/class-doc
 			var button = new OO.ui.ButtonWidget( {
 				icon: icon,
 				classes: classes
@@ -125,12 +128,12 @@
 		 */
 
 		this.addBufferingIcon = function () {
-			$( '<span></span>' )
+			$( '<span>' )
 				.addClass( 'ext-wikispeech-buffering-icon-container' )
 				.appendTo( $( '.ext-wikispeech-play-stop' ).find(
 					'.oo-ui-iconElement-icon'
 				) );
-			$( '<span></span>' )
+			$( '<span>' )
 				.addClass( 'ext-wikispeech-buffering-icon' )
 				.appendTo( $( '.ext-wikispeech-buffering-icon-container' ) )
 				.hide();
@@ -325,7 +328,7 @@
 			var shortcuts, name, shortcut;
 
 			shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
-			$( document ).keydown( function ( event ) {
+			$( document ).on( 'keydown', function ( event ) {
 				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					mw.wikispeech.player.playOrStop();
 					return false;
@@ -361,7 +364,7 @@
 			// keydown event for the same key combination. This caused
 			// buttons in focus to trigger if a shortcut had space as
 			// key.
-			$( document ).keyup( function ( event ) {
+			$( document ).on( 'keyup', function ( event ) {
 				for ( name in shortcuts ) {
 					shortcut = shortcuts[ name ];
 					if ( self.eventMatchShortcut( event, shortcut ) ) {
@@ -415,4 +418,4 @@
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.Ui = Ui;
 	mw.wikispeech.ui = new Ui();
-}( mediaWiki, jQuery ) );
+}() );

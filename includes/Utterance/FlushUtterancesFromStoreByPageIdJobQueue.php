@@ -2,14 +2,14 @@
 
 namespace MediaWiki\Wikispeech\Utterance;
 
-use JobQueueGroup;
-use Title;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use JobQueueGroup;
+use Title;
 
 /**
  * This used to be a single static method located in

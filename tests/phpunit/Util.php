@@ -2,15 +2,15 @@
 
 namespace MediaWiki\Wikispeech\Tests;
 
-use ContentHandler;
-use Title;
-use WikiPage;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use ContentHandler;
+use Title;
+use WikiPage;
 
 class Util {
 

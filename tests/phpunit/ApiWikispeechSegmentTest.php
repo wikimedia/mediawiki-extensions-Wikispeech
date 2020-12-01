@@ -2,14 +2,14 @@
 
 namespace MediaWiki\Wikispeech\Tests;
 
-use ApiTestCase;
-use ApiUsageException;
-
 /**
  * @file
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
+
+use ApiTestCase;
+use ApiUsageException;
 
 define( 'TITLE', 'Test_Page' );
 

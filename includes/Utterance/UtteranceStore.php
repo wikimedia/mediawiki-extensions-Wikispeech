@@ -91,6 +91,7 @@ class UtteranceStore {
 	/**
 	 * @since 0.1.5
 	 * @return FileBackend
+	 * @throws ExternalStoreException If defined file backend group does not exists.
 	 */
 	private function getFileBackend() {
 		global $wgUploadDirectory;
@@ -119,11 +120,9 @@ class UtteranceStore {
 				if ( $fileBackend ) {
 					$this->fileBackend = $fileBackend;
 				} else {
-					$this->logger->error( __METHOD__ . ': ' .
-						'No file backend group in LocalSettings.php named {fileBackendName}. ' .
-						'Exceptions related to accessing files are to be expected very soon.', [
-							'fileBackendName' => $fileBackendName
-					] );
+					throw new ExternalStoreException(
+						"No file backend group in LocalSettings.php named $fileBackendName."
+					);
 				}
 			}
 		}

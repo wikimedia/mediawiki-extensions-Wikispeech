@@ -12,47 +12,107 @@ use Action;
 use ApiBase;
 use ApiMain;
 use ApiMessage;
-use DatabaseUpdater;
+use Config;
+use ConfigFactory;
 use Exception;
+use IApiMessage;
+use MediaWiki\Api\Hook\ApiCheckCanExecuteHook;
+use MediaWiki\Hook\ApiBeforeMainHook;
+use MediaWiki\Hook\BeforePageDisplayHook;
+use MediaWiki\Hook\SkinTemplateNavigationHook;
+use MediaWiki\Languages\LanguageFactory;
 use MediaWiki\Logger\LoggerFactory;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Preferences\Hook\GetPreferencesHook;
+use MediaWiki\ResourceLoader\Hook\ResourceLoaderGetConfigVarsHook;
+use MediaWiki\User\UserOptionsLookup;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\VoiceHandler;
+use Message;
 use OutputPage;
+use Psr\Log\LoggerInterface;
 use Skin;
 use SkinTemplate;
 use User;
+use WANObjectCache;
 
-class WikispeechHooks {
+/**
+ * @since 0.1.8
+ */
+class ApiHooks implements
+	ApiBeforeMainHook,
+	BeforePageDisplayHook,
+	ResourceLoaderGetConfigVarsHook,
+	GetPreferencesHook,
+	ApiCheckCanExecuteHook,
+	SkinTemplateNavigationHook
+{
+	/** @var Config */
+	private $config;
+
+	/** @var UserOptionsLookup */
+	private $userOptionsLookup;
+
+	/** @var LoggerInterface */
+	private $logger;
+
+	/** @var WANObjectCache */
+	private $mainWANObjectCache;
+
+	/** @var LanguageFactory */
+	private $languageFactory;
+
+	/** @var PermissionManager */
+	private $permissionManager;
+
+	/**
+	 * @since 0.1.8
+	 * @param ConfigFactory $configFactory
+	 * @param UserOptionsLookup $userOptionsLookup
+	 * @param WANObjectCache $mainWANObjectCache
+	 * @param LanguageFactory $languageFactory
+	 * @param PermissionManager $permissionManager
+	 */
+	public function __construct(
+		ConfigFactory $configFactory,
+		UserOptionsLookup $userOptionsLookup,
+		WANObjectCache $mainWANObjectCache,
+		LanguageFactory $languageFactory,
+		PermissionManager $permissionManager
+	) {
+		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
+		$this->config = $configFactory->makeConfig( 'wikispeech' );
+		$this->userOptionsLookup = $userOptionsLookup;
+		$this->mainWANObjectCache = $mainWANObjectCache;
+		$this->languageFactory = $languageFactory;
+		$this->permissionManager = $permissionManager;
+	}
 
 	/**
 	 * Investigates whether or not configuration is valid.
 	 *
 	 * Writes all invalid configuration entries to the log.
 	 *
-	 * @since 0.1.3
+	 * @since 0.1.8
 	 * @return bool true if all configuration passes validation
 	 */
-	private static function validateConfiguration() {
+	private function validateConfiguration() {
 		$success = true;
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
 
-		$speechoidUrl = $config->get( 'WikispeechSpeechoidUrl' );
+		$speechoidUrl = $this->config->get( 'WikispeechSpeechoidUrl' );
 		if ( !filter_var( $speechoidUrl, FILTER_VALIDATE_URL ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value for ' .
 					'\'WikispeechSpeechoidUrl\' is not a valid URL: {value}',
 					[ 'value' => $speechoidUrl ]
-			);
+				);
 			$success = false;
 		}
-		$speechoidResponseTimeoutSeconds = $config
+		$speechoidResponseTimeoutSeconds = $this->config
 			->get( 'WikispeechSpeechoidResponseTimeoutSeconds' );
 		if ( $speechoidResponseTimeoutSeconds &&
 			!is_int( $speechoidResponseTimeoutSeconds ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value ' .
 					'\'WikispeechSpeechoidResponseTimeoutSeconds\' ' .
 					'is not a falsy or integer value.'
@@ -60,75 +120,75 @@ class WikispeechHooks {
 			$success = false;
 		}
 
-		$utteranceTimeToLiveDays = $config
+		$utteranceTimeToLiveDays = $this->config
 			->get( 'WikispeechUtteranceTimeToLiveDays' );
 		if ( $utteranceTimeToLiveDays === null ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value for ' .
 					'\'WikispeechUtteranceTimeToLiveDays\' is missing.'
-			);
+				);
 			$success = false;
 		}
 		$utteranceTimeToLiveDays = intval( $utteranceTimeToLiveDays );
 		if ( $utteranceTimeToLiveDays < 0 ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value for ' .
 					'\'WikispeechUtteranceTimeToLiveDays\' must not be negative.'
-			);
+				);
 			$success = false;
 		}
 
-		$minimumMinutesBetweenFlushExpiredUtterancesJobs = $config
+		$minimumMinutesBetweenFlushExpiredUtterancesJobs = $this->config
 			->get( 'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' );
 		if ( $minimumMinutesBetweenFlushExpiredUtterancesJobs === null ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value for ' .
 					'\'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs\' ' .
 					'is missing.'
-			);
+				);
 			$success = false;
 		}
 		$minimumMinutesBetweenFlushExpiredUtterancesJobs = intval(
 			$minimumMinutesBetweenFlushExpiredUtterancesJobs
 		);
 		if ( $minimumMinutesBetweenFlushExpiredUtterancesJobs < 0 ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value for ' .
 					'\'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs\'' .
 					' must not be negative.'
-			);
+				);
 			$success = false;
 		}
 
-		$fileBackendName = $config->get( 'WikispeechUtteranceFileBackendName' );
+		$fileBackendName = $this->config->get( 'WikispeechUtteranceFileBackendName' );
 		if ( $fileBackendName === null ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ':  Configuration value ' .
 					'\'WikispeechUtteranceFileBackendName\' is missing.'
-			);
+				);
 			// This is not a failure.
 			// It will fall back on default, but admin should be aware.
 		} elseif ( !is_string( $fileBackendName ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value ' .
 					'\'WikispeechUtteranceFileBackendName\' is not a string value.'
-			);
+				);
 			$success = false;
 		}
 
-		$fileBackendContainerName = $config
+		$fileBackendContainerName = $this->config
 			->get( 'WikispeechUtteranceFileBackendContainerName' );
 		if ( $fileBackendContainerName === null ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value ' .
 					'\'WikispeechUtteranceFileBackendContainerName\' is missing.'
-			);
+				);
 			$success = false;
 		} elseif ( !is_string( $fileBackendContainerName ) ) {
-			LoggerFactory::getInstance( 'Wikispeech' )
+			$this->logger
 				->warning( __METHOD__ . ': Configuration value ' .
 					'\'WikispeechUtteranceFileStore\' is not a string value.'
-			);
+				);
 			$success = false;
 		}
 
@@ -140,37 +200,32 @@ class WikispeechHooks {
 	 *
 	 * Enables JavaScript.
 	 *
+	 * @since 0.1.8
 	 * @param OutputPage $out The OutputPage object.
 	 * @param Skin $skin Skin object that will be used to generate the page,
 	 *  added in MediaWiki 1.13.
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
-		if ( !self::shouldWikispeechRun( $out ) ) {
+	public function onBeforePageDisplay( $out, $skin ): void {
+		if ( !$this->shouldWikispeechRun( $out ) ) {
 			return;
 		}
-		$showPlayer = MediaWikiServices::getInstance()
-			->getUserOptionsLookup()
-			->getOption( $out->getUser(), 'wikispeechShowPlayer' );
+		$showPlayer = $this->userOptionsLookup->getOption(
+			$out->getUser(), 'wikispeechShowPlayer'
+		);
 		if ( $showPlayer ) {
-			LoggerFactory::getInstance( 'Wikispeech' )->info(
-				__METHOD__ . ': Loading player.'
-			);
+			$this->logger->info( __METHOD__ . ': Loading player.' );
 			$out->addModules( [ 'ext.wikispeech' ] );
 		} else {
-			LoggerFactory::getInstance( 'Wikispeech' )->info(
-				__METHOD__ . ': Adding option to load player.'
-			);
+			$this->logger->info( __METHOD__ . ': Adding option to load player.' );
 			$out->addModules( [ 'ext.wikispeech.loader' ] );
 		}
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
 		$out->addJsConfigVars( [
-			'wgWikispeechKeyboardShortcuts' => $config->get( 'WikispeechKeyboardShortcuts' ),
-			'wgWikispeechContentSelector' => $config->get( 'WikispeechContentSelector' ),
-			'wgWikispeechSkipBackRewindsThreshold' => $config->get( 'WikispeechSkipBackRewindsThreshold' ),
-			'wgWikispeechHelpPage' => $config->get( 'WikispeechHelpPage' ),
-			'wgWikispeechFeedbackPage' => $config->get( 'WikispeechFeedbackPage' )
+			'wgWikispeechKeyboardShortcuts' => $this->config->get( 'WikispeechKeyboardShortcuts' ),
+			'wgWikispeechContentSelector' => $this->config->get( 'WikispeechContentSelector' ),
+			'wgWikispeechSkipBackRewindsThreshold' =>
+				$this->config->get( 'WikispeechSkipBackRewindsThreshold' ),
+			'wgWikispeechHelpPage' => $this->config->get( 'WikispeechHelpPage' ),
+			'wgWikispeechFeedbackPage' => $this->config->get( 'WikispeechFeedbackPage' )
 		] );
 	}
 
@@ -186,46 +241,40 @@ class WikispeechHooks {
 	 * * Page's language is enabled for Wikispeech
 	 * * The action is "view"
 	 *
-	 * @since 0.1.5
+	 * @since 0.1.8
 	 * @param OutputPage $out
 	 * @return bool
 	 */
-	private static function shouldWikispeechRun( OutputPage $out ) {
-		$logger = LoggerFactory::getInstance( 'Wikispeech' );
-
-		$wikispeechEnabled = MediaWikiServices::getInstance()
-			->getUserOptionsLookup()
+	private function shouldWikispeechRun( OutputPage $out ) {
+		$wikispeechEnabled = $this->userOptionsLookup
 			->getOption( $out->getUser(), 'wikispeechEnable' );
 		if ( !$wikispeechEnabled ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: disabled by user.' );
+			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: disabled by user.' );
 			return false;
 		}
 
-		$userIsAllowed = MediaWikiServices::getInstance()
-			->getPermissionManager()
+		$userIsAllowed = $this->permissionManager
 			->userHasRight( $out->getUser(), 'wikispeech-listen' );
 		if ( !$userIsAllowed ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: user lacks right "wikispeech-listen".' );
+			$this->logger->info( __METHOD__ .
+				': Not loading Wikispeech: user lacks right "wikispeech-listen".' );
 			return false;
 		}
 
 		if ( !self::validateConfiguration() ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: config invalid.' );
+			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: config invalid.' );
 			return false;
 		}
 
 		$namespace = $out->getTitle()->getNamespace();
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
-		$validNamespaces = $config->get( 'WikispeechNamespaces' );
+		$validNamespaces = $this->config->get( 'WikispeechNamespaces' );
 		if ( !in_array( $namespace, $validNamespaces ) ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported namespace.' );
+			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported namespace.' );
 			return false;
 		}
 
 		if ( !$out->isRevisionCurrent() ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: non-current revision.' );
+			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: non-current revision.' );
 			return false;
 		}
 
@@ -237,15 +286,15 @@ class WikispeechHooks {
 		} else {
 			$pageContentLanguage = $out->getWikiPage()->getTitle()->getPageLanguage();
 		}
-		$validLanguages = array_keys( $config->get( 'WikispeechVoices' ) );
+		$validLanguages = array_keys( $this->config->get( 'WikispeechVoices' ) );
 		if ( !in_array( $pageContentLanguage->getCode(), $validLanguages ) ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported language.' );
+			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported language.' );
 			return false;
 		}
 
 		$actionName = Action::getActionName( $out );
 		if ( $actionName !== 'view' ) {
-			$logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported action.' );
+			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: unsupported action.' );
 			return false;
 		}
 
@@ -253,53 +302,47 @@ class WikispeechHooks {
 	}
 
 	/**
-	 * Hook for ApiBeforeMain.
-	 *
 	 * Calls configuration validation for logging purposes on API calls,
 	 * but doesn't stop the use of the API due to invalid configuration.
 	 * Generally a user would not call the API at this point as the module
 	 * wouldn't actually have been added in onBeforePageDisplay.
 	 *
-	 * @since 0.1.3
-	 * @param ApiMain &$main The ApiMain instance being used.
+	 * @since 0.1.8
+	 * @param ApiMain &$main
+	 * @return bool|void
 	 */
-	public static function onApiBeforeMain( &$main ) {
-		self::validateConfiguration();
+	public function onApiBeforeMain( &$main ) {
+		$this->validateConfiguration();
 	}
 
 	/**
 	 * Conditionally register static configuration variables for the
 	 * ext.wikispeech module only if that module is loaded.
 	 *
+	 * @since 0.1.8
 	 * @param array &$vars The array of static configuration variables.
+	 * @param string $skin
+	 * @param Config $config
 	 */
-	public static function onResourceLoaderGetConfigVars( &$vars ) {
-		global $wgWikispeechSpeechoidUrl;
-		$vars[ 'wgWikispeechSpeechoidUrl' ] =
-			$wgWikispeechSpeechoidUrl;
-		global $wgWikispeechNamespaces;
-		$vars['wgWikispeechNamespaces'] =
-			$wgWikispeechNamespaces;
+	public function onResourceLoaderGetConfigVars( array &$vars, $skin, Config $config ): void {
+		$vars['wgWikispeechSpeechoidUrl'] = $config->get( 'WikispeechSpeechoidUrl' );
+		$vars['wgWikispeechNamespaces'] = $config->get( 'WikispeechNamespaces' );
 	}
 
 	/**
 	 * Add Wikispeech options to Special:Preferences.
 	 *
+	 * @since 0.1.8
 	 * @param User $user current User object.
 	 * @param array &$preferences Preferences array.
 	 */
-	public static function onGetPreferences( $user, &$preferences ) {
-		$logger = LoggerFactory::getInstance( 'Wikispeech' );
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
-		$speechoidConnector = new SpeechoidConnector( $config );
-		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+	public function onGetPreferences( $user, &$preferences ) {
+		$speechoidConnector = new SpeechoidConnector( $this->config );
 		$voiceHandler = new VoiceHandler(
-			$logger,
-			$config,
+			$this->logger,
+			$this->config,
 			$speechoidConnector,
-			$cache
+			$this->mainWANObjectCache
 		);
 		$preferences['wikispeechEnable'] = [
 			'type' => 'toggle',
@@ -311,21 +354,22 @@ class WikispeechHooks {
 			'label-message' => 'prefs-wikispeech-show-player',
 			'section' => 'wikispeech'
 		];
-		self::addVoicePreferences( $preferences, $voiceHandler );
-		self::addSpeechRatePreferences( $preferences );
+		$this->addVoicePreferences( $preferences, $voiceHandler );
+		$this->addSpeechRatePreferences( $preferences );
 	}
 
 	/**
 	 * Add preferences for selecting voices per language.
 	 *
+	 * @since 0.1.8
 	 * @param array &$preferences Preferences array.
 	 * @param VoiceHandler $voiceHandler
 	 */
-	private static function addVoicePreferences( &$preferences, $voiceHandler ) {
-		global $wgWikispeechVoices;
-		foreach ( $wgWikispeechVoices as $language => $voices ) {
+	private function addVoicePreferences( &$preferences, $voiceHandler ) {
+		$wikispeechVoices = $this->config->get( 'WikispeechVoices' );
+		foreach ( $wikispeechVoices as $language => $voices ) {
 			$languageKey = 'wikispeechVoice' . ucfirst( $language );
-			$mwLanguage = MediaWikiServices::getInstance()->getLanguageFactory()->getLanguage( 'en' );
+			$mwLanguage = $this->languageFactory->getLanguage( 'en' );
 			$languageName = $mwLanguage->getVariantname( $language );
 			$options = [];
 			try {
@@ -349,9 +393,10 @@ class WikispeechHooks {
 	/**
 	 * Add preferences for selecting speech rate.
 	 *
+	 * @since 0.1.8
 	 * @param array &$preferences Preferences array.
 	 */
-	private static function addSpeechRatePreferences( &$preferences ) {
+	private function addSpeechRatePreferences( &$preferences ) {
 		$options = [
 			'400%' => 4.0,
 			'200%' => 2.0,
@@ -371,17 +416,16 @@ class WikispeechHooks {
 	/**
 	 * Check if the user is allowed to use a API module.
 	 *
-	 * @since 0.1.3
+	 * @since 0.1.8
 	 * @param ApiBase $module
 	 * @param User $user
-	 * @param ApiMessage &$message
+	 * @param IApiMessage|Message|string|array &$message
 	 * @return bool
 	 */
-	public static function onApiCheckCanExecute( $module, $user, &$message ) {
+	public function onApiCheckCanExecute( $module, $user, &$message ) {
 		if (
 			$module->getModuleName() == 'wikispeech-listen' &&
-			!MediaWikiServices::getInstance()->getPermissionManager()
-				->userHasRight( $user, 'wikispeech-listen' )
+			!$this->permissionManager->userHasRight( $user, 'wikispeech-listen' )
 		) {
 			$message = ApiMessage::create(
 				'apierror-wikispeech-listen-notallowed'
@@ -394,32 +438,19 @@ class WikispeechHooks {
 	/**
 	 * Add tab for activating Wikispeech player.
 	 *
-	 * @since 0.1.5
+	 * @since 0.1.8
 	 * @param SkinTemplate $skinTemplate The skin template on which
 	 *  the UI is built.
 	 * @param array &$links Navigation links.
 	 */
-	public static function onSkinTemplateNavigation( SkinTemplate $skinTemplate, array &$links ) {
+	public function onSkinTemplateNavigation( $skinTemplate, &$links ): void {
 		$out = $skinTemplate->getOutput();
-		if ( self::shouldWikispeechRun( $out ) ) {
+		if ( $this->shouldWikispeechRun( $out ) ) {
 			$links['actions']['listen'] = [
 				'class' => 'ext-wikispeech-listen',
 				'text' => $skinTemplate->msg( 'wikispeech-listen' )->text(),
 				'href' => 'javascript:void(0)'
 			];
 		}
-	}
-
-	/**
-	 * Creates utterance database tables.
-	 *
-	 * @since 0.1.5
-	 * @param DatabaseUpdater $updater
-	 */
-	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
-		$updater->addExtensionTable(
-			'wikispeech_utterance',
-			__DIR__ . '/../../sql/wikispeech_utterance_v1.sql'
-		);
 	}
 }

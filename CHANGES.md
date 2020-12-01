@@ -31,6 +31,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T265130](https://phabricator.wikimedia.org/T265130) Switch from static scope hooks to instance scope hooks with injections.
 * [T264403](https://phabricator.wikimedia.org/T264403) Speechoid/Wikispeech benchmark maintenance script.
 * [T263112](https://phabricator.wikimedia.org/T263112) Listening action should not be available in non-read view
 * [T261288](https://phabricator.wikimedia.org/T261288) Add option to deactivate and reactivate player in menu

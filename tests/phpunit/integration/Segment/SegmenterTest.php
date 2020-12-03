@@ -44,7 +44,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testSegmentPage() {
+	public function testSegmentPage_contentContainsSentences_giveTitleAndContent() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
 		Util::addPage( $titleString, $content );
@@ -102,7 +102,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$this->assertEquals( $expectedSegments, $segments );
 	}
 
-	public function testCleanPage() {
+	public function testCleanPage_pageWithContent_giveCleanedTextArray() {
 		$content = 'Content';
 		Util::addPage( 'Page', $content );
 		$title = Title::newFromText( 'Page' );
@@ -204,7 +204,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [] );
 	}
 
-	public function testSegmentPage_noTagParametersGiven_defaultUsed() {
+	public function testSegmentPage_noTagParametersGiven_useDefault() {
 		$this->setMwGlobals( [
 			'wgWikispeechSegmentBreakingTags' => [ 'br' ],
 			'wgWikispeechRemoveTags' => [ 'del' => true ]

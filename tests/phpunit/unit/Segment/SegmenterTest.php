@@ -38,7 +38,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testSegmentSentences() {
+	public function testSegmentSentences_multiSentenceNode_giveMultipleSegments() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence 1. Sentence 2. Sentence 3.' )
 		];
@@ -69,10 +69,10 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 	/**
 	 * Tests that a given string is not segmented.
 	 *
-	 * @dataProvider provideTestDontSegment
+	 * @dataProvider provideTestSegmentSentences_dontSegment
 	 * @param string $text The string to be tested.
 	 */
-	public function testDontSegment( $text ) {
+	public function testSegmentSentences_dontSegment( $text ) {
 		$cleanedContent = [ new CleanedText( $text ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
@@ -81,16 +81,16 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function provideTestDontSegment() {
+	public function provideTestSegmentSentences_dontSegment() {
 		return [
 			'ellipses' => [ 'This is... one sentence.' ],
-			'abbreviations' => [ 'One sentence i.e. one segment.' ],
-			'dot directly followed by comma' => [ 'As with etc., jr. and friends.' ],
-			'decimal dot' => [ 'In numbers like 2.9.' ],
+			'abbreviation' => [ 'One sentence i.e. one segment.' ],
+			'dotDirectlyFollowedByComma' => [ 'As with etc., jr. and friends.' ],
+			'decimalDot' => [ 'In numbers like 2.9.' ],
 		];
 	}
 
-	public function testKeepLastSegmentEvenIfNotEndingWithSentenceFinalCharacter() {
+	public function testSegmentSentences_notSentenceFinalCharacter_keepLastSegment() {
 		$cleanedContent = [ new CleanedText( 'Sentence. No sentence final' ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
@@ -100,7 +100,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 26, $segments[1]['endOffset'] );
 	}
 
-	public function testTextFromMultipleNodes() {
+	public function testSegmentSentences_sentenceSplitIntoMultipleNodes_giveSingleSegment() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence split ' ),
 			new CleanedText( 'by' ),
@@ -129,7 +129,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testStartOffsetForMultipleTextNodes() {
+	public function testSegmentSentences_sentenceSplitIntoMultipleNodes_giveStartOffset() {
 		$cleanedContent = [
 			new CleanedText( 'First sentence. Split' ),
 			new CleanedText( 'sentence. And other sentence.' ),
@@ -145,14 +145,14 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testTextOffset() {
+	public function testSegmentSentences_simpleSentence_giveOffsets() {
 		$cleanedContent = [ new CleanedText( 'Sentence.' ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame( 0, $segments[0]['startOffset'] );
 		$this->assertSame( 8, $segments[0]['endOffset'] );
 	}
 
-	public function testSegmentTextWithUnicodeChars() {
+	public function testSegmentSentences_nodeContainsUnicodeChars_giveSegmentsAndOffsets() {
 		$cleanedContent = [
 			new CleanedText(
 				'Normal sentence. Utterance with å. Another normal sentence.'
@@ -173,7 +173,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 58, $segments[2]['endOffset'] );
 	}
 
-	public function testTextStartsWithSentenceFinalCharacter() {
+	public function testSegmentSentences_nodeStartsWithSentenceFinalCharacter_includeInPriorSegment() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence one' ),
 			new CleanedText( '. Sentence two.' )
@@ -193,7 +193,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testDontCreateEmptyTextForWhitespaces() {
+	public function testSegmentSentences_trailingWhitespaceInNode_dontCreateEmptySegment() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence 1. ' ),
 			new CleanedText( 'Sentence 2.' )
@@ -209,7 +209,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testDontCreateEmptyTextForWhitespacesBetweenSegmentBreakingTags() {
+	public function testSegmentSentences_whitespaceBetweenSegmentBreakingTags_dontCreateEmptySegment() {
 		$cleanedContent = [
 			new CleanedText( 'Text one' ),
 			new SegmentBreak(),
@@ -228,7 +228,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testRemoveTextWithOnlyWhitespacesOutsideSegments() {
+	public function testSegmentSentences_nodeWithOnlyWhitespace_dontIncludeInSegments() {
 		$cleanedContent = [
 			new CleanedText( ' ' ),
 			new CleanedText( 'Sentence 1.' )
@@ -240,7 +240,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testRemoveLeadingAndTrailingWhitespaces() {
+	public function testSegmentSentences_leadingAndTrailingWhitespacesInNode_dontIncludeInSegments() {
 		$cleanedContent = [ new CleanedText( ' Sentence. ' ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
@@ -251,7 +251,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 9, $segments[0]['endOffset'] );
 	}
 
-	public function testDontAddOnlyNewlineItem() {
+	public function testSegmentSentences_nodeWithOnlyNewline_dontIncludeInSegments() {
 		$cleanedContent = [
 			new CleanedText( 'text' ),
 			new CleanedText( "\n" )
@@ -264,7 +264,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testLastTextIsOnlySentenceFinalCharacter() {
+	public function testSegmentSentences_lastNodeIsOnlySentenceFinalCharacter_includeInPriorSegment() {
 		$cleanedContent = [
 			new CleanedText( 'Sentence one' ),
 			new CleanedText( '. ' ),
@@ -285,7 +285,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testSegmentSentencesByTags() {
+	public function testSegmentSentences_segmentBreakInsteadOfSentenceFinalCharacter_segmentSentencesBySegmentBreaks() {
 		$cleanedContent = [
 			new CleanedText( 'Header' ),
 			new SegmentBreak(),
@@ -308,7 +308,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testEvaluateHash() {
+	public function testEvaluateHash_singleSentence_giveHash() {
 		// SHA256 of "Word 1 Word 2 Word 3."
 		$expectedHash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
 		$segments = $this->segmenter->segmentSentences(

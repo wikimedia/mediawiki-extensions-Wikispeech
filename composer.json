@@ -17,7 +17,7 @@
 			"phpcbf"
 		],
 		"doc": [
-			"doxygen",
+			"DOXYGEN_FILTER='php ../../maintenance/mwdoc-filter.php' doxygen",
 			"jsduck"
 		]
 	}

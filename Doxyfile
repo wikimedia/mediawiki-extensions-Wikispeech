@@ -32,3 +32,5 @@ CALL_GRAPH             = NO
 CALLER_GRAPH           = NO
 # Makes dot run faster. Requires graphviz >1.8.10
 DOT_MULTI_TARGETS      = YES
+# Handle T36457
+INPUT_FILTER           = $(DOXYGEN_FILTER)

@@ -152,14 +152,14 @@ class Benchmark extends Maintenance {
 				$logger,
 				$config,
 				$this->speechoidConnector,
-				// @phan-suppress-next-line PhanTypeMismatchArgument
+				// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 				$emptyWanCache
 			);
 		}
 		if ( !$this->segmenter ) {
 			$this->segmenter = new Segmenter(
 				new RequestContext(),
-				// @phan-suppress-next-line PhanTypeMismatchArgument
+				// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 				$emptyWanCache
 			);
 		}
@@ -362,8 +362,7 @@ class Benchmark extends Maintenance {
 		$this->executeSegmenting();
 		$this->executeSynthesizing();
 
-		$this->output( "\n" );
-		$this->output( "\n" );
+		$this->output( "\n\n" );
 		$this->output( "Benchmark results\n" );
 		$this->output( "-----------------\n" );
 		$this->output( "\n" );

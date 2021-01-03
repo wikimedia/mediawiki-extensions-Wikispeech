@@ -19,6 +19,7 @@
 		"doc": [
 			"doxygen",
 			"jsduck"
-		]
+		],
+		"phan": "phan -d . --long-progress-bar"
 	}
 }

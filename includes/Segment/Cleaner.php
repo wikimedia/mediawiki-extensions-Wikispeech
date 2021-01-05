@@ -26,7 +26,6 @@ class Cleaner {
 	 *
 	 * @var array
 	 */
-
 	private $removeTags;
 
 	/**
@@ -34,7 +33,6 @@ class Cleaner {
 	 *
 	 * @var array
 	 */
-
 	private $segmentBreakingTags;
 
 	/**
@@ -42,7 +40,6 @@ class Cleaner {
 	 *
 	 * @var array
 	 */
-
 	private $cleanedContent;
 
 	/**

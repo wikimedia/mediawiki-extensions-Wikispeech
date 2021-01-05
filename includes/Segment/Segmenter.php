@@ -36,7 +36,6 @@ class Segmenter {
 	 *
 	 * @var array
 	 */
-
 	private $segments;
 
 	/**
@@ -44,7 +43,6 @@ class Segmenter {
 	 *
 	 * @var array $segments
 	 */
-
 	private $currentSegment;
 
 	/** @var WANObjectCache */

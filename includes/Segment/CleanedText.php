@@ -21,7 +21,6 @@ class CleanedText {
 	 *
 	 * @var string
 	 */
-
 	public $string;
 
 	/**
@@ -30,7 +29,6 @@ class CleanedText {
 	 *
 	 * @var string
 	 */
-
 	public $path;
 
 	/**

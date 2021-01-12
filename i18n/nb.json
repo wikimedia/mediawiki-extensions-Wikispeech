@@ -33,5 +33,6 @@
 	"right-wikispeech-listen": "Lytte til side",
 	"action-wikispeech-listen": "lytte til side",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Inndatateksten kan ikke være lengre enn $1 tegn, men inneholdt $2 tegn.",
-	"wikispeech-listen": "Lytt"
+	"wikispeech-listen": "Lytt",
+	"wikispeech-dont-listen": "Ikke lytt"
 }

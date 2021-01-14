@@ -355,10 +355,7 @@ class ApiWikispeechListen extends ApiBase {
 	private static function makeValuesString( $values ) {
 		$valueStrings = [];
 		foreach ( $values as $value ) {
-			array_push(
-				$valueStrings,
-				"<kbd>$value</kbd>"
-			);
+			$valueStrings[] = "<kbd>$value</kbd>";
 		}
 		$valuesString = implode( ', ', $valueStrings );
 		return $valuesString;

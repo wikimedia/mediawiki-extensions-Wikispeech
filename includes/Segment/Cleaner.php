@@ -137,7 +137,7 @@ class Cleaner {
 					// Add segment breaks for start tags specified in
 					// the config, unless the previous item is a break
 					// or this is the first item.
-					array_push( $this->cleanedContent, new SegmentBreak() );
+					$this->cleanedContent[] = new SegmentBreak();
 				}
 				if ( $child->nodeType == XML_TEXT_NODE ) {
 					// Remove the path to the dummy node and instead

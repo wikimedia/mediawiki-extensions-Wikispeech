@@ -76,20 +76,29 @@
 			"ext.wikispeech.ui.test.js"
 		]
 	},
+	"HookHandlers": {
+		"ApiHooks": {
+			"class": "MediaWiki\\Wikispeech\\Hooks\\ApiHooks",
+			"services": [
+				"ConfigFactory",
+				"UserOptionsLookup",
+				"MainWANObjectCache",
+				"LanguageFactory",
+				"PermissionManager"
+			]
+		},
+		"DatabaseHooks": {
+			"class": "MediaWiki\\Wikispeech\\Hooks\\DatabaseHooks"
+		}
+	},
 	"Hooks": {
-		"BeforePageDisplay": [
-			"\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onBeforePageDisplay"
-		],
-		"ApiBeforeMain": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onApiBeforeMain",
-		"ResourceLoaderGetConfigVars": [
-			"\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onResourceLoaderGetConfigVars"
-		],
-		"GetPreferences": [
-			"\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onGetPreferences"
-		],
-		"ApiCheckCanExecute": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onApiCheckCanExecute",
-		"LoadExtensionSchemaUpdates": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onLoadExtensionSchemaUpdates",
-		"SkinTemplateNavigation": "\\MediaWiki\\Wikispeech\\Hooks\\WikispeechHooks::onSkinTemplateNavigation"
+		"LoadExtensionSchemaUpdates": "DatabaseHooks",
+		"ApiBeforeMain": "ApiHooks",
+		"BeforePageDisplay": "ApiHooks",
+		"ResourceLoaderGetConfigVars": "ApiHooks",
+		"GetPreferences": "ApiHooks",
+		"ApiCheckCanExecute": "ApiHooks",
+		"SkinTemplateNavigation": "ApiHooks"
 	},
 	"ConfigRegistry": {
 		"wikispeech": "GlobalVarConfig::newInstance"

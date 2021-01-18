@@ -21,9 +21,9 @@ use SkinTemplate;
 use Title;
 
 /**
- * @covers \MediaWiki\Wikispeech\Hooks\WikispeechHooks
+ * @covers \MediaWiki\Wikispeech\Hooks\ApiHooks
  */
-class WikispeechHooksTest extends MediaWikiTestCase {
+class ApiHooksTest extends MediaWikiTestCase {
 
 	/** @var OutputPage */
 	private $out;

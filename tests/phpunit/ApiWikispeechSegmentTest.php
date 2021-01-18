@@ -19,11 +19,18 @@ define( 'TITLE', 'Test_Page' );
  * @covers \MediaWiki\Wikispeech\Api\ApiWikispeechSegment
  */
 class ApiWikispeechSegmentTest extends ApiTestCase {
-	public function addDBDataOnce() {
+
+	protected function tearDown(): void {
+		WikiPageTestUtil::removeCreatedPages();
+		parent::tearDown();
+	}
+
+	protected function setUp(): void {
 		$content = "Text ''italic'' '''bold'''";
-		Util::addPage( TITLE, $content );
+		WikiPageTestUtil::addPage( TITLE, $content );
 		$talkContent = "Talking about ''italic'' '''bold'''";
-		Util::addPage( TITLE, $talkContent, NS_TALK );
+		WikiPageTestUtil::addPage( TITLE, $talkContent, NS_TALK );
+		parent::setUp();
 	}
 
 	public function testSegmentText() {

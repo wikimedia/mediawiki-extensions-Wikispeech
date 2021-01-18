@@ -13,7 +13,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\Segmenter;
-use MediaWiki\Wikispeech\Tests\Util;
+use MediaWiki\Wikispeech\Tests\WikiPageTestUtil;
 use MediaWikiIntegrationTestCase;
 use MWException;
 use RequestContext;
@@ -44,10 +44,15 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
+	protected function tearDown(): void {
+		WikiPageTestUtil::removeCreatedPages();
+		parent::tearDown();
+	}
+
 	public function testSegmentPage_contentContainsSentences_giveTitleAndContent() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
-		Util::addPage( $titleString, $content );
+		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
 			[
@@ -82,7 +87,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 	public function testSegmentPage_setDisplayTitle_segmentDisplayTitle() {
 		$titleString = 'Title';
 		$content = '{{DISPLAYTITLE:title}}Some content text.';
-		Util::addPage( $titleString, $content );
+		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
 			[
@@ -104,7 +109,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 
 	public function testCleanPage_pageWithContent_giveCleanedTextArray() {
 		$content = 'Content';
-		Util::addPage( 'Page', $content );
+		WikiPageTestUtil::addPage( 'Page', $content );
 		$title = Title::newFromText( 'Page' );
 		$page = WikiPage::factory( $title );
 
@@ -178,7 +183,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		// mock cleanPage with single call
 		$this->mockCleanPage( 1 );
 
-		$page = Util::addPage( 'Page', 'Foo' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Foo' );
 		$title = $page->getTitle();
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
 
@@ -196,7 +201,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		// mock cleanPage with four calls
 		$this->mockCleanPage( 4 );
 
-		$page = Util::addPage( 'Page', 'Foo' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Foo' );
 		$title = $page->getTitle();
 		$this->segmenter->segmentPage( $title );
 		$this->segmenter->segmentPage( $title, [], [] );
@@ -211,7 +216,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		] );
 		$titleString = 'Page';
 		$content = 'one<br />two<del>three</del>';
-		Util::addPage( $titleString, $content );
+		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
 			[
@@ -248,8 +253,8 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$this->expectExceptionMessage( 'An outdated or invalid revision id was provided' );
 
 		$content = 'Foo';
-		$page1 = Util::addPage( 'Page1', $content );
-		$page2 = Util::addPage( 'Page2', $content );
+		$page1 = WikiPageTestUtil::addPage( 'Page1', $content );
+		$page2 = WikiPageTestUtil::addPage( 'Page2', $content );
 		$title1 = $page1->getTitle();
 
 		$revisionId2 = $page2->getLatest();
@@ -263,11 +268,11 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		// @todo implement exception code and replace by expectExceptionCode
 		$this->expectExceptionMessage( 'An outdated or invalid revision id was provided' );
 
-		$page = Util::addPage( 'Page', 'Foo' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Foo' );
 		$title = $page->getTitle();
 		$revisionId = $page->getLatest();
 
-		Util::editPage( $page, 'Bar' );
+		WikiPageTestUtil::editPage( $page, 'Bar' );
 		$this->assertNotEquals( $revisionId, $page->getLatest() );
 		$this->segmenter->segmentPage( $title, [], [], $revisionId );
 	}
@@ -278,12 +283,12 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		// mock cleanPage with single calls
 		$this->mockCleanPage( 1 );
 
-		$page = Util::addPage( 'Page', 'Foo' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Foo' );
 		$title = $page->getTitle();
 		$revisionId = $page->getLatest();
 		$segments = $this->segmenter->segmentPage( $title, [], [], $revisionId );
 
-		Util::editPage( $page, 'Bar' );
+		WikiPageTestUtil::editPage( $page, 'Bar' );
 		$this->assertNotEquals( $revisionId, $page->getLatest() );
 		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [], $revisionId );
 
@@ -300,7 +305,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		// mock cleanPage with one call
 		$this->mockCleanPage( 1 );
 
-		$page = Util::addPage( 'Page', 'Foo' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Foo' );
 		$title = $page->getTitle();
 		$this->segmenter->segmentPage( $title );
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [ 'br' ] );
@@ -309,7 +314,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 	public function testGetSegment_segmentExists_returnSegment() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
-		$page = Util::addPage( $titleString, $content );
+		$page = WikiPageTestUtil::addPage( $titleString, $content );
 		$title = $page->getTitle();
 		$revisionId = $page->getLatest();
 		$hash = '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac';
@@ -326,7 +331,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 	public function testGetSegment_segmentDoesntExists_returnNull() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
-		$page = Util::addPage( $titleString, $content );
+		$page = WikiPageTestUtil::addPage( $titleString, $content );
 		$title = $page->getTitle();
 		$revisionId = $page->getLatest();
 		$hash = 'ThisHashMatchesNoSegment';

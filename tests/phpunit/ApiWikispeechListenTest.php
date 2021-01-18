@@ -47,6 +47,11 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 	}
 
+	protected function tearDown(): void {
+		WikiPageTestUtil::removeCreatedPages();
+		parent::tearDown();
+	}
+
 	public function testInvalidLanguage() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
@@ -92,7 +97,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	 * Create a mocked API object.
 	 *
 	 * @since 0.1.7
-	 * @return ApiWikispeechListen
+	 * @return ApiWikispeechListen|TestingAccessWrapper
 	 */
 	private function mockApi() {
 		$wanObjectCache = $this->createStub( WanObjectCache::class );
@@ -322,11 +327,11 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	}
 
 	public function testRequest_notCurrentRevision_passedToSegmenter() {
-		$page = Util::addPage( 'Page', 'Old' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );
 		$oldId = $page->getLatest();
 
 		// Making an edit causes the initial revision to be non-current.
-		Util::editPage( $page, 'New' );
+		WikiPageTestUtil::editPage( $page, 'New' );
 
 		// Purposefully hit the Segmenter Exception to avoid actual synthesis
 		$this->expectException( MWException::class );
@@ -343,7 +348,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 	public function testRequest_deletedRevision_throwsException() {
 		$testUser = self::getTestUser()->getUser();
-		$page = Util::addPage( 'Page', 'Old' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );
 		$oldId = $page->getLatest();
 		// Delete the page and by extension the revision.
 		$page->doDeleteArticleReal(
@@ -372,11 +377,11 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		);
 		$testSysop = $this->getTestSysop()->getUser();
 
-		$page = Util::addPage( 'Page', 'Old' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );
 		$oldId = $page->getLatest();
 
 		// Making an edit causes the initial revision to be non-current.
-		Util::editPage( $page, 'New' );
+		WikiPageTestUtil::editPage( $page, 'New' );
 
 		// supress the old revision
 		$this->doApiRequest( [
@@ -411,11 +416,11 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		);
 		$testSysop = $this->getTestSysop()->getUser();
 
-		$page = Util::addPage( 'Page', 'Old' );
+		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );
 		$oldId = $page->getLatest();
 
 		// Making an edit causes the initial revision to be non-current.
-		Util::editPage( $page, 'New' );
+		WikiPageTestUtil::editPage( $page, 'New' );
 
 		// supress the old revision
 		$this->doApiRequest( [

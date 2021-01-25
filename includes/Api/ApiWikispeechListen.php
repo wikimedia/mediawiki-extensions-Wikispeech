@@ -426,7 +426,7 @@ class ApiWikispeechListen extends ApiBase {
 		return [
 			'action=wikispeech-listen&format=json&lang=en&text=Read this'
 			=> 'apihelp-wikispeech-listen-example-1',
-			'action=wikispeech-listen&format=json&lang=en&text=Read this&voice=cmu-slt-flite'
+			'action=wikispeech-listen&format=json&lang=en&text=Read this&voice=cmu-slt-hsmm'
 			=> 'apihelp-wikispeech-listen-example-2',
 			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234'
 			=> 'apihelp-wikispeech-listen-example-3',

@@ -8,6 +8,7 @@
 	"rules": {
 		"no-shadow": "warn",
 		"no-jquery/no-global-selector": "warn",
-		"mediawiki/class-doc": "warn"
+		"mediawiki/class-doc": "warn",
+		"compat/compat": "warn"
 	}
 }

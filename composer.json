@@ -19,6 +19,7 @@
 		"doc": [
 			"DOXYGEN_FILTER='php ../../maintenance/mwdoc-filter.php' doxygen",
 			"jsduck"
-		]
+		],
+		"phan": "phan -d . --long-progress-bar"
 	}
 }

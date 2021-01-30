@@ -472,7 +472,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * @param array &$mockedUtterances Array of array with mocked utterances
+	 * @param array $mockedUtterances Array of array with mocked utterances
 	 * @param int $expectedFlushCounter
 	 * @param int $flushedCount
 	 * @throws MWException

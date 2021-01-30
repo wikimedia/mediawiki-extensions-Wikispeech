@@ -73,7 +73,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 	 * Replace Segmenter instance by one where cleanPage is mocked.
 	 *
 	 * @since 0.1.8
-	 * @param int $occurences If provided adds an assertion that cleanPage is
+	 * @param int|null $occurences If provided adds an assertion that cleanPage is
 	 *  called exactly this many times.
 	 * @throws InvalidArgumentException If occurences is not a positive integer.
 	 */

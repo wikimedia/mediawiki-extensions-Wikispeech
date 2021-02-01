@@ -144,10 +144,7 @@ class CleanerTest extends MediaWikiTestCase {
 		}
 		$lastCharIndex = mb_strlen( $markedUpText ) - 1;
 		if ( $markedUpText[$lastCharIndex] == '>' ) {
-			array_push(
-				$expectedCleanedContents,
-				new CleanedText( 'suffix' )
-			);
+			$expectedCleanedContents[] = new CleanedText( 'suffix' );
 		} else {
 			$lastContentIndex = count( $expectedCleanedContents ) - 1;
 			$expectedCleanedContents[$lastContentIndex] =

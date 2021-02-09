@@ -104,10 +104,10 @@
 		"wikispeech": "GlobalVarConfig::newInstance"
 	},
 	"JobClasses": {
-		"flushUtterancesByExpirationDateOnFile": "FlushUtterancesByExpirationDateOnFileJob",
-		"flushUtterancesFromStoreByExpiration": "FlushUtterancesFromStoreByExpirationJob",
-		"flushUtterancesFromStoreByLanguageAndVoice": "FlushUtterancesFromStoreByLanguageAndVoiceJob",
-		"flushUtterancesFromStoreByPageId": "FlushUtterancesFromStoreByPageIdJob"
+		"flushUtterancesByExpirationDateOnFile": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesByExpirationDateOnFileJob",
+		"flushUtterancesFromStoreByExpiration": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByExpirationJob",
+		"flushUtterancesFromStoreByLanguageAndVoice": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByLanguageAndVoiceJob",
+		"flushUtterancesFromStoreByPageId": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByPageIdJob"
 	},
 	"config": {
 		"WikispeechSpeechoidUrl": {

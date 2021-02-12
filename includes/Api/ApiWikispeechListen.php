@@ -30,6 +30,10 @@ use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
+/**
+ * @package MediaWiki\Wikispeech\Api
+ * @since 0.1.3
+ */
 class ApiWikispeechListen extends ApiBase {
 
 	/** @var Config */

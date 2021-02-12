@@ -16,6 +16,10 @@ use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
+/**
+ * @package MediaWiki\Wikispeech\Api
+ * @since 0.0.1
+ */
 class ApiWikispeechSegment extends ApiBase {
 
 	/** @var WANObjectCache */

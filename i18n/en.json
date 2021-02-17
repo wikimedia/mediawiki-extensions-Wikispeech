@@ -36,7 +36,11 @@
 	"prefs-wikispeech-enable": "Enable Wikispeech",
 	"prefs-wikispeech-show-player": "Always show player",
 	"right-wikispeech-listen": "Listen to page",
+	"right-wikispeech-read-lexicon": "Read Wikispeech's lexicon",
+	"right-wikispeech-edit-lexicon": "Edit Wikispeech's lexicon",
 	"action-wikispeech-listen": "listen to page",
+	"action-wikispeech-read-lexicon": "read Wikispeech's lexicon",
+	"action-wikispeech-edit-lexicon": "edit Wikispeech's lexicon",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Input text must not exceed $1 characters, but contained $2 characters.",
 	"wikispeech-listen": "Listen",
 	"wikispeech-dont-listen": "Don't listen"

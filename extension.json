@@ -328,11 +328,17 @@
 		}
 	},
 	"AvailableRights": [
-		"wikispeech-listen"
+		"wikispeech-listen",
+		"wikispeech-read-lexicon",
+		"wikispeech-edit-lexicon"
 	],
 	"GroupPermissions": {
 		"*": {
-			"wikispeech-listen": true
+			"wikispeech-listen": true,
+			"wikispeech-read-lexicon": true
+		},
+		"wikispeech-edit-lexicon": {
+			"wikispeech-edit-lexicon": true
 		}
 	}
 }

@@ -12,6 +12,7 @@ use Config;
 use FormatJson;
 use InvalidArgumentException;
 use MediaWiki\Http\HttpRequestFactory;
+use Status;
 
 /**
  * Provide Speechoid access.
@@ -168,6 +169,318 @@ class SpeechoidConnector {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}
 		return $responseString;
+	}
+
+	/**
+	 * An array of items such as:
+	 * {
+	 *   "name": "sv_se_nst_lex:sv-se.nst",
+	 *   "symbolSetName": "sv-se_ws-sampa",
+	 *   "locale": "sv_SE",
+	 *   "entryCount": 919476
+	 * }
+	 *
+	 * This list includes all registered lexicons,
+	 * including those that are not in use by any voice.
+	 *
+	 * @return array Parsed JSON response as an associative array
+	 * @throws SpeechoidConnectorException
+	 * @since 0.1.8
+	 */
+	public function requestLexicons(): array {
+		$json = $this->requestFactory->get(
+			$this->url . '/lexserver/lexicon/list'
+		);
+		if ( !$json ) {
+			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
+		}
+		$status = FormatJson::parse(
+			$json,
+			FormatJson::FORCE_ASSOC
+		);
+		if ( !$status->isOK() ) {
+			throw new SpeechoidConnectorException( 'Unexpected response from Speechoid.' );
+		}
+		return $status->getValue();
+	}
+
+	/**
+	 * This includes all registered lexicons,
+	 * including those that are not in use by any voice.
+	 *
+	 * Case insensitive prefix matching query.
+	 * I.e. $locale 'en' will match both 'en_US' and 'en_NZ'.
+	 *
+	 * @see requestLexicons
+	 * @param string $locale
+	 * @return string|null Name of lexicon, or null if not found.
+	 * @throws SpeechoidConnectorException
+	 * @since 0.1.8
+	 */
+	public function findLexiconByLocale(
+		string $locale
+	): ?string {
+		$locale = strtolower( $locale );
+		$lexicons = $this->requestLexicons();
+		$matches = [];
+		foreach ( $lexicons as $lexicon ) {
+			$lexiconLocale = $lexicon['locale'];
+			$lexiconLocale = strtolower( $lexiconLocale );
+			$isMatching = str_starts_with( $lexiconLocale, $locale );
+			if ( $isMatching ) {
+				$matches[] = $lexicon;
+			}
+		}
+		$numberOfMatches = count( $matches );
+		if ( $numberOfMatches === 0 ) {
+			return null;
+		} elseif ( $numberOfMatches > 1 ) {
+			throw new SpeechoidConnectorException(
+				'Multiple lexicons matches locale:' .
+				FormatJson::encode( $matches, true )
+			);
+		}
+		return $matches[0]['name'];
+	}
+
+	/**
+	 * An array of items such as:
+	 * {
+	 *   "components": [
+	 * 	 {
+	 *     "call": "marytts_preproc",
+	 * 	   "mapper": {
+	 * 	     "from": "sv-se_ws-sampa",
+	 * 	     "to": "sv-se_sampa_mary"
+	 * 	   },
+	 * 	   "module": "adapters.marytts_adapter"
+	 * 	 },
+	 * 	 {
+	 * 	   "call": "lexLookup",
+	 * 	   "lexicon": "sv_se_nst_lex:sv-se.nst",
+	 * 	   "module": "adapters.lexicon_client"
+	 * 	 }
+	 * 	 ],
+	 * 	 "config_file": "wikispeech_server/conf/voice_config_marytts.json",
+	 * 	 "default": true,
+	 * 	 "lang": "sv",
+	 * 	 "name": "marytts_textproc_sv"
+	 * }
+	 *
+	 * This list includes the lexicons for all registered voices,
+	 * even if the voice is currently unavailable.
+	 *
+	 * @return array Parsed JSON response as associative array
+	 * @throws SpeechoidConnectorException
+	 * @since 0.1.8
+	 */
+	public function requestTextProcessors(): array {
+		$json = $this->requestFactory->get(
+			$this->url . '/textprocessing/textprocessors'
+		);
+		if ( !$json ) {
+			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
+		}
+		$status = FormatJson::parse(
+			$json,
+			FormatJson::FORCE_ASSOC
+		);
+		if ( !$status->isOK() ) {
+			throw new SpeechoidConnectorException( 'Unexpected response from Speechoid.' );
+		}
+		return $status->getValue();
+	}
+
+	/**
+	 * This includes the lexicons for all registered voices,
+	 * even if the voice is currently unavailable.
+	 * Response is in form such as 'sv_se_nst_lex:sv-se.nst',
+	 * where prefix and suffix split by : is used differently throughout Speechoid
+	 * e.g combined, prefix only or suffix only, for identifying items.
+	 *
+	 * @see requestTextProcessors
+	 * @param string $language Case insensitive language code, e.g. 'en'.
+	 * @return string|null Name of lexicon, or null if not found.
+	 * @throws SpeechoidConnectorException
+	 * @since 0.1.8
+	 */
+	public function findLexiconByLanguage(
+		string $language
+	): ?string {
+		$language = strtolower( $language );
+		$lexicons = $this->requestTextProcessors();
+		$matches = [];
+		foreach ( $lexicons as $lexicon ) {
+			$lexiconLang = strtolower( $lexicon['lang'] );
+			if ( $lexiconLang == $language ) {
+				$matches[] = $lexicon;
+			}
+		}
+		$numberOfMatches = count( $matches );
+		if ( $numberOfMatches === 0 ) {
+			return null;
+		} elseif ( $numberOfMatches > 1 ) {
+			throw new SpeechoidConnectorException(
+				'Multiple lexicon matches language' .
+				FormatJson::encode( $matches, true )
+			);
+		}
+		foreach ( $matches[0]['components'] as $component ) {
+			if (
+				array_key_exists( 'call', $component ) &&
+				$component['call'] === 'lexLookup'
+			) {
+				return $component['lexicon'];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * An array of items such as:
+	 * {
+	 *   "id": 808498,
+	 *   "lexRef": {
+	 *     "dbRef": "sv_se_nst_lex",
+	 *	   "lexName": "sv-se.nst"
+	 *	 },
+	 *   "strn": "tomten",
+	 *   "language": "sv-se",
+	 *   "partOfSpeech": "NN",
+	 *   "morphology": "SIN|DEF|NOM|UTR",
+	 *   "wordParts": "tomten",
+	 *   "lemma": {
+	 *     "id": 92909,
+	 *     "strn": "tomte",
+	 *     "paradigm": "s2b-båge"
+	 *   },
+	 *   "transcriptions": [
+	 *     {
+	 *       "id": 814660,
+	 *       "entryId": 808498,
+	 *       "strn": "\"\" t O m . t e n",
+	 *       "language": "sv-se",
+	 *       "sources": [
+	 *         "nst"
+	 *       ]
+	 *    }
+	 *  ],
+	 *  "status": {
+	 *     "id": 808498,
+	 *     "name": "imported",
+	 *     "source": "nst",
+	 *     "timestamp": "2018-06-18T08:51:25Z",
+	 *     "current": true
+	 *   }
+	 * }
+	 *
+	 * @param string $lexicon
+	 * @param string[] $words
+	 * @return Status If successful, value contains deserialized json response.
+	 * @throws SpeechoidConnectorException
+	 * @throws InvalidArgumentException If words array is empty.
+	 * @since 0.1.8
+	 */
+	public function lookupLexiconEntries(
+		string $lexicon,
+		array $words
+	): Status {
+		if ( $words === [] ) {
+			throw new InvalidArgumentException( 'Must contain at least one word' );
+		}
+		$responseString = $this->requestFactory->get(
+			wfAppendQuery(
+				$this->url . '/lexserver/lexicon/lookup',
+				[
+					'lexicons' => $lexicon,
+					'words' => implode( ",", $words )
+				]
+			)
+		);
+		if ( !$responseString ) {
+			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
+		}
+		return FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
+	}
+
+	/**
+	 * @param string $json A single entry object item.
+	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
+	 * @return Status If successful, value contains deserialized json response (updated entry item)
+	 */
+	public function updateLexiconEntry(
+		string $json
+	): Status {
+		$responseString = $this->requestFactory->get(
+			wfAppendQuery(
+				$this->url . '/lexserver/lexicon/updateentry',
+				[ 'entry' => $json ]
+			)
+		);
+		return FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
+	}
+
+	/**
+	 * {
+	 *   "strn": "flesk",
+	 *   "language": "sv-se",
+	 *   "partOfSpeech": "NN",
+	 *   "morphology": "SIN-PLU|IND|NOM|NEU",
+	 *   "wordParts": "flesk",
+	 *   "lemma": {
+	 *     "strn": "flesk",
+	 *     "reading": "",
+	 *     "paradigm": "s7n-övriga ex träd"
+	 *   },
+	 *   "transcriptions": [
+	 *     {
+	 *       "strn": "\" f l E s k",
+	 *       "language": "sv-se"
+	 *     }
+	 *   ]
+	 * }
+	 *
+	 * @param string $lexiconName E.g. 'wikispeech_lexserver_testdb:sv'
+	 * @param string $json A single entry object item.
+	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
+	 * @return Status value set to int identity of newly created entry.
+	 */
+	public function addLexiconEntry(
+		string $lexiconName,
+		string $json
+	): Status {
+		$responseString = $this->requestFactory->get(
+			wfAppendQuery(
+				$this->url . '/lexserver/lexicon/addentry',
+				[
+					'lexicon_name' => $lexiconName,
+					'entry' => $json
+				]
+			)
+		);
+		// @todo how do we know if this was successful? Always return 200
+
+		$deserializedStatus = FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
+		if ( !$deserializedStatus->isOK() ) {
+			return $deserializedStatus;
+		}
+		/** @var array $deserializedResponse */
+		$deserializedResponse = $deserializedStatus->getValue();
+		if ( !array_key_exists( 'ids', $deserializedResponse ) ) {
+			return Status::newFatal( 'Unexpected Speechoid response. No `ids` field.' );
+		}
+		/** @var array $ids */
+		$ids = $deserializedResponse['ids'];
+		$numberOfIdentities = count( $ids );
+		if ( $numberOfIdentities === 0 ) {
+			return Status::newFatal( 'Unexpected Speechoid response. No `ids` values.' );
+		} elseif ( $numberOfIdentities > 1 ) {
+			return Status::newFatal( 'Unexpected Speechoid response. Multiple `ids` values.' );
+		}
+		if ( !is_int( $ids[0] ) ) {
+			return Status::newFatal( 'Unexpected Speechoid response. Ids[0] is a non integer value.' );
+		}
+		return Status::newGood( $ids[0] );
 	}
 
 }

@@ -30,6 +30,8 @@ Update version in extension.json.
 ### 0.1.8-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
+
+* [T274504](https://phabricator.wikimedia.org/T274504) Introduce LexiconHandler.
 * [T274486](https://phabricator.wikimedia.org/T274486) Preview transcription in lexicon editor
 * [T274645](https://phabricator.wikimedia.org/T274645) Create edit lexicon special page
 * [T133872](https://phabricator.wikimedia.org/T133872) A user right for corrections to the lexicon of pronunciations

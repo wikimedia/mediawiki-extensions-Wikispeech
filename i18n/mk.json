@@ -33,7 +33,11 @@
 	"prefs-wikispeech-enable": "Овозможи Викиговор",
 	"prefs-wikispeech-show-player": "Прикажи изведувач",
 	"right-wikispeech-listen": "Преслушување на страницата",
+	"right-wikispeech-read-lexicon": "Читање на лексиконот на Викиговор",
+	"right-wikispeech-edit-lexicon": "Уредување на лексиконот на Викиговор",
 	"action-wikispeech-listen": "преслушување на страницата",
+	"action-wikispeech-read-lexicon": "читање на лексиконот на Викиговор",
+	"action-wikispeech-edit-lexicon": "уредување на лексиконот на Викиговор",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Внесениот текст не смее да надминува $1 знаци, но содржи $2.",
 	"wikispeech-listen": "Преслушување",
 	"wikispeech-dont-listen": "Не преслушувај"

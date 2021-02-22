@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eraldkerciku"
+		]
+	},
+	"right-wikispeech-read-lexicon": "Lexoni leksikun e Wikispeech",
+	"right-wikispeech-edit-lexicon": "Redakto leksikun e Wikispeech",
+	"action-wikispeech-read-lexicon": "lexoni leksikun e Wikispeech",
+	"action-wikispeech-edit-lexicon": "redakto leksikun e Wikispeech"
+}

@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"BaRaN6161 TURK",
+			"Joseph",
 			"MuratTheTurkish"
 		]
 	},
@@ -31,10 +32,14 @@
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Ses",
 	"prefs-wikispeech-speech-rate": "Konuşma oranı",
-	"prefs-wikispeech-enable": "Wikispeech'i etkinleştir",
+	"prefs-wikispeech-enable": "Vikisöylev'i etkinleştir",
 	"prefs-wikispeech-show-player": "Her zaman oynatıcıyı göster",
 	"right-wikispeech-listen": "Sayfayı dinle",
+	"right-wikispeech-read-lexicon": "Vikisöylev’in sözlüğünü oku",
+	"right-wikispeech-edit-lexicon": "Vikisöylev’in sözlüğünü değiştir",
 	"action-wikispeech-listen": "sayfayı dinle",
+	"action-wikispeech-read-lexicon": "Vikisöylev’in sözlüğünü okumaya",
+	"action-wikispeech-edit-lexicon": "Vikisöylev’in sözlüğünü değiştirmeye",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Giriş metni $1 karakteri geçmemeli, $2 karakter içermelidir.",
 	"wikispeech-listen": "Dinle",
 	"wikispeech-dont-listen": "Dinlemeyin"

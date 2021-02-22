@@ -33,7 +33,11 @@
 	"prefs-wikispeech-enable": "啟用 Wikispeech",
 	"prefs-wikispeech-show-player": "永遠顯示播放器",
 	"right-wikispeech-listen": "聆聽頁面",
+	"right-wikispeech-read-lexicon": "讀取 Wikispeech 的語彙",
+	"right-wikispeech-edit-lexicon": "編輯 Wikispeech 的語彙",
 	"action-wikispeech-listen": "聆聽頁面",
+	"action-wikispeech-read-lexicon": "讀取 Wikispeech 的語彙",
+	"action-wikispeech-edit-lexicon": "編輯 Wikispeech 的語彙",
 	"apierror-wikispeech-listen-invalid-input-too-long": "輸入文字包含了 $2 個字元，超過 $1 個字元上限。",
 	"wikispeech-listen": "聆聽",
 	"wikispeech-dont-listen": "不聆聽"

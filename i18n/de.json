@@ -31,7 +31,11 @@
 	"prefs-wikispeech-enable": "Wikispeech aktivieren",
 	"prefs-wikispeech-show-player": "Spieler immer einblenden",
 	"right-wikispeech-listen": "Einer Seite zuhören",
+	"right-wikispeech-read-lexicon": "Lesen im Wikispeech-Lexikon",
+	"right-wikispeech-edit-lexicon": "Schreiben im Wikispeech-Lexikon",
 	"action-wikispeech-listen": "der Seite zuzuhören",
+	"action-wikispeech-read-lexicon": "Wikispeech-Lexikon lesen",
+	"action-wikispeech-edit-lexicon": "Wikispeech-Lexikon schreiben",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Der eingegebene Text darf nicht mehr als $1 Zeichen enthalten, er enthält aber $2 Zeichen.",
 	"wikispeech-listen": "Anhören",
 	"wikispeech-dont-listen": "Nicht anhören"

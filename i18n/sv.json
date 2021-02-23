@@ -34,7 +34,11 @@
 	"prefs-wikispeech-enable": "Aktivera Wikispeech",
 	"prefs-wikispeech-show-player": "Visa alltid spelare",
 	"right-wikispeech-listen": "Lyssna på sidan",
+	"right-wikispeech-read-lexicon": "Läs Wikispeehs lexikon",
+	"right-wikispeech-edit-lexicon": "Redigera Wikispeechs lexikon",
 	"action-wikispeech-listen": "lyssna på sidan",
+	"action-wikispeech-read-lexicon": "läs Wikispeechs lexikon",
+	"action-wikispeech-edit-lexicon": "redigera Wikispeechs lexikon",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Inmatad text får inte överstiga $1 tecken, och måste innehålla $2 tecken.",
 	"wikispeech-listen": "Lyssna",
 	"wikispeech-dont-listen": "Lyssna inte"

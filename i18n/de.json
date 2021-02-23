@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"FF11"
+			"FF11",
+			"HajFunk"
 		]
 	},
 	"wikispeech-desc": "Ein Text-zu-Sprache-Tool, um Wikimedia-Projekte für Personen zugänglicher zu machen, die aus verschiedenen Gründen Schwierigkeiten beim Lesen haben.",
@@ -32,10 +33,10 @@
 	"prefs-wikispeech-show-player": "Spieler immer einblenden",
 	"right-wikispeech-listen": "Einer Seite zuhören",
 	"right-wikispeech-read-lexicon": "Lesen im Wikispeech-Lexikon",
-	"right-wikispeech-edit-lexicon": "Schreiben im Wikispeech-Lexikon",
+	"right-wikispeech-edit-lexicon": "Wikispeech-Lexikon bearbeiten",
 	"action-wikispeech-listen": "der Seite zuzuhören",
 	"action-wikispeech-read-lexicon": "Wikispeech-Lexikon lesen",
-	"action-wikispeech-edit-lexicon": "Wikispeech-Lexikon schreiben",
+	"action-wikispeech-edit-lexicon": "Wikispeech-Lexikon bearbeiten",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Der eingegebene Text darf nicht mehr als $1 Zeichen enthalten, er enthält aber $2 Zeichen.",
 	"wikispeech-listen": "Anhören",
 	"wikispeech-dont-listen": "Nicht anhören"

@@ -20,6 +20,7 @@ use MediaWiki\Api\Hook\ApiCheckCanExecuteHook;
 use MediaWiki\Hook\ApiBeforeMainHook;
 use MediaWiki\Hook\BeforePageDisplayHook;
 use MediaWiki\Hook\SkinTemplateNavigationHook;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Languages\LanguageFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Permissions\PermissionManager;
@@ -65,6 +66,9 @@ class ApiHooks implements
 	/** @var PermissionManager */
 	private $permissionManager;
 
+	/** @var HttpRequestFactory */
+	private $requestFactory;
+
 	/**
 	 * @since 0.1.8
 	 * @param ConfigFactory $configFactory
@@ -72,13 +76,15 @@ class ApiHooks implements
 	 * @param WANObjectCache $mainWANObjectCache
 	 * @param LanguageFactory $languageFactory
 	 * @param PermissionManager $permissionManager
+	 * @param HttpRequestFactory $requestFactory
 	 */
 	public function __construct(
 		ConfigFactory $configFactory,
 		UserOptionsLookup $userOptionsLookup,
 		WANObjectCache $mainWANObjectCache,
 		LanguageFactory $languageFactory,
-		PermissionManager $permissionManager
+		PermissionManager $permissionManager,
+		HttpRequestFactory $requestFactory
 	) {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->config = $configFactory->makeConfig( 'wikispeech' );
@@ -86,6 +92,7 @@ class ApiHooks implements
 		$this->mainWANObjectCache = $mainWANObjectCache;
 		$this->languageFactory = $languageFactory;
 		$this->permissionManager = $permissionManager;
+		$this->requestFactory = $requestFactory;
 	}
 
 	/**
@@ -337,7 +344,10 @@ class ApiHooks implements
 	 * @param array &$preferences Preferences array.
 	 */
 	public function onGetPreferences( $user, &$preferences ) {
-		$speechoidConnector = new SpeechoidConnector( $this->config );
+		$speechoidConnector = new SpeechoidConnector(
+			$this->config,
+			$this->requestFactory
+		);
 		$voiceHandler = new VoiceHandler(
 			$this->logger,
 			$this->config,

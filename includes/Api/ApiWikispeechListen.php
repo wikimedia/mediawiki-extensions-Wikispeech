@@ -17,6 +17,7 @@ use ConfigException;
 use ExternalStoreException;
 use FormatJson;
 use InvalidArgumentException;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
@@ -65,6 +66,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param string $moduleName
 	 * @param WANObjectCache $cache
 	 * @param RevisionStore $revisionStore
+	 * @param HttpRequestFactory $requestFactory
 	 * @param string $modulePrefix
 	 */
 	public function __construct(
@@ -72,6 +74,7 @@ class ApiWikispeechListen extends ApiBase {
 		string $moduleName,
 		WANObjectCache $cache,
 		RevisionStore $revisionStore,
+		HttpRequestFactory $requestFactory,
 		string $modulePrefix = ''
 	) {
 		$this->config = $this->getConfig();
@@ -81,7 +84,10 @@ class ApiWikispeechListen extends ApiBase {
 		$this->config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
-		$this->speechoidConnector = new SpeechoidConnector( $this->config );
+		$this->speechoidConnector = new SpeechoidConnector(
+			$this->config,
+			$requestFactory
+		);
 		$this->utteranceStore = new UtteranceStore();
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$this->voiceHandler = new VoiceHandler(
@@ -121,7 +127,7 @@ class ApiWikispeechListen extends ApiBase {
 			$speechoidResponse = $this->speechoidConnector->synthesize(
 				$language,
 				$voice,
-				$inputParameters['text']
+				$inputParameters
 			);
 			$response = [
 				'audio' => $speechoidResponse['audio_data'],
@@ -244,7 +250,7 @@ class ApiWikispeechListen extends ApiBase {
 			}
 			$this->validateText( $segmentText );
 
-			$speechoidResponse = $this->speechoidConnector->synthesize(
+			$speechoidResponse = $this->speechoidConnector->synthesizeText(
 				$language,
 				$voice,
 				$segmentText
@@ -309,16 +315,12 @@ class ApiWikispeechListen extends ApiBase {
 				'revision'
 			] );
 		}
-		if (
-			isset( $parameters['revision'] ) &&
-			isset( $parameters['text'] )
-		) {
-			$this->dieWithError( [
-				'apierror-invalidparammix-cannotusewith',
-				'text',
-				'revision'
-			] );
-		}
+		$this->requireOnlyOneParameter(
+			$parameters,
+			'revision',
+			'text',
+			'ipa'
+		);
 		$voices = $this->config->get( 'WikispeechVoices' );
 		$language = $parameters['lang'];
 
@@ -403,6 +405,9 @@ class ApiWikispeechListen extends ApiBase {
 					ParamValidator::PARAM_REQUIRED => true
 				],
 				'text' => [
+					ParamValidator::PARAM_TYPE => 'string'
+				],
+				'ipa' => [
 					ParamValidator::PARAM_TYPE => 'string'
 				],
 				'revision' => [

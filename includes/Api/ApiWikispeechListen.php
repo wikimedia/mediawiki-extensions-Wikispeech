@@ -4,6 +4,7 @@ namespace MediaWiki\Wikispeech\Api;
 
 /**
  * @file
+ * @ingroup API
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
@@ -31,7 +32,8 @@ use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
 /**
- * @package MediaWiki\Wikispeech\Api
+ * API module to synthezise text as sounds.
+ *
  * @since 0.1.3
  */
 class ApiWikispeechListen extends ApiBase {

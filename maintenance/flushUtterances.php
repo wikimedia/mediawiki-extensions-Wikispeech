@@ -15,7 +15,7 @@ use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByLanguageAndVoiceJob
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByPageIdJobQueue;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
-/** @var string $IP MediaWiki installation path */
+/** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -181,7 +181,7 @@ class FlushUtterances extends Maintenance {
 
 }
 
-/** @var string $maintClass This class, required to start via Maintenance. */
+/** @var string This class, required to start via Maintenance. */
 $maintClass = FlushUtterances::class;
 
 require_once RUN_MAINTENANCE_IF_MAIN;

@@ -16,7 +16,7 @@ use MediaWiki\Wikispeech\Segment\Segmenter;
 use RequestContext;
 use Title;
 
-/** @var string $IP MediaWiki installation path */
+/** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -473,7 +473,7 @@ class Benchmark extends Maintenance {
 
 }
 
-/** @var string $maintClass This class, required to start via Maintenance. */
+/** @var string This class, required to start via Maintenance. */
 $maintClass = Benchmark::class;
 
 require_once RUN_MAINTENANCE_IF_MAIN;

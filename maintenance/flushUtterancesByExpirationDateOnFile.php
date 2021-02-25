@@ -13,7 +13,7 @@ use Maintenance;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesByExpirationDateOnFileJobQueue;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
-/** @var string $IP MediaWiki installation path */
+/** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
 	$IP = __DIR__ . '/../../..';
@@ -79,7 +79,7 @@ class FlushUtterancesByExpirationDateOnFile extends Maintenance {
 
 }
 
-/** @var string $maintClass This class, required to start via Maintenance. */
+/** @var string This class, required to start via Maintenance. */
 $maintClass = FlushUtterancesByExpirationDateOnFile::class;
 
 require_once RUN_MAINTENANCE_IF_MAIN;

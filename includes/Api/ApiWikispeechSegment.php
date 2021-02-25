@@ -4,6 +4,7 @@ namespace MediaWiki\Wikispeech\Api;
 
 /**
  * @file
+ * @ingroup API
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
@@ -17,7 +18,8 @@ use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
 /**
- * @package MediaWiki\Wikispeech\Api
+ * API module to segment a page.
+ *
  * @since 0.0.1
  */
 class ApiWikispeechSegment extends ApiBase {

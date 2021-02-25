@@ -2,7 +2,8 @@
 	"name": "wikispeech",
 	"private": true,
 	"scripts": {
-		"test": "grunt test"
+		"test": "grunt test",
+		"fix": "grunt fix"
 	},
 	"devDependencies": {
 		"eslint-config-wikimedia": "0.18.1",

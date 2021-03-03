@@ -14,7 +14,6 @@ use FileBackend;
 use FSFileBackend;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Wikispeech\SpeechoidConnector;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
 use WikiMap;
@@ -53,11 +52,6 @@ class UtteranceStore {
 	 */
 	private $dbLoadBalancer;
 
-	/**
-	 * @var SpeechoidConnector
-	 */
-	private $speechoidConnector;
-
 	/** @var string Name of container (sort of path prefix) used for files in backend. */
 	private $fileBackendContainerName;
 
@@ -84,8 +78,6 @@ class UtteranceStore {
 		}
 
 		$this->dbLoadBalancer = MediaWikiServices::getInstance()->getDBLoadBalancer();
-
-		$this->speechoidConnector = new SpeechoidConnector( $this->config );
 	}
 
 	/**

@@ -104,7 +104,8 @@ class ApiHooksTest extends MediaWikiTestCase {
 	public function testOnBeforePageDisplayDontLoadModulesIfWrongNamespace() {
 		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
@@ -112,7 +113,8 @@ class ApiHooksTest extends MediaWikiTestCase {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechEnable', false );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
@@ -120,7 +122,8 @@ class ApiHooksTest extends MediaWikiTestCase {
 		$this->permissionsManager
 			->overrideUserRightsForTesting( $this->out->getUser(), [] );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
@@ -130,7 +133,8 @@ class ApiHooksTest extends MediaWikiTestCase {
 			'invalid-url'
 		);
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
@@ -138,28 +142,31 @@ class ApiHooksTest extends MediaWikiTestCase {
 		$inaccessibleRevisionId = $this->out->getTitle()->getLatestRevId() - 1;
 		$this->out->setRevisionId( $inaccessibleRevisionId );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_invalidPageContentLanguage_dontLoadModule() {
 		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_differentInterfaceLanguage_loadModule() {
 		$this->out->getContext()->setLanguage( 'sv' );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertNotEmpty( $this->out->getModules() );
+		$this->assertContains( 'ext.wikispeech', $this->out->getModules() );
 		$this->assertTrue( $this->configLoaded() );
 	}
 
 	public function testOnBeforePageDisplay_actionIsntView_dontLoadModule() {
 		$this->out->getRequest()->setVal( 'action', 'not-view' );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
-		$this->assertEmpty( $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
+		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
 		$this->assertFalse( $this->configLoaded() );
 	}
 

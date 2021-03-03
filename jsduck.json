@@ -5,7 +5,8 @@
 		"QUnit.*",
 		"jQuery",
 		"jQuery.Promise",
-		"OO.ui.*"
+		"OO.ui.*",
+		"mw.*"
 	],
 	"--warnings-exit-nonzero": true,
 	"--warnings": [
@@ -14,7 +15,6 @@
 	],
 	"--output": "js-docs",
 	"--tags": "../../maintenance/jsduck/custom_tags.rb",
-	"--categories": "jsduck-categories.json",
 	"--": [
 		"modules"
 	]

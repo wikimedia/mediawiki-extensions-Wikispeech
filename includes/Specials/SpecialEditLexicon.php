@@ -10,12 +10,15 @@ namespace MediaWiki\Wikispeech\Specials;
 
 use Config;
 use ConfigFactory;
+use Html;
 use MediaWiki\Languages\LanguageNameUtils;
 use OOUI\ButtonWidget;
 use OOUI\DropdownInputWidget;
 use OOUI\FieldLayout;
 use OOUI\FieldsetLayout;
+use OOUI\HtmlSnippet;
 use OOUI\TextInputWidget;
+use OOUI\Widget;
 use SpecialPage;
 
 /**
@@ -53,6 +56,9 @@ class SpecialEditLexicon extends SpecialPage {
 		$out->enableOOUI();
 		$out->setPageTitle( $this->msg( 'editlexicon' ) );
 		$this->addElements();
+		$out->addModules( [
+			'ext.wikispeech.specialEditLexicon'
+		] );
 	}
 
 	/**
@@ -63,7 +69,9 @@ class SpecialEditLexicon extends SpecialPage {
 	private function addElements() {
 		$languageField = new FieldLayout(
 			new DropdownInputWidget( [
-				'options' => $this->getLanguageOptions()
+				'options' => $this->getLanguageOptions(),
+				'infusable' => true,
+				'classes' => [ 'ext-wikispeech-language' ]
 			] ),
 			[
 				'label' => $this->msg( 'wikispeech-language' )->text(),
@@ -83,13 +91,34 @@ class SpecialEditLexicon extends SpecialPage {
 
 		$transcriptionField = new FieldLayout(
 			new TextInputWidget( [
-				'required' => true
+				'required' => true,
+				'infusable' => true,
+				'classes' => [ 'ext-wikispeech-transcription' ]
 			] ),
 			[
 				'label' => $this->msg( 'wikispeech-transcription' )->text(),
 				'align' => 'top'
 			]
 		);
+		$playerHtml = Html::element(
+			'audio',
+			[
+				'class' => 'ext-wikispeech-preview-player',
+				'controls'
+			]
+		);
+		$previewPlayer = new FieldLayout(
+			new Widget( [
+				'content' => new HtmlSnippet( $playerHtml ),
+				[ 'class' => 'ext-wikispeech-preview-player' ]
+			] )
+		);
+		$transcription = new FieldsetLayout( [
+			'items' => [
+				$transcriptionField,
+				$previewPlayer
+			]
+		] );
 
 		$saveField = new FieldLayout(
 			new ButtonWidget( [
@@ -106,7 +135,7 @@ class SpecialEditLexicon extends SpecialPage {
 				'items' => [
 					$languageField,
 					$wordField,
-					$transcriptionField,
+					$transcription,
 					$saveField
 				]
 			] )

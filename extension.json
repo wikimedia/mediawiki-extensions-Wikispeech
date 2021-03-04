@@ -61,6 +61,18 @@
 		"localBasePath": "modules",
 		"remoteExtPath": "Wikispeech/modules"
 	},
+	"SpecialPages": {
+		"EditLexicon": {
+			"class": "MediaWiki\\Wikispeech\\Specials\\SpecialEditLexicon",
+			"services": [
+				"ConfigFactory",
+				"LanguageNameUtils"
+			]
+		}
+	},
+	"ExtensionMessagesFiles": {
+		"WikispeechAlias": "Wikispeech.alias.php"
+	},
 	"QUnitTestModule": {
 		"localBasePath": "tests/qunit",
 		"remoteExtPath": "Wikispeech/tests/qunit",

@@ -140,13 +140,15 @@ class Benchmark extends Maintenance {
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
+		$requestFactory = MediaWikiServices::getInstance()
+			->getHttpRequestFactory();
 
 		$emptyWanCache = new EmptyBagOStuff();
 
 		$logger = LoggerFactory::getInstance( 'Wikispeech' );
 
 		if ( !$this->speechoidConnector ) {
-			$this->speechoidConnector = new SpeechoidConnector( $config );
+			$this->speechoidConnector = new SpeechoidConnector( $config, $requestFactory );
 		}
 		if ( !$this->voiceHandler ) {
 			$this->voiceHandler = new VoiceHandler(
@@ -278,7 +280,7 @@ class Benchmark extends Maintenance {
 				$attempt++;
 				$startSynthesizing = microtime( true ) * 1000;
 				try {
-					$speechoidResponse = $this->speechoidConnector->synthesize(
+					$speechoidResponse = $this->speechoidConnector->synthesizeText(
 						$this->language, $this->voice, $segmentText, $this->synthesizeResponseTimeoutSeconds
 					);
 					$endSynthesizing = microtime( true ) * 1000;

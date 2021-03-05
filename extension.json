@@ -96,7 +96,8 @@
 				"UserOptionsLookup",
 				"MainWANObjectCache",
 				"LanguageFactory",
-				"PermissionManager"
+				"PermissionManager",
+				"HttpRequestFactory"
 			]
 		},
 		"DatabaseHooks": {
@@ -335,7 +336,8 @@
 			"class": "\\MediaWiki\\Wikispeech\\Api\\ApiWikispeechListen",
 			"services": [
 				"MainWANObjectCache",
-				"RevisionStore"
+				"RevisionStore",
+				"HttpRequestFactory"
 			]
 		}
 	},

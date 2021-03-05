@@ -12,6 +12,7 @@ use ApiMain;
 use ApiTestCase;
 use ApiUsageException;
 use FormatJson;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\CleanedText;
@@ -102,8 +103,13 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	private function mockApi() {
 		$wanObjectCache = $this->createStub( WanObjectCache::class );
 		$revisionStore = $this->createStub( RevisionStore::class );
+		$requestFactory = $this->createStub( HttpRequestFactory::class );
 		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
-			new ApiMain(), '', $wanObjectCache, $revisionStore
+			new ApiMain(),
+			'',
+			$wanObjectCache,
+			$revisionStore,
+			$requestFactory
 		) );
 		return $api;
 	}
@@ -155,7 +161,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	public function testRequest_revisionAndTextParametersGiven_exceptionRaised() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
-			'The "text" parameter cannot be used with "revision".'
+			'The parameters "text" and "revision" can not be used together.'
 		);
 		$this->doApiRequest( [
 			'action' => 'wikispeech-listen',
@@ -233,7 +239,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$speechoidConnectorMock = $this->createMock( SpeechoidConnector::class );
 		$speechoidConnectorMock
 			->expects( $this->once() )
-			->method( 'synthesize' )
+			->method( 'synthesizeText' )
 			->with(
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
@@ -312,7 +318,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$speechoidConnectorMock = $this->createMock( SpeechoidConnector::class );
 		$speechoidConnectorMock
 			->expects( $this->never() )
-			->method( 'synthesize' );
+			->method( 'synthesizeText' );
 		$api->speechoidConnector = $speechoidConnectorMock;
 
 		$utterance = $api->getUtterance(
@@ -446,6 +452,6 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				'lang' => 'en'
 			],
 			null, false, $testSysop
-	 );
+		);
 	}
 }

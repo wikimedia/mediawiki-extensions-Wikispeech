@@ -10,7 +10,8 @@ namespace MediaWiki\Wikispeech;
 
 use Config;
 use FormatJson;
-use MediaWiki\MediaWikiServices;
+use InvalidArgumentException;
+use MediaWiki\Http\HttpRequestFactory;
 
 /**
  * Provide Speechoid access.
@@ -18,6 +19,9 @@ use MediaWiki\MediaWikiServices;
  * @since 0.1.5
  */
 class SpeechoidConnector {
+
+	/** @var HttpRequestFactory */
+	private $requestFactory;
 
 	/** @var string Speechoid URL, without trailing slash. */
 	private $url;
@@ -27,9 +31,10 @@ class SpeechoidConnector {
 
 	/**
 	 * @param Config $config
+	 * @param HttpRequestFactory $requestFactory
 	 * @since 0.1.5
 	 */
-	public function __construct( $config ) {
+	public function __construct( $config, $requestFactory ) {
 		$this->url = rtrim( $config->get( 'WikispeechSpeechoidUrl' ), '/' );
 
 		if ( $config->get( 'WikispeechSpeechoidResponseTimeoutSeconds' ) ) {
@@ -37,15 +42,17 @@ class SpeechoidConnector {
 				$config->get( 'WikispeechSpeechoidResponseTimeoutSeconds' )
 			);
 		}
+		$this->requestFactory = $requestFactory;
 	}
 
 	/**
-	 * Make a request to Speechoid to synthesize the provided text.
+	 * Make a request to Speechoid to synthesize the provided text or ipa string.
 	 *
 	 * @since 0.1.5
 	 * @param string $language
 	 * @param string $voice
-	 * @param string $text
+	 * @param array $parameters Should contain either 'text' or
+	 *  'ipa'. Determines input string and type.
 	 * @param int|null $responseTimeoutSeconds Seconds before timing out awaiting response.
 	 *  Falsy value defaults to config value WikispeechSpeechoidResponseTimeoutSeconds,
 	 *  which if falsy (e.g. 0) defaults to MediaWiki default.
@@ -55,22 +62,31 @@ class SpeechoidConnector {
 	public function synthesize(
 		$language,
 		$voice,
-		$text,
+		$parameters,
 		$responseTimeoutSeconds = null
 	): array {
-		$requestFactory = MediaWikiServices::getInstance()->getHttpRequestFactory();
 		$postData = [
 			'lang' => $language,
-			'voice' => $voice,
-			'input' => $text
+			'voice' => $voice
 		];
-		$options = [ 'postData' => $postData ];
+		$options = [];
 		if ( $responseTimeoutSeconds ) {
 			$options['timeout'] = $responseTimeoutSeconds;
 		} elseif ( $this->defaultHttpResponseTimeoutSeconds ) {
 			$options['timeout'] = $this->defaultHttpResponseTimeoutSeconds;
 		}
-		$responseString = $requestFactory->post( $this->url, $options );
+		if ( isset( $parameters['ipa'] ) ) {
+			$postData['input'] = $parameters['ipa'];
+			$postData['input_type'] = 'ipa';
+		} elseif ( isset( $parameters['text'] ) ) {
+			$postData['input'] = $parameters['text'];
+		} else {
+			throw new InvalidArgumentException(
+				'$parameters must contain one of "text" and "ipa".'
+			);
+		}
+		$options = [ 'postData' => $postData ];
+		$responseString = $this->requestFactory->post( $this->url, $options );
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}
@@ -83,6 +99,30 @@ class SpeechoidConnector {
 		}
 		$response = $status->getValue();
 		return $response;
+	}
+
+	/**
+	 * Make a request to Speechoid to synthesize the provided text.
+	 *
+	 * @since 0.1.8
+	 * @param string $language
+	 * @param string $voice
+	 * @param string $text
+	 * @param int|null $responseTimeoutSeconds
+	 * @return array
+	 */
+	public function synthesizeText(
+		$language,
+		$voice,
+		$text,
+		$responseTimeoutSeconds = null
+	): array {
+		return $this->synthesize(
+			$language,
+			$voice,
+			[ 'text' => $text ],
+			$responseTimeoutSeconds
+		);
 	}
 
 	/**
@@ -121,8 +161,7 @@ class SpeechoidConnector {
 		if ( !filter_var( $this->url, FILTER_VALIDATE_URL ) ) {
 			throw new SpeechoidConnectorException( 'No Speechoid URL provided.' );
 		}
-		$requestFactory = MediaWikiServices::getInstance()->getHttpRequestFactory();
-		$responseString = $requestFactory->get( $this->url . '/default_voices' );
+		$responseString = $this->requestFactory->get( $this->url . '/default_voices' );
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}

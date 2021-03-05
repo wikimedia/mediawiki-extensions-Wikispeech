@@ -46,5 +46,10 @@
 	"action-wikispeech-edit-lexicon": "{{doc-action|wikispeech-edit-lexicon}}",
 	"apierror-wikispeech-listen-invalid-input-too-long": "{{doc-apierror}}",
 	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-dont-listen}}",
-	"wikispeech-dont-listen": "The text of the tab that hides the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-listen}}"
+	"wikispeech-dont-listen": "The text of the tab that hides the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-listen}}",
+	"editlexicon": "Edit lexicon special page title.",
+	"wikispeech-language": "Label for language field on the edit lexicon special page.",
+	"wikispeech-word": "Label for word field on the edit lexicon special page.",
+	"wikispeech-transcription": "Label for phonetic transcription field on the edit lexicon special page.",
+	"wikispeech-save": "Label for button that saves recording on the edit lexicon special page."
 }

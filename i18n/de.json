@@ -39,5 +39,10 @@
 	"action-wikispeech-edit-lexicon": "Wikispeech-Lexikon bearbeiten",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Der eingegebene Text darf nicht mehr als $1 Zeichen enthalten, er enthält aber $2 Zeichen.",
 	"wikispeech-listen": "Anhören",
-	"wikispeech-dont-listen": "Nicht anhören"
+	"wikispeech-dont-listen": "Nicht anhören",
+	"editlexicon": "Lexikon bearbeiten",
+	"wikispeech-language": "Sprache",
+	"wikispeech-word": "Wort",
+	"wikispeech-transcription": "Transkript",
+	"wikispeech-save": "Speichern"
 }

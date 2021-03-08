@@ -40,5 +40,10 @@
 	"action-wikispeech-edit-lexicon": "уредување на лексиконот на Викиговор",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Внесениот текст не смее да надминува $1 знаци, но содржи $2.",
 	"wikispeech-listen": "Преслушување",
-	"wikispeech-dont-listen": "Не преслушувај"
+	"wikispeech-dont-listen": "Не преслушувај",
+	"editlexicon": "Уреди лексикон",
+	"wikispeech-language": "Јазик",
+	"wikispeech-word": "Збор",
+	"wikispeech-transcription": "Транскрипција",
+	"wikispeech-save": "Зачувај"
 }

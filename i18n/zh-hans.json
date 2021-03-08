@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Shuiwater"
+			"Shuiwater",
+			"坑触可"
 		]
 	},
 	"prefs-wikispeech-show-player": "显示播放器",
-	"wikispeech-listen": "听"
+	"wikispeech-listen": "听",
+	"wikispeech-save": "保存"
 }

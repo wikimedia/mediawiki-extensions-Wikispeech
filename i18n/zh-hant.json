@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Eason329",
 			"Kly"
 		]
 	},
@@ -40,5 +41,10 @@
 	"action-wikispeech-edit-lexicon": "編輯 Wikispeech 的語彙",
 	"apierror-wikispeech-listen-invalid-input-too-long": "輸入文字包含了 $2 個字元，超過 $1 個字元上限。",
 	"wikispeech-listen": "聆聽",
-	"wikispeech-dont-listen": "不聆聽"
+	"wikispeech-dont-listen": "不聆聽",
+	"editlexicon": "編輯語彙",
+	"wikispeech-language": "語言",
+	"wikispeech-word": "字",
+	"wikispeech-transcription": "轉錄",
+	"wikispeech-save": "儲存"
 }

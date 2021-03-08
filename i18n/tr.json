@@ -42,5 +42,10 @@
 	"action-wikispeech-edit-lexicon": "Vikisöylev’in sözlüğünü değiştirmeye",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Giriş metni $1 karakteri geçmemeli, $2 karakter içermelidir.",
 	"wikispeech-listen": "Dinle",
-	"wikispeech-dont-listen": "Dinlemeyin"
+	"wikispeech-dont-listen": "Dinlemeyin",
+	"editlexicon": "Sözlüğü değiştir",
+	"wikispeech-language": "Dil",
+	"wikispeech-word": "Kelime",
+	"wikispeech-transcription": "Çevriyazı",
+	"wikispeech-save": "Kaydet"
 }

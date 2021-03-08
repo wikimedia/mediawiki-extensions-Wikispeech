@@ -25,5 +25,10 @@
 	"right-wikispeech-listen": "Słuchanie treści strony",
 	"action-wikispeech-listen": "słuchania treści strony",
 	"wikispeech-listen": "Słuchaj",
-	"wikispeech-dont-listen": "Nie słuchaj"
+	"wikispeech-dont-listen": "Nie słuchaj",
+	"editlexicon": "Edytuj leksykon",
+	"wikispeech-language": "Język",
+	"wikispeech-word": "Słowo",
+	"wikispeech-transcription": "Transkrypcja",
+	"wikispeech-save": "Zapisz"
 }

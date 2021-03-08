@@ -4,5 +4,8 @@
 			"Beta16"
 		]
 	},
-	"wikispeech-listen": "Ascolta"
+	"wikispeech-listen": "Ascolta",
+	"wikispeech-language": "Lingua",
+	"wikispeech-word": "Parola",
+	"wikispeech-save": "Salva"
 }

@@ -7,5 +7,7 @@
 	"prefs-wikispeech-voice": "Stemme",
 	"prefs-wikispeech-show-player": "Vis afspiller",
 	"wikispeech-listen": "Lyt",
-	"wikispeech-dont-listen": "Lyt ikke"
+	"wikispeech-dont-listen": "Lyt ikke",
+	"wikispeech-language": "Sprog",
+	"wikispeech-save": "Gem"
 }

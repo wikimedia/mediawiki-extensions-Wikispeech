@@ -30,7 +30,10 @@ Update version in extension.json.
 ### 0.1.8-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
-
+* [T274486](https://phabricator.wikimedia.org/T274486) Preview transcription in lexicon editor
+* [T274645](https://phabricator.wikimedia.org/T274645) Create edit lexicon special page
+* [T133872](https://phabricator.wikimedia.org/T133872) A user right for corrections to the lexicon of pronunciations
+* [T265335](https://phabricator.wikimedia.org/T265335) Introduce namespaces to extension Wikispeech
 * [T265130](https://phabricator.wikimedia.org/T265130) Switch from static scope hooks to instance scope hooks with injections.
 * [T264403](https://phabricator.wikimedia.org/T264403) Speechoid/Wikispeech benchmark maintenance script.
 * [T263112](https://phabricator.wikimedia.org/T263112) Listening action should not be available in non-read view

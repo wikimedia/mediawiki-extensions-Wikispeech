@@ -4,5 +4,7 @@
 			"Saraiki"
 		]
 	},
-	"apihelp-wikispeech-listen-param-lang": "زبان دا کوڈ۔"
+	"apihelp-wikispeech-listen-param-lang": "زبان دا کوڈ۔",
+	"wikispeech-language": "زبان",
+	"wikispeech-save": "بچاؤ"
 }

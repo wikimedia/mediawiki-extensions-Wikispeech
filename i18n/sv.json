@@ -41,5 +41,10 @@
 	"action-wikispeech-edit-lexicon": "redigera Wikispeechs lexikon",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Inmatad text får inte överstiga $1 tecken, och måste innehålla $2 tecken.",
 	"wikispeech-listen": "Lyssna",
-	"wikispeech-dont-listen": "Lyssna inte"
+	"wikispeech-dont-listen": "Lyssna inte",
+	"editlexicon": "Redigera lexikon",
+	"wikispeech-language": "Språk",
+	"wikispeech-word": "Ord",
+	"wikispeech-transcription": "Transkribering",
+	"wikispeech-save": "Spara"
 }

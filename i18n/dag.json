@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Dnshitobu",
 			"Musahfm"
 		]
 	},
-	"prefs-wikispeech-show-player": "ŋun diemdi baalim baalim sahakam"
+	"prefs-wikispeech-show-player": "ŋun diemdi baalim baalim sahakam",
+	"wikispeech-language": "Balli"
 }

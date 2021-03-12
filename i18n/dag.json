@@ -1,10 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Amire80",
 			"Dnshitobu",
 			"Musahfm"
 		]
 	},
-	"prefs-wikispeech-show-player": "ŋun diemdi baalim baalim sahakam",
-	"wikispeech-language": "Balli"
+	"prefs-wikispeech-show-player": "Ŋun diemdi baalim baalim sahakam",
+	"wikispeech-language": "Balli",
+	"wikispeech-word": "Bachi",
+	"wikispeech-transcription": "Bachi"
 }

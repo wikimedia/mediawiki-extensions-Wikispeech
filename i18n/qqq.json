@@ -52,5 +52,6 @@
 	"wikispeech-language": "Label for language field on the edit lexicon special page.\n{{identical|Language}}",
 	"wikispeech-word": "Label for word field on the edit lexicon special page.\n{{identical|Word}}",
 	"wikispeech-transcription": "Label for phonetic transcription field on the edit lexicon special page.",
-	"wikispeech-save": "Label for button that saves recording on the edit lexicon special page.\n{{identical|Save}}"
+	"wikispeech-save": "Label for button that saves recording on the edit lexicon special page.\n{{identical|Save}}",
+	"wikispeech-preview": "Label for button that plays transcription preview on the edit lexicon special page."
 }

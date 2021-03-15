@@ -60,14 +60,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 
 		$this->assertSame(
 			[
-				[
-					'data' => 'ar',
-					'label' => 'ar - العربية'
-				],
-				[
-					'data' => 'en',
-					'label' => 'en - English'
-				]
+				'ar - العربية' => 'ar',
+				'en - English' => 'en'
 			],
 			$languageOptions
 		);

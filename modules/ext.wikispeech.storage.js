@@ -178,14 +178,10 @@
 		 */
 
 		this.requestTts = function ( segmentHash ) {
-			var request, language, voiceKey, voice, options, api;
+			var request, language, voice, options, api;
 
 			language = mw.config.get( 'wgPageContentLanguage' );
-			// Capitalize first letter in language code.
-			voiceKey = 'wikispeechVoice' +
-				language[ 0 ].toUpperCase() +
-				language.slice( 1 );
-			voice = mw.user.options.get( voiceKey );
+			voice = mw.wikispeech.util.getUserVoice( language );
 			options = {
 				action: 'wikispeech-listen',
 				lang: language,

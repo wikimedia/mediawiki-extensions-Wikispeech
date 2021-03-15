@@ -10,16 +10,8 @@ namespace MediaWiki\Wikispeech\Specials;
 
 use Config;
 use ConfigFactory;
-use Html;
+use FormSpecialPage;
 use MediaWiki\Languages\LanguageNameUtils;
-use OOUI\ButtonWidget;
-use OOUI\DropdownInputWidget;
-use OOUI\FieldLayout;
-use OOUI\FieldsetLayout;
-use OOUI\HtmlSnippet;
-use OOUI\TextInputWidget;
-use OOUI\Widget;
-use SpecialPage;
 
 /**
  * Special page for editing the lexicon.
@@ -27,7 +19,7 @@ use SpecialPage;
  * @since 0.1.8
  */
 
-class SpecialEditLexicon extends SpecialPage {
+class SpecialEditLexicon extends FormSpecialPage {
 
 	/** @var Config */
 	private $config;
@@ -51,106 +43,69 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @param string|null $subpage
 	 */
 	public function execute( $subpage ) {
+		parent::execute( $subpage );
 		$this->checkPermissions();
 		$out = $this->getOutput();
-		$out->enableOOUI();
-		$out->setPageTitle( $this->msg( 'editlexicon' ) );
-		$this->addElements();
 		$out->addModules( [
 			'ext.wikispeech.specialEditLexicon'
 		] );
 	}
 
 	/**
-	 * Add elements to the UI.
-	 *
-	 * @since 0.1.8
+	 * @inheritDoc
 	 */
-	private function addElements() {
-		$languageField = new FieldLayout(
-			new DropdownInputWidget( [
-				'options' => $this->getLanguageOptions(),
-				'infusable' => true,
-				'classes' => [ 'ext-wikispeech-language' ]
-			] ),
-			[
-				'label' => $this->msg( 'wikispeech-language' )->text(),
-				'align' => 'top'
-			]
-		);
-
-		$wordField = new FieldLayout(
-			new TextInputWidget( [
-				'required' => true
-			] ),
-			[
-				'label' => $this->msg( 'wikispeech-word' )->text(),
-				'align' => 'top'
-			]
-		);
-
-		$transcriptionField = new FieldLayout(
-			new TextInputWidget( [
-				'required' => true,
-				'infusable' => true,
-				'classes' => [ 'ext-wikispeech-transcription' ]
-			] ),
-			[
-				'label' => $this->msg( 'wikispeech-transcription' )->text(),
-				'align' => 'top'
-			]
-		);
-		$playerHtml = Html::element(
-			'audio',
-			[
-				'class' => 'ext-wikispeech-preview-player',
-				'controls'
-			]
-		);
-		$previewPlayer = new FieldLayout(
-			new Widget( [
-				'content' => new HtmlSnippet( $playerHtml ),
-				[ 'class' => 'ext-wikispeech-preview-player' ]
-			] )
-		);
-		$transcription = new FieldsetLayout( [
-			'items' => [
-				$transcriptionField,
-				$previewPlayer
-			]
-		] );
-
-		$saveField = new FieldLayout(
-			new ButtonWidget( [
-				'label' => $this->msg( 'wikispeech-save' )->text(),
-				'flags' => [
-					'progressive',
-					'primary'
-				]
-			] )
-		);
-
-		$this->getOutput()->addHTML(
-			new FieldsetLayout( [
-				'items' => [
-					$languageField,
-					$wordField,
-					$transcription,
-					$saveField
-				]
-			] )
-		);
+	protected function getDisplayFormat() {
+		return 'ooui';
 	}
 
-	/*
-	 * Make options to be used by {@link DropdownInputWidget}
+	/**
+	 * @inheritDoc
+	 */
+	protected function getFormFields() {
+		return [
+			'language' => [
+				'type' => 'select',
+				'label' => $this->msg( 'wikispeech-language' )->text(),
+				'options' => $this->getLanguageOptions(),
+				'id' => 'ext-wikispeech-language'
+			],
+			'word' => [
+				'type' => 'text',
+				'label' => $this->msg( 'wikispeech-word' )->text(),
+				'required' => true
+			],
+			'transcription' => [
+				'type' => 'textwithbutton',
+				'label' => $this->msg( 'wikispeech-transcription' )->text(),
+				'required' => true,
+				'id' => 'ext-wikispeech-transcription',
+				'buttontype' => 'button',
+				'buttondefault' => $this->msg( 'wikispeech-preview' )->text(),
+				'buttonid' => 'ext-wikispeech-preview-button'
+			]
+		];
+	}
+
+	/**
+	 * Will be implemented in T274649.
+	 *
+	 * @since 0.1.8
+	 * @param array $data
+	 * @return bool
+	 */
+	public function onSubmit( array $data ) {
+		return false;
+	}
+
+	/**
+	 * Make options to be used by in a select field
 	 *
 	 * Each language that is specified in the config variable
 	 * "WikispeechVoices" is included in the options. The labels are
 	 * of the format "code - autonym".
 	 *
 	 * @since 0.1.8
-	 * @return array Items are arrays containing codes and labels.
+	 * @return array Keys are labels and values are language codes.
 	 */
 	private function getLanguageOptions(): array {
 		$voices = $this->config->get( 'WikispeechVoices' );
@@ -159,10 +114,8 @@ class SpecialEditLexicon extends SpecialPage {
 		$options = [];
 		foreach ( $languages as $code ) {
 			$name = $this->languageNameUtils->getLanguageName( $code );
-			$options[] = [
-				'data' => $code,
-				'label' => "$code - $name"
-			];
+			$label = "$code - $name";
+			$options[$label] = $code;
 		}
 		ksort( $options );
 		return $options;

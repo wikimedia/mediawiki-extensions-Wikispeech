@@ -48,5 +48,6 @@
 	"wikispeech-language": "Language",
 	"wikispeech-word": "Word",
 	"wikispeech-transcription": "Transcription",
-	"wikispeech-save": "Save"
+	"wikispeech-save": "Save",
+	"wikispeech-preview": "Preview"
 }

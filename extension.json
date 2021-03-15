@@ -59,7 +59,8 @@
 		"ext.wikispeech.specialEditLexicon": {
 			"packageFiles": [
 				"ext.wikispeech.specialEditLexicon.js",
-				"ext.wikispeech.transcriptionPreviewer.js"
+				"ext.wikispeech.transcriptionPreviewer.js",
+				"ext.wikispeech.util.js"
 			],
 			"dependencies": [
 				"oojs-ui-core"
@@ -94,6 +95,7 @@
 			"tests/qunit/ext.wikispeech.storage.test.js",
 			"tests/qunit/ext.wikispeech.transcriptionPreviewer.test.js",
 			"modules/ext.wikispeech.transcriptionPreviewer.js",
+			"modules/ext.wikispeech.util.js",
 			"tests/qunit/ext.wikispeech.ui.test.js"
 		],
 		"dependencies": [

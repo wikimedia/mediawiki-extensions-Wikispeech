@@ -115,6 +115,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
+	 * @throws InvalidArgumentException If $item->item is null.
+	 *  If Speechoid identity is already set.
 	 * @throws MWException If no lexicon is available for language.
 	 *  If failed to encode lexicon entry item properties to JSON.
 	 *  If unable to add lexicon entry to Speechoid.
@@ -126,6 +128,13 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		string $key,
 		LexiconEntryItem $item
 	): void {
+		if ( $item->getProperties() === null ) {
+			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
+			throw new InvalidArgumentException( '$item->item must not be null.' );
+		}
+		if ( $item->getSpeechoidIdentity() ) {
+			throw new InvalidArgumentException( 'Speechoid identity is already set.' );
+		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
 			throw new MWException( "No lexicon available for language $language" );
@@ -159,6 +168,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
+	 * @throws InvalidArgumentException If $item->item is null.
+	 *  If Speechoid identity is not set.
 	 * @throws MWException If no lexicon is available for language.
 	 *  If failed to encode lexicon entry item properties to JSON.
 	 * @since 0.1.8
@@ -168,6 +179,13 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		string $key,
 		LexiconEntryItem $item
 	): void {
+		if ( $item->getProperties() === null ) {
+			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
+			throw new InvalidArgumentException( '$item->item must not be null.' );
+		}
+		if ( $item->getSpeechoidIdentity() ) {
+			throw new InvalidArgumentException( 'Speechoid identity not set.' );
+		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
 			throw new MWException( "No lexicon available for language $language" );
@@ -186,12 +204,13 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	}
 
 	/**
-	 * Unsupported operation.
-	 *
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
-	 * @throws MWException Always thrown. Unsupported operation.
+	 * @throws InvalidArgumentException If $item->item is null.
+	 *  If Speechoid identity is not set.
+	 * @throws MWException If no lexicon is available for language.
+	 *  If failed to delete the lexicon entry item.
 	 * @since 0.1.8
 	 */
 	public function deleteEntryItem(
@@ -199,8 +218,24 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		string $key,
 		LexiconEntryItem $item
 	): void {
-		// @todo https://phabricator.wikimedia.org/T277145
-		throw new MWException( 'Unsupported operation' );
+		if ( $item->getProperties() === null ) {
+			throw new InvalidArgumentException( '$item->item must not be null.' );
+		}
+		$itemSpeechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $itemSpeechoidIdentity === null ) {
+			throw new InvalidArgumentException( 'Speechoid identity not set.' );
+		}
+		$lexiconName = $this->findLexiconNameByLanguage( $language );
+		if ( $lexiconName === null ) {
+			throw new MWException( "No lexicon available for language $language" );
+		}
+		$status = $this->speechoidConnector->deleteLexiconEntry(
+			$lexiconName,
+			$itemSpeechoidIdentity
+		);
+		if ( !$status->isOK() ) {
+			throw new MWException( "Failed to delete lexicon entry item: $status" );
+		}
 	}
 
 }

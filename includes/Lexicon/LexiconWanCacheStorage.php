@@ -68,11 +68,11 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	private function putEntry( LexiconEntry $entry ): void {
 		$language = $entry->getLanguage();
 		if ( $language === null ) {
-			throw new InvalidArgumentException( '$entry->language must not be null' );
+			throw new InvalidArgumentException( '$entry->language must not be null.' );
 		}
 		$key = $entry->getKey();
 		if ( $key === null ) {
-			throw new InvalidArgumentException( '$entry->key must not be null' );
+			throw new InvalidArgumentException( '$entry->key must not be null.' );
 		}
 		$this->wanObjectCache->set(
 			$this->cacheKeyFactory( $language, $key ),
@@ -120,7 +120,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	): void {
 		if ( $item->getProperties() === null ) {
 			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
-			throw new InvalidArgumentException( '$item->properties must not be null' );
+			throw new InvalidArgumentException( '$item->properties must not be null.' );
 		}
 		$itemSpeechoidIdentity = $item->getSpeechoidIdentity();
 		if ( $itemSpeechoidIdentity === null ) {
@@ -158,11 +158,11 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	): void {
 		if ( $item->getProperties() === null ) {
 			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
-			throw new InvalidArgumentException( '$item->item must not be null' );
+			throw new InvalidArgumentException( '$item->item must not be null.' );
 		}
 		$itemSpeechoidIdentity = $item->getSpeechoidIdentity();
 		if ( $itemSpeechoidIdentity === null ) {
-			throw new InvalidArgumentException( 'Speechoid identity not set' );
+			throw new InvalidArgumentException( 'Speechoid identity not set.' );
 		}
 		$entry = $this->getEntry( $language, $key );
 		if ( $entry === null ) {
@@ -179,12 +179,12 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
-	 * Unsupported operation.
-	 *
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
-	 * @throws MWException Always thrown.
+	 * @throws InvalidArgumentException If $item->item is null.
+	 *  If Speechoid identity is not set.
+	 * @throws MWException If attempting to delete a non existing entry or item.
 	 * @since 0.1.8
 	 */
 	public function deleteEntryItem(
@@ -192,8 +192,24 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 		string $key,
 		LexiconEntryItem $item
 	): void {
-		// @todo https://phabricator.wikimedia.org/T277145
-		throw new MWException( 'Unsupported operation' );
+		if ( $item->getProperties() === null ) {
+			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
+			throw new InvalidArgumentException( '$item->item must not be null.' );
+		}
+		$itemSpeechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $itemSpeechoidIdentity === null ) {
+			throw new InvalidArgumentException( 'Speechoid identity not set.' );
+		}
+		$entry = $this->getEntry( $language, $key );
+		if ( $entry === null ) {
+			throw new MWException( 'Attempting to delete a non existing entry.' );
+		}
+		$itemIndex = $entry->findItemIndexBySpeechoidIdentity( $itemSpeechoidIdentity );
+		if ( $itemIndex === null ) {
+			throw new MWException( 'Attempting to delete a non existing entry item.' );
+		}
+		unset( $entry->getItems()[$itemIndex] );
+		$this->putEntry( $entry );
 	}
 
 }

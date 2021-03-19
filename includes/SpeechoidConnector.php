@@ -407,6 +407,7 @@ class SpeechoidConnector {
 	 * @param string $json A single entry object item.
 	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
 	 * @return Status If successful, value contains deserialized json response (updated entry item)
+	 * @since 0.1.8
 	 */
 	public function updateLexiconEntry(
 		string $json
@@ -418,6 +419,35 @@ class SpeechoidConnector {
 			)
 		);
 		return FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
+	}
+
+	/**
+	 * Deletes a lexicon entry item
+	 *
+	 * @param string $lexiconName
+	 * @param string $identity
+	 * @return Status
+	 * @since 0.1.8
+	 */
+	public function deleteLexiconEntry(
+		string $lexiconName,
+		string $identity
+	): Status {
+		$responseString = $this->requestFactory->get(
+			$this->url . '/lexserver/lexicon/delete_entry/' .
+		   urlencode( $lexiconName ) . '/' .
+		   urlencode( $identity )
+		);
+		// If successfull, returns something like:
+		// deleted entry id '11' from lexicon 'sv'
+		// where the lexicon is the second part of the lexicon name:lang.
+		if ( mb_ereg_match(
+			"deleted entry id '(.+)' from lexicon '(.+)'",
+			$responseString
+		) ) {
+			return Status::newGood( $responseString );
+		}
+		return Status::newFatal( $responseString );
 	}
 
 	/**
@@ -444,6 +474,7 @@ class SpeechoidConnector {
 	 * @param string $json A single entry object item.
 	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
 	 * @return Status value set to int identity of newly created entry.
+	 * @since 0.1.8
 	 */
 	public function addLexiconEntry(
 		string $lexiconName,

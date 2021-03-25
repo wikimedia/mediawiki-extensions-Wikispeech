@@ -27,6 +27,9 @@
 	"TestAutoloadNamespaces": {
 		"MediaWiki\\Wikispeech\\Tests\\": "tests/phpunit/"
 	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
 	"ResourceModules": {
 		"ext.wikispeech.loader": {
 			"scripts": [

@@ -19,13 +19,16 @@ use MediaWikiUnitTestCase;
 class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 	protected function setUp() : void {
 		$this->requestFactory = $this->createMock( HttpRequestFactory::class );
-		$config = new HashConfig();
-		$config->set( 'WikispeechSpeechoidResponseTimeoutSeconds', null );
-		$config->set( 'WikispeechSpeechoidUrl', 'url' );
-		$this->speechoidConnector = new SpeechoidConnector(
-			$config,
-			$this->requestFactory
-		);
+		$this->config = new HashConfig();
+		$this->config->set( 'WikispeechSpeechoidResponseTimeoutSeconds', null );
+		$this->config->set( 'WikispeechSpeechoidUrl', 'speechoid.url' );
+		$this->speechoidConnector = $this->getMockBuilder( SpeechoidConnector::class )
+			->setMethods( [ 'findLexiconByLanguage' ] )
+			->setConstructorArgs( [
+				$this->config,
+				$this->requestFactory
+			] )
+			->getMock();
 	}
 
 	public function testSynthesize_textGiven_sendRequestWithTextAsInput() {
@@ -36,7 +39,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'post' )
 			->with(
-				$this->equalTo( 'url' ),
+				$this->equalTo( 'speechoid.url' ),
 				$this->equalTo( [ 'postData' => [
 					'lang' => 'en',
 					'voice' => 'en-voice',
@@ -59,7 +62,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'post' )
 			->with(
-				$this->equalTo( 'url' ),
+				$this->equalTo( 'speechoid.url' ),
 				$this->equalTo( [ 'postData' => [
 					'lang' => 'en',
 					'voice' => 'en-voice',
@@ -86,5 +89,29 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 			'en-voice',
 			[]
 		);
+	}
+
+	public function testIpaToSampa_ipaGiven_giveSampa() {
+		$this->config->set( 'WikispeechSymbolSetUrl', 'symbolset.url' );
+		$this->speechoidConnector
+			->method( 'findLexiconByLanguage' )
+			->willReturn( 'lexicon-name' );
+		$this->requestFactory
+			->method( 'get' )
+			->withConsecutive(
+				[ 'speechoid.url/lexserver/lexicon/info/lexicon-name' ],
+				[ 'symbolset.url/mapper/map/ipa/target-symbol-set/ipa transcription' ]
+			)
+			->will( $this->onConsecutiveCalls(
+				'{"symbolSetName": "target-symbol-set"}',
+				'{"Result": "sampa transcription"}'
+			) );
+
+		$sampa = $this->speechoidConnector->ipaToSampa(
+			'ipa transcription',
+			'en'
+		);
+
+		$this->assertSame( 'sampa transcription', $sampa );
 	}
 }

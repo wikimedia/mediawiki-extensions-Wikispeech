@@ -31,6 +31,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T274649](https://phabricator.wikimedia.org/T274649) Add lexicon entries using Special:EditLexicon
 * [T277145](https://phabricator.wikimedia.org/T277145) Implement lexicon delete features.
 * [T274504](https://phabricator.wikimedia.org/T274504) Introduce LexiconHandler.
 * [T274486](https://phabricator.wikimedia.org/T274486) Preview transcription in lexicon editor

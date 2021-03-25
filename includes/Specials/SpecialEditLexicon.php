@@ -10,8 +10,13 @@ namespace MediaWiki\Wikispeech\Specials;
 
 use Config;
 use ConfigFactory;
+use FormatJson;
 use FormSpecialPage;
+use Html;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
+use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
+use MediaWiki\Wikispeech\SpeechoidConnector;
 
 /**
  * Special page for editing the lexicon.
@@ -27,15 +32,33 @@ class SpecialEditLexicon extends FormSpecialPage {
 	/** @var LanguageNameUtils */
 	private $languageNameUtils;
 
+	/** @var LexiconHandler */
+	private $lexiconHandler;
+
+	/** @var SpeechoidConnector */
+	private $speechoidConnector;
+
+	/** @var LexiconEntryItem */
+	private $addedItem;
+
 	/**
 	 * @since 0.1.8
 	 * @param ConfigFactory $configFactory
 	 * @param LanguageNameUtils $languageNameUtils
+	 * @param LexiconHandler $lexiconHandler
+	 * @param SpeechoidConnector $speechoidConnector
 	 */
-	public function __construct( $configFactory, $languageNameUtils ) {
+	public function __construct(
+		$configFactory,
+		$languageNameUtils,
+		$lexiconHandler,
+		$speechoidConnector
+	) {
 		parent::__construct( 'EditLexicon', 'wikispeech-edit-lexicon' );
 		$this->config = $configFactory->makeConfig( 'wikispeech' );
 		$this->languageNameUtils = $languageNameUtils;
+		$this->lexiconHandler = $lexiconHandler;
+		$this->speechoidConnector = $speechoidConnector;
 	}
 
 	/**
@@ -87,14 +110,31 @@ class SpecialEditLexicon extends FormSpecialPage {
 	}
 
 	/**
-	 * Will be implemented in T274649.
-	 *
-	 * @since 0.1.8
-	 * @param array $data
-	 * @return bool
+	 * @inheritDoc
 	 */
 	public function onSubmit( array $data ) {
-		return false;
+		$item = new LexiconEntryItem();
+		$sampa = $this->speechoidConnector->ipaToSampa(
+			$data['transcription'],
+			$data['language']
+		);
+		$item->setProperties( [
+			'strn' => $data['word'],
+			'transcriptions' => [ [ 'strn' => $sampa ] ],
+			// Status is required by Speechoid.
+			'status' => [
+				'name' => 'ok'
+			]
+		] );
+		$this->lexiconHandler->createEntryItem(
+			$data['language'],
+			$data['word'],
+			$item
+		);
+		// Item is updated by createEntryItem(), so we just need to
+		// store it.
+		$this->addedItem = $item;
+		return true;
 	}
 
 	/**
@@ -119,5 +159,23 @@ class SpecialEditLexicon extends FormSpecialPage {
 		}
 		ksort( $options );
 		return $options;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function onSuccess() {
+		$itemString = FormatJson::encode(
+			$this->addedItem->getProperties(),
+			true
+		);
+		$this->getOutput()->addHtml(
+			Html::successBox(
+				$this->msg( 'wikispeech-lexicon-add-entry-success' )->text()
+			)
+		);
+		$this->getOutput()->addHtml(
+			Html::element( 'pre', [], $itemString )
+		);
 	}
 }

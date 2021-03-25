@@ -48,6 +48,6 @@
 	"wikispeech-language": "Language",
 	"wikispeech-word": "Word",
 	"wikispeech-transcription": "Transcription",
-	"wikispeech-save": "Save",
-	"wikispeech-preview": "Preview"
+	"wikispeech-preview": "Preview",
+	"wikispeech-lexicon-add-entry-success": "Entry successfully added to lexicon."
 }

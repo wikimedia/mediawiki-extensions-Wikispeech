@@ -21,8 +21,8 @@ use Status;
  */
 class SpeechoidConnector {
 
-	/** @var HttpRequestFactory */
-	private $requestFactory;
+	/** @var Config */
+	private $config;
 
 	/** @var string Speechoid URL, without trailing slash. */
 	private $url;
@@ -30,12 +30,16 @@ class SpeechoidConnector {
 	/** @var int Default timeout awaiting HTTP response in seconds. */
 	private $defaultHttpResponseTimeoutSeconds;
 
+	/** @var HttpRequestFactory */
+	private $requestFactory;
+
 	/**
 	 * @param Config $config
 	 * @param HttpRequestFactory $requestFactory
 	 * @since 0.1.5
 	 */
 	public function __construct( $config, $requestFactory ) {
+		$this->config = $config;
 		$this->url = rtrim( $config->get( 'WikispeechSpeechoidUrl' ), '/' );
 
 		if ( $config->get( 'WikispeechSpeechoidResponseTimeoutSeconds' ) ) {
@@ -474,6 +478,7 @@ class SpeechoidConnector {
 	 * @param string $json A single entry object item.
 	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
 	 * @return Status value set to int identity of newly created entry.
+	 * @throws SpeechoidConnectorException
 	 * @since 0.1.8
 	 */
 	public function addLexiconEntry(
@@ -493,7 +498,7 @@ class SpeechoidConnector {
 
 		$deserializedStatus = FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
 		if ( !$deserializedStatus->isOK() ) {
-			return $deserializedStatus;
+			throw new SpeechoidConnectorException( "Failed to parse response as JSON: $responseString" );
 		}
 		/** @var array $deserializedResponse */
 		$deserializedResponse = $deserializedStatus->getValue();
@@ -514,4 +519,44 @@ class SpeechoidConnector {
 		return Status::newGood( $ids[0] );
 	}
 
+	/**
+	 * Convert a string of IPA to a string of SAMPA
+	 *
+	 * @since 0.1.8
+	 * @param string $ipa
+	 * @param string $language Tell Speechoid to use the symbol set
+	 *  for this language.
+	 * @return string
+	 * @throws SpeechoidConnectorException
+	 */
+	public function ipaToSampa( string $ipa, string $language ): string {
+		// Get the symbol set to convert to
+		$lexicon = $this->findLexiconByLanguage( $language );
+		$symbolsetRequestUrl = "$this->url/lexserver/lexicon/info/$lexicon";
+		$symbolSetResponse = $this->requestFactory->get( $symbolsetRequestUrl );
+		$symbolSetStatus = FormatJson::parse(
+			$symbolSetResponse,
+			FormatJson::FORCE_ASSOC
+		);
+		if ( !$symbolSetStatus->isOK() ) {
+			throw new SpeechoidConnectorException(
+				"Failed to parse resonse from $symbolsetRequestUrl as JSON: " .
+				"$symbolSetResponse"
+			);
+		}
+		$symbolSet = $symbolSetStatus->getValue()['symbolSetName'];
+
+		$symbolSetUrl = $this->config->get( 'WikispeechSymbolSetUrl' );
+		$mapRequestUrl = "$symbolSetUrl/mapper/map/ipa/$symbolSet/$ipa";
+		$mapResponse = $this->requestFactory->get( $mapRequestUrl );
+		$mapStatus = FormatJson::parse( $mapResponse, FormatJson::FORCE_ASSOC );
+		if ( !$mapStatus->isOK() ) {
+			throw new SpeechoidConnectorException(
+				"Failed to parse resonse from $mapRequestUrl as JSON: " .
+				"$mapResponse"
+			);
+		}
+		$sampa = $mapStatus->getValue()['Result'];
+		return $sampa;
+	}
 }

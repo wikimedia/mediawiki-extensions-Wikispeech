@@ -58,7 +58,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		$language = strtolower( $language );
 		$cacheKey = $this->cache->makeKey( self::CACHE_CLASS, $language );
 		$lexiconName = $this->cache->get( $cacheKey );
-		if ( $lexiconName === null ) {
+		if ( !$lexiconName ) {
 			$lexiconName = $this->speechoidConnector->findLexiconByLanguage( $language );
 			// @todo Consider, if null we'll request on each attempt.
 			// @todo Rather we could store as 'NULL' or something and keep track of that.

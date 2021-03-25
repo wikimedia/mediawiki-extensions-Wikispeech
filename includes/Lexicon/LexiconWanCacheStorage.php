@@ -57,7 +57,11 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 		string $language,
 		string $key
 	): ?LexiconEntry {
-		return $this->wanObjectCache->get( $this->cacheKeyFactory( $language, $key ) );
+		$entry = $this->wanObjectCache->get( $this->cacheKeyFactory( $language, $key ) );
+		if ( $entry === false ) {
+			return null;
+		}
+		return $entry;
 	}
 
 	/**

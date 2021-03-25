@@ -79,7 +79,9 @@
 			"class": "MediaWiki\\Wikispeech\\Specials\\SpecialEditLexicon",
 			"services": [
 				"ConfigFactory",
-				"LanguageNameUtils"
+				"LanguageNameUtils",
+				"Wikispeech.LexiconHandler",
+				"Wikispeech.SpeechoidConnector"
 			]
 		}
 	},
@@ -142,6 +144,10 @@
 	"config": {
 		"WikispeechSpeechoidUrl": {
 			"description": "The URL to use for the Speechoid service.",
+			"value": ""
+		},
+		"WikispeechSymbolSetUrl": {
+			"description": "The URL to use for the Symbol set service.",
 			"value": ""
 		},
 		"WikispeechSpeechoidResponseTimeoutSeconds": {

@@ -5,7 +5,10 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Special;
 use ConfigFactory;
 use HashConfig;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
+use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
+use MediaWiki\Wikispeech\SpeechoidConnector;
 use SpecialPageTestBase;
 use Wikimedia\TestingAccessWrapper;
 
@@ -35,7 +38,14 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			}
 		);
 		$this->languageNameUtils = $this->createStub( LanguageNameUtils::class );
-		return new SpecialEditLexicon( $configFactory, $this->languageNameUtils );
+		$this->lexiconHandler = $this->createMock( LexiconHandler::class );
+		$this->speechoidConnector = $this->createStub( SpeechoidConnector::class );
+		return new SpecialEditLexicon(
+			$configFactory,
+			$this->languageNameUtils,
+			$this->lexiconHandler,
+			$this->speechoidConnector
+		);
 	}
 
 	public function testGetLanguageOptions_configHasVoices_giveLanguageOptions() {
@@ -65,5 +75,35 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			],
 			$languageOptions
 		);
+	}
+
+	public function testOnSubmit_formFilled_addEntryToLexicon() {
+		$page = $this->newSpecialPage();
+		$item = new LexiconEntryItem();
+		$item->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'sampa transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			]
+		] );
+		$this->lexiconHandler->expects( $this->once() )
+			->method( 'createEntryItem' )
+			->with(
+				$this->equalTo( 'en' ),
+				$this->equalTo( 'monkey' ),
+				$this->equalTo( $item )
+			);
+		$data = [
+			'language' => 'en',
+			'word' => 'monkey',
+			'transcription' => 'ipa transcription'
+		];
+		$this->speechoidConnector
+			->method( 'ipaToSampa' )
+			->with( 'ipa transcription' )
+			->willReturn( 'sampa transcription' );
+
+		$page->onSubmit( $data );
 	}
 }

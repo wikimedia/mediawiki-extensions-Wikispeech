@@ -75,15 +75,28 @@
 
 			linkGroup = new OO.ui.ButtonGroupWidget();
 			toolbar.$actions.append( linkGroup.$element );
-			self.addLinkButton(
+			self.addLinkConfigButton(
 				linkGroup,
 				'help',
 				'wgWikispeechHelpPage'
 			);
-			self.addLinkButton(
+			self.addLinkConfigButton(
 				linkGroup,
 				'feedback',
 				'wgWikispeechFeedbackPage'
+			);
+			self.addButton(
+				linkGroup,
+				'edit',
+				mw.util.getUrl(
+					'Special:EditLexicon',
+					// Send URL parameters to the edit lexicon special
+					// page. These will populate the fields.
+					{
+						language: mw.config.get( 'wgPageContentLanguage' ),
+						page: mw.config.get( 'wgArticleId' )
+					}
+				)
 			);
 			$( document.body ).append( toolbar.$element );
 			toolbar.initialize();
@@ -116,6 +129,8 @@
 				button.on( 'click', onClick );
 			} else if ( typeof onClick === 'string' ) {
 				button.setHref( onClick );
+				// Open link in new tab or window.
+				button.setTarget( '_blank' );
 			}
 			group.addItems( button );
 			return button;
@@ -218,7 +233,7 @@
 		 *  link destination from.
 		 */
 
-		this.addLinkButton = function ( toolbar, icon, configVariable ) {
+		this.addLinkConfigButton = function ( toolbar, icon, configVariable ) {
 			var page;
 
 			page = mw.config.get( configVariable );

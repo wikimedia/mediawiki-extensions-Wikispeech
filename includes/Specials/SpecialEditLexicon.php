@@ -62,19 +62,26 @@ class SpecialEditLexicon extends FormSpecialPage {
 	 * @inheritDoc
 	 */
 	protected function getFormFields() {
+		// Get the page parameter to explicitly set it for the hidden
+		// field.
+		$page = $this->getRequest()->getIntOrNull( 'page' );
+
 		return [
 			'language' => [
+				'name' => 'language',
 				'type' => 'select',
 				'label' => $this->msg( 'wikispeech-language' )->text(),
 				'options' => $this->getLanguageOptions(),
 				'id' => 'ext-wikispeech-language'
 			],
 			'word' => [
+				'name' => 'word',
 				'type' => 'text',
 				'label' => $this->msg( 'wikispeech-word' )->text(),
 				'required' => true
 			],
 			'transcription' => [
+				'name' => 'transcription',
 				'type' => 'textwithbutton',
 				'label' => $this->msg( 'wikispeech-transcription' )->text(),
 				'required' => true,
@@ -82,6 +89,11 @@ class SpecialEditLexicon extends FormSpecialPage {
 				'buttontype' => 'button',
 				'buttondefault' => $this->msg( 'wikispeech-preview' )->text(),
 				'buttonid' => 'ext-wikispeech-preview-button'
+			],
+			'page' => [
+				'name' => 'page',
+				'type' => 'hidden',
+				'default' => $page
 			]
 		];
 	}

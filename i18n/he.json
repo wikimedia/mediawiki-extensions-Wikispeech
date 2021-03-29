@@ -34,6 +34,5 @@
 	"apierror-wikispeech-listen-invalid-input-too-long": "טקסט הקלט לא יכול לחרוג מעל $1 תווים אך הוא הכיל $2 תווים.",
 	"wikispeech-listen": "להאזין",
 	"wikispeech-language": "שפה",
-	"wikispeech-word": "מילה",
-	"wikispeech-save": "שמירה"
+	"wikispeech-word": "מילה"
 }

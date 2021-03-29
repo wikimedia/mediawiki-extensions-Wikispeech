@@ -45,5 +45,6 @@
 	"wikispeech-language": "Sprache",
 	"wikispeech-word": "Wort",
 	"wikispeech-transcription": "Transkript",
-	"wikispeech-save": "Speichern"
+	"wikispeech-preview": "Vorschau",
+	"wikispeech-lexicon-add-entry-success": "Eintrag zum Lexikon hinzugefügt."
 }

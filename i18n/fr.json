@@ -4,6 +4,7 @@
 			"Golmore",
 			"Gomoko",
 			"Pamputt",
+			"Scratcheur-2020Send",
 			"Thibaut120094",
 			"Verdy p",
 			"Wladek92"
@@ -50,5 +51,6 @@
 	"wikispeech-language": "Langue",
 	"wikispeech-word": "Mot",
 	"wikispeech-transcription": "Transcription",
-	"wikispeech-save": "Enregistrer"
+	"wikispeech-preview": "Prévisualisation",
+	"wikispeech-lexicon-add-entry-success": "L'entrée a été ajoutée avec succès au lexique."
 }

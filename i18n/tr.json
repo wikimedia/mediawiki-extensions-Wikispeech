@@ -47,5 +47,6 @@
 	"wikispeech-language": "Dil",
 	"wikispeech-word": "Kelime",
 	"wikispeech-transcription": "Çevriyazı",
-	"wikispeech-save": "Kaydet"
+	"wikispeech-preview": "Önizleme",
+	"wikispeech-lexicon-add-entry-success": "Girdi başarıyla sözlüğe eklendi."
 }

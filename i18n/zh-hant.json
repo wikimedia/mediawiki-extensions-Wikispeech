@@ -45,5 +45,7 @@
 	"editlexicon": "編輯語彙",
 	"wikispeech-language": "語言",
 	"wikispeech-word": "字",
-	"wikispeech-transcription": "轉錄"
+	"wikispeech-transcription": "轉錄",
+	"wikispeech-preview": "預覽",
+	"wikispeech-lexicon-add-entry-success": "項目成功添加到語彙。"
 }

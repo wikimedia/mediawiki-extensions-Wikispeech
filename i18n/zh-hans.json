@@ -2,9 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Shuiwater",
+			"Si109",
 			"坑触可"
 		]
 	},
 	"prefs-wikispeech-show-player": "显示播放器",
-	"wikispeech-listen": "听"
+	"wikispeech-listen": "听",
+	"wikispeech-preview": "预览"
 }

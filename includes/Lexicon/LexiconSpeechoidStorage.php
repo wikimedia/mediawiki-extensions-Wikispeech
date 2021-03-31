@@ -183,7 +183,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
 			throw new InvalidArgumentException( '$item->item must not be null.' );
 		}
-		if ( $item->getSpeechoidIdentity() ) {
+		if ( $item->getSpeechoidIdentity() === null ) {
 			throw new InvalidArgumentException( 'Speechoid identity not set.' );
 		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );

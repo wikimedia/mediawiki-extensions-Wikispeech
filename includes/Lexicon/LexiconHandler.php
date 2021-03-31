@@ -8,6 +8,7 @@ namespace MediaWiki\Wikispeech\Lexicon;
  * @license GPL-2.0-or-later
  */
 
+use FormatJson;
 use InvalidArgumentException;
 use MWException;
 
@@ -88,13 +89,17 @@ class LexiconHandler implements LexiconStorage {
 
 		// Ensure that all items in local entry also exists in Speechoid entry.
 
-		/** @var LexiconEntryItem[] $localEntryItemsOutOfSync */
-		$localEntryItemsOutOfSync = [];
+		/** @var LexiconEntryItem[] $itemsOutOfSync */
+		$itemsOutOfSync = [];
 
 		foreach ( $localEntry->getItems() as $localEntryItem ) {
 			$localEntryItemSpeechoidIdentity = $localEntryItem->getSpeechoidIdentity();
 			if ( $localEntryItemSpeechoidIdentity === null ) {
-				$localEntryItemsOutOfSync[] = $localEntryItem;
+				$itemsOutOfSync[] = $this->outOfSyncItemFactory(
+					'Local missing identity',
+					$localEntryItem,
+					null
+				);
 				continue;
 			}
 
@@ -111,27 +116,55 @@ class LexiconHandler implements LexiconStorage {
 
 			if ( $matchingSpeechoidEntryItem === null ) {
 				// Only exists in local lexicon.
-				$localEntryItemsOutOfSync[] = $localEntryItem;
+				$itemsOutOfSync[] = $this->outOfSyncItemFactory(
+					'Identity only exists locally',
+					$localEntryItem,
+					null
+				);
 				continue;
 			}
 
 			// Use != instead of !== since the latter also compares order, which is not relevant.
 			if ( $localEntryItem->getProperties() != $matchingSpeechoidEntryItem->getProperties() ) {
 				// Exists in both, but the item properties are not equal.
-				$localEntryItemsOutOfSync[] = $localEntryItem;
+				$itemsOutOfSync[] = $this->outOfSyncItemFactory(
+					'Same identities but not equal',
+					$localEntryItem,
+					$matchingSpeechoidEntryItem
+				);
 				continue;
 			}
 		}
 
-		$failedLocalEntryItemsCount = count( $localEntryItemsOutOfSync );
+		$failedLocalEntryItemsCount = count( $itemsOutOfSync );
 		if ( $failedLocalEntryItemsCount > 0 ) {
 			throw new MWException(
 				'Storages out of sync. ' . $failedLocalEntryItemsCount .
-				' entry items from local and Speechoid lexicon failed to merge.'
+				' entry items from local and Speechoid lexicon failed to merge.: ' .
+				FormatJson::encode( $itemsOutOfSync )
 			);
 		}
 
 		return $speechoidEntry;
+	}
+
+	/**
+	 * @param string $message
+	 * @param LexiconEntryItem|null $localItem
+	 * @param LexiconEntryItem|null $speechoidItem
+	 * @return array
+	 * @since 0.1.9
+	 */
+	private function outOfSyncItemFactory(
+		string $message,
+		?LexiconEntryItem $localItem,
+		?LexiconEntryItem $speechoidItem
+	): array {
+		return [
+			'message' => $message,
+			'localItem' => $localItem !== null ? $localItem->getProperties() : null,
+			'speechoidItem' => $speechoidItem !== null ? $speechoidItem->getProperties() : null
+		];
 	}
 
 	/**

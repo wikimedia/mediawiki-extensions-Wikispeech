@@ -4,6 +4,7 @@
 			"Al Riaz Uddin Ripon",
 			"R4356th",
 			"Sibabrata Banerjee",
+			"WikiAbuHuraira",
 			"YahyA",
 			"আফতাবুজ্জামান"
 		]
@@ -12,5 +13,7 @@
 	"prefs-wikispeech-voice": "কণ্ঠ",
 	"prefs-wikispeech-show-player": "সর্বদা প্লেয়ার দেখান",
 	"wikispeech-listen": "শুনুন",
-	"wikispeech-word": "শব্দ"
+	"wikispeech-word": "শব্দ",
+	"wikispeech-preview": "প্রাকদর্শন",
+	"wikispeech-lexicon-add-entry-success": "লেখাটি সফলভাবে অভিধানে যুক্ত হয়েছে।"
 }

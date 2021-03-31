@@ -29,5 +29,6 @@
 	"right-wikispeech-listen": "Scolta ła voxe",
 	"action-wikispeech-listen": "scolta ła voxe",
 	"apierror-wikispeech-listen-invalid-input-too-long": "El testo de imput no el ga da ver pì de $1 caràtari, ma contegnere $2 caràtari.",
-	"wikispeech-listen": "Scolta"
+	"wikispeech-listen": "Scolta",
+	"wikispeech-language": "Léngua"
 }

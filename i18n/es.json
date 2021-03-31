@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Fitoschido"
+			"Fitoschido",
+			"ZealousBlaze"
 		]
 	},
 	"apihelp-wikispeech-segment-param-page": "El título de la página por procesar.",
@@ -11,5 +12,6 @@
 	"prefs-wikispeech-voice": "Voz",
 	"prefs-wikispeech-show-player": "Mostrar siempre el reproductor",
 	"right-wikispeech-listen": "Escuchar página",
-	"action-wikispeech-listen": "escuchar página"
+	"action-wikispeech-listen": "escuchar página",
+	"wikispeech-preview": "Vista previa"
 }

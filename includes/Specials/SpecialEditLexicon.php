@@ -15,7 +15,7 @@ use FormSpecialPage;
 use Html;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
-use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
+use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
@@ -33,8 +33,8 @@ class SpecialEditLexicon extends FormSpecialPage {
 	/** @var LanguageNameUtils */
 	private $languageNameUtils;
 
-	/** @var LexiconHandler */
-	private $lexiconHandler;
+	/** @var LexiconStorage */
+	private $lexiconStorage;
 
 	/** @var SpeechoidConnector */
 	private $speechoidConnector;
@@ -46,19 +46,19 @@ class SpecialEditLexicon extends FormSpecialPage {
 	 * @since 0.1.8
 	 * @param ConfigFactory $configFactory
 	 * @param LanguageNameUtils $languageNameUtils
-	 * @param LexiconHandler $lexiconHandler
+	 * @param LexiconStorage $lexiconStorage
 	 * @param SpeechoidConnector $speechoidConnector
 	 */
 	public function __construct(
 		$configFactory,
 		$languageNameUtils,
-		$lexiconHandler,
+		$lexiconStorage,
 		$speechoidConnector
 	) {
 		parent::__construct( 'EditLexicon', 'wikispeech-edit-lexicon' );
 		$this->config = $configFactory->makeConfig( 'wikispeech' );
 		$this->languageNameUtils = $languageNameUtils;
-		$this->lexiconHandler = $lexiconHandler;
+		$this->lexiconStorage = $lexiconStorage;
 		$this->speechoidConnector = $speechoidConnector;
 	}
 
@@ -139,7 +139,7 @@ class SpecialEditLexicon extends FormSpecialPage {
 				'name' => 'ok'
 			]
 		] );
-		$this->lexiconHandler->createEntryItem(
+		$this->lexiconStorage->createEntryItem(
 			$data['language'],
 			$data['word'],
 			$item

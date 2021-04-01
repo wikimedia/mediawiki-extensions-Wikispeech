@@ -82,7 +82,7 @@
 			"services": [
 				"ConfigFactory",
 				"LanguageNameUtils",
-				"Wikispeech.LexiconHandler",
+				"Wikispeech.LexiconSpeechoidStorage",
 				"Wikispeech.SpeechoidConnector"
 			]
 		}

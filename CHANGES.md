@@ -12,6 +12,9 @@ i.e. in reversed chronological order.
 Annotate your code with @since using the current -SNAPSHOT version.
 E.g. when the current is 0.1.2-SNAPSHOT, use @since 0.1.2 in the code.
 
+If updating Speechoid requirements then also update `dev/speechoid-docker-compose`
+to match that version. I.e. update the docker image tags.
+
 ## On release
 
 Remove -SNAPSHOT, set date and create a new -SNAPSHOT section.

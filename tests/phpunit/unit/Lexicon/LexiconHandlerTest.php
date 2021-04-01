@@ -41,11 +41,11 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 
 		$mockedEntryItem0 = new LexiconEntryItem();
 		$mockedEntryItem0->setProperties( [ 'id' => 'item 0' ] );
-		$this->mockedLexiconEntry->getItems()[] = $mockedEntryItem0;
+		$this->mockedLexiconEntry->addItem( $mockedEntryItem0 );
 
 		$mockedEntryItem1 = new LexiconEntryItem();
 		$mockedEntryItem1->setProperties( [ 'id' => 'item 1' ] );
-		$this->mockedLexiconEntry->getItems()[] = $mockedEntryItem1;
+		$this->mockedLexiconEntry->addItem( $mockedEntryItem1 );
 	}
 
 	public function testGetEntry_existingInBoth_retrieved() {

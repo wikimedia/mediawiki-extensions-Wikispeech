@@ -140,8 +140,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 			if ( $entry->findItemBySpeechoidIdentity( $itemSpeechoidIdentity ) !== null ) {
 				throw new MWException( 'Attempting to create an entry item that already exists.' );
 			}
-			// @phan-suppress-next-line PhanTypeInvalidCallExpressionAssignment this is by ref...
-			$entry->getItems()[] = $item;
+			$entry->addItem( $item );
 		}
 		$this->putEntry( $entry );
 	}
@@ -172,13 +171,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 		if ( $entry === null ) {
 			throw new MWException( 'Attempting to update a non existing entry.' );
 		}
-		/** @var int|null $foundItemIndex */
-		$foundItemIndex = $entry->findItemIndexBySpeechoidIdentity( $itemSpeechoidIdentity );
-		if ( $foundItemIndex === null ) {
-			throw new MWException( 'Attempting to update a non existing entry item.' );
-		}
-		// @phan-suppress-next-line PhanTypeInvalidCallExpressionAssignment this is by ref...
-		$entry->getItems()[$foundItemIndex] = $item;
+		$entry->replaceItem( $item );
 		$this->putEntry( $entry );
 	}
 
@@ -208,11 +201,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 		if ( $entry === null ) {
 			throw new MWException( 'Attempting to delete a non existing entry.' );
 		}
-		$itemIndex = $entry->findItemIndexBySpeechoidIdentity( $itemSpeechoidIdentity );
-		if ( $itemIndex === null ) {
-			throw new MWException( 'Attempting to delete a non existing entry item.' );
-		}
-		unset( $entry->getItems()[$itemIndex] );
+		$entry->deleteItem( $item );
 		$this->putEntry( $entry );
 	}
 

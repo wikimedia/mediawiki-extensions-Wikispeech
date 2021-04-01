@@ -38,6 +38,8 @@ Speechoid: 0.1.2
 2021-04-01
 Speechoid: 0.1.2
 
+* [T275756](https://phabricator.wikimedia.org/T275756) Add trigger for purging the UtteranceStore upon lexicon edit
+* [T133857](https://phabricator.wikimedia.org/T133857) Link to Special:EditLexicon from player
 * [T274649](https://phabricator.wikimedia.org/T274649) Add lexicon entries using Special:EditLexicon
 * [T277145](https://phabricator.wikimedia.org/T277145) Implement lexicon delete features.
 * [T274504](https://phabricator.wikimedia.org/T274504) Introduce LexiconHandler.

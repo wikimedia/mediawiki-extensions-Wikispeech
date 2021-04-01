@@ -27,8 +27,12 @@ Update version in extension.json.
 
 ## Versions
 
-### 0.1.8-SNAPSHOT
+### 0.1.9-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+### 0.1.8
+2021-04-01
 Speechoid: 0.1.2
 
 * [T274649](https://phabricator.wikimedia.org/T274649) Add lexicon entries using Special:EditLexicon

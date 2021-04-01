@@ -17,6 +17,7 @@ use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 
 /**
  * Special page for editing the lexicon.
@@ -146,7 +147,20 @@ class SpecialEditLexicon extends FormSpecialPage {
 		// Item is updated by createEntryItem(), so we just need to
 		// store it.
 		$this->addedItem = $item;
+		$this->purgeOriginPageUtterances();
 		return true;
+	}
+
+	/**
+	 * Immediately removes any utterance from the origin page, if set.
+	 * @since 0.1.8
+	 */
+	private function purgeOriginPageUtterances() {
+		$page = $this->getRequest()->getIntOrNull( 'page' );
+		if ( $page !== null ) {
+			$utteranceStore = new UtteranceStore();
+			$utteranceStore->flushUtterancesByPage( $page );
+		}
 	}
 
 	/**

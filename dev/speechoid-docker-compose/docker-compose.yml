@@ -1,0 +1,59 @@
+# Speechoid version: 0.1.2
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.5.3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pronlex
+      MYSQL_USER: pronlex
+      MYSQL_PASSWORD: pronlex
+
+  mishkal:
+    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-mishkal:2020-10-21-115532-production
+    expose:
+      - "8080"
+    entrypoint: ./interfaces/web/mishkal-webserver.py
+
+  mary-tts:
+    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-mary-tts:2020-10-27-065335-production
+    environment:
+      - MARY_TTS_MISHKAL_URL=http://mishkal:8080/
+    expose:
+      - "59125"
+      - "8080"
+    volumes:
+      - ./compose-files/wait-for-it.sh:/srv/compose/wait-for-it.sh
+      - ./compose-files/mary-entrypoint.sh:/srv/compose/entrypoint.sh
+    entrypoint: /srv/compose/entrypoint.sh
+
+  symbolset:
+    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-symbolset:2020-11-11-073024-production
+    expose:
+      - "8771"
+
+  pronlex:
+    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-pronlex:2020-10-28-141243-production
+    expose:
+      - "8787"
+    environment:
+      MYSQL_HOST: mariadb
+      MYSQL_USER: pronlex
+      MYSQL_PASSWORD: pronlex
+      MYSQL_DATABASE: pronlex
+    volumes:
+      - ./compose-files/wait-for-it.sh:/srv/compose/wait-for-it.sh
+      - ./compose-files/pronlex-entrypoint.sh:/srv/compose/entrypoint.sh
+    entrypoint: /srv/compose/entrypoint.sh
+
+  wikispeech-server:
+    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-wikispeech-server:2020-10-27-065144-production
+    ports:
+      - 10000:10000
+    volumes:
+      - ./volumes/wikispeech_server_tmp:/srv/wikispeech-server/wikispeech_server/tmp
+      - ./compose-files/mockup-entrypoint.sh:/srv/compose/entrypoint.sh
+      - ./compose-files/mockup.conf:/srv/compose/mockup.conf
+      - ./compose-files/wait-for-it.sh:/srv/compose/wait-for-it.sh
+    entrypoint: /srv/compose/entrypoint.sh

@@ -153,7 +153,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 808499, $item->getProperties()['id'] );
 	}
 
-	public function testUpdateEntry() {
+	public function testUpdateEntry_identityGiven_receivedUpdatedItem() {
 		$connectorMock = $this->createPartialMock(
 			SpeechoidConnector::class,
 			[ 'lookupLexiconEntries', 'updateLexiconEntry' ]
@@ -164,10 +164,31 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 			->willReturn( Status::newGood( $this->mockedLexiconEntry[1] ) );
 
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'whatever' => 'mock overrides this' ] );
+		$item->setProperties(
+			[
+				'id' => 808499,
+				'whatever' => 'mock overrides this'
+			]
+		);
 		$speechoidStorage = new LexiconSpeechoidStorage( $connectorMock, $this->cache );
 		$speechoidStorage->updateEntryItem( 'sv', 'tomten', $item );
 		$this->assertSame( 808499, $item->getProperties()['id'] );
+	}
+
+	public function testUpdateEntry_identityNotGive_throwsException() {
+		$connectorMock = $this->createPartialMock(
+			SpeechoidConnector::class,
+			[ 'lookupLexiconEntries', 'updateLexiconEntry' ]
+		);
+		$connectorMock
+			->expects( $this->never() )
+			->method( 'updateLexiconEntry' );
+
+		$item = new LexiconEntryItem();
+		$item->setProperties( [ 'whatever' => 'mock overrides this' ] );
+		$speechoidStorage = new LexiconSpeechoidStorage( $connectorMock, $this->cache );
+		$this->expectExceptionMessage( 'Speechoid identity not set.' );
+		$speechoidStorage->updateEntryItem( 'sv', 'tomten', $item );
 	}
 
 }

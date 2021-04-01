@@ -15,5 +15,6 @@
 	"action-wikispeech-edit-lexicon": "위키스피치 기호 편집",
 	"wikispeech-listen": "듣기",
 	"wikispeech-dont-listen": "듣지 않음",
-	"wikispeech-language": "언어"
+	"wikispeech-language": "언어",
+	"wikispeech-preview": "미리 보기"
 }

@@ -44,5 +44,7 @@
 	"editlexicon": "Уреди лексикон",
 	"wikispeech-language": "Јазик",
 	"wikispeech-word": "Збор",
-	"wikispeech-transcription": "Транскрипција"
+	"wikispeech-transcription": "Транскрипција",
+	"wikispeech-preview": "Преглед",
+	"wikispeech-lexicon-add-entry-success": "Ставката е успешно внесена во лексиконот."
 }

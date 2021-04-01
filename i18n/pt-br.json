@@ -46,5 +46,7 @@
 	"editlexicon": "Editar léxico",
 	"wikispeech-language": "Idioma",
 	"wikispeech-word": "Palavra",
-	"wikispeech-transcription": "Transcrição"
+	"wikispeech-transcription": "Transcrição",
+	"wikispeech-preview": "Pré-visualizar",
+	"wikispeech-lexicon-add-entry-success": "Entrada adicionada com sucesso ao léxico."
 }

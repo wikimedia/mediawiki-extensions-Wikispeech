@@ -1,7 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Achiri Bitamsimli",
 			"Amire80",
+			"DASMON",
 			"Dnshitobu",
 			"Musahfm"
 		]
@@ -9,5 +11,7 @@
 	"prefs-wikispeech-show-player": "Ŋun diemdi baalim baalim sahakam",
 	"wikispeech-language": "Balli",
 	"wikispeech-word": "Bachi",
-	"wikispeech-transcription": "Bachi"
+	"wikispeech-transcription": "Bachi",
+	"wikispeech-preview": "Danŋyuli",
+	"wikispeech-lexicon-add-entry-success": "Labi yooi"
 }

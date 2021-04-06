@@ -6,5 +6,6 @@
 	},
 	"wikispeech-language": "Язык",
 	"wikispeech-word": "Слово",
-	"wikispeech-transcription": "Транскрипция"
+	"wikispeech-transcription": "Транскрипция",
+	"wikispeech-preview": "Предпросмотр"
 }

@@ -53,6 +53,7 @@
 			],
 			"dependencies": [
 				"mediawiki.util",
+				"mediawiki.user",
 				"oojs-ui-core",
 				"oojs-ui-toolbars",
 				"oojs-ui.styles.icons-media",

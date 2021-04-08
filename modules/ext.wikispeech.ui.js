@@ -15,7 +15,17 @@
 		 */
 
 		this.init = function () {
-			mw.wikispeech.ui.addControlPanel();
+			mw.user.getRights()
+				.done( function ( rights ) {
+					var canEditLexicon = rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
+					mw.wikispeech.ui.addControlPanel( canEditLexicon );
+				} )
+				.fail( function () {
+					// If we can not get the rights we still want to
+					// show the player. Assume the user does not have
+					// the right to edit lexicon.
+					mw.wikispeech.ui.addControlPanel( false );
+				} );
 			mw.wikispeech.ui.addSelectionPlayer();
 			mw.wikispeech.ui.addBufferingIcon();
 			mw.wikispeech.ui.addKeyboardShortcuts();
@@ -26,9 +36,12 @@
 		 *
 		 * The panel contains buttons for controlling playback and
 		 * links to related pages.
+		 *
+		 * @param {boolean} addEditButton Whether the button for edit
+		 *  lexicon should be added or not.
 		 */
 
-		this.addControlPanel = function () {
+		this.addControlPanel = function ( addEditButton ) {
 			var toolFactory, toolGroupFactory, toolbar, playerGroup, linkGroup, height, padding,
 				// eslint-disable-next-line no-jquery/no-global-selector
 				$footer = $( '#footer' );
@@ -85,19 +98,21 @@
 				'feedback',
 				'wgWikispeechFeedbackPage'
 			);
-			self.addButton(
-				linkGroup,
-				'edit',
-				mw.util.getUrl(
-					'Special:EditLexicon',
-					// Send URL parameters to the edit lexicon special
-					// page. These will populate the fields.
-					{
-						language: mw.config.get( 'wgPageContentLanguage' ),
-						page: mw.config.get( 'wgArticleId' )
-					}
-				)
-			);
+			if ( addEditButton ) {
+				self.addButton(
+					linkGroup,
+					'edit',
+					mw.util.getUrl(
+						'Special:EditLexicon',
+						// Send URL parameters to the edit lexicon special
+						// page. These will populate the fields.
+						{
+							language: mw.config.get( 'wgPageContentLanguage' ),
+							page: mw.config.get( 'wgArticleId' )
+						}
+					)
+				);
+			}
 			$( document.body ).append( toolbar.$element );
 			toolbar.initialize();
 

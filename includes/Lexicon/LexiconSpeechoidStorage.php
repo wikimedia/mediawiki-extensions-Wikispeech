@@ -8,7 +8,6 @@ namespace MediaWiki\Wikispeech\Lexicon;
  * @license GPL-2.0-or-later
  */
 
-use FormatJson;
 use InvalidArgumentException;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
@@ -139,8 +138,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		if ( $lexiconName === null ) {
 			throw new MWException( "No lexicon available for language $language" );
 		}
-		$json = FormatJson::encode( $item->getProperties() );
-		if ( $json === false ) {
+		$json = $item->toJson();
+		if ( $json === '' ) {
 			throw new MWException( 'Failed to encode lexicon entry item properties to JSON.' );
 		}
 		$status = $this->speechoidConnector->addLexiconEntry( $lexiconName, $json );
@@ -191,8 +190,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		if ( $lexiconName === null ) {
 			throw new MWException( "No lexicon available for language $language" );
 		}
-		$json = FormatJson::encode( $item->getProperties() );
-		if ( $json === false ) {
+		$json = $item->toJson();
+		if ( $json === '' ) {
 			throw new MWException( 'Failed to encode lexicon entry item properties to JSON.' );
 		}
 		// @todo The lexicon name is embedded in $json here.

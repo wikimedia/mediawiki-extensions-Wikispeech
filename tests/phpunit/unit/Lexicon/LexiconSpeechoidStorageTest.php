@@ -160,6 +160,10 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		);
 		$connectorMock
 			->expects( $this->once() )
+			->method( 'lookupLexiconEntries' )
+			->willReturn( Status::newGood( $this->mockedLexiconEntry ) );
+		$connectorMock
+			->expects( $this->once() )
 			->method( 'updateLexiconEntry' )
 			->willReturn( Status::newGood( $this->mockedLexiconEntry[1] ) );
 

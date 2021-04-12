@@ -183,7 +183,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 			// @todo Better sanity check, ensure that required values (IPA, etc) are set.
 			throw new InvalidArgumentException( '$item->item must not be null.' );
 		}
-		if ( $item->getSpeechoidIdentity() === null ) {
+		$speechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $speechoidIdentity === null ) {
 			throw new InvalidArgumentException( 'Speechoid identity not set.' );
 		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
@@ -200,7 +201,19 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		if ( !$status->isOK() ) {
 			throw new MWException( "Failed to update lexicon entry item: $status" );
 		}
-		$item->setProperties( $status->getValue() );
+
+		// SpeechoidConnector::updateLexiconEntry does not return dbRef,
+		// So we need to request the entry again from Speechoid.
+		// @todo Ask STTS to return complete result at update.
+		$speechoidEntry = $this->getEntry( $language, $key );
+		if ( $speechoidEntry === null ) {
+			throw new MWException( "Expected the updated lexicon entry to exist." );
+		}
+		$speechoidEntryItem = $speechoidEntry->findItemBySpeechoidIdentity( $speechoidIdentity );
+		if ( $speechoidEntryItem === null ) {
+			throw new MWException( 'Expected the updated lexicon entry item to exist.' );
+		}
+		$item->copyFrom( $speechoidEntryItem );
 	}
 
 	/**

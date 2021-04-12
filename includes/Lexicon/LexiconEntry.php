@@ -2,6 +2,8 @@
 
 namespace MediaWiki\Wikispeech\Lexicon;
 
+use InvalidArgumentException;
+
 /**
  * @file
  * @ingroup Extensions
@@ -35,8 +37,8 @@ class LexiconEntry {
 	 * @since 0.1.8
 	 */
 	public function findItemIndexBySpeechoidIdentity( string $speechoidIdentity ): ?int {
-		for ( $itemIndex = 0; $itemIndex < count( $this->getItems() ); $itemIndex++ ) {
-			$item = $this->getItems()[$itemIndex];
+		for ( $itemIndex = 0; $itemIndex < count( $this->items ); $itemIndex++ ) {
+			$item = $this->items[$itemIndex];
 			if ( $speechoidIdentity === $item->getSpeechoidIdentity() ) {
 				return $itemIndex;
 			}
@@ -51,7 +53,79 @@ class LexiconEntry {
 	 */
 	public function findItemBySpeechoidIdentity( string $speechoidIdentity ): ?LexiconEntryItem {
 		$index = $this->findItemIndexBySpeechoidIdentity( $speechoidIdentity );
-		return $index === null ? null : $this->getItems()[$index];
+		return $index === null ? null : $this->items[$index];
+	}
+
+	/**
+	 * @param int $index
+	 * @return LexiconEntryItem
+	 * @since 0.1.9
+	 */
+	public function getItemAt( int $index ) {
+		return $this->items[$index];
+	}
+
+	/**
+	 * @param LexiconEntryItem $item
+	 * @since 0.1.9
+	 */
+	public function addItem( LexiconEntryItem $item ) {
+		$this->items[] = $item;
+	}
+
+	/**
+	 * Replaces the item in the list of items that match Speechoid identity of the given item.
+	 * @param LexiconEntryItem $item
+	 * @throws InvalidArgumentException If no item in the list match the identity of the given item.
+	 *  If item is missing speechoid identity.
+	 * @since 0.1.9
+	 */
+	public function replaceItem( LexiconEntryItem $item ) {
+		$speechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $speechoidIdentity === null ) {
+			throw new InvalidArgumentException( 'Speechoid identity not set.' );
+		}
+		$index = $this->findItemIndexBySpeechoidIdentity( $speechoidIdentity );
+		if ( $index === null ) {
+			throw new InvalidArgumentException( 'Item is not a member' );
+		}
+		$this->replaceItemAt( $index, $item );
+	}
+
+	/**
+	 * @param int $index
+	 * @param LexiconEntryItem $item
+	 * @since 0.1.9
+	 */
+	public function replaceItemAt( int $index, LexiconEntryItem $item ) {
+		$this->items[$index] = $item;
+	}
+
+	/**
+	 * Removes the item in the list of items that match Speechoid identity of the given item.
+	 * @param LexiconEntryItem $item
+	 * @throws InvalidArgumentException If no item in the list match the identity of the given item.
+	 *  If speechoid identity is not set in item.
+	 * @since 0.1.9
+	 */
+	public function deleteItem( LexiconEntryItem $item ) {
+		$speechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $speechoidIdentity === null ) {
+			throw new InvalidArgumentException( 'Speechoid identity not set.' );
+		}
+		$index = $this->findItemIndexBySpeechoidIdentity( $speechoidIdentity );
+		if ( $index === null ) {
+			throw new InvalidArgumentException( 'Item is not a member' );
+		}
+		$this->deleteItemAt( $index );
+	}
+
+	/**
+	 * @param int $index
+	 * @since 0.1.9
+	 */
+	public function deleteItemAt( int $index ) {
+		unset( $this->items[$index] );
 	}
 
 	// getters and setters
@@ -89,6 +163,15 @@ class LexiconEntry {
 	}
 
 	/**
+	 * Do not use this method to modify the array from other classes than this!
+	 * If you do, you will be modifying a clone of the array.
+	 *
+	 * @see deleteItemAt
+	 * @see deleteItem
+	 * @see replaceItemAt
+	 * @see replaceItem
+	 * @see addItem
+	 * @see getItemAt
 	 * @return LexiconEntryItem[]
 	 * @since 0.1.8
 	 */

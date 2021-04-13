@@ -32,6 +32,19 @@ class LexiconEntry {
 	// helper functions
 
 	/**
+	 * @param LexiconEntryItem $item
+	 * @return int|null Index of first item that match $speechoidIdentity
+	 * @since 0.1.9
+	 */
+	public function findItemIndexByItem( LexiconEntryItem $item ): ?int {
+		$speechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $speechoidIdentity === null ) {
+			return null;
+		}
+		return $this->findItemIndexBySpeechoidIdentity( $speechoidIdentity );
+	}
+
+	/**
 	 * @param string $speechoidIdentity
 	 * @return int|null Index of first item that match $speechoidIdentity
 	 * @since 0.1.8
@@ -43,6 +56,19 @@ class LexiconEntry {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param LexiconEntryItem $item
+	 * @return LexiconEntryItem|null First item that match $item->speechoidIdentity
+	 * @since 0.1.9
+	 */
+	public function findItemByItem( LexiconEntryItem $item ): ?LexiconEntryItem {
+		$speechoidIdentity = $item->getSpeechoidIdentity();
+		if ( $speechoidIdentity === null ) {
+			return null;
+		}
+		return $this->findItemBySpeechoidIdentity( $speechoidIdentity );
 	}
 
 	/**

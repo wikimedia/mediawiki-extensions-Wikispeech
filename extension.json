@@ -125,6 +125,9 @@
 		},
 		"DatabaseHooks": {
 			"class": "MediaWiki\\Wikispeech\\Hooks\\DatabaseHooks"
+		},
+		"LexiconHooks": {
+			"class": "MediaWiki\\Wikispeech\\Hooks\\LexiconArticleEditHook"
 		}
 	},
 	"Hooks": {
@@ -134,7 +137,8 @@
 		"ResourceLoaderGetConfigVars": "ApiHooks",
 		"GetPreferences": "ApiHooks",
 		"ApiCheckCanExecute": "ApiHooks",
-		"SkinTemplateNavigation": "ApiHooks"
+		"SkinTemplateNavigation": "ApiHooks",
+		"CustomEditor": "LexiconHooks"
 	},
 	"ConfigRegistry": {
 		"wikispeech": "GlobalVarConfig::newInstance"
@@ -393,5 +397,18 @@
 		"wikispeech-edit-lexicon": {
 			"wikispeech-edit-lexicon": true
 		}
-	}
+	},
+	"namespaces": [
+		{
+			"id": 5772,
+			"constant": "NS_PRONUNCIATION_LEXICON",
+			"name": "Pronunciation_lexicon",
+			"protection": "wikispeech-edit-lexicon"
+		},
+		{
+			"id": 5773,
+			"constant": "NS_PRONUNCIATION_LEXICON_TALK",
+			"name": "Pronunciation_lexicon_talk"
+		}
+	]
 }

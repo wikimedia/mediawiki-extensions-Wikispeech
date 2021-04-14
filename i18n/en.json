@@ -49,5 +49,8 @@
 	"wikispeech-word": "Word",
 	"wikispeech-transcription": "Transcription",
 	"wikispeech-preview": "Preview",
-	"wikispeech-lexicon-add-entry-success": "Entry successfully added to lexicon."
+	"wikispeech-lexicon-add-entry-success": "Entry successfully added to lexicon.",
+	"group-wikispeech-edit-lexicon": "Wikispeech lexicon editors",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech lexicon editor}}",
+	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech lexicon editors"
 }

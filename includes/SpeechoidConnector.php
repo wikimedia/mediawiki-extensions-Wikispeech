@@ -104,8 +104,7 @@ class SpeechoidConnector {
 				'Unexpected response from Speechoid: ' . $responseString
 			);
 		}
-		$response = $status->getValue();
-		return $response;
+		return $status->getValue();
 	}
 
 	/**
@@ -556,7 +555,6 @@ class SpeechoidConnector {
 				"$mapResponse"
 			);
 		}
-		$sampa = $mapStatus->getValue()['Result'];
-		return $sampa;
+		return $mapStatus->getValue()['Result'];
 	}
 }

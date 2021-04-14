@@ -49,7 +49,7 @@ class WikiPageTestUtil {
 		$testUser = TestUserRegistry::getImmutableTestUser()->getUser();
 		$pageUpdater = $page->newPageUpdater( $testUser );
 		$pageUpdater->setContent( SlotRecord::MAIN, $wikiTextContent );
-		$revisionRecord = $pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
+		$pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
 		if ( !$pageUpdater->wasSuccessful() ) {
 			throw new MWException( 'Failed to create page: ' . $pageUpdater->getStatus() );
 		}
@@ -78,7 +78,7 @@ class WikiPageTestUtil {
 		$testUser = TestUserRegistry::getImmutableTestUser()->getUser();
 		$pageUpdater = $page->newPageUpdater( $testUser, $slotsUpdate );
 		$pageUpdater->setContent( SlotRecord::MAIN, $wikiTextContent );
-		$revisionRecord = $pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
+		$pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
 		if ( !$pageUpdater->wasSuccessful() && !$pageUpdater->isUnchanged() ) {
 			throw new MWException( 'Failed to edit page: ' . $pageUpdater->getStatus() );
 		}

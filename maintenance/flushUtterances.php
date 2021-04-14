@@ -97,18 +97,6 @@ class FlushUtterances extends Maintenance {
 		if ( !$this->utteranceStore ) {
 			$this->utteranceStore = new UtteranceStore();
 		}
-		if ( !$this->flushUtterancesFromStoreByExpirationJobQueue ) {
-			$this->flushUtterancesFromStoreByExpirationJobQueue
-				= new FlushUtterancesFromStoreByExpirationJobQueue();
-		}
-		if ( !$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue ) {
-			$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue
-				= new FlushUtterancesFromStoreByLanguageAndVoiceJobQueue();
-		}
-		if ( !$this->flushUtterancesFromStoreByPageIdJobQueue ) {
-			$this->flushUtterancesFromStoreByPageIdJobQueue
-				= new FlushUtterancesFromStoreByPageIdJobQueue();
-		}
 
 		$flushedCount = 0;
 
@@ -143,6 +131,11 @@ class FlushUtterances extends Maintenance {
 						$this->utteranceStore->getWikispeechUtteranceExpirationTimestamp()
 					);
 			} else {
+				if ( !$this->flushUtterancesFromStoreByExpirationJobQueue ) {
+					$this->flushUtterancesFromStoreByExpirationJobQueue
+						= new FlushUtterancesFromStoreByExpirationJobQueue();
+				}
+
 				$this->flushUtterancesFromStoreByExpirationJobQueue
 					->queueJob();
 			}
@@ -151,6 +144,11 @@ class FlushUtterances extends Maintenance {
 				$flushedCount = $this->utteranceStore
 					->flushUtterancesByLanguageAndVoice( $language, $voice );
 			} else {
+				if ( !$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue ) {
+					$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue
+						= new FlushUtterancesFromStoreByLanguageAndVoiceJobQueue();
+				}
+
 				$this->flushUtterancesFromStoreByLanguageAndVoiceJobQueue
 					->queueJob( $language, $voice );
 			}
@@ -159,6 +157,11 @@ class FlushUtterances extends Maintenance {
 				$flushedCount = $this->utteranceStore
 					->flushUtterancesByPage( intval( $pageId ) );
 			} else {
+				if ( !$this->flushUtterancesFromStoreByPageIdJobQueue ) {
+					$this->flushUtterancesFromStoreByPageIdJobQueue
+						= new FlushUtterancesFromStoreByPageIdJobQueue();
+				}
+
 				$this->flushUtterancesFromStoreByPageIdJobQueue
 					->queueJob( intval( $pageId ) );
 			}

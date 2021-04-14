@@ -106,7 +106,7 @@ class ApiWikispeechListen extends ApiBase {
 	 */
 	public function execute() {
 		$inputParameters = $this->extractRequestParams();
-		self::validateParameters( $inputParameters );
+		$this->validateParameters( $inputParameters );
 
 		$language = $inputParameters['lang'];
 		$voice = $inputParameters['voice'];
@@ -165,13 +165,12 @@ class ApiWikispeechListen extends ApiBase {
 		$segmenter = new Segmenter( $this->getContext(), $this->cache );
 		$segment = $segmenter->getSegment( $title, $segmentHash, $revisionId );
 
-		$response = $this->getUtterance(
+		return $this->getUtterance(
 			$voice,
 			$language,
 			$pageId,
 			$segment
 		);
-		return $response;
 	}
 
 	/**
@@ -365,8 +364,7 @@ class ApiWikispeechListen extends ApiBase {
 		foreach ( $values as $value ) {
 			$valueStrings[] = "<kbd>$value</kbd>";
 		}
-		$valuesString = implode( ', ', $valueStrings );
-		return $valuesString;
+		return implode( ', ', $valueStrings );
 	}
 
 	/**

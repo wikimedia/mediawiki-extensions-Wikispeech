@@ -57,18 +57,19 @@ class FlushUtterancesByExpirationDateOnFile extends Maintenance {
 		// Non PHP core classes aren't available prior to this point,
 		// i.e. we can't initialize the fields in the constructor,
 		// and we have to be lenient for mocked instances set by tests.
-		if ( !$this->utteranceStore ) {
-			$this->utteranceStore = new UtteranceStore();
-		}
-		if ( !$this->jobQueue ) {
-			$this->jobQueue = new FlushUtterancesByExpirationDateOnFileJobQueue();
-		}
 
-		$force = $this->hasOption( 'force' );
-		if ( $force ) {
+		if ( $this->hasOption( 'force' ) ) {
+			if ( !$this->utteranceStore ) {
+				$this->utteranceStore = new UtteranceStore();
+			}
+
 			$flushedCount = $this->utteranceStore->flushUtterancesByExpirationDateOnFile();
 			$this->output( "Flushed $flushedCount utterances.\n" );
 		} else {
+			if ( !$this->jobQueue ) {
+				$this->jobQueue = new FlushUtterancesByExpirationDateOnFileJobQueue();
+			}
+
 			$this->jobQueue->queueJob();
 			$this->output( 'Flush job has been queued and will be executed ' .
 				"in accordance with your MediaWiki configuration.\n" );
@@ -81,5 +82,4 @@ class FlushUtterancesByExpirationDateOnFile extends Maintenance {
 
 /** @var string This class, required to start via Maintenance. */
 $maintClass = FlushUtterancesByExpirationDateOnFile::class;
-
 require_once RUN_MAINTENANCE_IF_MAIN;

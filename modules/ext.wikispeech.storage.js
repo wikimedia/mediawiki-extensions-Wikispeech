@@ -27,10 +27,10 @@
 
 			api = new mw.Api();
 			page = mw.config.get( 'wgPageName' );
-			api.post(
+			api.get(
 				{
 					action: 'wikispeech-segment',
-					page: [ page ]
+					page: page
 				},
 				{
 					beforeSend: function ( jqXHR, settings ) {
@@ -193,7 +193,7 @@
 				options.voice = voice;
 			}
 			api = new mw.Api();
-			request = api.post(
+			request = api.get(
 				options,
 				{
 					beforeSend: function ( jqXHR, settings ) {

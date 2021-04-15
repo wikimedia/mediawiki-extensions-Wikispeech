@@ -37,8 +37,7 @@ class LexiconEntry {
 	 * @since 0.1.8
 	 */
 	public function findItemIndexBySpeechoidIdentity( string $speechoidIdentity ): ?int {
-		for ( $itemIndex = 0; $itemIndex < count( $this->items ); $itemIndex++ ) {
-			$item = $this->items[$itemIndex];
+		foreach ( $this->items as $itemIndex => $item ) {
 			if ( $speechoidIdentity === $item->getSpeechoidIdentity() ) {
 				return $itemIndex;
 			}

@@ -100,12 +100,8 @@ class Cleaner {
 		$dom = new DOMDocument();
 		// Add encoding information and wrap the input text in a dummy
 		// tag to prevent p tags from being added for text nodes.
-		global $wgWikispeechContentWrapperTagName;
-		$contentTag = '<' . $wgWikispeechContentWrapperTagName . '>';
-		// phpcs:ignore Generic.Files.LineLength
-		$wrappedText = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><dummy>' .
-			$markedUpText .
-			'</dummy></head>';
+		$wrappedText = '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>' .
+			'<dummy>' . $markedUpText . '</dummy></head>';
 		libxml_use_internal_errors( true );
 		$dom->loadHTML(
 			$wrappedText,
@@ -206,7 +202,7 @@ class Cleaner {
 	 *
 	 * Since this is for checking HTML tag classes, the class
 	 * attribute, if present, is assumed to be a string of substrings,
-	 * sepparated by spaces.
+	 * separated by spaces.
 	 *
 	 * @since 0.0.1
 	 * @param DOMNode $node The node to check.
@@ -221,10 +217,7 @@ class Cleaner {
 		}
 		$classString = $classNode->nodeValue;
 		$nodeClasses = explode( ' ', $classString );
-		if ( in_array( $className, $nodeClasses ) ) {
-			return true;
-		}
-		return false;
+		return in_array( $className, $nodeClasses );
 	}
 
 	/**

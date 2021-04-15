@@ -130,8 +130,6 @@ class ApiWikispeechSegment extends ApiBase {
 	 * @return array
 	 */
 	public function getAllowedParams() {
-		global $wgWikispeechRemoveTags;
-		global $wgWikispeechSegmentBreakingTags;
 		return array_merge(
 			parent::getAllowedParams(),
 			[
@@ -142,7 +140,7 @@ class ApiWikispeechSegment extends ApiBase {
 				'removetags' => [
 					ParamValidator::PARAM_TYPE => 'string',
 					ParamValidator::PARAM_DEFAULT => json_encode(
-						$wgWikispeechRemoveTags
+						$this->getConfig()->get( 'WikispeechRemoveTags' )
 					)
 				],
 				'segmentbreakingtags' => [
@@ -150,7 +148,7 @@ class ApiWikispeechSegment extends ApiBase {
 					ParamValidator::PARAM_ISMULTI => true,
 					ParamValidator::PARAM_DEFAULT => implode(
 						'|',
-						$wgWikispeechSegmentBreakingTags
+						$this->getConfig()->get( 'WikispeechSegmentBreakingTags' )
 					)
 				]
 			]

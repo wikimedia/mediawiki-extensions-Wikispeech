@@ -9,6 +9,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use SpecialPage;
 use SpecialPageTestBase;
 use Wikimedia\TestingAccessWrapper;
 
@@ -64,7 +65,7 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		];
 		$this->languageNameUtils
 			->method( 'getLanguageName' )
-			->will( $this->returnValueMap( $map ) );
+			->willReturnMap( $map );
 
 		$languageOptions = $wrappedPage->getLanguageOptions();
 

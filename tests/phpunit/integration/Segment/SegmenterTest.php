@@ -93,7 +93,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$segmenterMock
 			->expects( $this->exactly( $occurences ) )
 			->method( 'cleanPage' )
-			->will( $this->returnValue( [] ) );
+			->willReturn( [] );
 		$this->segmenter = $segmenterMock;
 	}
 

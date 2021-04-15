@@ -221,7 +221,6 @@ class UtteranceStore {
 			'segmentHash' => strval( $row->wsu_seg_hash ),
 			'dateStored' => MWTimestamp::getInstance( $row->wsu_date_stored )
 		];
-		$dbr->freeResult( $res );
 
 		return $utterance;
 	}
@@ -452,7 +451,7 @@ class UtteranceStore {
 				$successfullyFlushedCounter++;
 			}
 		}
-		$dbw->freeResult( $results );
+
 		return $successfullyFlushedCounter;
 	}
 
@@ -515,8 +514,7 @@ class UtteranceStore {
 		$utteranceIdText = strval( $utteranceId );
 		$utteranceIdTextLength = strlen( $utteranceIdText );
 		for ( $index = 0; $index < $utteranceIdTextLength - 3; $index++ ) {
-			$path .= substr( $utteranceIdText, $index, 1 );
-			$path .= '/';
+			$path .= substr( $utteranceIdText, $index, 1 ) . '/';
 		}
 		return $path;
 	}
@@ -564,7 +562,7 @@ class UtteranceStore {
 		// which were scheduled to be deleted together with their db-entries anyway.
 
 		if ( !$expiredTimestamp ) {
-			$expiredTimestamp = self::getWikispeechUtteranceExpirationTimestamp();
+			$expiredTimestamp = $this->getWikispeechUtteranceExpirationTimestamp();
 		}
 		$fileBackend = $this->getFileBackend();
 		return $this->recurseFlushUtterancesByExpirationDateOnFile(

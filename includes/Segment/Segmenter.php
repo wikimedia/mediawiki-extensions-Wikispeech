@@ -404,7 +404,7 @@ class Segmenter {
 			hash_update( $context, $part->string );
 			hash_update( $context, "\n" );
 		}
-		$hash = hash_final( $context );
+		return hash_final( $context );
 		// Uncommenting below block can be useful during creation of
 		// new test cases as you might need to figure out hashes.
 		//LoggerFactory::getInstance( 'Segmenter' )
@@ -412,7 +412,6 @@ class Segmenter {
 		//		'segment' => $segment,
 		//		'hash' => $hash
 		//	] );
-		return $hash;
 	}
 
 	/**

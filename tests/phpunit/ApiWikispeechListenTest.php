@@ -101,7 +101,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	 * @return ApiWikispeechListen|TestingAccessWrapper
 	 */
 	private function mockApi() {
-		$wanObjectCache = $this->createStub( WanObjectCache::class );
+		$wanObjectCache = $this->createStub( WANObjectCache::class );
 		$revisionStore = $this->createStub( RevisionStore::class );
 		$requestFactory = $this->createStub( HttpRequestFactory::class );
 		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(

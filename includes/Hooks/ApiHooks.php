@@ -268,7 +268,7 @@ class ApiHooks implements
 			return false;
 		}
 
-		if ( !self::validateConfiguration() ) {
+		if ( !$this->validateConfiguration() ) {
 			$this->logger->info( __METHOD__ . ': Not loading Wikispeech: config invalid.' );
 			return false;
 		}
@@ -285,7 +285,6 @@ class ApiHooks implements
 			return false;
 		}
 
-		$pageContentLanguage = null;
 		if ( $namespace == NS_MEDIA || $namespace < 0 ) {
 			// cannot get pageContentLanguage of e.g. a Special page or a
 			// virtual page. These should all use the interface language.

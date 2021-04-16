@@ -1,9 +1,10 @@
 ( function () {
-	var server, storage, player, util, contentSelector;
+	var server, storage, player, util, contentSelector, sandbox;
 
 	QUnit.module( 'ext.wikispeech.storage', {
 		beforeEach: function () {
 			util = mw.wikispeech.test.util;
+			sandbox = sinon.sandbox.create();
 			mw.wikispeech.player = {
 				skipAheadUtterance: sinon.spy(),
 				stop: sinon.spy()
@@ -35,6 +36,7 @@
 		},
 		afterEach: function () {
 			server.restore();
+			sandbox.restore();
 			mw.user.options.set( 'wikispeechVoiceEn', '' );
 			mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 		}
@@ -58,13 +60,18 @@
 				} ]
 			}
 		};
-		server.respondWith( JSON.stringify( response ) );
+		sandbox.stub( mw.Api.prototype, 'get' ).returns(
+			$.Deferred().resolve( response )
+		);
 
 		storage.loadUtterances();
 
-		assert.strictEqual(
-			decodeURIComponent( server.requests[ 0 ].requestBody ),
-			'action=wikispeech-segment&format=json&page=Page'
+		assert.deepEqual(
+			mw.Api.prototype.get.firstCall.args[ 0 ],
+			{
+				action: 'wikispeech-segment',
+				page: 'Page'
+			}
 		);
 		expectedUtterances = [ {
 			startOffset: 0,
@@ -157,12 +164,18 @@
 	QUnit.test( 'loadAudio()', function ( assert ) {
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
+		sandbox.stub( mw.Api.prototype, 'get' ).returns( $.Deferred() );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
-		assert.strictEqual(
-			server.requests[ 0 ].requestBody,
-			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234'
+		assert.deepEqual(
+			mw.Api.prototype.get.firstCall.args[ 0 ],
+			{
+				action: 'wikispeech-listen',
+				lang: 'en',
+				revision: 1,
+				segment: 'hash1234'
+			}
 		);
 	} );
 
@@ -201,18 +214,23 @@
 	} );
 
 	QUnit.test( 'loadAudio(): non-default voice', function ( assert ) {
-		sinon.spy( storage, 'requestTts' );
 		mw.user.options.set( 'wikispeechVoiceEn', 'en-voice' );
 		mw.config.set( 'wgPageContentLanguage', 'en' );
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
+		sandbox.stub( mw.Api.prototype, 'get' ).returns( $.Deferred() );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
-		sinon.assert.called( storage.requestTts );
-		assert.strictEqual(
-			server.requests[ 0 ].requestBody,
-			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234&voice=en-voice'
+		assert.deepEqual(
+			mw.Api.prototype.get.firstCall.args[ 0 ],
+			{
+				action: 'wikispeech-listen',
+				lang: 'en',
+				revision: 1,
+				segment: 'hash1234',
+				voice: 'en-voice'
+			}
 		);
 	} );
 

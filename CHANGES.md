@@ -34,6 +34,8 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T280239](https://phabricator.wikimedia.org/T280239) Use GET requests for segments and utterances
+
 ### 0.1.8
 2021-04-01
 Speechoid: 0.1.2

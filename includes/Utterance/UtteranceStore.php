@@ -16,6 +16,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
+use SwiftFileBackend;
 use WikiMap;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
@@ -317,17 +318,28 @@ class UtteranceStore {
 	 * @throws ExternalStoreException
 	 */
 	public function storeFile( $fileUrl, $content, $type ) {
-		if ( !$this->getFileBackend()->prepare( [
+		$fileBackend = $this->getFileBackend();
+		if ( !$fileBackend->prepare( [
 			'dir' => dirname( $fileUrl ),
 			'noAccess' => 1,
 			'noListing' => 1
 		] )->isOK() ) {
 			throw new ExternalStoreException( "Failed to prepare $type: $fileUrl." );
 		}
-		if ( !$this->getFileBackend()->create( [
+		$opts = [
 			'dst' => $fileUrl,
 			'content' => $content
-		] )->isOK() ) {
+		];
+		if ( $this->isWikispeechUtteranceUseSwiftFileBackendExpiring() &&
+			$fileBackend instanceof SwiftFileBackend ) {
+			// Mark files in Swift for automatic removal after TTL.
+			// See $this->flushUtterances for code that skips forced removal if backend is Swift.
+			$opts['headers'] = [
+				// number of seconds from now
+				'X-Delete-After' => $this->getWikispeechUtteranceTimeToLiveDays() * 60 * 60 * 24
+			];
+		}
+		if ( !$fileBackend->create( $opts )->isOK() ) {
 			throw new ExternalStoreException( "Failed to create $type: $fileUrl." );
 		}
 	}
@@ -411,6 +423,13 @@ class UtteranceStore {
 		if ( !$results ) {
 			return 0;
 		}
+
+		// TTL is set when creating files in Swift, so no need to invoke any delete I/O operations.
+		$flushInFileBackend = !(
+			$this->isWikispeechUtteranceUseSwiftFileBackendExpiring() &&
+			$this->getFileBackend() instanceof SwiftFileBackend
+		);
+
 		$successfullyFlushedCounter = 0;
 		foreach ( $results as $row ) {
 			$utteranceId = $row->wsu_utterance_id;
@@ -434,20 +453,25 @@ class UtteranceStore {
 			}
 
 			// 2. delete in file store.
-			$successfullyDeletedAudioFile = $this->deleteFileBackendFile(
-				$this->audioUrlFactory( $utteranceId ),
-				$utteranceId,
-				'audio file'
-			);
-			$successfullyDeletedSynthesisMetadataFile = $this->deleteFileBackendFile(
-				$this->synthesisMetadataUrlFactory( $utteranceId ),
-				$utteranceId,
-				'synthesis metadata file'
-			);
+			if ( $flushInFileBackend ) {
+				$successfullyDeletedAudioFile = $this->deleteFileBackendFile(
+					$this->audioUrlFactory( $utteranceId ),
+					$utteranceId,
+					'audio file'
+				);
+				$successfullyDeletedSynthesisMetadataFile = $this->deleteFileBackendFile(
+					$this->synthesisMetadataUrlFactory( $utteranceId ),
+					$utteranceId,
+					'synthesis metadata file'
+				);
+				$successfullyDeletedFiles =
+					$successfullyDeletedAudioFile && $successfullyDeletedSynthesisMetadataFile;
+			} else {
+				// The files were marked for automatic deletion using TTL in the Swift create operation.
+				$successfullyDeletedFiles = true;
+			}
 
-			if ( $successfullyDeletedTableRow
-				&& $successfullyDeletedAudioFile
-				&& $successfullyDeletedSynthesisMetadataFile ) {
+			if ( $successfullyDeletedTableRow && $successfullyDeletedFiles ) {
 				$successfullyFlushedCounter++;
 			}
 		}
@@ -645,10 +669,22 @@ class UtteranceStore {
 	 * @return MWTimestamp Utterance parts with timestamp <= this is expired.
 	 */
 	public function getWikispeechUtteranceExpirationTimestamp() : MWTimestamp {
-		$utteranceTimeToLiveDays = intval(
-			$this->config->get( 'WikispeechUtteranceTimeToLiveDays' )
+		return MWTimestamp::getInstance(
+			strtotime( '-' . $this->getWikispeechUtteranceTimeToLiveDays() . 'days' )
 		);
-		$expirationDate = strtotime( '-' . $utteranceTimeToLiveDays . 'days' );
-		return MWTimestamp::getInstance( $expirationDate );
+	}
+
+	/**
+	 * @return int Number of days an utterance is to exist before being flushed out.
+	 */
+	private function getWikispeechUtteranceTimeToLiveDays(): int {
+		return intval( $this->config->get( 'WikispeechUtteranceTimeToLiveDays' ) );
+	}
+
+	/**
+	 * @return bool
+	 */
+	private function isWikispeechUtteranceUseSwiftFileBackendExpiring(): bool {
+		return $this->config->get( 'WikispeechUtteranceUseSwiftFileBackendExpiring' );
 	}
 }

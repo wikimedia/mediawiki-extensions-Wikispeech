@@ -341,6 +341,18 @@
 		"WikispeechUtteranceFileBackendContainerName": {
 			"description": "Container name used in FileBackend for utterance audio and metadata files.",
 			"value": "wikispeech_utterances"
+		},
+		"WikispeechUtteranceUseSwiftFileBackendExpiring": {
+			"description": [
+				"In case of the file backend is Swift and this value is set true,",
+				"the Wikispeech will set the 'X-Delete-After' header when creating files in Swift ",
+				"and the utterance flushing mechanism will not invoke delete command in Swift. ",
+				"I.e. the actual flushing of utterances is moved to the Swift layer. ",
+				"In order for this to make sense, the Swift file backend must be set to accept ",
+				"these headers. For more information on how to do this see ",
+				"https://docs.openstack.org/swift/latest/overview_expiring_objects.html"
+			],
+			"value": false
 		}
 	},
 	"DefaultUserOptions": {

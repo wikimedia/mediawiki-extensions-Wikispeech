@@ -83,6 +83,8 @@ class SpecialEditLexicon extends SpecialPage {
 		} else {
 			$entry = null;
 		}
+		$copyrightNote = $this->msg( 'wikispeech-lexicon-copyrightnote' )->parse();
+		$postText = Html::rawElement( 'p', [], $copyrightNote );
 
 		if ( $entry ) {
 			// Entry exists, show form to update existing item or
@@ -102,7 +104,7 @@ class SpecialEditLexicon extends SpecialPage {
 				// Add item id as option for selection.
 				$idOptions[$id] = $id;
 				// Add item to info text.
-				$itemJsons[] = "<pre>$item</pre>";
+				$postText .= Html::element( 'pre', [], $item );
 			}
 			$form = HTMLForm::factory(
 				'ooui',
@@ -114,7 +116,6 @@ class SpecialEditLexicon extends SpecialPage {
 			);
 			// Display the existing items to help the user to decide
 			// if they should update one of them or create a new one.
-			$form->setPostText( implode( "\n\n", $itemJsons ) );
 			if ( $this->getRequest()->getText( 'id', '' ) === '' ) {
 				$message = 'wikispeech-lexicon-add-entry-success';
 			} else {
@@ -129,6 +130,7 @@ class SpecialEditLexicon extends SpecialPage {
 			$message = 'wikispeech-lexicon-add-entry-success';
 		}
 		$form->setSubmitCallback( [ $this, 'submit' ] );
+		$form->setPostText( $postText );
 		if ( $form->show() ) {
 			$this->success( $message );
 		}

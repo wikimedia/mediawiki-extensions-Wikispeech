@@ -52,5 +52,8 @@
 	"wikispeech-word": "Mot",
 	"wikispeech-transcription": "Transcription",
 	"wikispeech-preview": "Aperçu",
-	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée avec succès au lexique."
+	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée avec succès au lexique.",
+	"group-wikispeech-edit-lexicon": "Modificateurs du lexique Wikispeech",
+	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech",
+	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Modificateurs du lexique Wikispeech"
 }

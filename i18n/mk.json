@@ -46,5 +46,8 @@
 	"wikispeech-word": "Збор",
 	"wikispeech-transcription": "Транскрипција",
 	"wikispeech-preview": "Преглед",
-	"wikispeech-lexicon-add-entry-success": "Ставката е успешно внесена во лексиконот."
+	"wikispeech-lexicon-add-entry-success": "Ставката е успешно внесена во лексиконот.",
+	"group-wikispeech-edit-lexicon": "Лексиконски уредници на Викиговор",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Лексиконски уредник на Викиговор}}",
+	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Лексиконски уредници на Викиговор"
 }

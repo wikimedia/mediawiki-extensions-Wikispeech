@@ -14,3 +14,10 @@ For more information about the background to the project, check out the
 
 For information on installing Wikispeech on your wiki, please
 see <https://www.mediawiki.org/wiki/Extension:Wikispeech>.
+
+
+## Funding Acknowledgements
+
+This work was supported by the Swedish Post and Telecom Authority
+(PTS) through the grant "Wikispeech – en användargenererad talsyntes
+på Wikipedia" (2016–2017).

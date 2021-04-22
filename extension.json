@@ -69,6 +69,7 @@
 				"ext.wikispeech.util.js"
 			],
 			"dependencies": [
+				"mediawiki.api",
 				"oojs-ui-core"
 			]
 		}

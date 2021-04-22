@@ -48,5 +48,8 @@
 	"wikispeech-word": "Kelime",
 	"wikispeech-transcription": "Çevriyazı",
 	"wikispeech-preview": "Önizleme",
-	"wikispeech-lexicon-add-entry-success": "Girdi başarıyla sözlüğe eklendi."
+	"wikispeech-lexicon-add-entry-success": "Girdi başarıyla sözlüğe eklendi.",
+	"group-wikispeech-edit-lexicon": "Vikisöylev sözlük editörleri",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Vikisöylev sözlük editörü}}",
+	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Vikisöylev sözlük editörleri"
 }

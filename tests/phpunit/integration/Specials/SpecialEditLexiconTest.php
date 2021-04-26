@@ -3,13 +3,15 @@
 namespace MediaWiki\Wikispeech\Tests\Integration\Special;
 
 use ConfigFactory;
+use FauxRequest;
 use HashConfig;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
-use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
+use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
-use SpecialPage;
+use RequestContext;
 use SpecialPageTestBase;
 use Wikimedia\TestingAccessWrapper;
 
@@ -39,12 +41,12 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			}
 		);
 		$this->languageNameUtils = $this->createStub( LanguageNameUtils::class );
-		$this->lexiconHandler = $this->createMock( LexiconHandler::class );
+		$this->lexiconStorage = $this->createMock( LexiconStorage::class );
 		$this->speechoidConnector = $this->createStub( SpeechoidConnector::class );
 		return new SpecialEditLexicon(
 			$configFactory,
 			$this->languageNameUtils,
-			$this->lexiconHandler,
+			$this->lexiconStorage,
 			$this->speechoidConnector
 		);
 	}
@@ -78,7 +80,7 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		);
 	}
 
-	public function testOnSubmit_formFilled_addEntryToLexicon() {
+	public function testSubmit_formFilled_addEntryToLexicon() {
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -88,23 +90,126 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 				'name' => 'ok'
 			]
 		] );
-		$this->lexiconHandler->expects( $this->once() )
+		$this->lexiconStorage->expects( $this->once() )
 			->method( 'createEntryItem' )
 			->with(
 				$this->equalTo( 'en' ),
 				$this->equalTo( 'monkey' ),
 				$this->equalTo( $item )
 			);
-		$data = [
+		$context = new RequestContext;
+		$context->setRequest( new FauxRequest( [
 			'language' => 'en',
 			'word' => 'monkey',
 			'transcription' => 'ipa transcription'
-		];
+		] ) );
+		$page->setContext( $context );
 		$this->speechoidConnector
 			->method( 'ipaToSampa' )
 			->with( 'ipa transcription' )
 			->willReturn( 'sampa transcription' );
 
-		$page->onSubmit( $data );
+		$page->submit();
+	}
+
+	public function testSubmit_existingIdGiven_updateEntry() {
+		$page = $this->newSpecialPage();
+		$item = new LexiconEntryItem();
+		$item->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'sampa transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			],
+			'id' => 123
+		] );
+		$entry = new LexiconEntry();
+		$entry->setItems( [ $item ] );
+		$this->lexiconStorage->method( 'getEntry' )
+			->willReturn( $entry );
+		$context = new RequestContext;
+		$context->setRequest( new FauxRequest( [
+			'language' => 'en',
+			'word' => 'monkey',
+			'transcription' => 'ipa transcription',
+			'id' => 123
+		] ) );
+		$page->setContext( $context );
+		$this->lexiconStorage->expects( $this->once() )
+			->method( 'updateEntryItem' )
+			->with(
+				$this->equalTo( 'en' ),
+				$this->equalTo( 'monkey' ),
+				$this->equalTo( $item )
+			);
+		$this->speechoidConnector
+			->method( 'ipaToSampa' )
+			->with( 'ipa transcription' )
+			->willReturn( 'sampa transcription' );
+
+		$page->submit();
+	}
+
+	public function testSubmit_entryExistsAndNewSelected_createNewEntry() {
+		$page = $this->newSpecialPage();
+		$item = new LexiconEntryItem();
+		$item->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'sampa transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			]
+		] );
+		$context = new RequestContext;
+		$context->setRequest( new FauxRequest( [
+			'language' => 'en',
+			'word' => 'monkey',
+			'transcription' => 'ipa transcription',
+			'id' => ''
+		] ) );
+		$page->setContext( $context );
+		$entry = new LexiconEntry();
+		$entry->setItems( [ $item ] );
+		$this->lexiconStorage->method( 'getEntry' )
+			->willReturn( $entry );
+		$this->lexiconStorage->expects( $this->once() )
+			->method( 'createEntryItem' )
+			->with(
+				$this->equalTo( 'en' ),
+				$this->equalTo( 'monkey' ),
+				$this->equalTo( $item )
+			);
+		$this->speechoidConnector->method( 'ipaToSampa' )
+			->with( 'ipa transcription' )
+			->willReturn( 'sampa transcription' );
+
+		$page->submit();
+	}
+
+	public function testSubmit_entryExistsAndNotSelected_fails() {
+		$page = $this->newSpecialPage();
+		$item = new LexiconEntryItem();
+		$item->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'sampa transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			]
+		] );
+		$context = new RequestContext;
+		$context->setRequest( new FauxRequest( [
+			'language' => 'en',
+			'word' => 'monkey',
+			'transcription' => 'ipa transcription'
+		] ) );
+		$page->setContext( $context );
+		$entry = new LexiconEntry();
+		$entry->setItems( [ $item ] );
+		$this->lexiconStorage->method( 'getEntry' )
+			->willReturn( $entry );
+
+		$result = $page->submit();
+
+		$this->assertFalse( false, $result );
 	}
 }

@@ -10,14 +10,17 @@ namespace MediaWiki\Wikispeech\Specials;
 
 use Config;
 use ConfigFactory;
-use FormatJson;
-use FormSpecialPage;
 use Html;
+use HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+use MWException;
+use Psr\Log\LoggerInterface;
+use SpecialPage;
 
 /**
  * Special page for editing the lexicon.
@@ -25,7 +28,7 @@ use MediaWiki\Wikispeech\Utterance\UtteranceStore;
  * @since 0.1.8
  */
 
-class SpecialEditLexicon extends FormSpecialPage {
+class SpecialEditLexicon extends SpecialPage {
 
 	/** @var Config */
 	private $config;
@@ -40,7 +43,10 @@ class SpecialEditLexicon extends FormSpecialPage {
 	private $speechoidConnector;
 
 	/** @var LexiconEntryItem */
-	private $addedItem;
+	private $modifiedItem;
+
+	/** @var LoggerInterface */
+	private $logger;
 
 	/**
 	 * @since 0.1.8
@@ -60,6 +66,7 @@ class SpecialEditLexicon extends FormSpecialPage {
 		$this->languageNameUtils = $languageNameUtils;
 		$this->lexiconStorage = $lexiconStorage;
 		$this->speechoidConnector = $speechoidConnector;
+		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 	}
 
 	/**
@@ -67,30 +74,80 @@ class SpecialEditLexicon extends FormSpecialPage {
 	 * @param string|null $subpage
 	 */
 	public function execute( $subpage ) {
-		parent::execute( $subpage );
-		$this->checkPermissions();
-		$out = $this->getOutput();
-		$out->addModules( [
+		$this->setHeaders();
+		$request = $this->getRequest();
+		$language = $request->getText( 'language' );
+		$word = $request->getText( 'word' );
+		if ( $language && $word ) {
+			$entry = $this->lexiconStorage->getEntry( $language, $word );
+		} else {
+			$entry = null;
+		}
+
+		if ( $entry ) {
+			// Entry exists, show form to update existing item or
+			// create a new one.
+			$itemJsons = [];
+			$newLabel = $this->msg( 'wikispeech-lexicon-new' )->text();
+			$idOptions = [ $newLabel => '' ];
+			foreach ( $entry->getItems() as $item ) {
+				$properties = $item->getProperties();
+				if ( !isset( $properties['id'] ) ) {
+					$this->logger->warning(
+						__METHOD__ . ': Skipping item with no id.'
+					);
+					continue;
+				}
+				$id = $properties['id'];
+				// Add item id as option for selection.
+				$idOptions[$id] = $id;
+				// Add item to info text.
+				$itemJsons[] = "<pre>$item</pre>";
+			}
+			$form = HTMLForm::factory(
+				'ooui',
+				$this->getConflictFormFields( $idOptions ),
+				$this->getContext()
+			);
+			$form->setPreText(
+				$this->msg( 'wikispeech-lexicon-add-entry-conflict' )->text()
+			);
+			// Display the existing items to help the user to decide
+			// if they should update one of them or create a new one.
+			$form->setPostText( implode( "\n\n", $itemJsons ) );
+			if ( $this->getRequest()->getText( 'id', '' ) === '' ) {
+				$message = 'wikispeech-lexicon-add-entry-success';
+			} else {
+				$message = 'wikispeech-lexicon-edit-entry-success';
+			}
+		} else {
+			$form = HTMLForm::factory(
+				'ooui',
+				$this->getFormFields(),
+				$this->getContext()
+			);
+			$message = 'wikispeech-lexicon-add-entry-success';
+		}
+		$form->setSubmitCallback( [ $this, 'submit' ] );
+		if ( $form->show() ) {
+			$this->success( $message );
+		}
+		$this->getOutput()->addModules( [
 			'ext.wikispeech.specialEditLexicon'
 		] );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Create a field descriptor for adding an entry
+	 *
+	 * @since 0.1.9
+	 * @return array
 	 */
-	protected function getDisplayFormat() {
-		return 'ooui';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	protected function getFormFields() {
+	private function getFormFields() {
 		// Get the page parameter to explicitly set it for the hidden
 		// field.
 		$page = $this->getRequest()->getIntOrNull( 'page' );
-
-		return [
+		$fields = [
 			'language' => [
 				'name' => 'language',
 				'type' => 'select',
@@ -120,33 +177,121 @@ class SpecialEditLexicon extends FormSpecialPage {
 				'default' => $page
 			]
 		];
+		return $fields;
 	}
 
 	/**
-	 * @inheritDoc
+	 * Create a field descriptor for choosing to edit or add new entry
+	 *
+	 * @since 0.1.9
+	 * @param array $itemOptions Options for the item id field.
+	 * @return array
 	 */
-	public function onSubmit( array $data ) {
-		$item = new LexiconEntryItem();
+	private function getConflictFormFields( $itemOptions ) {
+		$page = $this->getRequest()->getIntOrNull( 'page' );
+		$fields = [
+			'id' => [
+				'name' => 'id',
+				'type' => 'select',
+				'label' => $this->msg( 'wikispeech-item-id' )->text(),
+				'options' => $itemOptions,
+				'default' => ''
+			],
+			// These fields are needed to send the data on
+			// submit. Also, it is nice for the user to compare their
+			// own entry to what is already in the lexicon.
+			'language' => [
+				'name' => 'language',
+				'type' => 'text',
+				'label' => $this->msg( 'wikispeech-language' )->text(),
+				'readonly' => true
+			],
+			'word' => [
+				'name' => 'word',
+				'type' => 'text',
+				'label' => $this->msg( 'wikispeech-word' )->text(),
+				'readonly' => true
+			],
+			'transcription' => [
+				'name' => 'transcription',
+				'type' => 'text',
+				'label' => $this->msg( 'wikispeech-transcription' )->text(),
+				'readonly' => true
+			],
+			'page' => [
+				'name' => 'page',
+				'type' => 'hidden',
+				'default' => $page
+			]
+		];
+		return $fields;
+	}
+
+	/**
+	 * Handle submit request
+	 *
+	 * If there is no entry for the given spelling, a new one is
+	 * created with a new item. If there is an entry, the submit fails
+	 * and the user is shown the conflict page. If the request
+	 * contains an id, that item is updated or, if id is empty, a new
+	 * item is created.
+	 *
+	 * @since 0.1.9
+	 * @return bool
+	 */
+	public function submit() {
+		$request = $this->getRequest();
+		$language = $request->getText( 'language' );
+		$word = $request->getText( 'word' );
+		$entry = $this->lexiconStorage->getEntry( $language, $word );
+		if ( $entry && !in_array( 'id', $request->getValueNames() ) ) {
+			// An entry already exists for this spelling, but we have
+			// not decided if we want to update or create a new entry.
+			return false;
+		}
+
+		$id = $request->getText( 'id', '' );
+		$request = $this->getRequest();
+		$transcription = $request->getText( 'transcription' );
 		$sampa = $this->speechoidConnector->ipaToSampa(
-			$data['transcription'],
-			$data['language']
+			$transcription,
+			$language
 		);
-		$item->setProperties( [
-			'strn' => $data['word'],
+		$properties = [
+			'strn' => $word,
 			'transcriptions' => [ [ 'strn' => $sampa ] ],
 			// Status is required by Speechoid.
 			'status' => [
 				'name' => 'ok'
 			]
-		] );
-		$this->lexiconStorage->createEntryItem(
-			$data['language'],
-			$data['word'],
-			$item
-		);
+		];
+		if ( $id === '' ) {
+			// Empty id, create new item.
+			$item = new LexiconEntryItem();
+			$item->setProperties( $properties );
+			$this->lexiconStorage->createEntryItem(
+				$language,
+				$word,
+				$item
+			);
+		} else {
+			// Id already exists, update item.
+			$item = $entry->findItemBySpeechoidIdentity( $id );
+			if ( $item === null ) {
+				throw new MWException( "No item with id '$id' found." );
+			}
+			$properties = $item->getProperties();
+			$properties['transcriptions'] = [ [ 'strn' => $sampa ] ];
+			$item->setProperties( $properties );
+			$this->lexiconStorage->updateEntryItem(
+				$language,
+				$word,
+				$item
+			);
+		}
 		// Item is updated by createEntryItem(), so we just need to
 		// store it.
-		$this->addedItem = $item;
+		$this->modifiedItem = $item;
 		$this->purgeOriginPageUtterances();
 		return true;
 	}
@@ -188,20 +333,19 @@ class SpecialEditLexicon extends FormSpecialPage {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Show success page containing the properties of the added/edited item
+	 *
+	 * @since 0.1.9
+	 * @param string $message Success message.
 	 */
-	public function onSuccess() {
-		$itemString = FormatJson::encode(
-			$this->addedItem->getProperties(),
-			true
-		);
+	private function success( $message ) {
 		$this->getOutput()->addHtml(
 			Html::successBox(
-				$this->msg( 'wikispeech-lexicon-add-entry-success' )->text()
+				$this->msg( $message )->text()
 			)
 		);
 		$this->getOutput()->addHtml(
-			Html::element( 'pre', [], $itemString )
+			Html::element( 'pre', [], $this->modifiedItem )
 		);
 	}
 }

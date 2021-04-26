@@ -21,3 +21,7 @@ see <https://www.mediawiki.org/wiki/Extension:Wikispeech>.
 This work was supported by the Swedish Post and Telecom Authority
 (PTS) through the grant "Wikispeech – en användargenererad talsyntes
 på Wikipedia" (2016–2017).
+
+This work was supported by the Swedish Post and Telecom Authority
+(PTS) through the grant "Talresursinsamlaren – För ett tillgängligare
+Wikipedia genom Wikispeech" (2019–2021).

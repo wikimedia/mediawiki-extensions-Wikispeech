@@ -84,7 +84,7 @@
 			"services": [
 				"ConfigFactory",
 				"LanguageNameUtils",
-				"Wikispeech.LexiconSpeechoidStorage",
+				"Wikispeech.ConfiguredLexiconStorage",
 				"Wikispeech.SpeechoidConnector"
 			]
 		}
@@ -358,6 +358,19 @@
 				"https://docs.openstack.org/swift/latest/overview_expiring_objects.html"
 			],
 			"value": false
+		},
+		"WikispeechPronunciationLexiconConfiguration": {
+			"description": [
+				"Controls how the pronunciation lexicon is persisted and accessed. ",
+				"'Speechoid' must be a part of the chain in order to make an impact to the speech synthesis.",
+				"Possible values are: ",
+				"'Speechoid', access only the underlying lexicon in Speechoid. No revision history.",
+				"'Wiki+Speechoid', access the lexicon stored as articles in NS_PRONUNCIATION_LEXICON for revision history and passed down to Speechoid.",
+				"'Wiki', access only the lexicon stored as articles in NS_PRONUNCIATION_LEXICON.",
+				"'Cache', transient storage in MediaWiki WAN cache. For development only.",
+				"'Cache+Speechoid', transient storage in WAN cache, passed down to Speechoid. For development only."
+			],
+			"value": "Wiki+Speechoid"
 		}
 	},
 	"DefaultUserOptions": {

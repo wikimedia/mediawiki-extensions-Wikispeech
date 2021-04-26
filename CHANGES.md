@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T280233](https://phabricator.wikimedia.org/T280233) Control creation of LexiconStorage from config in extension.json.
 * [T281262](https://phabricator.wikimedia.org/T281262) Treat Speechoid lexicon identity as int.
 * [T279632](https://phabricator.wikimedia.org/T279632) Introduce LexiconWikiStorage.
 * [T277242](https://phabricator.wikimedia.org/T277242) Ensure new lexicon edits are CC0

@@ -54,6 +54,7 @@
 	"wikispeech-lexicon-new": "New",
 	"wikispeech-lexicon-add-entry-conflict": "An entry with that spelling already exists. Select an id to edit that entry or \"New\" to add a new entry.",
 	"wikispeech-lexicon-edit-entry-success": "Entry successfully edited.",
+	"wikispeech-lexicon-copyrightnote": "By saving changes, you agree to release your contribution under the [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Wikispeech lexicon editors",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech lexicon editor}}",
 	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech lexicon editors"

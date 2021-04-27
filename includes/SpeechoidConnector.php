@@ -428,20 +428,19 @@ class SpeechoidConnector {
 	 * Deletes a lexicon entry item
 	 *
 	 * @param string $lexiconName
-	 * @param string $identity
+	 * @param int $identity
 	 * @return Status
 	 * @since 0.1.8
 	 */
 	public function deleteLexiconEntry(
 		string $lexiconName,
-		string $identity
+		int $identity
 	): Status {
 		$responseString = $this->requestFactory->get(
 			$this->url . '/lexserver/lexicon/delete_entry/' .
-		   urlencode( $lexiconName ) . '/' .
-		   urlencode( $identity )
+		   urlencode( $lexiconName ) . '/' . $identity
 		);
-		// If successfull, returns something like:
+		// If successful, returns something like:
 		// deleted entry id '11' from lexicon 'sv'
 		// where the lexicon is the second part of the lexicon name:lang.
 		if ( mb_ereg_match(

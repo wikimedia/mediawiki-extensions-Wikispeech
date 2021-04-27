@@ -161,12 +161,12 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 		);
 		$entry = $this->storage->getEntry( 'sv', 'd' );
 		$this->assertCount( 2, $entry->getItems() );
-		$this->assertSame( '6', $entry->getItemAt( 0 )->getSpeechoidIdentity() );
-		$this->assertSame( '7', $entry->getItemAt( 1 )->getSpeechoidIdentity() );
+		$this->assertSame( 6, $entry->getItemAt( 0 )->getSpeechoidIdentity() );
+		$this->assertSame( 7, $entry->getItemAt( 1 )->getSpeechoidIdentity() );
 		$this->storage->deleteEntryItem( 'sv', 'd', $item1 );
 		$entry = $this->storage->getEntry( 'sv', 'd' );
 		$this->assertCount( 1, $entry->getItems() );
-		$this->assertSame( '7', $entry->getItemAt( 0 )->getSpeechoidIdentity() );
+		$this->assertSame( 7, $entry->getItemAt( 0 )->getSpeechoidIdentity() );
 		$this->storage->deleteEntryItem( 'sv', 'd', $item2 );
 		$entry = $this->storage->getEntry( 'sv', 'd' );
 		$this->assertCount( 0, $entry->getItems() );

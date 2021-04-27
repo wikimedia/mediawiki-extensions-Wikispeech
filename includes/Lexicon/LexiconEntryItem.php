@@ -64,10 +64,10 @@ class LexiconEntryItem {
 	}
 
 	/**
-	 * @return string|null
+	 * @return int|null
 	 * @since 0.1.8
 	 */
-	public function getSpeechoidIdentity(): ?string {
+	public function getSpeechoidIdentity(): ?int {
 		$properties = $this->getProperties();
 		return $properties !== null && array_key_exists( 'id', $properties )
 			? $properties['id'] : null;

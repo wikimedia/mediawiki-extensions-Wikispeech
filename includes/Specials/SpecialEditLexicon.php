@@ -278,7 +278,7 @@ class SpecialEditLexicon extends SpecialPage {
 			);
 		} else {
 			// Id already exists, update item.
-			$item = $entry->findItemBySpeechoidIdentity( $id );
+			$item = $entry->findItemBySpeechoidIdentity( intval( $id ) );
 			if ( $item === null ) {
 				throw new MWException( "No item with id '$id' found." );
 			}

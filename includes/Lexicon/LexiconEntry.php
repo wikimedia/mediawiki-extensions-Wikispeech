@@ -45,11 +45,11 @@ class LexiconEntry {
 	}
 
 	/**
-	 * @param string $speechoidIdentity
+	 * @param int $speechoidIdentity
 	 * @return int|null Index of first item that match $speechoidIdentity
 	 * @since 0.1.8
 	 */
-	public function findItemIndexBySpeechoidIdentity( string $speechoidIdentity ): ?int {
+	public function findItemIndexBySpeechoidIdentity( int $speechoidIdentity ): ?int {
 		foreach ( $this->items as $itemIndex => $item ) {
 			if ( $speechoidIdentity === $item->getSpeechoidIdentity() ) {
 				return $itemIndex;
@@ -72,11 +72,11 @@ class LexiconEntry {
 	}
 
 	/**
-	 * @param string $speechoidIdentity
+	 * @param int $speechoidIdentity
 	 * @return LexiconEntryItem|null First item that match $speechoidIdentity
 	 * @since 0.1.8
 	 */
-	public function findItemBySpeechoidIdentity( string $speechoidIdentity ): ?LexiconEntryItem {
+	public function findItemBySpeechoidIdentity( int $speechoidIdentity ): ?LexiconEntryItem {
 		$index = $this->findItemIndexBySpeechoidIdentity( $speechoidIdentity );
 		return $index === null ? null : $this->items[$index];
 	}

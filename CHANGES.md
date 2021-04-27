@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T281262](https://phabricator.wikimedia.org/T281262) Treat Speechoid lexicon identity as int.
 * [T279632](https://phabricator.wikimedia.org/T279632) Introduce LexiconWikiStorage.
 * [T277242](https://phabricator.wikimedia.org/T277242) Ensure new lexicon edits are CC0
 * [T277153](https://phabricator.wikimedia.org/T277153) Allow user to decide on updating or adding new entry if entry with same spelling exists

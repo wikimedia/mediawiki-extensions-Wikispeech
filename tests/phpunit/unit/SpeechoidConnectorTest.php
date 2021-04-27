@@ -130,13 +130,13 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->config->set( 'WikispeechSpeechoidUrl', 'speechoid.url' );
 		$this->requestFactory
 			->method( 'get' )
-			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/identity' )
+			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/0' )
 			->willReturn(
 				"deleted entry id 'identity' from lexicon 'lexiconName'"
 			);
 		$status = $this->speechoidConnector->deleteLexiconEntry(
 			'lexiconName',
-			'identity'
+			0
 		);
 		$this->assertTrue( $status->isOK() );
 	}
@@ -145,14 +145,14 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->config->set( 'WikispeechSpeechoidUrl', 'speechoid.url' );
 		$this->requestFactory
 			->method( 'get' )
-			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/identity' )
+			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/0' )
 			->willReturn(
 			// phpcs:ignore Generic.Files.LineLength.TooLong
 				"couldn't parse lexicon ref : : ParseLexRef: failed to split full lexicon name into two colon separated parts: 'lexiconName'"
 			);
 		$status = $this->speechoidConnector->deleteLexiconEntry(
 			'lexiconName',
-			'identity'
+			0
 		);
 		$this->assertFalse( $status->isOK() );
 	}
@@ -161,14 +161,14 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->config->set( 'WikispeechSpeechoidUrl', 'speechoid.url' );
 		$this->requestFactory
 			->method( 'get' )
-			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/identity' )
+			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/0' )
 			->willReturn(
 			// phpcs:ignore Generic.Files.LineLength.TooLong
 				"failed to detele entry id '1' in lexicon 'lexiconName' : DBManager.DeleteEntry: no such db 'lexiconName'"
 			);
 		$status = $this->speechoidConnector->deleteLexiconEntry(
 			'lexiconName',
-			'identity'
+			0
 		);
 		$this->assertFalse( $status->isOK() );
 	}
@@ -177,14 +177,14 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->config->set( 'WikispeechSpeechoidUrl', 'speechoid.url' );
 		$this->requestFactory
 			->method( 'get' )
-			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/identity' )
+			->with( 'speechoid.url/lexserver/lexicon/delete_entry/lexiconName/0' )
 			->willReturn(
 			// phpcs:ignore Generic.Files.LineLength.TooLong
 				"failed to detele entry id 'identity' in lexicon 'lexiconName' : dbapi.deleteEntry failed to delete entry with id 'identity' from lexicon 'lexiconName'"
 			);
 		$status = $this->speechoidConnector->deleteLexiconEntry(
 			'lexiconName',
-			'identity'
+			0
 		);
 		$this->assertFalse( $status->isOK() );
 	}

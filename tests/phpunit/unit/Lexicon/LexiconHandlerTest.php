@@ -40,11 +40,11 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$this->mockedLexiconEntry->setKey( 'tomten' );
 
 		$mockedEntryItem0 = new LexiconEntryItem();
-		$mockedEntryItem0->setProperties( [ 'id' => 'item 0' ] );
+		$mockedEntryItem0->setProperties( [ 'id' => 0 ] );
 		$this->mockedLexiconEntry->addItem( $mockedEntryItem0 );
 
 		$mockedEntryItem1 = new LexiconEntryItem();
-		$mockedEntryItem1->setProperties( [ 'id' => 'item 1' ] );
+		$mockedEntryItem1->setProperties( [ 'id' => 1 ] );
 		$this->mockedLexiconEntry->addItem( $mockedEntryItem1 );
 	}
 
@@ -97,13 +97,13 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	public function testGetEntry_localOnlyAndIntersecting_fails() {
 		$intersectingItem = new LexiconEntryItem();
 		$intersectingItem->setProperties( [
-			'id' => 'intersecting item',
+			'id' => 0,
 			'foo' => 'bar'
 		] );
 
 		$localOnlyItem = new LexiconEntryItem();
 		$localOnlyItem->setProperties( [
-			'id' => 'local only item',
+			'id' => 0,
 			'foo' => 'bass'
 		] );
 
@@ -148,13 +148,13 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	public function testGetEntry_speechoidOnlyAndIntersecting_mergedAll() {
 		$intersectingItem = new LexiconEntryItem();
 		$intersectingItem->setProperties( [
-			'id' => 'intersecting item',
+			'id' => 0,
 			'foo' => 'bar'
 		] );
 
 		$speechoidOnlyItem = new LexiconEntryItem();
 		$speechoidOnlyItem->setProperties( [
-			'id' => 'speechoid only item',
+			'id' => 1,
 			'foo' => 'bar'
 		] );
 
@@ -204,7 +204,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	public function testGetEntry_reinstalledSpeechoidLexicon_fails() {
 		$localItem = new LexiconEntryItem();
 		$localItem->setProperties( [
-			'id' => '123',
+			'id' => 123,
 			'foo' => 'locally changed before reinstall of Speechoid',
 			'status' => [
 				// notice that timestamp is older than the reinstalled speechoid item.
@@ -214,7 +214,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 
 		$speechoidItem = new LexiconEntryItem();
 		$speechoidItem->setProperties( [
-			'id' => '123',
+			'id' => 123,
 			'foo' => 'reinstalled',
 			'status' => [
 				// notice that timestamp is newer than the locally changed item.
@@ -296,7 +296,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 
 	public function testUpdateEntryItem_existingInBoth_updatedInBoth() {
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'id' => 'item' ] );
+		$item->setProperties( [ 'id' => 0 ] );
 
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
@@ -346,11 +346,11 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$entryCurrent->setKey( 'tomten' );
 		$entryCurrent->setLanguage( 'sv' );
 		$itemCurrent = new LexiconEntryItem();
-		$itemCurrent->setProperties( [ 'id' => 'item', 'value' => 'initial' ] );
+		$itemCurrent->setProperties( [ 'id' => 0, 'value' => 'initial' ] );
 		$entryCurrent->setItems( [ $itemCurrent ] );
 
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'id' => 'item', 'value' => 'updated' ] );
+		$item->setProperties( [ 'id' => 0, 'value' => 'updated' ] );
 
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock

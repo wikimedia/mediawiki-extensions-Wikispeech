@@ -45,8 +45,13 @@
 	"wikispeech-language": "Sprache",
 	"wikispeech-word": "Wort",
 	"wikispeech-transcription": "Transkript",
+	"wikispeech-item-id": "ID",
 	"wikispeech-preview": "Vorschau",
 	"wikispeech-lexicon-add-entry-success": "Eintrag zum Lexikon hinzugefügt.",
+	"wikispeech-lexicon-new": "Neu",
+	"wikispeech-lexicon-add-entry-conflict": "Ein Eintrag mit dieser Schreibweise ist bereits vorhanden. Wähle eine ID, um diesen Eintrag zu bearbeiten, oder „Neu“, um einen neuen Eintrag hinzuzufügen.",
+	"wikispeech-lexicon-edit-entry-success": "Eintrag erfolgreich bearbeitet.",
+	"wikispeech-lexicon-copyrightnote": "Durch das Speichern von Änderungen stimmst du zu, deinen Beitrag unter der [https:/creativecommons.orgpublicdomainzero1.0 CC0] zu veröffentlichen.",
 	"group-wikispeech-edit-lexicon": "Wikispeech-Lexikon-Bearbeiter",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech-Lexikon-Bearbeiter|Wikispeech-Lexikon-Bearbeiterin|Wikispeech-Lexikon-Bearbeiter}}",
 	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech-Lexikon-Bearbeiter"

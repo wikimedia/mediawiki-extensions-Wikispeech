@@ -206,6 +206,7 @@ class SpecialEditLexicon extends SpecialPage {
 				'name' => 'language',
 				'type' => 'text',
 				'label' => $this->msg( 'wikispeech-language' )->text(),
+				'id' => 'ext-wikispeech-language',
 				'readonly' => true
 			],
 			'word' => [
@@ -216,9 +217,13 @@ class SpecialEditLexicon extends SpecialPage {
 			],
 			'transcription' => [
 				'name' => 'transcription',
-				'type' => 'text',
+				'type' => 'textwithbutton',
 				'label' => $this->msg( 'wikispeech-transcription' )->text(),
-				'readonly' => true
+				'required' => true,
+				'id' => 'ext-wikispeech-transcription',
+				'buttontype' => 'button',
+				'buttondefault' => $this->msg( 'wikispeech-preview' )->text(),
+				'buttonid' => 'ext-wikispeech-preview-button'
 			],
 			'page' => [
 				'name' => 'page',

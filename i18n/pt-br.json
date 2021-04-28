@@ -47,6 +47,10 @@
 	"wikispeech-language": "Idioma",
 	"wikispeech-word": "Palavra",
 	"wikispeech-transcription": "Transcrição",
+	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "Pré-visualizar",
-	"wikispeech-lexicon-add-entry-success": "Entrada adicionada com sucesso ao léxico."
+	"wikispeech-lexicon-add-entry-success": "Entrada adicionada com sucesso ao léxico.",
+	"wikispeech-lexicon-new": "Novo",
+	"wikispeech-lexicon-edit-entry-success": "Entrada editada com sucesso.",
+	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com o [https://creativecommons.org/publicdomain/zero/1.0/ CC0]."
 }

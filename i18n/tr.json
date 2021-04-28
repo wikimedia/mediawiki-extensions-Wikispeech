@@ -47,8 +47,13 @@
 	"wikispeech-language": "Dil",
 	"wikispeech-word": "Kelime",
 	"wikispeech-transcription": "Çevriyazı",
+	"wikispeech-item-id": "Kimlik",
 	"wikispeech-preview": "Önizleme",
 	"wikispeech-lexicon-add-entry-success": "Girdi başarıyla sözlüğe eklendi.",
+	"wikispeech-lexicon-new": "Yeni",
+	"wikispeech-lexicon-add-entry-conflict": "Bu şekilde yazılan bir girdi zaten mevcut. O girdiyi düzenlemek için bir kimlik seçin ya da yeni bir girdi eklemek için \"Yeni\"yi seçin.",
+	"wikispeech-lexicon-edit-entry-success": "Girdi başarıyla düzenlendi.",
+	"wikispeech-lexicon-copyrightnote": "Değişiklikleri kaydederek, katkınızı [https://creativecommons.org/publicdomain/zero/1.0/ CC0] ile yayınlamayı kabul edersiniz.",
 	"group-wikispeech-edit-lexicon": "Vikisöylev sözlük editörleri",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Vikisöylev sözlük editörü}}",
 	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Vikisöylev sözlük editörleri"

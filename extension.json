@@ -355,7 +355,9 @@
 				"I.e. the actual flushing of utterances is moved to the Swift layer. ",
 				"In order for this to make sense, the Swift file backend must be set to accept ",
 				"these headers. For more information on how to do this see ",
-				"https://docs.openstack.org/swift/latest/overview_expiring_objects.html"
+				"https://docs.openstack.org/swift/latest/overview_expiring_objects.html",
+				"This feature will be officially supported by Wikispeech as of ",
+				"the first LTS release of MediaWiki after 1.35 (i.e. probably 1.39)."
 			],
 			"value": false
 		},

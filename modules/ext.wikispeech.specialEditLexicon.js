@@ -3,7 +3,7 @@ var Previewer, $content, $transcription, $language, api, $previewPlayer,
 
 Previewer = require( './ext.wikispeech.transcriptionPreviewer.js' );
 $content = $( '#mw-content-text' );
-$language = $content.find( '#ext-wikispeech-language select' );
+$language = $content.find( '#ext-wikispeech-language' ).find( 'select, input' );
 $transcription = $content.find( '#ext-wikispeech-transcription input' );
 api = new mw.Api();
 $previewPlayer = $( '<audio>' ).insertAfter( $transcription );

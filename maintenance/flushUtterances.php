@@ -26,7 +26,10 @@ require_once "$IP/maintenance/Maintenance.php";
  * Maintenance script to manually execute
  * {@link UtteranceStore} flush methods.
  *
- * php extensions/Wikispeech/maintenance/flushUtterances.php
+ * mwscript extensions/Wikispeech/maintenance/flushUtterances.php
+ *
+ * Be aware that you probably need to execute using mwscript, not php,
+ * in order to be executed as user www-data, who has access to deleting files.
  *
  * @since 0.1.7
  */

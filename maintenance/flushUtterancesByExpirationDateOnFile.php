@@ -25,7 +25,10 @@ require_once "$IP/maintenance/Maintenance.php";
  * {@link UtteranceStore::flushUtterancesByExpirationDateOnFile()}.
  * Used to clear out orphaned files (i.e. not tracked by utterance database).
  *
- * php extensions/Wikispeech/maintenance/flushUtterancesByExpirationDateOnFile.php
+ * mwscript extensions/Wikispeech/maintenance/flushUtterancesByExpirationDateOnFile.php
+ *
+ * Be aware that you probably need to execute using mwscript, not php,
+ * in order to be executed as user www-data, who has access to deleting files.
  *
  * @since 0.1.7
  */

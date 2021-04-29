@@ -16,5 +16,7 @@
 	"wikispeech-listen": "듣기",
 	"wikispeech-dont-listen": "듣지 않음",
 	"wikispeech-language": "언어",
-	"wikispeech-preview": "미리 보기"
+	"wikispeech-item-id": "Id",
+	"wikispeech-preview": "미리 보기",
+	"wikispeech-lexicon-new": "새 항목"
 }

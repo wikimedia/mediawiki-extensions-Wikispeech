@@ -538,7 +538,7 @@ class SpeechoidConnector {
 		);
 		if ( !$symbolSetStatus->isOK() ) {
 			throw new SpeechoidConnectorException(
-				"Failed to parse resonse from $symbolsetRequestUrl as JSON: " .
+				"Failed to parse response from $symbolsetRequestUrl as JSON: " .
 				"$symbolSetResponse"
 			);
 		}
@@ -550,7 +550,7 @@ class SpeechoidConnector {
 		$mapStatus = FormatJson::parse( $mapResponse, FormatJson::FORCE_ASSOC );
 		if ( !$mapStatus->isOK() ) {
 			throw new SpeechoidConnectorException(
-				"Failed to parse resonse from $mapRequestUrl as JSON: " .
+				"Failed to parse response from $mapRequestUrl as JSON: " .
 				"$mapResponse"
 			);
 		}

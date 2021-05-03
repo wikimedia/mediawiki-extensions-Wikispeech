@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Neriah",
 			"Steeve815",
 			"YaronSh"
 		]
@@ -34,5 +35,6 @@
 	"apierror-wikispeech-listen-invalid-input-too-long": "טקסט הקלט לא יכול לחרוג מעל $1 תווים אך הוא הכיל $2 תווים.",
 	"wikispeech-listen": "להאזין",
 	"wikispeech-language": "שפה",
-	"wikispeech-word": "מילה"
+	"wikispeech-word": "מילה",
+	"wikispeech-lexicon-new": "חדש"
 }

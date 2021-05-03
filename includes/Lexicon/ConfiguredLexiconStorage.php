@@ -23,10 +23,10 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 	private $decorated;
 
 	/**
+	 * @since 0.1.9
 	 * @param string $enumValue
 	 * @param MediaWikiServices $services
 	 * @throws MWException If value of WikispeechPronunciationLexiconConfiguration is unsupported.
-	 * @since 0.1.9
 	 */
 	public function __construct(
 		string $enumValue,

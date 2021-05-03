@@ -354,8 +354,8 @@ class Benchmark extends Maintenance {
 	}
 
 	/**
-	 * @return bool success
 	 * @since 0.1.8
+	 * @return bool success
 	 */
 	public function execute() {
 		$this->executeSetUp();

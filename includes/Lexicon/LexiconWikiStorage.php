@@ -39,18 +39,18 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	private $user;
 
 	/**
-	 * @param User $user
 	 * @since 0.1.9
+	 * @param User $user
 	 */
 	public function __construct( User $user ) {
 		$this->user = $user;
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @return Title
-	 * @since 0.1.9
 	 */
 	private function lexiconEntryTitleFactory(
 		string $language,
@@ -61,10 +61,10 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @return WikiPage
-	 * @since 0.1.9
 	 */
 	private function lexiconEntryWikiPageFactory(
 		string $language,
@@ -74,11 +74,11 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @return bool
-	 * @since 0.1.9
 	 */
 	public function entryItemExists(
 		string $language,
@@ -93,10 +93,10 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null
-	 * @since 0.1.9
 	 */
 	public function getEntry(
 		string $language,
@@ -117,13 +117,13 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	 * was implemented, but we reverted. Kept the method like this though.
 	 * As a reminder if nothing else.
 	 *
+	 * @since 0.1.9
 	 * @param Content $content
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry
 	 * @throws ExternalStoreException If revision content is not of type JSON.
 	 *   If revision content failed to be deserialized as JSON.
-	 * @since 0.1.9
 	 */
 	public static function deserializeEntryContent(
 		Content $content,
@@ -152,11 +152,11 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If the entry already contains an item with the same id.
-	 * @since 0.1.9
 	 */
 	public function createEntryItem(
 		string $language,
@@ -185,12 +185,12 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If the entry with language and key does not exist.
 	 *  If entry already contains an item with the same id.
-	 * @since 0.1.9
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -219,12 +219,12 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If the entry with language and key does not exist.
 	 *  If entry already contains an item with the same id.
-	 * @since 0.1.9
 	 */
 	public function deleteEntryItem(
 		string $language,
@@ -253,12 +253,12 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntry $entry
 	 * @param string $revisionComment
 	 * @throws MWException If failed to encode entry to JSON.
-	 * @since 0.1.9
 	 */
 	private function saveLexiconEntryRevision(
 		string $language,

@@ -28,9 +28,9 @@ class FlushUtterancesFromStoreByLanguageAndVoiceJobQueue {
 	/**
 	 * Queues a job.
 	 *
+	 * @since 0.1.7
 	 * @param string $language
 	 * @param string|null $voice
-	 * @since 0.1.7
 	 */
 	public function queueJob( $language, $voice = null ) {
 		JobQueueGroup::singleton()->push(

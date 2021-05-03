@@ -23,11 +23,11 @@ interface LexiconLocalStorage extends LexiconStorage {
 	 *  Speechoid is reinstalled or updated. Future implementations will have to contain a way
 	 *  to evaluate equality between items by actually inspecting the semantics.
 	 *
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @return bool
-	 * @since 0.1.8
 	 */
 	public function entryItemExists(
 		string $language,

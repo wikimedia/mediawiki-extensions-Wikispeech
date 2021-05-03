@@ -26,24 +26,24 @@ class LexiconEntryItem {
 	private $properties;
 
 	/**
-	 * @return string
 	 * @since 0.1.9
+	 * @return string
 	 */
 	public function __toString(): string {
 		return $this->toJson();
 	}
 
 	/**
-	 * @return array|null
 	 * @since 0.1.8
+	 * @return array|null
 	 */
 	public function getProperties(): ?array {
 		return $this->properties;
 	}
 
 	/**
-	 * @param array|null $properties
 	 * @since 0.1.8
+	 * @param array|null $properties
 	 */
 	public function setProperties( ?array $properties ): void {
 		$this->properties = $properties;
@@ -54,8 +54,8 @@ class LexiconEntryItem {
 	/**
 	 * Makes this item look exactly like the source item.
 	 *
-	 * @param LexiconEntryItem $source
 	 * @since 0.1.8
+	 * @param LexiconEntryItem $source
 	 */
 	public function copyFrom( LexiconEntryItem $source ): void {
 		// this might look silly,
@@ -64,8 +64,8 @@ class LexiconEntryItem {
 	}
 
 	/**
-	 * @return int|null
 	 * @since 0.1.8
+	 * @return int|null
 	 */
 	public function getSpeechoidIdentity(): ?int {
 		$properties = $this->getProperties();

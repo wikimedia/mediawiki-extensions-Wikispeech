@@ -34,9 +34,9 @@ class SpeechoidConnector {
 	private $requestFactory;
 
 	/**
+	 * @since 0.1.5
 	 * @param Config $config
 	 * @param HttpRequestFactory $requestFactory
-	 * @since 0.1.5
 	 */
 	public function __construct( $config, $requestFactory ) {
 		$this->config = $config;
@@ -186,9 +186,9 @@ class SpeechoidConnector {
 	 * This list includes all registered lexicons,
 	 * including those that are not in use by any voice.
 	 *
+	 * @since 0.1.8
 	 * @return array Parsed JSON response as an associative array
 	 * @throws SpeechoidConnectorException
-	 * @since 0.1.8
 	 */
 	public function requestLexicons(): array {
 		$json = $this->requestFactory->get(
@@ -215,10 +215,10 @@ class SpeechoidConnector {
 	 * I.e. $locale 'en' will match both 'en_US' and 'en_NZ'.
 	 *
 	 * @see requestLexicons
+	 * @since 0.1.8
 	 * @param string $locale
 	 * @return string|null Name of lexicon, or null if not found.
 	 * @throws SpeechoidConnectorException
-	 * @since 0.1.8
 	 */
 	public function findLexiconByLocale(
 		string $locale
@@ -273,9 +273,9 @@ class SpeechoidConnector {
 	 * This list includes the lexicons for all registered voices,
 	 * even if the voice is currently unavailable.
 	 *
+	 * @since 0.1.8
 	 * @return array Parsed JSON response as associative array
 	 * @throws SpeechoidConnectorException
-	 * @since 0.1.8
 	 */
 	public function requestTextProcessors(): array {
 		$json = $this->requestFactory->get(
@@ -302,10 +302,10 @@ class SpeechoidConnector {
 	 * e.g combined, prefix only or suffix only, for identifying items.
 	 *
 	 * @see requestTextProcessors
+	 * @since 0.1.8
 	 * @param string $language Case insensitive language code, e.g. 'en'.
 	 * @return string|null Name of lexicon, or null if not found.
 	 * @throws SpeechoidConnectorException
-	 * @since 0.1.8
 	 */
 	public function findLexiconByLanguage(
 		string $language
@@ -377,12 +377,12 @@ class SpeechoidConnector {
 	 *   }
 	 * }
 	 *
+	 * @since 0.1.8
 	 * @param string $lexicon
 	 * @param string[] $words
 	 * @return Status If successful, value contains deserialized json response.
 	 * @throws SpeechoidConnectorException
 	 * @throws InvalidArgumentException If words array is empty.
-	 * @since 0.1.8
 	 */
 	public function lookupLexiconEntries(
 		string $lexicon,
@@ -407,10 +407,10 @@ class SpeechoidConnector {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $json A single entry object item.
 	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
 	 * @return Status If successful, value contains deserialized json response (updated entry item)
-	 * @since 0.1.8
 	 */
 	public function updateLexiconEntry(
 		string $json
@@ -427,10 +427,10 @@ class SpeechoidConnector {
 	/**
 	 * Deletes a lexicon entry item
 	 *
+	 * @since 0.1.8
 	 * @param string $lexiconName
 	 * @param int $identity
 	 * @return Status
-	 * @since 0.1.8
 	 */
 	public function deleteLexiconEntry(
 		string $lexiconName,
@@ -472,12 +472,12 @@ class SpeechoidConnector {
 	 *   ]
 	 * }
 	 *
+	 * @since 0.1.8
 	 * @param string $lexiconName E.g. 'wikispeech_lexserver_testdb:sv'
 	 * @param string $json A single entry object item.
 	 *  I.e. not an array as returned by {@link lookupLexiconEntries}.
 	 * @return Status value set to int identity of newly created entry.
 	 * @throws SpeechoidConnectorException
-	 * @since 0.1.8
 	 */
 	public function addLexiconEntry(
 		string $lexiconName,

@@ -16,11 +16,11 @@ use ExternalStoreException;
 interface LexiconStorage {
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null
 	 * @throws ExternalStoreException
-	 * @since 0.1.8
 	 */
 	public function getEntry(
 		string $language,
@@ -28,10 +28,10 @@ interface LexiconStorage {
 	): ?LexiconEntry;
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item Will be updated on success.
-	 * @since 0.1.8
 	 */
 	public function createEntryItem(
 		string $language,
@@ -40,10 +40,10 @@ interface LexiconStorage {
 	): void;
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item Will be updated on success.
-	 * @since 0.1.8
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -52,10 +52,10 @@ interface LexiconStorage {
 	): void;
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
-	 * @since 0.1.8
 	 */
 	public function deleteEntryItem(
 		string $language,

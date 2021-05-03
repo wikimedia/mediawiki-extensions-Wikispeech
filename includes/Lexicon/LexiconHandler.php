@@ -46,9 +46,9 @@ class LexiconHandler implements LexiconStorage {
 	private $speechoidStorage;
 
 	/**
+	 * @since 0.1.8
 	 * @param LexiconSpeechoidStorage $speechoidStorage
 	 * @param LexiconStorage $localStorage
-	 * @since 0.1.8
 	 */
 	public function __construct(
 		LexiconSpeechoidStorage $speechoidStorage,
@@ -65,11 +65,11 @@ class LexiconHandler implements LexiconStorage {
 	 * Entry items existing in local and not in Speechoid is an error.
 	 * Entry items sharing identity that otherwise does not equal each other is an error.
 	 *
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null Entry retrieved from Speechoid
 	 * @throws MWException On various merge errors.
-	 * @since 0.1.8
 	 */
 	public function getEntry(
 		string $language,
@@ -149,11 +149,11 @@ class LexiconHandler implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.9
 	 * @param string $message
 	 * @param LexiconEntryItem|null $localItem
 	 * @param LexiconEntryItem|null $speechoidItem
 	 * @return array
-	 * @since 0.1.9
 	 */
 	private function outOfSyncItemFactory(
 		string $message,
@@ -168,10 +168,10 @@ class LexiconHandler implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
-	 * @since 0.1.8
 	 */
 	public function createEntryItem(
 		string $language,
@@ -184,13 +184,13 @@ class LexiconHandler implements LexiconStorage {
 	/**
 	 * This is in fact a put-action, it will call underlying create methods if required.
 	 *
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item Will be updated on success.
 	 * @throws InvalidArgumentException If $item->properties is null.
 	 * @throws MWException If unable to push to any storage.
 	 *  If successfully pushed to Speechoid but unable to push to local storage.
-	 * @since 0.1.8
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -229,11 +229,11 @@ class LexiconHandler implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws MWException If successfully deleted in Speechoid but unable to delete in local storage.
-	 * @since 0.1.8
 	 */
 	public function deleteEntryItem(
 		string $language,

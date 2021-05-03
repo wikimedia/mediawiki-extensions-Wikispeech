@@ -23,6 +23,7 @@ class LexiconArticleEditHook implements CustomEditorHook {
 	/**
 	 * This hook is called when invoking the page editor.
 	 *
+	 * @since 0.1.9
 	 * @param Article $article Article being edited
 	 * @param User $user User performing the edit
 	 * @return bool|void True or no return value to allow the normal editor to be used.

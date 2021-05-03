@@ -27,18 +27,18 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	private $wanObjectCache;
 
 	/**
-	 * @param WANObjectCache $wanObjectCache
 	 * @since 0.1.8
+	 * @param WANObjectCache $wanObjectCache
 	 */
 	public function __construct( WANObjectCache $wanObjectCache ) {
 		$this->wanObjectCache = $wanObjectCache;
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @return string
-	 * @since 0.1.8
 	 */
 	private function cacheKeyFactory(
 		string $language,
@@ -48,10 +48,10 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null
-	 * @since 0.1.8
 	 */
 	public function getEntry(
 		string $language,
@@ -65,9 +65,9 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param LexiconEntry $entry
 	 * @throws InvalidArgumentException If $entry->language or ->key is null.
-	 * @since 0.1.8
 	 */
 	private function putEntry( LexiconEntry $entry ): void {
 		$language = $entry->getLanguage();
@@ -86,12 +86,12 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @return bool
 	 * @throws InvalidArgumentException If $item has no Speechoid identity.
-	 * @since 0.1.8
 	 */
 	public function entryItemExists(
 		string $language,
@@ -110,12 +110,12 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->properties is null.
 	 *  If Speechoid identity is not set.
-	 * @since 0.1.8
 	 */
 	public function createEntryItem(
 		string $language,
@@ -146,13 +146,13 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is not set.
 	 * @throws MWException If attempting to update a non existing entry or entry item.
-	 * @since 0.1.8
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -176,13 +176,13 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is not set.
 	 * @throws MWException If attempting to delete a non existing entry or item.
-	 * @since 0.1.8
 	 */
 	public function deleteEntryItem(
 		string $language,

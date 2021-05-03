@@ -33,9 +33,9 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	private $cache;
 
 	/**
+	 * @since 0.1.8
 	 * @param SpeechoidConnector $speechoidConnector
 	 * @param mixed $cache
-	 * @since 0.1.8
 	 */
 	public function __construct(
 		SpeechoidConnector $speechoidConnector,
@@ -46,10 +46,10 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language ISO 639 language code passed down to Speechoid
 	 * @return string|null
 	 * @throws InvalidArgumentException If $language is not 2 characters long.
-	 * @since 0.1.8
 	 */
 	private function findLexiconNameByLanguage(
 		string $language
@@ -72,12 +72,12 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null
 	 * @throws MWException If no lexicon is available for language.
 	 * @throws SpeechoidConnectorException On unexpected response from Speechoid.
-	 * @since 0.1.8
 	 */
 	public function getEntry(
 		string $language,
@@ -111,6 +111,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
@@ -120,7 +121,6 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 *  If failed to encode lexicon entry item properties to JSON.
 	 *  If unable to add lexicon entry to Speechoid.
 	 *  If unable to retrieve the created lexicon entry item from Speechoid.
-	 * @since 0.1.8
 	 */
 	public function createEntryItem(
 		string $language,
@@ -164,6 +164,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
@@ -171,7 +172,6 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 *  If Speechoid identity is not set.
 	 * @throws MWException If no lexicon is available for language.
 	 *  If failed to encode lexicon entry item properties to JSON.
-	 * @since 0.1.8
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -216,6 +216,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	}
 
 	/**
+	 * @since 0.1.8
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
@@ -223,7 +224,6 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 *  If Speechoid identity is not set.
 	 * @throws MWException If no lexicon is available for language.
 	 *  If failed to delete the lexicon entry item.
-	 * @since 0.1.8
 	 */
 	public function deleteEntryItem(
 		string $language,

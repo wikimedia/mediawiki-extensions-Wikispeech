@@ -27,8 +27,8 @@ class FlushUtterancesFromStoreByPageIdJobQueue {
 	/**
 	 * Queues a job.
 	 *
-	 * @param int $pageId
 	 * @since 0.1.7
+	 * @param int $pageId
 	 */
 	public function queueJob( $pageId ) {
 		JobQueueGroup::singleton()->push(

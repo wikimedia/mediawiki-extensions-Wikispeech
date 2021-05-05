@@ -15,28 +15,34 @@
 
 		self = this;
 		self.utterances = [];
+		self.api = null;
 
 		/**
 		 * Load all utterances.
 		 *
 		 * Uses the MediaWiki API to get the segments of the text.
+		 *
+		 * @param {Object} window
 		 */
 
-		this.loadUtterances = function () {
-			var api, page;
+		this.loadUtterances = function ( window ) {
+			var page, options;
 
-			api = new mw.Api();
 			page = mw.config.get( 'wgPageName' );
-			api.get(
-				{
-					action: 'wikispeech-segment',
-					page: page
-				},
+			options = {
+				action: 'wikispeech-segment',
+				page: page
+			};
+			if ( mw.wikispeech.consumerMode ) {
+				options[ 'consumer-url' ] = window.location.origin +
+					mw.config.get( 'wgScriptPath' );
+			}
+			self.api.get(
+				options,
 				{
 					beforeSend: function ( jqXHR, settings ) {
 						mw.log(
-							'Requesting segments:', settings.url + '?' +
-								settings.data
+							'Requesting segments:', settings.url
 						);
 					}
 				}
@@ -142,7 +148,7 @@
 				'Loading audio for utterance #' + utteranceIndex + ':',
 				utterance
 			);
-			utterance.request = self.requestTts( utterance.hash );
+			utterance.request = self.requestTts( utterance.hash, window );
 			utterance.request.done( function ( response ) {
 				audioUrl = 'data:audio/ogg;base64,' +
 					response[ 'wikispeech-listen' ].audio;
@@ -174,11 +180,12 @@
 		 * use is retrieved from the current page.
 		 *
 		 * @param {string} segmentHash
+		 * @param {Object} window
 		 * @return {jQuery.Promise}
 		 */
 
-		this.requestTts = function ( segmentHash ) {
-			var request, language, voice, options, api;
+		this.requestTts = function ( segmentHash, window ) {
+			var request, language, voice, options;
 
 			language = mw.config.get( 'wgPageContentLanguage' );
 			voice = mw.wikispeech.util.getUserVoice( language );
@@ -192,14 +199,16 @@
 				// Set voice if not default.
 				options.voice = voice;
 			}
-			api = new mw.Api();
-			request = api.get(
+			if ( mw.wikispeech.consumerMode ) {
+				options[ 'consumer-url' ] = window.location.origin +
+					mw.config.get( 'wgScriptPath' );
+			}
+			request = self.api.get(
 				options,
 				{
 					beforeSend: function ( jqXHR, settings ) {
 						mw.log(
-							'Sending TTS request: ' + settings.url + '?' +
-								settings.data
+							'Sending TTS request: ' + settings.url
 						);
 					}
 				}

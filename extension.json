@@ -72,6 +72,27 @@
 				"mediawiki.api",
 				"oojs-ui-core"
 			]
+		},
+		"ext.wikispeech.gadget": {
+			"packageFiles": [
+				"ext.wikispeech.gadget.js",
+				{
+					"name": "config.json",
+					"config": [
+						"WikispeechKeyboardShortcuts",
+						"WikispeechContentSelector",
+						"WikispeechSkipBackRewindsThreshold",
+						"WikispeechHelpPage",
+						"WikispeechFeedbackPage",
+						"WikispeechSpeechoidUrl",
+						"WikispeechNamespaces"
+					]
+				},
+				{
+					"name": "default-user-options.json",
+					"callback": "MediaWiki\\Wikispeech\\Hooks\\ApiHooks::getDefaultUserOptions"
+				}
+			]
 		}
 	},
 	"ResourceFileModulePaths": {
@@ -387,7 +408,8 @@
 		"wikispeech-segment": {
 			"class": "\\MediaWiki\\Wikispeech\\Api\\ApiWikispeechSegment",
 			"services": [
-				"MainWANObjectCache"
+				"MainWANObjectCache",
+				"HttpRequestFactory"
 			]
 		},
 		"wikispeech-listen": {

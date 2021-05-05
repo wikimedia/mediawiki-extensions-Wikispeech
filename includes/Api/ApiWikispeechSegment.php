@@ -12,6 +12,7 @@ namespace MediaWiki\Wikispeech\Api;
 use ApiBase;
 use ApiMain;
 use FormatJson;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Wikispeech\Segment\Segmenter;
 use Title;
 use WANObjectCache;
@@ -27,21 +28,27 @@ class ApiWikispeechSegment extends ApiBase {
 	/** @var WANObjectCache */
 	private $cache;
 
+	/** @var HttpRequestFactory */
+	private $requestFactory;
+
 	/**
 	 * @since 0.1.7
 	 * @param ApiMain $mainModule
 	 * @param string $moduleName
 	 * @param WANObjectCache $cache
+	 * @param HttpRequestFactory $requestFactory
 	 * @param string $modulePrefix
 	 */
 	public function __construct(
 		ApiMain $mainModule,
 		string $moduleName,
 		WANObjectCache $cache,
+		HttpRequestFactory $requestFactory,
 		string $modulePrefix = ''
 	) {
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 		$this->cache = $cache;
+		$this->requestFactory = $requestFactory;
 	}
 
 	/**
@@ -58,7 +65,7 @@ class ApiWikispeechSegment extends ApiBase {
 				wfEscapeWikiText( $parameters['page'] )
 			] );
 		}
-		if ( !$title->exists() ) {
+		if ( !isset( $parameters['consumer-url'] ) && !$title->exists() ) {
 			$this->dieWithError( 'apierror-missingtitle' );
 		}
 		$result = FormatJson::parse(
@@ -72,12 +79,18 @@ class ApiWikispeechSegment extends ApiBase {
 		if ( !$this->isValidRemoveTags( $removeTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
-		$segmenter = new Segmenter( $this->getContext(), $this->cache );
+		$segmenter = new Segmenter(
+			$this->getContext(),
+			$this->cache,
+			$this->requestFactory
+		);
 		$segments = $segmenter->segmentPage(
 			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 			$title,
 			$removeTags,
-			$parameters['segmentbreakingtags']
+			$parameters['segmentbreakingtags'],
+			null,
+			$parameters['consumer-url']
 		);
 		$this->getResult()->addValue(
 			null,
@@ -150,6 +163,9 @@ class ApiWikispeechSegment extends ApiBase {
 						'|',
 						$this->getConfig()->get( 'WikispeechSegmentBreakingTags' )
 					)
+				],
+				'consumer-url' => [
+					ParamValidator::PARAM_TYPE => 'string'
 				]
 			]
 		);
@@ -167,7 +183,9 @@ class ApiWikispeechSegment extends ApiBase {
 			=> 'apihelp-wikispeech-segment-example-1',
 			// phpcs:ignore Generic.Files.LineLength
 			'action=wikispeech-segment&format=json&page=Main_Page&removetags={"sup": true, "div": "toc"}&segmentbreakingtags=h1|h2'
-			=> 'apihelp-wikispeech-segment-example-2'
+			=> 'apihelp-wikispeech-segment-example-2',
+			'action=wikispeech-segment&format=json&page=Main_Page&consumer-url=https://consumer.url/w'
+			=> 'apihelp-wikispeech-segment-example-3',
 		];
 	}
 }

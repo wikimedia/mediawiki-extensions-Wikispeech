@@ -24,7 +24,10 @@
 				return;
 			}
 
-			mw.wikispeech.storage.loadUtterances();
+			if ( !mw.wikispeech.consumerMode ) {
+				mw.wikispeech.storage.api = new mw.Api();
+			}
+			mw.wikispeech.storage.loadUtterances( window );
 			// Prepare the first utterance for playback.
 			mw.wikispeech.ui.init();
 			// Prepare action link.

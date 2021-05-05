@@ -9,6 +9,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
  */
 
 use InvalidArgumentException;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
@@ -20,7 +21,6 @@ use RequestContext;
 use Title;
 use WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
-use WikiPage;
 
 /**
  * @group Database
@@ -36,10 +36,12 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 
 	protected function setUp() : void {
 		parent::setUp();
+		$this->requestFactory = $this->createMock( HttpRequestFactory::class );
 		$this->segmenter = TestingAccessWrapper::newFromObject(
 			new Segmenter(
 				new RequestContext(),
-				MediaWikiServices::getInstance()->getMainWANObjectCache()
+				MediaWikiServices::getInstance()->getMainWANObjectCache(),
+				$this->requestFactory
 			)
 		);
 	}
@@ -86,7 +88,8 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$segmenterMock = $this->getMockBuilder( Segmenter::class )
 			->setConstructorArgs( [
 				new RequestContext(),
-				MediaWikiServices::getInstance()->getMainWANObjectCache()
+				MediaWikiServices::getInstance()->getMainWANObjectCache(),
+				MediaWikiServices::getInstance()->getHttpRequestFactory()
 			] )
 			->onlyMethods( [ 'cleanPage' ] )
 			->getMock();
@@ -289,19 +292,46 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$this->segmenter->segmentPage( $title, [ 'del' => true ], [ 'br' ] );
 	}
 
-	public function testCleanPage_pageWithContent_giveCleanedTextArray() {
+	public function testSegmentPage_consumerUrlGiven_getPageFromConsumer() {
+		$title = 'Page';
 		$content = 'Content';
-		WikiPageTestUtil::addPage( 'Page', $content );
-		$title = Title::newFromText( 'Page' );
-		$page = WikiPage::factory( $title );
+		$request = 'https://consumer.url/api.php?action=parse&format=json&page=Page&prop=text%7Crevid%7Cdisplaytitle';
+		$this->requestFactory->method( 'get' )
+			->with( $this->equalTo( $request ) )
+			->willReturn( '{
+	"parse": {
+		"pageid": 1,
+		"text": {
+			"*": "Content"
+		},
+		"displaytitle": "Page"
+	}
+}'
+			);
+		$segments = $this->segmenter->segmentPage(
+			$title, [], [], null, 'https://consumer.url'
+		);
+		$this->assertSame(
+			'Page',
+			$segments[0]['content'][0]->string
+		);
+		$this->assertSame(
+			'Content',
+			$segments[1]['content'][0]->string
+		);
+	}
 
-		$cleanedText = $this->segmenter->cleanPage( $page, [], [] );
+	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
+		$title = 'Page';
+		$content = '<p>Content</p>';
+
+		$cleanedText = $this->segmenter->cleanPage( $title, $content, [], [] );
 
 		$this->assertEquals(
 			[
 				new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ),
 				new SegmentBreak(),
-				new CleanedText( "Content\n", './div/p/text()' )
+				new CleanedText( 'Content', './p/text()' )
 			],
 			// For some reason, there are a number of HTML nodes
 			// containing only newlines, which adds extra

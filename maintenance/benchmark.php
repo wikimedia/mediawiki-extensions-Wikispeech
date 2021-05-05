@@ -163,7 +163,8 @@ class Benchmark extends Maintenance {
 			$this->segmenter = new Segmenter(
 				new RequestContext(),
 				// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
-				$emptyWanCache
+				$emptyWanCache,
+				$requestFactory
 			);
 		}
 	}

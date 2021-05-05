@@ -8,7 +8,9 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
+use FormatJson;
 use IContextSource;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MWException;
@@ -48,14 +50,19 @@ class Segmenter {
 	/** @var WANObjectCache */
 	private $cache;
 
+	/** @var HttpRequestFactory */
+	private $requestFactory;
+
 	/**
 	 * @since 0.0.1
 	 * @param IContextSource $context
 	 * @param WANObjectCache $cache
+	 * @param HttpRequestFactory $requestFactory
 	 */
-	public function __construct( $context, $cache ) {
+	public function __construct( $context, $cache, $requestFactory ) {
 		$this->context = $context;
 		$this->cache = $cache;
+		$this->requestFactory = $requestFactory;
 		$this->segments = [];
 		$this->currentSegment = [
 			'content' => [],
@@ -81,6 +88,8 @@ class Segmenter {
 	 *  segment breaks, defaults to config variable
 	 *  "WikispeechSegmentBreakingTags".
 	 * @param int|null $revisionId Revision to be segmented
+	 * @param string|null $consumerUrl URL to the script path on the consumer,
+	 *  if used as a producer.
 	 * @return array A list of segments each made up of `CleanedTest`
 	 *  objects and with start and end offset.
 	 * @throws MWException If failing to create WikiPage from title or an
@@ -90,7 +99,8 @@ class Segmenter {
 		$title,
 		$removeTags = null,
 		$segmentBreakingTags = null,
-		$revisionId = null
+		$revisionId = null,
+		$consumerUrl = null
 	) {
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
@@ -101,9 +111,36 @@ class Segmenter {
 		if ( $segmentBreakingTags === null ) {
 			$segmentBreakingTags = $config->get( 'WikispeechSegmentBreakingTags' );
 		}
-		$page = WikiPage::factory( $title );
-		if ( $revisionId == null ) {
-			$revisionId = $page->getLatest();
+		$page = null;
+		if ( $consumerUrl ) {
+			$request = wfAppendQuery(
+				$consumerUrl . '/api.php',
+				[
+					'action' => 'parse',
+					'format' => 'json',
+					'page' => $title,
+					'prop' => 'text|revid|displaytitle'
+				]
+			);
+			$responseString = $this->requestFactory->get( $request );
+			if ( $responseString === null ) {
+				throw new MWException( "Failed to get page with title '$title' from consumer on URL $consumerUrl." );
+			}
+			$response = FormatJson::parse( $responseString )->getValue();
+			$displayTitle = $response->parse->displaytitle;
+			$pageContent = $response->parse->text->{'*'};
+			if ( $revisionId == null ) {
+				$revisionId = $response->parse->pageid;
+			}
+		} else {
+			$page = WikiPage::factory( $title );
+			$popts = $page->makeParserOptions( $this->context );
+			$pout = $page->getParserOutput( $popts );
+			$displayTitle = $pout->getDisplayTitle();
+			$pageContent = $pout->getText();
+			if ( $revisionId == null ) {
+				$revisionId = $page->getLatest();
+			}
 		}
 		$cacheKey = $this->cache->makeKey(
 			'Wikispeech.segments',
@@ -117,11 +154,15 @@ class Segmenter {
 					__METHOD__ . ': Segmenting page: {title}',
 					[ 'title' => $title ]
 				);
-			if ( $revisionId != $page->getLatest() ) {
+			if ( !$consumerUrl && $revisionId != $page->getLatest() ) {
 				throw new MWException( 'An outdated or invalid revision id was provided' );
 			}
-			$cleanedText =
-				$this->cleanPage( $page, $removeTags, $segmentBreakingTags );
+			$cleanedText = $this->cleanPage(
+				$displayTitle,
+				$pageContent,
+				$removeTags,
+				$segmentBreakingTags
+			);
 			$segments = $this->segmentSentences( $cleanedText );
 			$this->cache->set( $cacheKey, $segments, 3600 );
 		}
@@ -132,24 +173,22 @@ class Segmenter {
 	 * Clean content text and title.
 	 *
 	 * @since 0.1.5
-	 * @param WikiPage $page
+	 * @param string $displayTitle
+	 * @param string $pageContent
 	 * @param array $removeTags HTML tags that should not be included.
 	 * @param array $segmentBreakingTags HTML tags that mark segment breaks.
 	 * @return array Title and content represented as `CleanedText`s
 	 *  and `SegmentBreak`s
 	 */
 	protected function cleanPage(
-		$page,
+		$displayTitle,
+		$pageContent,
 		$removeTags,
 		$segmentBreakingTags
 	) {
 		// Clean HTML.
 		$cleanedText = null;
 		// Parse latest revision, using parser cache.
-		$popts = $page->makeParserOptions( $this->context );
-		$pout = $page->getParserOutput( $popts );
-		$displayTitle = $pout->getDisplayTitle();
-		$pageContent = $pout->getText();
 		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
 		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
 		$titleSegment->path = '//h1[@id="firstHeading"]//text()';
@@ -421,10 +460,12 @@ class Segmenter {
 	 * @param Title $title
 	 * @param string $hash Hash of the segment to get.
 	 * @param int $revisionId Revision of the page where the segment was found.
+	 * @param string|null $consumerUrl URL to the script path on the consumer,
+	 *  if used as a producer.
 	 * @return array|null The segment matching $hash.
 	 */
-	public function getSegment( $title, $hash, $revisionId ) {
-		$segments = $this->segmentPage( $title, null, null, $revisionId );
+	public function getSegment( $title, $hash, $revisionId, $consumerUrl = null ) {
+		$segments = $this->segmentPage( $title, null, null, $revisionId, $consumerUrl );
 		foreach ( $segments as $segment ) {
 			if ( $segment['hash'] === $hash ) {
 				return $segment;

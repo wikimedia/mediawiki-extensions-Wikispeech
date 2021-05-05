@@ -2,12 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"Grace03",
+			"Lakejason0",
 			"Shuiwater",
 			"Si109",
 			"坑触可"
 		]
 	},
-	"prefs-wikispeech-show-player": "显示播放器",
+	"prefs-wikispeech-show-player": "总是显示播放器",
 	"wikispeech-listen": "听",
 	"wikispeech-item-id": "ID",
 	"wikispeech-preview": "预览",

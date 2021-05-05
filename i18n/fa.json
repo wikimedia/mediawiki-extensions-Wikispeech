@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"FarsiNevis"
+			"FarsiNevis",
+			"Mohammad ebz"
 		]
 	},
 	"apihelp-wikispeech-listen-param-lang": "کد زبان.",
-	"prefs-wikispeech-voice": "صدا"
+	"prefs-wikispeech-voice": "صدا",
+	"wikispeech-lexicon-new": "جديد"
 }

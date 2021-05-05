@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
+			"Jakub Fabijan",
 			"Javiero"
 		]
 	},
 	"wikispeech-language": "Lingvo",
-	"wikispeech-transcription": "Transskribo"
+	"wikispeech-transcription": "Transskribo",
+	"wikispeech-lexicon-new": "Nova"
 }

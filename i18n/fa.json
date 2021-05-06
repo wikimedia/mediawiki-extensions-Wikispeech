@@ -2,10 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"FarsiNevis",
+			"Jeeputer",
 			"Mohammad ebz"
 		]
 	},
 	"apihelp-wikispeech-listen-param-lang": "کد زبان.",
 	"prefs-wikispeech-voice": "صدا",
-	"wikispeech-lexicon-new": "جديد"
+	"wikispeech-item-id": "شناسه",
+	"wikispeech-lexicon-new": "جديد",
+	"wikispeech-lexicon-edit-entry-success": "مدخل با موفقیت ویرایش شد."
 }

@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T281667](https://phabricator.wikimedia.org/T281667) Load user options from consumer wiki
 * [T281665](https://phabricator.wikimedia.org/T281665) Load modules and settings
 * [T281663](https://phabricator.wikimedia.org/T281663) Communication between consumer and producer
 * [T280233](https://phabricator.wikimedia.org/T280233) Control creation of LexiconStorage from config in extension.json.

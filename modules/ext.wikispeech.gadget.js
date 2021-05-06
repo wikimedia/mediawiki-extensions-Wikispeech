@@ -14,12 +14,67 @@
 		} );
 	}
 
-	function addDefaultUserOptions() {
-		var options = require( './default-user-options.json' );
-		Object.keys( options ).forEach( function ( key ) {
-			var value = options[ key ];
-			mw.user.options.set( key, value );
+	function getUserOptionsOnConsumer() {
+		var done, api;
+
+		done = $.Deferred();
+		if ( mw.user.isAnon() ) {
+			// No user options set if not logged in.
+			done.resolve( {} );
+		} else {
+			api = new mw.Api();
+			api.get( {
+				action: 'parse',
+				page: 'User:' + mw.user.getName() + '/Wikispeech preferences',
+				prop: 'wikitext'
+			} )
+				.done( function ( response ) {
+					var content, options;
+
+					content = response.parse.wikitext[ '*' ];
+					try {
+						mw.log.warn(
+							'[Wikispeech] Failed to parse user preferences, ' +
+								'using defaults.'
+						);
+						options = JSON.parse( content );
+					} catch ( error ) {
+						options = {};
+					}
+					done.resolve( options );
+				} )
+				.fail( function () {
+					mw.log.warn(
+						'[Wikispeech] Failed to load user preferences page, ' +
+							'using defaults.'
+					);
+					done.resolve( {} );
+				} );
+		}
+		return done;
+	}
+
+	function addUserOptions() {
+		var defaultOptions, done;
+
+		done = $.Deferred();
+		defaultOptions = require( './default-user-options.json' );
+		getUserOptionsOnConsumer().done( function ( options ) {
+			Object.keys( defaultOptions ).forEach( function ( key ) {
+				var value;
+
+				// Take the option value from user page if it is set,
+				// otherwise use default.
+				if ( Object.keys( options ).indexOf( key ) >= 0 ) {
+					value = options[ key ];
+				} else {
+					value = defaultOptions[ key ];
+				}
+				mw.user.options.set( key, value );
+				done.resolve();
+			} );
 		} );
+		return done;
 	}
 
 	mw.wikispeech = mw.wikispeech || {};
@@ -43,19 +98,20 @@
 		null,
 		'anotherwiki'
 	);
-	parametersString = $.param( {
-		lang: mw.config.get( 'wgUserLanguage' ),
-		skin: mw.config.get( 'skin' ),
-		raw: 1,
-		safemode: 1,
-		modules: 'ext.wikispeech'
-	} );
-	moduleUrl = mw.config.get( 'wgWikispeechProducerUrl' ) + '/load.php?' +
-		parametersString;
-	mw.log( 'Loading wikispeech module from ' + moduleUrl );
-	mw.loader.load( moduleUrl );
 	addConfig();
-	addDefaultUserOptions();
+	addUserOptions().done( function () {
+		parametersString = $.param( {
+			lang: mw.config.get( 'wgUserLanguage' ),
+			skin: mw.config.get( 'skin' ),
+			raw: 1,
+			safemode: 1,
+			modules: 'ext.wikispeech'
+		} );
+		moduleUrl = mw.config.get( 'wgWikispeechProducerUrl' ) + '/load.php?' +
+			parametersString;
+		mw.log( 'Loading wikispeech module from ' + moduleUrl );
+		mw.loader.load( moduleUrl );
+	} );
 	mw.loader.using( 'ext.wikispeech' )
 		.done( function () {
 			var producerApiUrl = mw.config.get( 'wgWikispeechProducerUrl' ) + '/api.php';

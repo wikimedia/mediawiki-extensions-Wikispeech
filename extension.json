@@ -226,7 +226,7 @@
 			],
 			"value": {
 				"playStop": {
-					"key": 32,
+					"key": 13,
 					"modifiers": [
 						"alt",
 						"shift"

@@ -9,6 +9,7 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Segment;
  */
 
 use HashBagOStuff;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\Segmenter;
@@ -33,7 +34,8 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$this->segmenter = TestingAccessWrapper::newFromObject(
 			new Segmenter(
 				new RequestContext(),
-				$this->createStub( HashBagOStuff::class )
+				$this->createStub( HashBagOStuff::class ),
+				$this->createMock( HttpRequestFactory::class )
 			)
 		);
 	}

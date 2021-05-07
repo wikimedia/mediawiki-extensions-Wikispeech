@@ -462,4 +462,25 @@ class ApiHooks implements
 			];
 		}
 	}
+
+	/**
+	 * Get default user options when used as a producer
+	 *
+	 * Used when a consumer loads the gadget module.
+	 *
+	 * @since 0.1.9
+	 * @return array
+	 */
+	public static function getDefaultUserOptions() {
+		global $wgDefaultUserOptions;
+		$wikispeechOptions = array_filter(
+			$wgDefaultUserOptions,
+			function ( $key ) {
+				// Only add options starting with "wikispeech".
+				return strpos( $key, 'wikispeech' ) === 0;
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+		return $wikispeechOptions;
+	}
 }

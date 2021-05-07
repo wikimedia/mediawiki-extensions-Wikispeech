@@ -48,6 +48,9 @@ class ApiWikispeechListen extends ApiBase {
 	/** @var RevisionStore */
 	private $revisionStore;
 
+	/** @var HttpRequestFactory */
+	private $requestFactory;
+
 	/** @var LoggerInterface */
 	private $logger;
 
@@ -80,6 +83,7 @@ class ApiWikispeechListen extends ApiBase {
 		$this->config = $this->getConfig();
 		$this->cache = $cache;
 		$this->revisionStore = $revisionStore;
+		$this->requestFactory = $requestFactory;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->config = MediaWikiServices::getInstance()
 			->getConfigFactory()
@@ -115,7 +119,8 @@ class ApiWikispeechListen extends ApiBase {
 				$voice,
 				$language,
 				$inputParameters['revision'],
-				$inputParameters['segment']
+				$inputParameters['segment'],
+				$inputParameters['consumer-url']
 			);
 		} else {
 			if ( !$voice ) {
@@ -149,21 +154,58 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param string $language
 	 * @param int $revisionId
 	 * @param string $segmentHash
+	 * @param string|null $consumerUrl URL to the script path on the consumer,
+	 *  if used as a producer.
 	 * @return array
 	 */
 	private function getResponseForRevisionAndSegment(
 		$voice,
 		$language,
 		$revisionId,
-		$segmentHash
+		$segmentHash,
+		$consumerUrl = null
 	) {
-		$revisionRecord = $this->getRevisionRecord( $revisionId );
-		$pageId = $revisionRecord->getPageId();
-		$title = Title::newFromLinkTarget(
-			$revisionRecord->getPageAsLinkTarget()
+		if ( $consumerUrl ) {
+			$request = wfAppendQuery(
+				$consumerUrl . '/api.php',
+				[
+					'action' => 'parse',
+					'format' => 'json',
+					'oldid' => $revisionId,
+					'prop' => 'displaytitle'
+				]
+			);
+			$responseString = $this->requestFactory->get( $request );
+			if ( $responseString === null ) {
+				$this->dieWithError( [
+					'apierror-wikispeech-listen-failed-getting-page-from-consumer',
+					$revisionId,
+					$consumerUrl
+				] );
+			}
+			// Phan does not seem to understand what dieWithError() does.
+			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+			$response = FormatJson::parse( $responseString )->getValue();
+			$pageId = $response->parse->pageid;
+			$title = $response->parse->displaytitle;
+		} else {
+			$revisionRecord = $this->getRevisionRecord( $revisionId );
+			$pageId = $revisionRecord->getPageId();
+			$title = Title::newFromLinkTarget(
+				$revisionRecord->getPageAsLinkTarget()
+			);
+		}
+		$segmenter = new Segmenter(
+			$this->getContext(),
+			$this->cache,
+			$this->requestFactory
 		);
-		$segmenter = new Segmenter( $this->getContext(), $this->cache );
-		$segment = $segmenter->getSegment( $title, $segmentHash, $revisionId );
+		$segment = $segmenter->getSegment(
+			$title,
+			$segmentHash,
+			$revisionId,
+			$consumerUrl
+		);
 
 		return $this->getUtterance(
 			$voice,
@@ -416,8 +458,10 @@ class ApiWikispeechListen extends ApiBase {
 				],
 				'voice' => [
 					ParamValidator::PARAM_TYPE => 'string'
+				],
+				'consumer-url' => [
+					ParamValidator::PARAM_TYPE => 'string'
 				]
-
 			]
 		);
 	}
@@ -436,6 +480,9 @@ class ApiWikispeechListen extends ApiBase {
 			=> 'apihelp-wikispeech-listen-example-2',
 			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234'
 			=> 'apihelp-wikispeech-listen-example-3',
+			// phpcs:ignore Generic.Files.LineLength
+			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234&consumer-url=https://consumer.url/w'
+			=> 'apihelp-wikispeech-listen-example-4',
 		];
 	}
 }

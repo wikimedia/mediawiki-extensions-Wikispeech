@@ -1,21 +1,16 @@
 ( function () {
-	var server, storage, player, util, contentSelector, sandbox;
+	var storage, player, util, contentSelector;
 
 	QUnit.module( 'ext.wikispeech.storage', {
 		beforeEach: function () {
 			util = mw.wikispeech.test.util;
-			sandbox = sinon.sandbox.create();
 			mw.wikispeech.player = {
 				skipAheadUtterance: sinon.spy(),
 				stop: sinon.spy()
 			};
 			player = mw.wikispeech.player;
 			storage = new mw.wikispeech.Storage();
-			server = sinon.fakeServer.create( {
-				respondImmediately: true
-			} );
-			// overrideMimeType() isn't defined by default.
-			server.xhr.prototype.overrideMimeType = function () {};
+			storage.api = sinon.stub( new mw.Api() );
 			$( '#qunit-fixture' ).append(
 				$( '<div>' ).attr( 'id', 'content' )
 			);
@@ -35,10 +30,9 @@
 			];
 		},
 		afterEach: function () {
-			server.restore();
-			sandbox.restore();
 			mw.user.options.set( 'wikispeechVoiceEn', '' );
 			mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
+			mw.wikispeech.consumerMode = false;
 		}
 	} );
 
@@ -60,14 +54,14 @@
 				} ]
 			}
 		};
-		sandbox.stub( mw.Api.prototype, 'get' ).returns(
+		storage.api.get.returns(
 			$.Deferred().resolve( response )
 		);
 
 		storage.loadUtterances();
 
 		assert.deepEqual(
-			mw.Api.prototype.get.firstCall.args[ 0 ],
+			storage.api.get.firstCall.args[ 0 ],
 			{
 				action: 'wikispeech-segment',
 				page: 'Page'
@@ -86,6 +80,34 @@
 		assert.deepEqual(
 			storage.utterances,
 			expectedUtterances
+		);
+	} );
+
+	QUnit.test( 'loadUtterances(): pass URL in consumer mode', function ( assert ) {
+		var mockWindow;
+
+		mockWindow = { location: { origin: 'https://consumer.url' } };
+		mw.wikispeech.consumerMode = true;
+		mw.config.set( 'wgPageName', 'Page' );
+		mw.config.set( 'wgScriptPath', '/w' );
+		sinon.stub( storage, 'prepareUtterance' );
+		storage.api.get.returns( $.Deferred().resolve(
+			{
+				'wikispeech-segment': {
+					segments: []
+				}
+			}
+		) );
+
+		storage.loadUtterances( mockWindow );
+
+		assert.deepEqual(
+			storage.api.get.firstCall.args[ 0 ],
+			{
+				action: 'wikispeech-segment',
+				page: 'Page',
+				'consumer-url': 'https://consumer.url/w'
+			}
 		);
 	} );
 
@@ -135,6 +157,7 @@
 
 	QUnit.test( 'prepareUtterance(): do not prepare next audio if it does not exist', function () {
 		sinon.spy( storage, 'prepareUtterance' );
+		sinon.stub( storage, 'loadAudio' );
 		storage.prepareUtterance( storage.utterances[ 1 ] );
 
 		$( storage.utterances[ 1 ].audio ).trigger( 'play' );
@@ -143,6 +166,7 @@
 	} );
 
 	QUnit.test( 'prepareUtterance(): skip to next utterance when ended', function () {
+		sinon.stub( storage, 'loadAudio' );
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
 		$( storage.utterances[ 0 ].audio ).trigger( 'ended' );
@@ -153,6 +177,7 @@
 	QUnit.test( 'prepareUtterance(): stop when end of text is reached', function () {
 		var lastUtterance;
 
+		sinon.stub( storage, 'loadAudio' );
 		lastUtterance = storage.utterances[ 1 ];
 		storage.prepareUtterance( lastUtterance );
 
@@ -164,12 +189,12 @@
 	QUnit.test( 'loadAudio()', function ( assert ) {
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
-		sandbox.stub( mw.Api.prototype, 'get' ).returns( $.Deferred() );
+		storage.api.get.returns( $.Deferred() );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
 		assert.deepEqual(
-			mw.Api.prototype.get.firstCall.args[ 0 ],
+			storage.api.get.firstCall.args[ 0 ],
 			{
 				action: 'wikispeech-listen',
 				lang: 'en',
@@ -180,9 +205,17 @@
 	} );
 
 	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
-		server.respondWith(
-			'{"wikispeech-listen": {"audio": "DummyBase64Audio=", "tokens": [{"orth": "Utterance"}, {"orth": "zero"}, {"orth": "."}]}}'
-		);
+		var response = {
+			'wikispeech-listen': {
+				audio: 'DummyBase64Audio=',
+				tokens: [
+					{ orth: 'Utterance' },
+					{ orth: 'zero' },
+					{ orth: '.' }
+				]
+			}
+		};
+		storage.api.get.returns( $.Deferred().resolve( response ) );
 		sinon.stub( storage, 'addTokens' );
 		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
 
@@ -203,7 +236,7 @@
 
 	QUnit.test( 'loadAudio(): request failed', function ( assert ) {
 		storage.utterances[ 0 ].request = { done: function () {} };
-		server.respondWith( [ 404, {}, '' ] );
+		storage.api.get.returns( $.Deferred().reject() );
 		sinon.spy( storage, 'addTokens' );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
@@ -218,18 +251,40 @@
 		mw.config.set( 'wgPageContentLanguage', 'en' );
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
-		sandbox.stub( mw.Api.prototype, 'get' ).returns( $.Deferred() );
+		storage.api.get.returns( $.Deferred() );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
 		assert.deepEqual(
-			mw.Api.prototype.get.firstCall.args[ 0 ],
+			storage.api.get.firstCall.args[ 0 ],
 			{
 				action: 'wikispeech-listen',
 				lang: 'en',
 				revision: 1,
 				segment: 'hash1234',
 				voice: 'en-voice'
+			}
+		);
+	} );
+
+	QUnit.test( 'requestTts(): pass URL in consumer mode', function ( assert ) {
+		var mockWindow = { location: { origin: 'https://consumer.url' } };
+		mw.wikispeech.consumerMode = true;
+		mw.config.set( 'wgRevisionId', 1 );
+		mw.config.get( 'wgPageContentLanguage', 'en' );
+		mw.config.set( 'wgScriptPath', '/w' );
+		storage.api.get.returns( $.Deferred() );
+
+		storage.requestTts( 'hash1234', mockWindow );
+
+		assert.deepEqual(
+			storage.api.get.firstCall.args[ 0 ],
+			{
+				action: 'wikispeech-listen',
+				lang: 'en',
+				revision: 1,
+				segment: 'hash1234',
+				'consumer-url': 'https://consumer.url/w'
 			}
 		);
 	} );

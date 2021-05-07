@@ -57,29 +57,54 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 	 */
 	public function testFetchNonExistingUtterance() {
 		$this->assertNull(
-			$this->utteranceStore->findUtterance( 1, 'sv', 'anna', 'invalid' )
+			$this->utteranceStore->findUtterance( null, 1, 'sv', 'anna', 'invalid' )
 		);
+	}
+
+	public function provideTestCreateAndFindUtterance() {
+		return [
+			'withConsumerUrl' => [
+				[
+					'consumerUrl' => 'http://foo.bar/wiki',
+					'remoteWikiHash' => '2386df4fdb39d2f492614cd81e53b642019fcc7ff932d93f81214035e40c6971',
+					'pageId' => 1,
+					'language' => 'sv',
+					'voice' => 'bertil',
+					'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+					'audio' => 'DummyBase64Audio=',
+					'synthesisMetadata' =>
+						'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}'
+				]
+			],
+			'noConsumerUrl' => [
+				[
+					'consumerUrl' => null,
+					'remoteWikiHash' => null,
+					'pageId' => 1,
+					'language' => 'sv',
+					'voice' => 'bertil',
+					'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+					'audio' => 'DummyBase64Audio=',
+					'synthesisMetadata' =>
+						'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}'
+				]
+			]
+		];
 	}
 
 	/**
 	 * Creates an utterance in the database,
 	 * asserts that identity was set,
 	 *
+	 * @dataProvider provideTestCreateAndFindUtterance
 	 * @since 0.1.5
+	 * @param array $data
 	 * @throws MWException
 	 */
-	public function testCreateUtterance() {
-		$data = [
-			'pageId' => 1,
-			'language' => 'sv',
-			'voice' => 'bertil',
-			'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
-			'audio' => 'DummyBase64Audio=',
-			'synthesisMetadata' =>
-				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}'
-		];
+	public function testCreateUtterance( array $data ) {
 		$started = MWTimestamp::getInstance();
 		$created = $this->utteranceStore->createUtterance(
+			$data['consumerUrl'],
 			$data['pageId'],
 			$data['language'],
 			$data['voice'],
@@ -87,6 +112,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 			$data['audio'],
 			$data['synthesisMetadata']
 		);
+		$this->assertSame( $data['remoteWikiHash'], $created['remoteWikiHash'] );
 		$this->assertTrue( is_int( $created[ 'utteranceId' ] ) );
 		$this->assertTrue( $started <= $created['dateStored'] );
 		$this->assertSame( $data['pageId'], $created['pageId'] );
@@ -95,31 +121,24 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		$this->assertSame( $data['segmentHash'], $created['segmentHash'] );
 		$this->assertSelect(
 			UtteranceStore::UTTERANCE_TABLE,
-			[ 'wsu_page_id', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
+			[ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
 			[ 'wsu_utterance_id' => $created['utteranceId'] ],
-			[ [ $data['pageId'], $data['language'], $data['segmentHash'], $data['voice'] ] ]
+			[ [ $data['remoteWikiHash'], $data['pageId'], $data['language'], $data['segmentHash'], $data['voice'] ] ]
 		);
 	}
 
 	/**
 	 * Creates an utterance in the database,
-	 * asserts that values match,
-	 * asserts that identity was set,
-	 * asserts that created timestamp was set.
+	 * fetches the utterance using findUtterance,
+	 * asserts that values match
 	 *
+	 * @dataProvider provideTestCreateAndFindUtterance
 	 * @since 0.1.5
+	 * @param array $data
 	 */
-	public function testFindUtterance() {
-		$data = [
-			'pageId' => 1,
-			'language' => 'sv',
-			'voice' => 'bertil',
-			'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
-			'audio' => 'DummyBase64Audio=',
-			'synthesisMetadata' =>
-				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}'
-		];
+	public function testFindUtterance( array $data ) {
 		$this->utteranceStore->createUtterance(
+			$data['consumerUrl'],
 			$data['pageId'],
 			$data['language'],
 			$data['voice'],
@@ -129,12 +148,15 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		);
 		// find the utterance we created and ensure it matches.
 		$retrieved = $this->utteranceStore->findUtterance(
+			$data['consumerUrl'],
 			$data['pageId'],
 			$data['language'],
 			$data['voice'],
 			$data['segmentHash']
 		);
+		$this->assertNotNull( $retrieved, 'Unable to find newly created utterance!' );
 		// assert database values are set
+		$this->assertSame( $data['remoteWikiHash'], $retrieved['remoteWikiHash'] );
 		$this->assertSame( $data['pageId'], $retrieved['pageId'] );
 		$this->assertSame( $data['language'], $retrieved['language'] );
 		$this->assertSame( $data['voice'], $retrieved['voice'] );
@@ -143,6 +165,9 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		$this->assertEquals( $data['audio'], $retrieved['audio'] );
 		$this->assertEquals( $data['synthesisMetadata'], $retrieved['synthesisMetadata'] );
 	}
+
+	// @todo Move urlPathFactory tests below to a new unit test,
+	// e.g. unit/Utterance/UtteranceStoreUrlPathFactoryTest
 
 	/**
 	 * Asserts functionally of paths in file backend,
@@ -396,7 +421,7 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		$expectedFlushCounter = $this
 			->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
 
-		$flushedCount = $this->utteranceStore->flushUtterancesByPage( 1 );
+		$flushedCount = $this->utteranceStore->flushUtterancesByPage( null, 1 );
 
 		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}

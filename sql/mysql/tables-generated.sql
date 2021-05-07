@@ -4,16 +4,19 @@
 -- See https://www.mediawiki.org/wiki/Manual:Schema_changes
 CREATE TABLE /*_*/wikispeech_utterance (
   wsu_utterance_id INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  wsu_remote_wiki_hash CHAR(64) DEFAULT NULL,
   wsu_page_id INT UNSIGNED NOT NULL,
   wsu_lang VARBINARY(35) NOT NULL,
   wsu_seg_hash CHAR(64) NOT NULL,
   wsu_voice VARCHAR(30) NOT NULL,
   wsu_date_stored BINARY(14) NOT NULL,
   INDEX get_utterance (
-    wsu_page_id, wsu_lang, wsu_voice,
-    wsu_seg_hash
+    wsu_remote_wiki_hash, wsu_page_id,
+    wsu_lang, wsu_voice, wsu_seg_hash
   ),
-  INDEX expire_page_utterances (wsu_page_id),
+  INDEX expire_page_utterances (
+    wsu_remote_wiki_hash, wsu_page_id
+  ),
   INDEX expire_utterances_lang (wsu_lang),
   INDEX expire_utterances_lang_voice (wsu_lang, wsu_voice),
   INDEX expire_utterances_ttl (wsu_date_stored),

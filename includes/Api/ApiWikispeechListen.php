@@ -208,6 +208,7 @@ class ApiWikispeechListen extends ApiBase {
 		);
 
 		return $this->getUtterance(
+			$consumerUrl,
 			$voice,
 			$language,
 			$pageId,
@@ -241,6 +242,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * These are either retrieved from storage or synthesize (and then stored).
 	 *
 	 * @since 0.1.5
+	 * @param string|null $consumerUrl
 	 * @param string $voice
 	 * @param string $language
 	 * @param int $pageId
@@ -252,10 +254,11 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws SpeechoidConnectorException
 	 */
 	private function getUtterance(
-		$voice,
-		$language,
-		$pageId,
-		$segment
+		?string $consumerUrl,
+		string $voice,
+		string $language,
+		int $pageId,
+		array $segment
 	) {
 		if ( $pageId !== 0 && !$pageId ) {
 			throw new InvalidArgumentException( 'Page ID must be set.' );
@@ -273,6 +276,7 @@ class ApiWikispeechListen extends ApiBase {
 		$segmentHash = $segment['hash'];
 
 		$utterance = $this->utteranceStore->findUtterance(
+			$consumerUrl,
 			$pageId,
 			$language,
 			$voice,
@@ -297,6 +301,7 @@ class ApiWikispeechListen extends ApiBase {
 				$segmentText
 			);
 			$this->utteranceStore->createUtterance(
+				$consumerUrl,
 				$pageId,
 				$language,
 				$voice,

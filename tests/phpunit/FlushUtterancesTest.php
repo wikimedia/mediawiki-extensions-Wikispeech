@@ -99,6 +99,7 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->expects( $this->once() )
 			->method( 'flushUtterancesByPage' )
 			->with(
+				$this->isNull(),
 				$this->equalTo( 1 )
 			)
 			->willReturn( 0 );

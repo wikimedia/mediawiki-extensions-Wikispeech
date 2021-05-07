@@ -82,6 +82,13 @@ class FlushUtterances extends Maintenance {
 			'p'
 		);
 		$this->addOption(
+			'consumerUrl',
+			'Flush this page on given remote wiki (page required).',
+			false,
+			true,
+			'c'
+		);
+		$this->addOption(
 			'force',
 			'Forces flushing in current thread rather than queuing as job.',
 			false,
@@ -107,6 +114,7 @@ class FlushUtterances extends Maintenance {
 		$language = $this->getOption( 'language', null );
 		$voice = $this->getOption( 'voice', null );
 		$pageId = $this->getOption( 'page', null );
+		$consumerUrl = $this->getOption( 'consumerUrl', null );
 		$force = $this->hasOption( 'force' );
 
 		$supportedSetOfOptions = true;
@@ -158,7 +166,7 @@ class FlushUtterances extends Maintenance {
 		} elseif ( $pageId ) {
 			if ( $force ) {
 				$flushedCount = $this->utteranceStore
-					->flushUtterancesByPage( intval( $pageId ) );
+					->flushUtterancesByPage( $consumerUrl, intval( $pageId ) );
 			} else {
 				if ( !$this->flushUtterancesFromStoreByPageIdJobQueue ) {
 					$this->flushUtterancesFromStoreByPageIdJobQueue

@@ -1,0 +1,77 @@
+[
+	{
+		"name": "wikispeech_utterance",
+		"comment": "Keeps track of utterances, text segments as spoken voice, in extension Wikispeech.",
+		"columns": [
+			{
+				"name": "wsu_utterance_id",
+				"comment": "Primary key. Also used as the file name prefix of the stored utterance audio and metadata.",
+				"type": "integer",
+				"options": { "autoincrement": true, "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "wsu_page_id",
+				"comment": "page.page_id containing the text segment the utterance represents.",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "wsu_lang",
+				"comment": "page.page_lang or site.site_language.",
+				"type": "binary",
+				"options": { "length": 35, "fixed": false, "notnull": true }
+			},
+			{
+				"name": "wsu_seg_hash",
+				"comment": "Hash of text segment represented as synthesized utterance. SHA256 as lower case HEX string.",
+				"type": "string",
+				"options": { "length": 64, "fixed": true, "notnull": true }
+			},
+			{
+				"name": "wsu_voice",
+				"comment": "Name of voice used in utterance.",
+				"type": "string",
+				"options": { "length": 30, "fixed": false, "notnull": true }
+			},
+			{
+				"name": "wsu_date_stored",
+				"comment": "Timestamp of when the utterance was stored in database. Used to flush out old utterances on update.",
+				"type": "binary",
+				"options": { "length": 14, "fixed": true, "notnull": true }
+			}
+		],
+		"indexes": [
+			{
+				"name": "get_utterance",
+				"comment": "Used when fetching a specific utterance in a page.",
+				"columns": [ "wsu_page_id", "wsu_lang", "wsu_voice", "wsu_seg_hash" ],
+				"unique": false
+			},
+			{
+				"name": "expire_page_utterances",
+				"comment": "Used to flush all utterances for a given page.",
+				"columns": [ "wsu_page_id" ],
+				"unique": false
+			},
+			{
+				"name": "expire_utterances_lang",
+				"comment": "Used to flush all utterances for a specific language due to improvements of synthesis.",
+				"columns": [ "wsu_lang" ],
+				"unique": false
+			},
+			{
+				"name": "expire_utterances_lang_voice",
+				"comment": "Used to flush all utterances for a specific language in a specific voice due to improvements of synthesis.",
+				"columns": [ "wsu_lang", "wsu_voice" ],
+				"unique": false
+			},
+			{
+				"name": "expire_utterances_ttl",
+				"comment": "Used to automatically flush utterances that are older than the time-to-live setting.",
+				"columns": [ "wsu_date_stored" ],
+				"unique": false
+			}
+		],
+		"pk": [ "wsu_utterance_id" ]
+	}
+]

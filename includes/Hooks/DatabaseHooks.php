@@ -15,18 +15,17 @@ use MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook;
  * @since 0.1.8
  */
 class DatabaseHooks
-	implements LoadExtensionSchemaUpdatesHook
-{
+	implements LoadExtensionSchemaUpdatesHook {
 	/**
 	 * Creates database tables.
 	 *
-	 * @since 0.1.8
 	 * @param DatabaseUpdater $updater
+	 * @since 0.1.8
 	 */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
 		$updater->addExtensionTable(
 			'wikispeech_utterance',
-			__DIR__ . '/../../sql/wikispeech_utterance_v1.sql'
+			dirname( __DIR__ ) . "/../sql/{$updater->getDB()->getType()}/tables-generated.sql"
 		);
 	}
 }

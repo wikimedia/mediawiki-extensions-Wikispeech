@@ -16,6 +16,7 @@
 		self = this;
 		self.utterances = [];
 		self.api = null;
+		self.utterancesLoaded = $.Deferred();
 
 		/**
 		 * Load all utterances.
@@ -55,6 +56,7 @@
 					utterance = self.utterances[ i ];
 					utterance.audio = $( '<audio>' ).get( 0 );
 				}
+				self.utterancesLoaded.resolve();
 				self.prepareUtterance( self.utterances[ 0 ] );
 			} );
 		};

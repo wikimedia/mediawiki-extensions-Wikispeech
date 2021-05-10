@@ -8,10 +8,10 @@
 	 */
 
 	function Player() {
-		var self, currentUtterance;
+		var self;
 
 		self = this;
-		currentUtterance = null;
+		self.currentUtterance = null;
 
 		/**
 		 * Play or stop, depending on whether an utterance is playing.
@@ -33,7 +33,7 @@
 		 */
 
 		this.isPlaying = function () {
-			return currentUtterance !== null;
+			return self.currentUtterance !== null;
 		};
 
 		/**
@@ -42,9 +42,9 @@
 
 		this.stop = function () {
 			if ( self.isPlaying() ) {
-				self.stopUtterance( currentUtterance );
+				self.stopUtterance( self.currentUtterance );
 			}
-			currentUtterance = null;
+			self.currentUtterance = null;
 			mw.wikispeech.ui.setPlayStopIconToPlay();
 			mw.wikispeech.ui.hideBufferingIcon();
 			self.playingSelection = false;
@@ -55,9 +55,11 @@
 		 */
 
 		this.play = function () {
-			if ( !mw.wikispeech.selectionPlayer.playSelectionIfValid() ) {
-				self.playUtterance( mw.wikispeech.storage.utterances[ 0 ] );
-			}
+			mw.wikispeech.storage.utterancesLoaded.done( function () {
+				if ( !mw.wikispeech.selectionPlayer.playSelectionIfValid() ) {
+					self.playUtterance( mw.wikispeech.storage.utterances[ 0 ] );
+				}
+			} );
 			mw.wikispeech.ui.setPlayStopIconToStop();
 		};
 
@@ -72,9 +74,9 @@
 
 		this.playUtterance = function ( utterance ) {
 			if ( self.isPlaying() ) {
-				self.stopUtterance( currentUtterance );
+				self.stopUtterance( self.currentUtterance );
 			}
-			currentUtterance = utterance;
+			self.currentUtterance = utterance;
 			if ( !self.playingSelection ) {
 				mw.wikispeech.highlighter.highlightUtterance( utterance );
 			}
@@ -107,7 +109,7 @@
 
 		this.skipAheadUtterance = function () {
 			var nextUtterance =
-				mw.wikispeech.storage.getNextUtterance( currentUtterance );
+				mw.wikispeech.storage.getNextUtterance( self.currentUtterance );
 			if ( nextUtterance ) {
 				self.playUtterance( nextUtterance );
 			} else {
@@ -128,21 +130,21 @@
 			rewindThreshold = mw.config.get(
 				'wgWikispeechSkipBackRewindsThreshold'
 			);
-			time = currentUtterance.audio.currentTime;
+			time = self.currentUtterance.audio.currentTime;
 			if (
 				time > rewindThreshold ||
-					currentUtterance === mw.wikispeech.storage.utterances[ 0 ]
+					self.currentUtterance === mw.wikispeech.storage.utterances[ 0 ]
 			) {
 				// Restart the current utterance if it's the first one
 				// or if it has played for longer than the skip back
 				// threshold. The threshold is based on position in
 				// the audio, rather than time played. This means it
 				// scales with speech rate.
-				currentUtterance.audio.currentTime = 0;
+				self.currentUtterance.audio.currentTime = 0;
 			} else {
 				previousUtterance =
 					mw.wikispeech.storage.getPreviousUtterance(
-						currentUtterance
+						self.currentUtterance
 					);
 				self.playUtterance( previousUtterance );
 			}
@@ -159,8 +161,8 @@
 				duration, lastTokenWithDuration;
 
 			currentToken = null;
-			tokens = currentUtterance.tokens;
-			currentTime = currentUtterance.audio.currentTime * 1000;
+			tokens = self.currentUtterance.tokens;
+			currentTime = self.currentUtterance.audio.currentTime * 1000;
 			tokensWithDuration = tokens.filter( function ( token ) {
 				duration = token.endTime - token.startTime;
 				return duration > 0;
@@ -198,7 +200,7 @@
 				if ( !nextToken ) {
 					self.skipAheadUtterance();
 				} else {
-					currentUtterance.audio.currentTime = nextToken.startTime / 1000;
+					self.currentUtterance.audio.currentTime = nextToken.startTime / 1000;
 					mw.wikispeech.highlighter.startTokenHighlighting(
 						nextToken
 					);
@@ -222,9 +224,9 @@
 				if ( !previousToken ) {
 					self.skipBackUtterance();
 					previousToken =
-						mw.wikispeech.storage.getLastToken( currentUtterance );
+						mw.wikispeech.storage.getLastToken( self.currentUtterance );
 				}
-				currentUtterance.audio.currentTime = previousToken.startTime / 1000;
+				self.currentUtterance.audio.currentTime = previousToken.startTime / 1000;
 				mw.wikispeech.highlighter.startTokenHighlighting(
 					previousToken
 				);

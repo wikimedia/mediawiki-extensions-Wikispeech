@@ -136,7 +136,8 @@
 		 * Load audio for an utterance.
 		 *
 		 * Sends a request to the Speechoid service and adds audio and tokens
-		 * when the response is received.
+		 * when the response is received. If the request fails, the user is
+		 * given the option to retry or stop playback.
 		 *
 		 * @param {Object} utterance The utterance to load audio for.
 		 * @param {Function} callback Function to call when audio is loaded.
@@ -168,6 +169,24 @@
 					callback();
 				}
 			} )
+				.fail( function () {
+					if ( utterance !== mw.wikispeech.player.currentUtterance ) {
+						// Only show dialog if the current utterance
+						// fails to load, to avoid multiple and less
+						// relevant dialogs.
+						return;
+					}
+					mw.wikispeech.ui.showLoadAudioError()
+						.done( function ( data ) {
+							if ( !data || data.action === 'stop' ) {
+								// Stop both when "Stop" is clicked
+								// and when escape is pressed.
+								mw.wikispeech.player.stop();
+							} else if ( data.action === 'retry' ) {
+								self.loadAudio( utterance, callback );
+							}
+						} );
+				} )
 				.always( function () {
 					// Remove request on success or failure, to allow new
 					// requests if this one fails.

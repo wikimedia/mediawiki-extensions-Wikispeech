@@ -23,18 +23,18 @@
 				mw.user.getRights()
 					.done( function ( rights ) {
 						var canEditLexicon = rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
-						mw.wikispeech.ui.addControlPanel( canEditLexicon );
+						self.addControlPanel( canEditLexicon );
+						self.addBufferingIcon();
 					} )
 					.fail( function () {
 						// If we can not get the rights we still want to
 						// show the player. Assume the user does not have
 						// the right to edit lexicon.
-						mw.wikispeech.ui.addControlPanel( false );
+						self.addControlPanel( false );
 					} );
 			}
-			mw.wikispeech.ui.addSelectionPlayer();
-			mw.wikispeech.ui.addBufferingIcon();
-			mw.wikispeech.ui.addKeyboardShortcuts();
+			self.addSelectionPlayer();
+			self.addKeyboardShortcuts();
 		};
 
 		/**

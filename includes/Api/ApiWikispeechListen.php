@@ -114,6 +114,12 @@ class ApiWikispeechListen extends ApiBase {
 
 		$language = $inputParameters['lang'];
 		$voice = $inputParameters['voice'];
+		if ( !$voice ) {
+			$voice = $this->voiceHandler->getDefaultVoice( $language );
+			if ( !$voice ) {
+				throw new ConfigException( 'Invalid default voice configuration.' );
+			}
+		}
 		if ( isset( $inputParameters['revision'] ) ) {
 			$response = $this->getResponseForRevisionAndSegment(
 				$voice,
@@ -123,12 +129,6 @@ class ApiWikispeechListen extends ApiBase {
 				$inputParameters['consumer-url']
 			);
 		} else {
-			if ( !$voice ) {
-				$voice = $this->voiceHandler->getDefaultVoice( $language );
-				if ( !$voice ) {
-					throw new ConfigException( 'Invalid default voice configuration.' );
-				}
-			}
 			$speechoidResponse = $this->speechoidConnector->synthesize(
 				$language,
 				$voice,

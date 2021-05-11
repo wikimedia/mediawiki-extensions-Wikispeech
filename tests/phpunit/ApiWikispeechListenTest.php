@@ -348,7 +348,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'action' => 'wikispeech-listen',
 			'revision' => $oldId,
 			'segment' => 'hash',
-			'lang' => 'en'
+			'lang' => 'en',
+			'voice' => 'en-voice1'
 		] );
 	}
 
@@ -371,7 +372,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'action' => 'wikispeech-listen',
 			'revision' => $oldId,
 			'segment' => 'hash',
-			'lang' => 'en'
+			'lang' => 'en',
+			'voice' => 'en-voice1'
 		] );
 	}
 
@@ -407,7 +409,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'action' => 'wikispeech-listen',
 			'revision' => $oldId,
 			'segment' => 'hash',
-			'lang' => 'en'
+			'lang' => 'en',
+			'voice' => 'en-voice1'
 		] );
 	}
 
@@ -449,7 +452,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				'action' => 'wikispeech-listen',
 				'revision' => $oldId,
 				'segment' => 'hash',
-				'lang' => 'en'
+				'lang' => 'en',
+				'voice' => 'en-voice1'
 			],
 			null, false, $testSysop
 		);

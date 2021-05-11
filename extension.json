@@ -394,6 +394,16 @@
 				"'Cache+Speechoid', transient storage in WAN cache, passed down to Speechoid. For development only."
 			],
 			"value": "Wiki+Speechoid"
+		},
+		"WikispeechProducerMode": {
+			"description": [
+				"Run Wikispeech in producer mode. This allows other ",
+				"wikis (consumers) to use this wiki to generate ",
+				"utterances. When an API requests includes the ",
+				"parameter `consumer-url`, page content is retrieved ",
+				"from the consumer wiki on that URL."
+			],
+			"value": false
 		}
 	},
 	"DefaultUserOptions": {

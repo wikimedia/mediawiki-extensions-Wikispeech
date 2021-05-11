@@ -126,7 +126,7 @@ class ApiWikispeechListen extends ApiBase {
 			if ( !$voice ) {
 				$voice = $this->voiceHandler->getDefaultVoice( $language );
 				if ( !$voice ) {
-					throw new ConfigException( "Invalid default voice configuration." );
+					throw new ConfigException( 'Invalid default voice configuration.' );
 				}
 			}
 			$speechoidResponse = $this->speechoidConnector->synthesize(
@@ -336,6 +336,11 @@ class ApiWikispeechListen extends ApiBase {
 	 * @throws ApiUsageException
 	 */
 	private function validateParameters( $parameters ) {
+		if (
+			isset( $parameters['consumer-url'] ) &&
+			!$this->config->get( 'WikispeechProducerMode' ) ) {
+			$this->dieWithError( 'apierror-wikispeech-consumer-not-allowed' );
+		}
 		if (
 			isset( $parameters['revision'] ) &&
 			!isset( $parameters['segment'] )

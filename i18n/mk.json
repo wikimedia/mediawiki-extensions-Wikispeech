@@ -56,6 +56,5 @@
 	"wikispeech-lexicon-edit-entry-success": "Записот е успешно уреден.",
 	"wikispeech-lexicon-copyrightnote": "Зачувувајќи ги промените, се согласувате дека вашиот придонес го објавувате под лиценцата [https://creativecommons.org/publicdomain/zero/1.0/deed.mk CC0].",
 	"group-wikispeech-edit-lexicon": "Лексиконски уредници на Викиговор",
-	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Лексиконски уредник на Викиговор}}",
-	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Лексиконски уредници на Викиговор"
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Лексиконски уредник на Викиговор}}"
 }

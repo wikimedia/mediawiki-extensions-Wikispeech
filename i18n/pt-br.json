@@ -56,6 +56,5 @@
 	"wikispeech-lexicon-new": "Novo",
 	"wikispeech-lexicon-add-entry-conflict": "Já existe uma entrada com essa grafia. Selecione um id para editar essa entrada ou \"Novo\" para adicionar uma nova entrada.",
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada com sucesso.",
-	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com o [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
-	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech lexicon editors"
+	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com o [https://creativecommons.org/publicdomain/zero/1.0/ CC0]."
 }

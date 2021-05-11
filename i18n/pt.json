@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Emma Franzen"
+		]
+	},
+	"apihelp-wikispeech-segment-example-3": "segmente a pagina principal em outro wiki.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Falhou ao obter a pagina com revisao eu ia '$1' do consumidor no URL $2.",
+	"apihelp-wikispeech-listen-example-4": "Sintetize uma declaracao de outro wiki.",
+	"wikispeech-item-id": "Identidade",
+	"wikispeech-lexicon-add-entry-success": "entrada adicionada ao lexico",
+	"wikispeech-lexicon-new": "Nova\nNovo",
+	"wikispeech-lexicon-add-entry-conflict": "Já existe uma entrada com essa grafia. Selecione um id para editar essa entrada ou \"Novo\" para adicionar uma nova entrada.",
+	"wikispeech-lexicon-edit-entry-success": "entrada editada",
+	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com [https://creativecommons.org/publicdomain/zero/1.0/ CC0]."
+}

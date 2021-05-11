@@ -6,5 +6,7 @@
 	},
 	"wikispeech-language": "ნინა",
 	"wikispeech-word": "ზიტყვა",
-	"wikispeech-transcription": "ტრანსკრიფცია"
+	"wikispeech-transcription": "ტრანსკრიფცია",
+	"wikispeech-item-id": "Id",
+	"wikispeech-lexicon-new": "ახალი"
 }

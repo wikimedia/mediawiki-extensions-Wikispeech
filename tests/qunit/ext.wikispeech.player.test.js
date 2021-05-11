@@ -35,6 +35,9 @@
 				'wgWikispeechSkipBackRewindsThreshold',
 				3.0
 			);
+			// Base case is that there is no selection. Test that test
+			// for when there is a selection overwrites this.
+			selectionPlayer.playSelectionIfValid.returns( false );
 		}
 	} );
 
@@ -47,8 +50,8 @@
 	} );
 
 	QUnit.test( 'playOrStop(): stop', function ( assert ) {
-		player.play();
-		sinon.spy( player, 'stop' );
+		player.currentUtterance = storage.utterances[ 0 ];
+		sinon.stub( player, 'stop' );
 
 		player.playOrStop();
 
@@ -56,7 +59,7 @@
 	} );
 
 	QUnit.test( 'stop()', function () {
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.spy( player, 'stopUtterance' );
 
@@ -70,13 +73,20 @@
 	} );
 
 	QUnit.test( 'play()', function () {
-		selectionPlayer.playSelectionIfValid.returns( false );
-		sinon.spy( storage.utterances[ 0 ].audio, 'play' );
+		sinon.spy( player, 'playUtterance' );
+		storage.utterancesLoaded.resolve();
 
 		player.play();
 
-		sinon.assert.called( storage.utterances[ 0 ].audio.play );
-		sinon.assert.called( ui.setPlayStopIconToStop );
+		sinon.assert.called( player.playUtterance );
+	} );
+
+	QUnit.test( 'play(): delay until utterances has been loaded', function () {
+		sinon.spy( player, 'playUtterance' );
+
+		player.play();
+
+		sinon.assert.notCalled( player.playUtterance );
 	} );
 
 	QUnit.test( 'play(): do not play utterance when selection is valid', function () {
@@ -90,7 +100,7 @@
 
 	QUnit.test( 'play(): play from beginning when selection is invalid', function () {
 		sinon.spy( player, 'playUtterance' );
-		selectionPlayer.playSelectionIfValid.returns( false );
+		storage.utterancesLoaded.resolve();
 
 		player.play();
 
@@ -228,7 +238,8 @@
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 1.1;
-		player.play();
+		storage.utterancesLoaded.resolve();
+		player.currentUtterance = storage.utterances[ 0 ];
 
 		token = player.getCurrentToken();
 
@@ -254,7 +265,7 @@
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 0.1;
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 
 		token = player.getCurrentToken();
 
@@ -280,7 +291,7 @@
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 2.1;
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 
 		token = player.getCurrentToken();
 
@@ -302,7 +313,7 @@
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 2.0;
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 
 		token = player.getCurrentToken();
 
@@ -328,7 +339,7 @@
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 
 		token = player.getCurrentToken();
 
@@ -357,7 +368,7 @@
 			}
 		];
 		storage.utterances[ 0 ].audio.currentTime = 1.1;
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 
 		token = player.getCurrentToken();
 
@@ -375,7 +386,7 @@
 				endTime: 2000
 			}
 		];
-		player.playUtterance( storage.utterances[ 0 ] );
+		player.currentUtterance = storage.utterances[ 0 ];
 		storage.getNextToken.returns( storage.utterances[ 0 ].tokens[ 1 ] );
 
 		player.skipAheadToken();
@@ -397,7 +408,7 @@
 				endTime: 1000
 			}
 		];
-		player.play();
+		player.currentUtterance = storage.utterances[ 0 ];
 		storage.utterances[ 0 ].audio.currentTime = 0.1;
 		sinon.spy( player, 'skipAheadUtterance' );
 
@@ -417,7 +428,7 @@
 				endTime: 2000
 			}
 		];
-		player.playUtterance( storage.utterances[ 0 ] );
+		player.currentUtterance = storage.utterances[ 0 ];
 		storage.utterances[ 0 ].audio.currentTime = 1.1;
 		storage.getPreviousToken.returns(
 			storage.utterances[ 0 ].tokens[ 0 ]
@@ -452,7 +463,7 @@
 				endTime: 1000
 			}
 		];
-		player.playUtterance( storage.utterances[ 1 ] );
+		player.currentUtterance = storage.utterances[ 1 ];
 		storage.getPreviousUtterance.returns( storage.utterances[ 0 ] );
 		storage.getPreviousToken.returns( null );
 		storage.getLastToken.returns( storage.utterances[ 0 ].tokens[ 1 ] );

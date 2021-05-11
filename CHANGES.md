@@ -35,6 +35,7 @@ YYYY-MM-DD
 Speechoid: 0.1.2
 
 * [T281803](https://phabricator.wikimedia.org/T281803) Handle gadget consumer URL in utterance store.
+* [T282513](https://phabricator.wikimedia.org/T282513) Config variable for producer mode
 * [T281667](https://phabricator.wikimedia.org/T281667) Load user options from consumer wiki
 * [T281665](https://phabricator.wikimedia.org/T281665) Load modules and settings
 * [T281663](https://phabricator.wikimedia.org/T281663) Communication between consumer and producer

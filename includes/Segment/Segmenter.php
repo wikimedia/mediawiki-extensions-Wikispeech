@@ -144,6 +144,7 @@ class Segmenter {
 		}
 		$cacheKey = $this->cache->makeKey(
 			'Wikispeech.segments',
+			$consumerUrl ?? 'local',
 			$revisionId,
 			var_export( $removeTags, true ),
 			implode( '-', $segmentBreakingTags ) );

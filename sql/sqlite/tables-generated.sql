@@ -4,6 +4,7 @@
 -- See https://www.mediawiki.org/wiki/Manual:Schema_changes
 CREATE TABLE /*_*/wikispeech_utterance (
   wsu_utterance_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  wsu_remote_wiki_hash CHAR(64) DEFAULT NULL,
   wsu_page_id INTEGER UNSIGNED NOT NULL,
   wsu_lang BLOB NOT NULL,
   wsu_seg_hash CHAR(64) NOT NULL,
@@ -12,11 +13,13 @@ CREATE TABLE /*_*/wikispeech_utterance (
 );
 
 CREATE INDEX get_utterance ON /*_*/wikispeech_utterance (
-  wsu_page_id, wsu_lang, wsu_voice,
-  wsu_seg_hash
+  wsu_remote_wiki_hash, wsu_page_id,
+  wsu_lang, wsu_voice, wsu_seg_hash
 );
 
-CREATE INDEX expire_page_utterances ON /*_*/wikispeech_utterance (wsu_page_id);
+CREATE INDEX expire_page_utterances ON /*_*/wikispeech_utterance (
+  wsu_remote_wiki_hash, wsu_page_id
+);
 
 CREATE INDEX expire_utterances_lang ON /*_*/wikispeech_utterance (wsu_lang);
 

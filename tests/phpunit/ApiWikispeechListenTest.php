@@ -214,7 +214,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$utteranceStoreMock
 			->method( 'findUtterance' )
 			->with(
-				// $pageId, $language, $voice, $segmentHash, $omitAudio = false
+				// $consumerUrl, $pageId, $language, $voice, $segmentHash, $omitAudio = false
+				$this->isNull(),
 				$this->equalTo( 2 ),
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
@@ -225,7 +226,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$utteranceStoreMock
 			->method( 'createUtterance' )
 			->with(
-				// $pageId, $language, $voice, $segmentHash, $audio, $synthesisMetadata
+				// $consumerUrl, $pageId, $language, $voice, $segmentHash, $audio, $synthesisMetadata
+				$this->isNull(),
 				$this->equalTo( 2 ),
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
@@ -252,6 +254,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$api->speechoidConnector = $speechoidConnectorMock;
 
 		$utterance = $api->getUtterance(
+			null,
 			'anna',
 			'sv',
 			2,
@@ -296,7 +299,8 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$utteranceStoreMock
 			->method( 'findUtterance' )
 			->with(
-				// $pageId, $language, $voice, $segmentHash, $omitAudio = false
+				// $consumerUrl, $pageId, $language, $voice, $segmentHash, $omitAudio = false=
+				$this->isNull(),
 				$this->equalTo( 2 ),
 				$this->equalTo( 'sv' ),
 				$this->equalTo( 'anna' ),
@@ -322,6 +326,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$api->speechoidConnector = $speechoidConnectorMock;
 
 		$utterance = $api->getUtterance(
+			null,
 			'anna',
 			'sv',
 			2,

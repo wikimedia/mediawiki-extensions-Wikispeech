@@ -299,19 +299,22 @@ class SpecialEditLexicon extends SpecialPage {
 		// Item is updated by createEntryItem(), so we just need to
 		// store it.
 		$this->modifiedItem = $item;
-		$this->purgeOriginPageUtterances();
+		// @todo Introduce $consumerUrl to request parameters and pass it down here.
+		// @todo Currently we're passing null, meaning it only support flushing local wiki utterances.
+		$this->purgeOriginPageUtterances( null );
 		return true;
 	}
 
 	/**
 	 * Immediately removes any utterance from the origin page, if set.
 	 * @since 0.1.8
+	 * @param string|null $consumerUrl
 	 */
-	private function purgeOriginPageUtterances() {
+	private function purgeOriginPageUtterances( ?string $consumerUrl ) {
 		$page = $this->getRequest()->getIntOrNull( 'page' );
 		if ( $page !== null ) {
 			$utteranceStore = new UtteranceStore();
-			$utteranceStore->flushUtterancesByPage( $page );
+			$utteranceStore->flushUtterancesByPage( $consumerUrl, $page );
 		}
 	}
 

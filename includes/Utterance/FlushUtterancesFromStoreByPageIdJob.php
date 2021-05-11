@@ -30,6 +30,9 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 	/** @var int */
 	private $pageId;
 
+	/** @var string|null */
+	private $consumerUrl;
+
 	/**
 	 * @since 0.1.7
 	 * @param Title $title
@@ -40,6 +43,7 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->utteranceStore = new UtteranceStore();
 		$this->pageId = $params['pageId'];
+		$this->consumerUrl = $params['consumerUrl'];
 	}
 
 	/**
@@ -50,6 +54,7 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 	 */
 	public function run() {
 		$flushedUtterances = $this->utteranceStore->flushUtterancesByPage(
+			$this->consumerUrl,
 			$this->pageId
 		);
 		$this->logger->info(

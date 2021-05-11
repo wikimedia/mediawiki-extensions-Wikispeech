@@ -127,6 +127,7 @@ class UtteranceStore {
 	 * voice and language.
 	 *
 	 * @since 0.1.5
+	 * @param string|null $consumerUrl Remote wiki where page is located, or null if local.
 	 * @param int $pageId Mediawiki page ID.
 	 * @param string $language ISO-639.
 	 * @param string $voice Name of synthesis voice.
@@ -134,9 +135,21 @@ class UtteranceStore {
 	 * @param bool $omitAudio If true, then no audio is returned.
 	 * @return array|null Utterance found, or null if non-existing.
 	 */
-	public function findUtterance( $pageId, $language, $voice, $segmentHash, $omitAudio = false ) {
+	public function findUtterance(
+		?string $consumerUrl,
+		int $pageId,
+		string $language,
+		string $voice,
+		string $segmentHash,
+		bool $omitAudio = false
+	): ?array {
 		$utterance = $this->retrieveUtteranceMetadata(
-				$pageId, $language, $voice, $segmentHash );
+			$consumerUrl,
+			$pageId,
+			$language,
+			$voice,
+			$segmentHash
+		);
 		if ( !$utterance ) {
 			return null;
 		}
@@ -183,22 +196,32 @@ class UtteranceStore {
 	 * using a specific voice and language.
 	 *
 	 * @since 0.1.5
+	 * @param string|null $consumerUrl Remote wiki where page is located, or null if local.
 	 * @param int $pageId Mediawiki page ID.
 	 * @param string $language ISO-639.
 	 * @param string $voice Name of synthesis voice.
 	 * @param string $segmentHash Hash of segment representing utterance.
 	 * @return array|null Utterance or null if not found in database
 	 */
-	public function retrieveUtteranceMetadata( $pageId, $language, $voice, $segmentHash ) {
+	public function retrieveUtteranceMetadata(
+		?string $consumerUrl,
+		int $pageId,
+		string $language,
+		string $voice,
+		string $segmentHash
+	): ?array {
+		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbr = $this->dbLoadBalancer->getConnection( DB_REPLICA );
 		$res = $dbr->select( self::UTTERANCE_TABLE, [
 			'wsu_utterance_id',
+			'wsu_remote_wiki_hash',
 			'wsu_page_id',
 			'wsu_lang',
 			'wsu_voice',
 			'wsu_seg_hash',
 			'wsu_date_stored'
 		], [
+			'wsu_remote_wiki_hash' => $remoteWikiHash,
 			'wsu_page_id' => $pageId,
 			'wsu_lang' => $language,
 			'wsu_voice' => $voice,
@@ -216,6 +239,7 @@ class UtteranceStore {
 		}
 		$utterance = [
 			'utteranceId' => intval( $row->wsu_utterance_id ),
+			'remoteWikiHash' => $row->wsu_remote_wiki_hash === null ? null : strval( $row->wsu_remote_wiki_hash ),
 			'pageId' => intval( $row->wsu_page_id ),
 			'language' => strval( $row->wsu_lang ),
 			'voice' => strval( $row->wsu_voice ),
@@ -253,6 +277,7 @@ class UtteranceStore {
 	 * Creates an utterance in the database.
 	 *
 	 * @since 0.1.5
+	 * @param string|null $consumerUrl
 	 * @param int $pageId Mediawiki page ID.
 	 * @param string $language ISO 639.
 	 * @param string $voice Name of synthesis voice.
@@ -263,15 +288,18 @@ class UtteranceStore {
 	 * @throws ExternalStoreException If unable to prepare or create files in file backend.
 	 */
 	public function createUtterance(
-		$pageId,
-		$language,
-		$voice,
-		$segmentHash,
-		$audio,
-		$synthesisMetadata
-	) {
+		?string $consumerUrl,
+		int $pageId,
+		string $language,
+		string $voice,
+		string $segmentHash,
+		string $audio,
+		string $synthesisMetadata
+	): array {
+		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
 		$rows = [
+			'wsu_remote_wiki_hash' => $remoteWikiHash,
 			'wsu_page_id' => $pageId,
 			'wsu_lang' => $language,
 			'wsu_voice' => $voice,
@@ -280,6 +308,7 @@ class UtteranceStore {
 		];
 		$dbw->insert( self::UTTERANCE_TABLE, $rows );
 		$utterance = [
+			'remoteWikiHash' => $remoteWikiHash,
 			'pageId' => $pageId,
 			'language' => $language,
 			'voice' => $voice,
@@ -364,14 +393,22 @@ class UtteranceStore {
 	 * Clears database and file backend of all utterances for a given page.
 	 *
 	 * @since 0.1.5
+	 * @param string|null $consumerUrl
 	 * @param int $pageId Mediawiki page ID.
 	 * @return int Number of utterances flushed.
 	 */
-	public function flushUtterancesByPage( $pageId ) {
+	public function flushUtterancesByPage(
+		?string $consumerUrl,
+		int $pageId
+	): int {
+		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ],
-			[ 'wsu_page_id' => $pageId ]
+			[
+				'wsu_remote_wiki_hash' => $remoteWikiHash,
+				'wsu_page_id' => $pageId
+			]
 		);
 		return $this->flushUtterances( $dbw, $results );
 	}
@@ -687,4 +724,33 @@ class UtteranceStore {
 	private function isWikispeechUtteranceUseSwiftFileBackendExpiring(): bool {
 		return $this->config->get( 'WikispeechUtteranceUseSwiftFileBackendExpiring' );
 	}
+
+	/**
+	 * Used to evaluate hash of gadget consumer URL,
+	 * the remote wiki where the page is located.
+	 *
+	 * Making changes to this function will probably invalidate all existing cached utterances.
+	 *
+	 * @since 0.1.9
+	 * @param string|null $consumerUrl
+	 * @return string|null SHA256 message digest
+	 */
+	public static function evaluateRemoteWikiHash( ?string $consumerUrl ): ?string {
+		if ( $consumerUrl === null ) {
+			return null;
+		}
+		$context = hash_init( 'sha256' );
+		$urlParts = parse_url( $consumerUrl );
+		if ( isset( $urlParts['host'] ) ) {
+			hash_update( $context, mb_strtolower( $urlParts['host'] ) );
+		}
+		if ( isset( $urlParts['port'] ) ) {
+			hash_update( $context, strval( $urlParts['port'] ) );
+		}
+		if ( isset( $urlParts['path'] ) ) {
+			hash_update( $context, $urlParts['path'] );
+		}
+		return hash_final( $context );
+	}
+
 }

@@ -12,8 +12,6 @@ use MediaWikiUnitTestCase;
  */
 
 /**
- * @group Database
- * @group medium
  * @covers \MediaWiki\Wikispeech\Utterance\UtteranceStore
  */
 class UtteranceStoreRemoteWikiHashTest extends MediaWikiUnitTestCase {

@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Wikispeech\Tests;
+namespace MediaWiki\Wikispeech\Tests\Integration\Utterance;
 
 /**
  * @file
@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech\Tests;
 
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use MemoryFileBackend;
 use MWException;
 use MWTimestamp;
@@ -22,7 +22,7 @@ use Wikimedia\TestingAccessWrapper;
  * @group Database
  * @covers \MediaWiki\Wikispeech\Utterance\UtteranceStore
  */
-class UtteranceStoreTest extends MediaWikiTestCase {
+class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * @var TestingAccessWrapper|UtteranceStore
@@ -164,100 +164,6 @@ class UtteranceStoreTest extends MediaWikiTestCase {
 		// assert values from file store is loaded
 		$this->assertEquals( $data['audio'], $retrieved['audio'] );
 		$this->assertEquals( $data['synthesisMetadata'], $retrieved['synthesisMetadata'] );
-	}
-
-	// @todo Move urlPathFactory tests below to a new unit test,
-	// e.g. unit/Utterance/UtteranceStoreUrlPathFactoryTest
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactoryRootOneCharacterInteger() {
-		$this->assertEquals(
-			'/',
-			$this->utteranceStore->urlPathFactory( 1 )
-		);
-	}
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactoryRootTwoCharacterInteger() {
-		$this->assertEquals(
-			'/',
-			$this->utteranceStore->urlPathFactory( 12 )
-		);
-	}
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactoryRootThreeCharacterInteger() {
-		$this->assertEquals(
-			'/',
-			$this->utteranceStore->urlPathFactory( 123 )
-		);
-	}
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactoryFourCharacterInteger() {
-		$this->assertEquals(
-			'/1/',
-			$this->utteranceStore->urlPathFactory( 1234 )
-		);
-	}
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactoryFiveCharacterInteger() {
-		$this->assertEquals(
-			'/1/2/',
-			$this->utteranceStore->urlPathFactory( 12345 )
-		);
-	}
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactorySixCharacterInteger() {
-		$this->assertEquals(
-			'/1/2/3/',
-			$this->utteranceStore->urlPathFactory( 123456 )
-		);
-	}
-
-	/**
-	 * Asserts functionally of paths in file backend,
-	 * which avoids overloading directories with files.
-	 *
-	 * @since 0.1.5
-	 */
-	public function testUrlPathFactorySevenCharacterInteger() {
-		$this->assertEquals(
-			'/1/2/3/4/',
-			$this->utteranceStore->urlPathFactory( 1234567 )
-		);
 	}
 
 	public function testFlushUtterancesByExpirationDate() {

@@ -35,6 +35,7 @@
 			}
 			self.addSelectionPlayer();
 			self.addKeyboardShortcuts();
+			self.addDialogs();
 		};
 
 		/**
@@ -433,6 +434,33 @@
 		};
 
 		/**
+		 * Create dialogs and add them to a window manager
+		 */
+
+		this.addDialogs = function () {
+			self.windowManager = new OO.ui.WindowManager();
+			$( document.body ).append( self.windowManager.$element );
+			self.messageDialog = new OO.ui.MessageDialog();
+			self.errorLoadAudioDialogData = {
+				title: mw.msg( 'wikispeech-error-loading-audio-title' ),
+				message: mw.msg( 'wikispeech-error-loading-audio-message' ),
+				actions: [
+					{
+						action: 'retry',
+						label: mw.msg( 'wikispeech-retry' ),
+						flags: 'primary'
+					},
+					{
+						action: 'stop',
+						label: mw.msg( 'wikispeech-stop' ),
+						flags: 'destructive'
+					}
+				]
+			};
+			self.windowManager.addWindows( [ self.messageDialog ] );
+		};
+
+		/**
 		 * Toggle GUI visibility
 		 *
 		 * Hides or shows control panel which also dictates whether
@@ -448,6 +476,22 @@
 			}
 			$( '.ext-wikispeech-control-panel' )
 				.css( 'visibility', newVisibility );
+		};
+
+		/**
+		 * Show an error dialog for when audio could not be loaded
+		 *
+		 * Has buttons for retrying and stopping playback.
+		 *
+		 * return {jQuery.Promise} Called when dialog is closed.
+		 */
+
+		this.showLoadAudioError = function () {
+			var dialog = self.windowManager.openWindow(
+				self.messageDialog,
+				self.errorLoadAudioDialogData
+			);
+			return dialog.closed;
 		};
 	}
 

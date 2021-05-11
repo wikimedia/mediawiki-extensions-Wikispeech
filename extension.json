@@ -50,10 +50,15 @@
 				"ext.wikispeech.css"
 			],
 			"messages": [
+				"wikispeech-error-loading-audio-title",
+				"wikispeech-error-loading-audio-message",
+				"wikispeech-retry",
+				"wikispeech-stop"
 			],
 			"dependencies": [
 				"mediawiki.util",
 				"mediawiki.user",
+				"oojs-ui",
 				"oojs-ui-core",
 				"oojs-ui-toolbars",
 				"oojs-ui.styles.icons-media",

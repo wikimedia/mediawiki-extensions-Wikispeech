@@ -70,10 +70,13 @@
 		 *
 		 * @param {Object} utterance The utterance to play the audio
 		 *  for.
+		 * @param {boolean} [fromStart=true] Whether the utterance
+		 *  should play from start or not.
 		 */
 
-		this.playUtterance = function ( utterance ) {
-			if ( self.isPlaying() ) {
+		this.playUtterance = function ( utterance, fromStart ) {
+			fromStart = fromStart === undefined ? true : fromStart;
+			if ( fromStart && self.isPlaying() ) {
 				self.stopUtterance( self.currentUtterance );
 			}
 			self.currentUtterance = utterance;

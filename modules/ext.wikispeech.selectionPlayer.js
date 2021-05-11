@@ -151,6 +151,7 @@
 					startNode,
 					startOffset
 				);
+			mw.wikispeech.player.currentUtterance = startUtterance;
 			mw.wikispeech.storage.prepareUtterance(
 				startUtterance,
 				function () {
@@ -160,7 +161,7 @@
 						startOffset
 					);
 					self.setStartTime( startUtterance, startToken.startTime );
-					mw.wikispeech.player.playUtterance( startUtterance );
+					mw.wikispeech.player.playUtterance( startUtterance, false );
 				}
 			);
 

@@ -33,6 +33,7 @@
 	"apierror-wikispeech-listen-invalid-language": "{{doc-apierror}}",
 	"apierror-wikispeech-listen-invalid-voice": "{{doc-apierror}}",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "{{doc-apierror}}",
+	"apierror-wikispeech-consumer-not-allowed": "{{doc-apierror}}",
 	"apihelp-wikispeech-listen-example-1": "{{doc-apihelp-example|wikispeech-listen}}",
 	"apihelp-wikispeech-listen-example-2": "{{doc-apihelp-example|wikispeech-listen}}",
 	"apihelp-wikispeech-listen-example-3": "{{doc-apihelp-example|wikispeech-listen}}",

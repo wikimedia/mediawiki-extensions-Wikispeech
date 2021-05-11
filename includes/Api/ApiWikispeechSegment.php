@@ -58,6 +58,11 @@ class ApiWikispeechSegment extends ApiBase {
 	 */
 	public function execute() {
 		$parameters = $this->extractRequestParams();
+		if (
+			isset( $parameters['consumer-url'] ) &&
+			!$this->getConfig()->get( 'WikispeechProducerMode' ) ) {
+			$this->dieWithError( 'apierror-wikispeech-consumer-not-allowed' );
+		}
 		$title = Title::newFromText( $parameters['page'] );
 		if ( !$title || $title->isExternal() ) {
 			$this->dieWithError( [

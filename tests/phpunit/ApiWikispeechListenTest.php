@@ -454,4 +454,18 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			null, false, $testSysop
 		);
 	}
+
+	public function testRequest_consumerUrlGivenNotInProducerMode_throwsException() {
+		$this->setMwGlobals( 'wgWikispeechProducerMode', false );
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( 'Requests from remote wikis are not allowed.' );
+
+		$this->doApiRequest( [
+			'action' => 'wikispeech-listen',
+			'revision' => 1,
+			'segment' => 'hash',
+			'lang' => 'en',
+			'consumer-url' => 'https://consumer.url'
+		] );
+	}
 }

@@ -29,6 +29,7 @@
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is not a valid language. Should be one of: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> is not a valid voice. Should be one of: $2.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Failed to get page with revision id '$1' from consumer on URL $2.",
+	"apierror-wikispeech-consumer-not-allowed": "Requests from remote wikis are not allowed.",
 	"apihelp-wikispeech-listen-example-1": "Synthesize an utterance in English.",
 	"apihelp-wikispeech-listen-example-2": "Use a non-default voice.",
 	"apihelp-wikispeech-listen-example-3": "Request a segment from a revision. Will use cached synthesis if it exists.",

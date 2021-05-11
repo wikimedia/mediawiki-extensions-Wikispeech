@@ -143,4 +143,16 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
+	public function testRequest_consumerUrlGivenNotInProducerMode_throwsException() {
+		$this->setMwGlobals( 'wgWikispeechProducerMode', false );
+		$this->expectException( ApiUsageException::class );
+		$this->expectExceptionMessage( 'Requests from remote wikis are not allowed.' );
+
+		$this->doApiRequest( [
+			'action' => 'wikispeech-segment',
+			'page' => 'Page',
+			'consumer-url' => 'https://consumer.url'
+		] );
+	}
+
 }

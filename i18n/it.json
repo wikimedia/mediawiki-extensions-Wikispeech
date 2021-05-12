@@ -6,6 +6,8 @@
 		]
 	},
 	"wikispeech-listen": "Ascolta",
+	"wikispeech-retry": "Riprova",
+	"wikispeech-stop": "Ferma",
 	"wikispeech-language": "Lingua",
 	"wikispeech-word": "Parola",
 	"wikispeech-item-id": "ID",

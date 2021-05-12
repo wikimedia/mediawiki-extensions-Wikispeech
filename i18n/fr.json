@@ -56,10 +56,10 @@
 	"wikispeech-transcription": "Transcription",
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "Aperçu",
-	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée avec succès au lexique.",
+	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée au lexique.",
 	"wikispeech-lexicon-new": "Nouveau",
 	"wikispeech-lexicon-add-entry-conflict": "Une entrée avec cette orthographe existe déjà. Sélectionnez un id pour modifier cette entrée, ou « Nouveau » pour ajouter une nouvelle entrée.",
-	"wikispeech-lexicon-edit-entry-success": "Entrée bien modifiée.",
+	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",
 	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de mettre votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Modificateurs du lexique Wikispeech",
 	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech"

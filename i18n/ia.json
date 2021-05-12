@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"apierror-wikispeech-consumer-not-allowed": "Requestas proveniente de wikis remote non es permittite."
+}

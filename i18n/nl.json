@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Dutchy45",
+			"Nickthijssen1994",
 			"PonkoSasuke"
 		]
 	},
@@ -31,5 +32,7 @@
 	"prefs-wikispeech-show-player": "Toon speler",
 	"right-wikispeech-listen": "Luister naar pagina",
 	"action-wikispeech-listen": "luister naar pagina",
-	"wikispeech-listen": "Beluisteren"
+	"wikispeech-listen": "Beluisteren",
+	"wikispeech-error-loading-audio-title": "Audio kon niet geladen worden",
+	"wikispeech-retry": "Probeer opnieuw"
 }

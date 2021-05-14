@@ -34,7 +34,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->config->set( 'WikispeechSpeechoidResponseTimeoutSeconds', null );
 		$this->config->set( 'WikispeechSpeechoidUrl', 'speechoid.url' );
 		$this->speechoidConnector = $this->getMockBuilder( SpeechoidConnector::class )
-			->setMethods( [ 'findLexiconByLanguage' ] )
+			->onlyMethods( [ 'findLexiconByLanguage' ] )
 			->setConstructorArgs( [
 				$this->config,
 				$this->requestFactory

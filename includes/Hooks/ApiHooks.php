@@ -475,7 +475,7 @@ class ApiHooks implements
 		global $wgDefaultUserOptions;
 		$wikispeechOptions = array_filter(
 			$wgDefaultUserOptions,
-			function ( $key ) {
+			static function ( $key ) {
 				// Only add options starting with "wikispeech".
 				return strpos( $key, 'wikispeech' ) === 0;
 			},

@@ -12,7 +12,6 @@ use InvalidArgumentException;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\CleanedText;
-use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\Segmenter;
 use MediaWiki\Wikispeech\Tests\WikiPageTestUtil;
 use MediaWikiIntegrationTestCase;
@@ -109,7 +108,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			[
 				'startOffset' => 0,
 				'endOffset' => 3,
-				'content' => [ new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ) ],
+				'content' => [ new CleanedText( 'Page', '//h1/text()' ) ],
 				'hash' => 'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
 			],
 			[
@@ -144,7 +143,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			[
 				'startOffset' => 0,
 				'endOffset' => 4,
-				'content' => [ new CleanedText( 'title', '//h1[@id="firstHeading"]//text()' ) ],
+				'content' => [ new CleanedText( 'title', '//h1/text()' ) ],
 				'hash' => '1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'
 			],
 			[
@@ -203,7 +202,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			[
 				'startOffset' => 0,
 				'endOffset' => 3,
-				'content' => [ new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ) ],
+				'content' => [ new CleanedText( 'Page', '//h1/text()' ) ],
 				'hash' => 'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
 			],
 			[
@@ -300,7 +299,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			->with( $this->equalTo( $request ) )
 			->willReturn( '{
 	"parse": {
-		"pageid": 1,
+		"revid": 1,
 		"text": {
 			"*": "Content"
 		},
@@ -318,26 +317,6 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame(
 			'Content',
 			$segments[1]['content'][0]->string
-		);
-	}
-
-	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
-		$title = 'Page';
-		$content = '<p>Content</p>';
-
-		$cleanedText = $this->segmenter->cleanPage( $title, $content, [], [] );
-
-		$this->assertEquals(
-			[
-				new CleanedText( 'Page', '//h1[@id="firstHeading"]//text()' ),
-				new SegmentBreak(),
-				new CleanedText( 'Content', './p/text()' )
-			],
-			// For some reason, there are a number of HTML nodes
-			// containing only newlines, which adds extra
-			// CleanText's. They don't cause any issues in the end
-			// though. See T255152.
-			array_slice( $cleanedText, 0, 3 )
 		);
 	}
 

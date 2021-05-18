@@ -8,6 +8,8 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
+use DOMDocument;
+use DOMXPath;
 use FormatJson;
 use IContextSource;
 use MediaWiki\Http\HttpRequestFactory;
@@ -130,7 +132,7 @@ class Segmenter {
 			$displayTitle = $response->parse->displaytitle;
 			$pageContent = $response->parse->text->{'*'};
 			if ( $revisionId == null ) {
-				$revisionId = $response->parse->pageid;
+				$revisionId = $response->parse->revid;
 			}
 		} else {
 			$page = WikiPage::factory( $title );
@@ -191,9 +193,19 @@ class Segmenter {
 		$cleanedText = null;
 		// Parse latest revision, using parser cache.
 		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
-		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
-		$titleSegment->path = '//h1[@id="firstHeading"]//text()';
 		$cleanedText = $cleaner->cleanHtml( $pageContent );
+		// Create a DOM for the title to get the Xpath, in case there
+		// are elements within the title. This happens e.g. when the
+		// title is italicized.
+		$dom = new DOMDocument();
+		$dom->loadHTML(
+			'<h1>' . $displayTitle . '</h1>',
+			LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED
+		);
+		$xpath = new DOMXPath( $dom );
+		$node = $xpath->evaluate( '//text()' )->item( 0 );
+		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
+		$titleSegment->path = '/' . $node->getNodePath();
 		// Add the title as a separate utterance to the start.
 		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
 		return $cleanedText;

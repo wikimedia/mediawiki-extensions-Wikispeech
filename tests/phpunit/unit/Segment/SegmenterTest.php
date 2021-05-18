@@ -319,4 +319,35 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$hash = $this->segmenter->evaluateHash( $segments[0] );
 		$this->assertSame( $expectedHash, $hash );
 	}
+
+	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
+		$title = 'Page';
+		$content = '<p>Content</p>';
+
+		$cleanedText = $this->segmenter->cleanPage( $title, $content, [], [] );
+
+		$this->assertEquals(
+			[
+				new CleanedText( 'Page', '//h1/text()' ),
+				new SegmentBreak(),
+				new CleanedText( 'Content', './p/text()' )
+			],
+			// For some reason, there are a number of HTML nodes
+			// containing only newlines, which adds extra
+			// CleanText's. They don't cause any issues in the end
+			// though. See T255152.
+			array_slice( $cleanedText, 0, 3 )
+		);
+	}
+
+	public function testCleanPage_titleContainsElements_giveTitleXpath() {
+		$title = '<i>Page</i>';
+
+		$cleanedText = $this->segmenter->cleanPage( $title, '', [], [] );
+
+		$this->assertEquals(
+			new CleanedText( 'Page', '//h1/i/text()' ),
+			$cleanedText[0]
+		);
+	}
 }

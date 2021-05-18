@@ -172,7 +172,6 @@ class ApiWikispeechListen extends ApiBase {
 					'action' => 'parse',
 					'format' => 'json',
 					'oldid' => $revisionId,
-					'prop' => 'displaytitle'
 				]
 			);
 			$responseString = $this->requestFactory->get( $request );
@@ -187,7 +186,7 @@ class ApiWikispeechListen extends ApiBase {
 			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 			$response = FormatJson::parse( $responseString )->getValue();
 			$pageId = $response->parse->pageid;
-			$title = $response->parse->displaytitle;
+			$title = $response->parse->title;
 		} else {
 			$revisionRecord = $this->getRevisionRecord( $revisionId );
 			$pageId = $revisionRecord->getPageId();

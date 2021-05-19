@@ -3,6 +3,7 @@
 		"authors": [
 			"BaRaN6161 TURK",
 			"Joseph",
+			"Melissadilara",
 			"MuratTheTurkish",
 			"SaldırganSincap"
 		]
@@ -44,6 +45,9 @@
 	"apierror-wikispeech-listen-invalid-input-too-long": "Giriş metni $1 karakteri geçmemeli, $2 karakter içermelidir.",
 	"wikispeech-listen": "Dinle",
 	"wikispeech-dont-listen": "Dinlemeyin",
+	"wikispeech-error-loading-audio-title": "Ses yüklenemedi",
+	"wikispeech-retry": "Tekrar dene",
+	"wikispeech-stop": "Durdur",
 	"editlexicon": "Sözlüğü değiştir",
 	"wikispeech-language": "Dil",
 	"wikispeech-word": "Kelime",

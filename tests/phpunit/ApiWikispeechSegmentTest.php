@@ -46,7 +46,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 				'content' => [
 					[
 						'string' => 'Talk:Test Page',
-						'path' => '//h1[@id="firstHeading"]//text()'
+						'path' => '//h1/text()'
 					]
 				],
 				'hash' => '50c0083861b4c8bc5e6c1402bbb18ab093cfdf930aa8f5ef9297764e01137a26'

@@ -9,6 +9,8 @@
 
 	function Ui() {
 		var self = this;
+		// Resolves the UI is ready to be extended by consumer.
+		self.ready = $.Deferred();
 
 		/**
 		 * Initialize elements and functionality for the UI.
@@ -35,7 +37,9 @@
 			}
 			self.addSelectionPlayer();
 			self.addKeyboardShortcuts();
+			self.windowManager = new OO.ui.WindowManager();
 			self.addDialogs();
+			self.ready.resolve();
 		};
 
 		/**
@@ -54,7 +58,7 @@
 				$footer = $( '#footer' );
 			toolFactory = new OO.ui.ToolFactory();
 			toolGroupFactory = new OO.ui.ToolGroupFactory();
-			toolbar = new OO.ui.Toolbar(
+			self.toolbar = toolbar = new OO.ui.Toolbar(
 				toolFactory,
 				toolGroupFactory,
 				{
@@ -64,8 +68,7 @@
 				}
 			);
 
-			playerGroup = new OO.ui.ButtonGroupWidget();
-			toolbar.$actions.append( playerGroup.$element );
+			playerGroup = self.addToolbarGroup();
 			self.addButton(
 				playerGroup,
 				'first',
@@ -93,8 +96,7 @@
 				mw.wikispeech.player.skipAheadUtterance
 			);
 
-			linkGroup = new OO.ui.ButtonGroupWidget();
-			toolbar.$actions.append( linkGroup.$element );
+			linkGroup = self.addToolbarGroup();
 			self.addLinkConfigButton(
 				linkGroup,
 				'help',
@@ -129,6 +131,18 @@
 			padding =
 				Number( $footer.css( 'padding-bottom' ).slice( 0, -2 ) );
 			$footer.css( 'padding-bottom', padding + height );
+		};
+
+		/**
+		 * Add a group to the player toolbar.
+		 *
+		 * @return {OO.ui.ButtonGroupWidget}
+		 */
+
+		this.addToolbarGroup = function () {
+			var group = new OO.ui.ButtonGroupWidget();
+			self.toolbar.$actions.append( group.$element );
+			return group;
 		};
 
 		/**
@@ -438,7 +452,6 @@
 		 */
 
 		this.addDialogs = function () {
-			self.windowManager = new OO.ui.WindowManager();
 			$( document.body ).append( self.windowManager.$element );
 			self.messageDialog = new OO.ui.MessageDialog();
 			self.errorLoadAudioDialogData = {
@@ -457,7 +470,17 @@
 					}
 				]
 			};
-			self.windowManager.addWindows( [ self.messageDialog ] );
+			self.addWindow( self.messageDialog );
+		};
+
+		/**
+		 * Add a window to the window manager.
+		 *
+		 * @param {OO.ui.Window} window
+		 */
+
+		this.addWindow = function ( window ) {
+			self.windowManager.addWindows( [ window ] );
 		};
 
 		/**
@@ -483,15 +506,26 @@
 		 *
 		 * Has buttons for retrying and stopping playback.
 		 *
-		 * return {jQuery.Promise} Called when dialog is closed.
+		 * @return {jQuery.Promise} Resolves when dialog is closed.
 		 */
 
 		this.showLoadAudioError = function () {
-			var dialog = self.windowManager.openWindow(
+			return self.openWindow(
 				self.messageDialog,
 				self.errorLoadAudioDialogData
 			);
-			return dialog.closed;
+		};
+
+		/**
+		 * Open a window.
+		 *
+		 * @param {OO.ui.Window} window
+		 * @param {Object} data
+		 * @return {jQuery.Promise} Resolves when window is closed.
+		 */
+
+		this.openWindow = function ( window, data ) {
+			return self.windowManager.openWindow( window, data ).closed;
 		};
 	}
 

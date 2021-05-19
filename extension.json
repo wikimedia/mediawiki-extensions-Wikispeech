@@ -81,6 +81,8 @@
 		"ext.wikispeech.gadget": {
 			"packageFiles": [
 				"ext.wikispeech.gadget.js",
+				"ext.wikispeech.userOptionsDialog.js",
+				"ext.wikispeech.util.js",
 				{
 					"name": "config.json",
 					"config": [
@@ -90,13 +92,22 @@
 						"WikispeechHelpPage",
 						"WikispeechFeedbackPage",
 						"WikispeechSpeechoidUrl",
-						"WikispeechNamespaces"
+						"WikispeechNamespaces",
+						"WikispeechVoices"
 					]
 				},
 				{
 					"name": "default-user-options.json",
 					"callback": "MediaWiki\\Wikispeech\\Hooks\\ApiHooks::getDefaultUserOptions"
 				}
+			],
+			"messages": [
+				"preferences",
+				"saveprefs",
+				"default",
+				"wikispeech-language",
+				"prefs-wikispeech-speech-rate-percent",
+				"prefs-wikispeech-voice"
 			]
 		}
 	},

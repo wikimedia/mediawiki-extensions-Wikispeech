@@ -40,6 +40,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Speech rate (in percent)",
 	"prefs-wikispeech-enable": "Enable Wikispeech",
 	"prefs-wikispeech-show-player": "Always show player",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Changes to preferences will take effect next time a page is loaded. To listen to the current page with the new preferences, reload the page after saving.",
 	"right-wikispeech-listen": "Listen to page",
 	"right-wikispeech-read-lexicon": "Read Wikispeech's lexicon",
 	"right-wikispeech-edit-lexicon": "Edit Wikispeech's lexicon",

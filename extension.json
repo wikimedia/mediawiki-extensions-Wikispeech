@@ -107,7 +107,8 @@
 				"default",
 				"wikispeech-language",
 				"prefs-wikispeech-speech-rate-percent",
-				"prefs-wikispeech-voice"
+				"prefs-wikispeech-voice",
+				"wikispeech-notice-prefs-apply-on-next-page-load"
 			]
 		}
 	},

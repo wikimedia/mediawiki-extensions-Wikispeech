@@ -26,7 +26,6 @@
 					.done( function ( rights ) {
 						var canEditLexicon = rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
 						self.addControlPanel( canEditLexicon );
-						self.addBufferingIcon();
 					} )
 					.fail( function () {
 						// If we can not get the rights we still want to
@@ -131,6 +130,7 @@
 			padding =
 				Number( $footer.css( 'padding-bottom' ).slice( 0, -2 ) );
 			$footer.css( 'padding-bottom', padding + height );
+			self.addBufferingIcon();
 		};
 
 		/**

@@ -41,6 +41,7 @@
 	"prefs-wikispeech": "{{optional}}\nUsed in user preferences as a tab heading.",
 	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
+	"prefs-wikispeech-speech-rate-percent": "Label for speech rate in the preferences dialog.",
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
 	"prefs-wikispeech-show-player": "Used in user preferences to always show the player where available",
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",

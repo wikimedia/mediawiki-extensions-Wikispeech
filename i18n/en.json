@@ -37,6 +37,7 @@
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Voice",
 	"prefs-wikispeech-speech-rate": "Speech rate",
+	"prefs-wikispeech-speech-rate-percent": "Speech rate (in percent)",
 	"prefs-wikispeech-enable": "Enable Wikispeech",
 	"prefs-wikispeech-show-player": "Always show player",
 	"right-wikispeech-listen": "Listen to page",

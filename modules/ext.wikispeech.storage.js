@@ -48,10 +48,26 @@
 					}
 				}
 			).done( function ( data ) {
-				var utterance, i;
+				var utterance, i, titleUtterance, firstNode,
+					leadingWhitespaces, offset;
 
 				mw.log( 'Segments received:', data );
 				self.utterances = data[ 'wikispeech-segment' ].segments;
+
+				// Add extra offset to the title if it has leading
+				// whitespaces. When using the new skin, there are
+				// whitespaces around the title that do not appear in
+				// the display title. This leads to highlighting being
+				// wrong.
+				titleUtterance = self.utterances[ 0 ];
+				firstNode = self.getNodeForItem( titleUtterance.content[ 0 ] );
+				leadingWhitespaces = firstNode.textContent.match( /^\s+/ );
+				if ( leadingWhitespaces ) {
+					offset = leadingWhitespaces[ 0 ].length;
+					titleUtterance.startOffset += offset;
+					titleUtterance.endOffset += offset;
+				}
+
 				for ( i = 0; i < self.utterances.length; i++ ) {
 					utterance = self.utterances[ i ];
 					utterance.audio = $( '<audio>' ).get( 0 );

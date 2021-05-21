@@ -34,6 +34,8 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T283063](https://phabricator.wikimedia.org/T283063) Title highlighting is wrong
+
 ### 0.1.9
 2021-05-27
 Speechoid: 0.1.2

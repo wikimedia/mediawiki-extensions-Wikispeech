@@ -40,6 +40,8 @@
 		var response, expectedUtterances;
 
 		sinon.stub( storage, 'prepareUtterance' );
+		// eslint-disable-next-line no-jquery/no-parse-html-literal
+		sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
 		mw.config.set( 'wgPageName', 'Page' );
 		response = {
 			'wikispeech-segment': {
@@ -54,9 +56,7 @@
 				} ]
 			}
 		};
-		storage.api.get.returns(
-			$.Deferred().resolve( response )
-		);
+		storage.api.get.returns( $.Deferred().resolve( response ) );
 
 		storage.loadUtterances();
 
@@ -84,20 +84,23 @@
 	} );
 
 	QUnit.test( 'loadUtterances(): pass URL in consumer mode', function ( assert ) {
-		var mockWindow;
+		var mockWindow, response;
 
 		mockWindow = { location: { origin: 'https://consumer.url' } };
 		mw.wikispeech.consumerMode = true;
+		sinon.stub( storage, 'prepareUtterance' );
+		// eslint-disable-next-line no-jquery/no-parse-html-literal
+		sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
 		mw.config.set( 'wgPageName', 'Page' );
 		mw.config.set( 'wgScriptPath', '/w' );
-		sinon.stub( storage, 'prepareUtterance' );
-		storage.api.get.returns( $.Deferred().resolve(
-			{
-				'wikispeech-segment': {
-					segments: []
-				}
+		response = {
+			'wikispeech-segment': {
+				segments: [ {
+					content: []
+				} ]
 			}
-		) );
+		};
+		storage.api.get.returns( $.Deferred().resolve( response ) );
 
 		storage.loadUtterances( mockWindow );
 
@@ -109,6 +112,33 @@
 				'consumer-url': 'https://consumer.url/w'
 			}
 		);
+	} );
+
+	QUnit.test( 'loadUtterances(): offset leading whitespaces in title', function ( assert ) {
+		var response;
+
+		mw.config.set( 'wgPageName', 'Page' );
+		sinon.stub( storage, 'prepareUtterance' );
+		// eslint-disable-next-line no-jquery/no-parse-html-literal
+		sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>   Page</h1>' ).get( 0 ) );
+		response = {
+			'wikispeech-segment': {
+				segments: [ {
+					startOffset: 0,
+					endOffset: 3,
+					content: [ {
+						string: 'Page',
+						path: '//h1/text()'
+					} ]
+				} ]
+			}
+		};
+		storage.api.get.returns( $.Deferred().resolve( response ) );
+
+		storage.loadUtterances();
+
+		assert.strictEqual( storage.utterances[ 0 ].startOffset, 3 );
+		assert.strictEqual( storage.utterances[ 0 ].endOffset, 6 );
 	} );
 
 	QUnit.test( 'prepareUtterance()', function () {

@@ -40,6 +40,7 @@
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Voix",
 	"prefs-wikispeech-speech-rate": "Débit de parole",
+	"prefs-wikispeech-speech-rate-percent": "Débit de parole (en pourcentage)",
 	"prefs-wikispeech-enable": "Activer Wikispeech",
 	"prefs-wikispeech-show-player": "Afficher toujours le joueur",
 	"right-wikispeech-listen": "Écouter la page",

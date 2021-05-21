@@ -34,6 +34,7 @@
 	"apihelp-wikispeech-listen-example-4": "Synthetisiere eine Äußerung aus einem anderen Wiki.",
 	"prefs-wikispeech-voice": "Stimme",
 	"prefs-wikispeech-speech-rate": "Sprechgeschwindigkeit",
+	"prefs-wikispeech-speech-rate-percent": "Sprechgeschwindigkeit (in Prozent)",
 	"prefs-wikispeech-enable": "Wikispeech aktivieren",
 	"prefs-wikispeech-show-player": "Spieler immer einblenden",
 	"right-wikispeech-listen": "Einer Seite zuhören",

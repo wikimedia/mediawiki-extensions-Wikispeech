@@ -17,6 +17,7 @@
 		 */
 
 		this.init = function () {
+			self.addSelectionPlayer();
 			if ( mw.wikispeech.consumerMode ) {
 				// No edit lexicon button since we can not check the rights
 				// on the producer.
@@ -34,7 +35,6 @@
 						self.addControlPanel( false );
 					} );
 			}
-			self.addSelectionPlayer();
 			self.addKeyboardShortcuts();
 			self.windowManager = new OO.ui.WindowManager();
 			self.addDialogs();
@@ -52,12 +52,14 @@
 		 */
 
 		this.addControlPanel = function ( addEditButton ) {
-			var toolFactory, toolGroupFactory, toolbar, playerGroup, linkGroup, height, padding,
-				// eslint-disable-next-line no-jquery/no-global-selector
-				$footer = $( '#footer' );
+			var $footer, toolFactory, toolGroupFactory, playerGroup,
+				linkGroup, height, padding;
+
+			// eslint-disable-next-line no-jquery/no-global-selector
+			$footer = $( '#footer' );
 			toolFactory = new OO.ui.ToolFactory();
 			toolGroupFactory = new OO.ui.ToolGroupFactory();
-			self.toolbar = toolbar = new OO.ui.Toolbar(
+			self.toolbar = new OO.ui.Toolbar(
 				toolFactory,
 				toolGroupFactory,
 				{
@@ -121,12 +123,12 @@
 					)
 				);
 			}
-			$( document.body ).append( toolbar.$element );
-			toolbar.initialize();
+			$( document.body ).append( self.toolbar.$element );
+			self.toolbar.initialize();
 
 			// Add extra padding at the bottom of the page to not have
 			// the player cover anything.
-			height = toolbar.$element.height();
+			height = self.toolbar.$element.height();
 			padding =
 				Number( $footer.css( 'padding-bottom' ).slice( 0, -2 ) );
 			$footer.css( 'padding-bottom', padding + height );
@@ -179,14 +181,19 @@
 		 */
 
 		this.addBufferingIcon = function () {
-			$( '<span>' )
+			var $playStopButtons, $containers;
+
+			$playStopButtons = $(
+				self.toolbar.$element
+					.find( '.ext-wikispeech-play-stop' )
+			)
+				.add( self.selectionPlayer.$element );
+			$containers = $( '<span>' )
 				.addClass( 'ext-wikispeech-buffering-icon-container' )
-				.appendTo( $( '.ext-wikispeech-play-stop' ).find(
-					'.oo-ui-iconElement-icon'
-				) );
-			$( '<span>' )
+				.appendTo( ( $playStopButtons ).find( '.oo-ui-iconElement-icon' ) );
+			self.$bufferingIcons = $( '<span>' )
 				.addClass( 'ext-wikispeech-buffering-icon' )
-				.appendTo( $( '.ext-wikispeech-buffering-icon-container' ) )
+				.appendTo( $containers )
 				.hide();
 		};
 
@@ -195,7 +202,7 @@
 		 */
 
 		this.hideBufferingIcon = function () {
-			$( '.ext-wikispeech-buffering-icon' ).hide();
+			self.$bufferingIcons.hide();
 		};
 
 		/**
@@ -209,7 +216,7 @@
 				$( audio ).on( 'canplay', function () {
 					self.hideBufferingIcon();
 				} );
-				$( '.ext-wikispeech-buffering-icon' ).show();
+				self.$bufferingIcons.show();
 			}
 		};
 
@@ -269,12 +276,12 @@
 		 *  link destination from.
 		 */
 
-		this.addLinkConfigButton = function ( toolbar, icon, configVariable ) {
-			var page;
+		this.addLinkConfigButton = function ( group, icon, configVariable ) {
+			var url;
 
-			page = mw.config.get( configVariable );
-			if ( page ) {
-				self.addButton( toolbar, icon, page );
+			url = mw.config.get( configVariable );
+			if ( url ) {
+				self.addButton( group, icon, url );
 			}
 		};
 
@@ -299,8 +306,7 @@
 				) {
 					self.showSelectionPlayer();
 				} else {
-					$( '.ext-wikispeech-selection-player' )
-						.css( 'visibility', 'hidden' );
+					self.selectionPlayer.toggle( false );
 				}
 			} );
 			$( document ).on( 'click', function () {
@@ -308,8 +314,7 @@
 				// order of events when text is deselected by clicking
 				// it.
 				if ( !mw.wikispeech.selectionPlayer.isSelectionValid() ) {
-					$( '.ext-wikispeech-selection-player' )
-						.css( 'visibility', 'hidden' );
+					self.selectionPlayer.toggle( false );
 				}
 			} );
 		};
@@ -321,7 +326,7 @@
 		 */
 
 		this.isShown = function () {
-			return $( '.ext-wikispeech-control-panel' ).css( 'visibility' ) === 'visible';
+			return self.toolbar.isVisible();
 		};
 
 		/**
@@ -331,6 +336,7 @@
 		this.showSelectionPlayer = function () {
 			var selection, lastRange, lastRect, left, top;
 
+			self.selectionPlayer.toggle( true );
 			selection = window.getSelection();
 			lastRange = selection.getRangeAt( selection.rangeCount - 1 );
 			lastRect =
@@ -346,13 +352,13 @@
 				left =
 					lastRect.right +
 					$( document ).scrollLeft() -
-					$( '.ext-wikispeech-selection-player' ).width();
+					self.selectionPlayer.$element.width();
 			}
 			top = lastRect.bottom + $( document ).scrollTop();
-			$( '.ext-wikispeech-selection-player' )
-				.css( 'left', left )
-				.css( 'top', top )
-				.css( 'visibility', 'visible' );
+			self.selectionPlayer.$element.css( {
+				left: left + 'px',
+				top: top + 'px'
+			} );
 		};
 
 		/**
@@ -491,14 +497,13 @@
 		 */
 
 		this.toggleVisibility = function () {
-			var newVisibility;
 			if ( self.isShown() ) {
-				newVisibility = 'hidden';
+				self.toolbar.toggle( false );
+				self.selectionPlayer.toggle( false );
 			} else {
-				newVisibility = 'visible';
+				self.toolbar.toggle( true );
+				self.selectionPlayer.toggle( true );
 			}
-			$( '.ext-wikispeech-control-panel' )
-				.css( 'visibility', newVisibility );
 		};
 
 		/**

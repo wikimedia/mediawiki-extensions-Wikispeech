@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Jopparn",
 			"Sabelöga",
 			"WikiPhoenix"
 		]
@@ -13,6 +14,7 @@
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-taggar som borde bryta segment.",
 	"apihelp-wikispeech-segment-example-1": "Segmentera huvudsidan med de förvalda parametrarna från konfigureringen.",
 	"apihelp-wikispeech-segment-example-2": "Segment som använder egna parametrar. Taggen <code>sup</code> tas bort och även <code>div</code> när den har klassen <code>toc</code>. Taggarna <code>h1</code> och <code>h2</code> bryter upp segment.",
+	"apihelp-wikispeech-segment-example-3": "Segmentera huvudsidan på en annan wiki.",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> är inte en giltig JSON-sträng.",
 	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> har inte ett giltigt format. Den måste vara ett objekt med värden som är booleska, strängar eller strängarrayer. Ta inte bort några taggar, utan ändra <var>removetags</var> till ett tomt objekt, d.v.s. <code>{}</code>.",
 	"apihelp-wikispeech-listen-summary": "Syntetisera tal.",
@@ -20,17 +22,18 @@
 	"apihelp-wikispeech-listen-param-revision": "Sidversion på vilken segmentet hittades.",
 	"apihelp-wikispeech-listen-param-segment": "Hash av det syntetiserade segmentet.",
 	"apihelp-wikispeech-listen-param-text": "Text att syntetisera.",
-	"apihelp-wikispeech-listen-param-voice": "Rösten att använda. Om detta inte anges kommer standardrösten för språket att användas.",
+	"apihelp-wikispeech-listen-param-voice": "Röst att använda. Om detta inte anges kommer standardrösten för språket att användas.",
 	"apierror-wikispeech-listen-deleted-revision": "Man kan inte lyssna på raderade sidversioner.",
 	"apierror-wikispeech-listen-notallowed": "Du har inte rättigheterna för att anropa denna API-åtgärd.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> är inte ett giltigt språk. Bör vara en av följande: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> är inte en giltig röst. Bör vara en av följande: $2.",
-	"apihelp-wikispeech-listen-example-1": "Syntetisera någonting på engelska.",
+	"apihelp-wikispeech-listen-example-1": "Syntetisera ett yttrande på engelska.",
 	"apihelp-wikispeech-listen-example-2": "Använd en röst som inte är standard.",
 	"apihelp-wikispeech-listen-example-3": "Begär ett segment från en sidversion. Kommer använda cachad syntes om det fnns.",
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Röst",
 	"prefs-wikispeech-speech-rate": "Talhastighet",
+	"prefs-wikispeech-speech-rate-percent": "Talhastighet (i procent)",
 	"prefs-wikispeech-enable": "Aktivera Wikispeech",
 	"prefs-wikispeech-show-player": "Visa alltid spelare",
 	"right-wikispeech-listen": "Lyssna på sidan",
@@ -42,11 +45,21 @@
 	"apierror-wikispeech-listen-invalid-input-too-long": "Inmatad text får inte överstiga $1 tecken, och måste innehålla $2 tecken.",
 	"wikispeech-listen": "Lyssna",
 	"wikispeech-dont-listen": "Lyssna inte",
+	"wikispeech-error-loading-audio-title": "Kunde inte ladda ljud",
+	"wikispeech-error-loading-audio-message": "Detta kan ske på grund av en dålig internetanslutning eller ett fel på servern. Vill du försöka igen eller stoppa uppspelningen?",
 	"wikispeech-retry": "Försök igen",
 	"wikispeech-stop": "Stopp",
 	"editlexicon": "Redigera lexikon",
 	"wikispeech-language": "Språk",
 	"wikispeech-word": "Ord",
 	"wikispeech-transcription": "Transkribering",
-	"wikispeech-preview": "Förhandsgranska"
+	"wikispeech-item-id": "ID",
+	"wikispeech-preview": "Förhandsgranska",
+	"wikispeech-lexicon-add-entry-success": "Uppslagsord har lagts till i lexikonet.",
+	"wikispeech-lexicon-new": "Ny",
+	"wikispeech-lexicon-add-entry-conflict": "Ett uppslagsord med den stavningen finns redan. Välj ett ID för att redigera det uppslagsordet eller \"Ny\" för att lägga till ett nytt uppslagsord.",
+	"wikispeech-lexicon-edit-entry-success": "Uppslagsord redigerat.",
+	"wikispeech-lexicon-copyrightnote": "Genom att spara dina ändringar godkänner du att ditt bidrag släpps under [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"group-wikispeech-edit-lexicon": "Wikispeech-lexikonredigerare",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech-lexikonredigerare}}"
 }

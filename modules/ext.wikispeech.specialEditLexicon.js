@@ -2,6 +2,7 @@ var Previewer, $content, $transcription, $language, api, $previewPlayer,
 	previewer;
 
 Previewer = require( './ext.wikispeech.transcriptionPreviewer.js' );
+// eslint-disable-next-line no-jquery/no-global-selector
 $content = $( '#mw-content-text' );
 $language = $content.find( '#ext-wikispeech-language' ).find( 'select, input' );
 $transcription = $content.find( '#ext-wikispeech-transcription input' );

@@ -31,6 +31,7 @@
 	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
+		sinon.stub( ui, 'addBufferingIcon' );
 
 		ui.addControlPanel();
 
@@ -45,6 +46,7 @@
 	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
+		sinon.stub( ui, 'addBufferingIcon' );
 
 		ui.addControlPanel();
 
@@ -56,45 +58,39 @@
 		);
 	} );
 
-	QUnit.test( 'showBufferingIconIfAudioIsLoading()', function ( assert ) {
+	QUnit.test( 'showBufferingIconIfAudioIsLoading()', function () {
 		var mockAudio;
 
-		ui.addControlPanel();
-		ui.addBufferingIcon();
+		ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
 		mockAudio = { readyState: 0 };
 
 		ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'display' ),
-			'block'
-		);
+		sinon.assert.called( ui.$bufferingIcons.show );
 	} );
 
-	QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function ( assert ) {
+	QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function () {
 		var mockAudio;
 
-		ui.addControlPanel();
-		ui.addBufferingIcon();
+		ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
 		mockAudio = { readyState: 2 };
 
 		ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-buffering-icon' ).css( 'display' ),
-			'none'
-		);
+		sinon.assert.notCalled( ui.$bufferingIcons.show );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function () {
 		var textNode, expectedLeft, event;
 
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
-		self.addControlPanel();
-		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( true );
 		self.stubGetSelection( textNode, textNode, { right: 15, bottom: 10 } );
+		sinon.stub( ui, 'isShown' ).returns( true );
+		ui.addSelectionPlayer();
+		sinon.spy( ui.selectionPlayer.$element, 'css' );
+		sinon.spy( ui.selectionPlayer, 'toggle' );
 		expectedLeft =
 			15 -
 			$( '.ext-wikispeech-selection-player' ).width() +
@@ -103,17 +99,13 @@
 
 		$( document ).trigger( event );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
-			'visible'
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'left' ),
-			expectedLeft + 'px'
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'top' ),
-			10 + $( document ).scrollTop() + 'px'
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
+		sinon.assert.calledWith(
+			ui.selectionPlayer.$element.css,
+			{
+				left: expectedLeft + 'px',
+				top: 10 + $( document ).scrollTop() + 'px'
+			}
 		);
 	} );
 
@@ -147,52 +139,48 @@
 		} );
 	};
 
-	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function () {
 		var textNode, event;
 
 		mw.wikispeech.test.util.setContentHtml(
 			'<b style="direction: rtl">RTL text.</b>'
 		);
 		textNode = $( contentSelector + ' b' ).contents().get( 0 );
-		self.addControlPanel();
-		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( true );
 		self.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
+		sinon.stub( ui, 'isShown' ).returns( true );
+		ui.addSelectionPlayer();
+		sinon.spy( ui.selectionPlayer.$element, 'css' );
+		sinon.spy( ui.selectionPlayer, 'toggle' );
 		event = $.Event( 'mouseup' );
 
 		$( document ).trigger( event );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
-			'visible'
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'left' ),
-			'15px'
-		);
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'top' ),
-			10 + $( document ).scrollTop() + 'px'
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
+		sinon.assert.calledWith(
+			ui.selectionPlayer.$element.css,
+			{
+				left: '15px',
+				top: 10 + $( document ).scrollTop() + 'px'
+			}
 		);
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function () {
 		var event;
 
+		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( false );
-		$( '.ext-wikispeech-selection-player' ).css( 'visibility', 'visible' );
+		sinon.spy( ui.selectionPlayer, 'toggle' );
 		event = $.Event( 'mouseup' );
 
 		$( document ).trigger( event );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
-			'hidden'
-		);
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function () {
 		var notUtteranceNode, utteranceNode, event;
 
 		mw.wikispeech.test.util.setContentHtml(
@@ -200,21 +188,18 @@
 		);
 		notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
 		utteranceNode = $( contentSelector ).contents().get( 1 );
-		self.addControlPanel();
+		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
+		sinon.spy( ui.selectionPlayer, 'toggle' );
 		self.stubGetSelection( notUtteranceNode, utteranceNode );
-		$( '.ext-wikispeech-selection-player' ).css( 'visibility', 'visible' );
 		event = $.Event( 'mouseup' );
 
 		$( document ).trigger( event );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
-			'hidden'
-		);
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function () {
 		var notUtteranceNode, utteranceNode, event;
 
 		mw.wikispeech.test.util.setContentHtml(
@@ -222,36 +207,32 @@
 		);
 		notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
 		utteranceNode = $( contentSelector ).contents().get( 0 );
-		self.addControlPanel();
+		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
+		sinon.spy( ui.selectionPlayer, 'toggle' );
 		self.stubGetSelection( utteranceNode, notUtteranceNode );
-		$( '.ext-wikispeech-selection-player' ).css( 'visibility', 'visible' );
 		event = $.Event( 'mouseup' );
 
 		$( document ).trigger( event );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
-			'hidden'
-		);
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( "addSelectionPlayer(): don't show if UI is hidden", function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
 		var textNode, event;
 
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
+		sinon.stub( ui, 'isShown' ).returns( false );
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( true );
+		sinon.spy( ui.selectionPlayer, 'toggle' );
 		self.stubGetSelection( textNode, textNode );
-
 		event = $.Event( 'mouseup' );
+
 		$( document ).trigger( event );
 
-		assert.strictEqual(
-			$( '.ext-wikispeech-selection-player' ).css( 'visibility' ),
-			'hidden'
-		);
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
 	/**
@@ -338,22 +319,25 @@
 		testKeyboardShortcut( assert, 'skipBackToken', 38, 'c' );
 	} );
 
-	QUnit.test( 'toggleVisibility(): hide', function ( assert ) {
-		$( '<div>' ).addClass( 'ext-wikispeech-control-panel' )
-			.appendTo( $( '#qunit-fixture' ) );
+	QUnit.test( 'toggleVisibility(): hide', function () {
+		ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
+		ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
+		sinon.stub( ui, 'isShown' ).returns( true );
 
 		ui.toggleVisibility();
 
-		assert.strictEqual( $( '.ext-wikispeech-control-panel' ).css( 'visibility' ), 'hidden' );
+		sinon.assert.calledWith( ui.toolbar.toggle, false );
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'toggleVisibility(): show', function ( assert ) {
-		$( '<div>' ).addClass( 'ext-wikispeech-control-panel' )
-			.appendTo( $( '#qunit-fixture' ) );
-		$( '.ext-wikispeech-control-panel' ).css( 'visibility', 'hidden' );
+	QUnit.test( 'toggleVisibility(): show', function () {
+		ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
+		ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
+		sinon.stub( ui, 'isShown' ).returns( false );
 
 		ui.toggleVisibility();
 
-		assert.strictEqual( $( '.ext-wikispeech-control-panel' ).css( 'visibility' ), 'visible' );
+		sinon.assert.calledWith( ui.toolbar.toggle, true );
+		sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
 	} );
 }() );

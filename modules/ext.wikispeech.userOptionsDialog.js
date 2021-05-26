@@ -32,7 +32,8 @@
 	];
 
 	UserOptionsDialog.prototype.initialize = function () {
-		var panel, content, voiceFieldset, speechRateFieldset, speechRateField;
+		var panel, content, voiceFieldset, speechRateFieldset,
+			speechRateField, notice, noticeFieldset;
 
 		UserOptionsDialog.super.prototype.initialize.apply( self );
 		panel = new OO.ui.PanelLayout( { padded: true, expanded: false } );
@@ -51,7 +52,20 @@
 		speechRateField = new OO.ui.FieldLayout( self.speechRateInput );
 		speechRateFieldset.addItems( [ speechRateField ] );
 
-		content.addItems( [ voiceFieldset, speechRateFieldset ] );
+		// Add a notice about needing to reload the page before
+		// preferences kick in.
+		notice = new OO.ui.MessageWidget( {
+			type: 'notice',
+			label: mw.msg( 'wikispeech-notice-prefs-apply-on-next-page-load' )
+		} );
+		noticeFieldset = new OO.ui.FieldsetLayout();
+		noticeFieldset.addItems( [ new OO.ui.FieldLayout( notice ) ] );
+
+		content.addItems( [
+			voiceFieldset,
+			speechRateFieldset,
+			noticeFieldset
+		] );
 		panel.$element.append( content.$element );
 		self.$body.append( panel.$element );
 	};

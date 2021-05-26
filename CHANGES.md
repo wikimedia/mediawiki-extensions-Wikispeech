@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T282151](https://phabricator.wikimedia.org/T282151) UI for user preferences
 * [T281803](https://phabricator.wikimedia.org/T281803) Handle gadget consumer URL in utterance store.
 * [T282513](https://phabricator.wikimedia.org/T282513) Config variable for producer mode
 * [T281667](https://phabricator.wikimedia.org/T281667) Load user options from consumer wiki

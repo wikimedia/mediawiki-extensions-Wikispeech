@@ -15,7 +15,8 @@
 	"manifest_version": 2,
 	"MessagesDirs": {
 		"Wikispeech": [
-			"i18n"
+			"i18n",
+			"i18n/api"
 		]
 	},
 	"requires": {

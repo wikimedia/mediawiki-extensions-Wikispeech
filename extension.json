@@ -190,12 +190,57 @@
 	},
 	"config": {
 		"WikispeechSpeechoidUrl": {
-			"description": "The URL to use for the Speechoid service.",
+			"description": "The URL to use for the Speechoid service. ",
 			"value": ""
 		},
 		"WikispeechSymbolSetUrl": {
-			"description": "The URL to use for the Symbol set service.",
+			"description": [
+				"The URL to use for the Symbol set service. ",
+				"Defaults to WikispeechSpeechoidUrl at port 8771 in case of falsy value."
+			],
 			"value": ""
+		},
+		"WikispeechSpeechoidHaproxyQueueUrl": {
+			"description": [
+				"The URL to use for the Speechoid service queue. ",
+				"Defaults to WikispeechSpeechoidUrl at port 10001 in case of falsy value."
+			],
+			"value": ""
+		},
+		"WikispeechSpeechoidHaproxyStatsUrl": {
+			"description": [
+				"The URL to use for monitoring the Speechoid service queue. ",
+				"This should be the base URL to the server, the code will append ",
+				"the path e.g. /stats;csv;norefresh",
+				"Defaults to WikispeechSpeechoidUrl at port 10002 in case of falsy value."
+			],
+			"value": ""
+		},
+		"WikispeechSpeechoidHaproxyFrontendPxName": {
+			"description": "Speechoid HAProxy frontend proxy name.",
+			"value": "frontend_1"
+		},
+		"WikispeechSpeechoidHaproxyFrontendSvName": {
+			"description": "Speechoid HAProxy frontend service name.",
+			"value": "FRONTEND"
+		},
+		"WikispeechSpeechoidHaproxyBackendPxName": {
+			"description": "Speechoid HAProxy backend proxy name.",
+			"value": "backend_1"
+		},
+		"WikispeechSpeechoidHaproxyBackendSvName": {
+			"description": "Speechoid HAProxy backend service name.",
+			"value": "server_1"
+		},
+		"WikispeechSpeechoidHaproxyOverloadFactor": {
+			"description": [
+				"If factor multiplied with maximum number of concurrent connections ",
+				"is great than number of connections in queue,",
+				"then the queue is considered overloaded. ",
+				"This might result in something along the way of a warning to the user, ",
+				"not being able to synthesize new speech, or similar."
+			],
+			"value": 2.0
 		},
 		"WikispeechSpeechoidResponseTimeoutSeconds": {
 			"description": [

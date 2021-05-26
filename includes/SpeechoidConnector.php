@@ -24,8 +24,17 @@ class SpeechoidConnector {
 	/** @var Config */
 	private $config;
 
-	/** @var string Speechoid URL, without trailing slash. */
+	/** @var string Speechoid URL, without trailing slash. For non queued (non-TTS) operations. */
 	private $url;
+
+	/** @var string Speechoid queue URL, without trailing slash. For queued (TTS) operations. */
+	private $haproxyQueueUrl;
+
+	/** @var string Speechoid queue status URL, without trailing slash. */
+	private $haproxyStatsUrl;
+
+	/** @var string Speechoid symbol set URL, without trailing slash. */
+	private $symbolSetUrl;
 
 	/** @var int Default timeout awaiting HTTP response in seconds. */
 	private $defaultHttpResponseTimeoutSeconds;
@@ -41,7 +50,24 @@ class SpeechoidConnector {
 	public function __construct( $config, $requestFactory ) {
 		$this->config = $config;
 		$this->url = rtrim( $config->get( 'WikispeechSpeechoidUrl' ), '/' );
-
+		$this->symbolSetUrl = rtrim( $config->get( 'WikispeechSymbolSetUrl' ), '/' );
+		if ( !$this->symbolSetUrl ) {
+			$parsedUrl = parse_url( $this->url );
+			$parsedUrl['port'] = 8771;
+			$this->symbolSetUrl = $this->unparseUrl( $parsedUrl );
+		}
+		$this->haproxyQueueUrl = rtrim( $config->get( 'WikispeechSpeechoidHaproxyQueueUrl' ), '/' );
+		if ( !$this->haproxyQueueUrl ) {
+			$parsedUrl = parse_url( $this->url );
+			$parsedUrl['port'] = 10001;
+			$this->haproxyQueueUrl = $this->unparseUrl( $parsedUrl );
+		}
+		$this->haproxyStatsUrl = rtrim( $config->get( 'WikispeechSpeechoidHaproxyStatsUrl' ), '/' );
+		if ( !$this->haproxyStatsUrl ) {
+			$parsedUrl = parse_url( $this->url );
+			$parsedUrl['port'] = 10002;
+			$this->haproxyStatsUrl = $this->unparseUrl( $parsedUrl );
+		}
 		if ( $config->get( 'WikispeechSpeechoidResponseTimeoutSeconds' ) ) {
 			$this->defaultHttpResponseTimeoutSeconds = intval(
 				$config->get( 'WikispeechSpeechoidResponseTimeoutSeconds' )
@@ -91,7 +117,7 @@ class SpeechoidConnector {
 			);
 		}
 		$options = [ 'postData' => $postData ];
-		$responseString = $this->requestFactory->post( $this->url, $options );
+		$responseString = $this->requestFactory->post( $this->haproxyQueueUrl, $options );
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}
@@ -544,8 +570,7 @@ class SpeechoidConnector {
 		}
 		$symbolSet = $symbolSetStatus->getValue()['symbolSetName'];
 
-		$symbolSetUrl = $this->config->get( 'WikispeechSymbolSetUrl' );
-		$mapRequestUrl = "$symbolSetUrl/mapper/map/ipa/$symbolSet/$ipa";
+		$mapRequestUrl = "$this->symbolSetUrl/mapper/map/ipa/$symbolSet/$ipa";
 		$mapResponse = $this->requestFactory->get( $mapRequestUrl );
 		$mapStatus = FormatJson::parse( $mapResponse, FormatJson::FORCE_ASSOC );
 		if ( !$mapStatus->isOK() ) {
@@ -556,4 +581,86 @@ class SpeechoidConnector {
 		}
 		return $mapStatus->getValue()['Result'];
 	}
+
+	/**
+	 * Queue is overloaded if there are already the maximum number of current
+	 * connections processed by the backend at the same time as the queue
+	 * contains more than X connections waiting for their turn,
+	 * where X =
+	 * WikispeechSpeechoidHaproxyOverloadFactor multiplied with
+	 * the maximum number of current connections to the backend.
+	 *
+	 * @see HaproxyStatusParser::isQueueOverloaded()
+	 * @since 0.1.10
+	 * @return bool Whether or not connection queue is overloaded
+	 */
+	public function isQueueOverloaded(): bool {
+		$statsResponse = $this->requestFactory->get(
+			$this->haproxyStatsUrl . '/stats;csv;norefresh'
+		);
+		$parser = new HaproxyStatusParser( $statsResponse );
+		return $parser->isQueueOverloaded(
+			$this->config->get( 'WikispeechSpeechoidHaproxyFrontendPxName' ),
+			$this->config->get( 'WikispeechSpeechoidHaproxyFrontendSvName' ),
+			$this->config->get( 'WikispeechSpeechoidHaproxyBackendPxName' ),
+			$this->config->get( 'WikispeechSpeechoidHaproxyBackendSvName' ),
+			floatval( $this->config->get( 'WikispeechSpeechoidHaproxyOverloadFactor' ) )
+		);
+	}
+
+	/**
+	 * Counts number of requests that currently could be sent to the queue
+	 * and immediately would be passed down to backend.
+	 *
+	 * If this value is greater than 0, then the next request sent via the queue
+	 * will be immediately processed by the backend.
+	 *
+	 * If this value is less than 1, then the next connection will be queued,
+	 * given that the currently processing requests will not have had time to finish by then.
+	 *
+	 * If this value is less than 1, then the value is the inverse size of the known queue.
+	 * Note that the OS on the HAProxy server might be buffering connections in the TCP-stack
+	 * and that HAProxy will not be aware of such connections. A negative number might therefor
+	 * not represent a perfect count of current connection lined up in the queue.
+	 *
+	 * The idea with this function is to see if there are available resources that could
+	 * be used for pre-synthesis of utterances during otherwise idle time.
+	 *
+	 * @see HaproxyStatusParser::getAvailableNonQueuedConnectionSlots()
+	 * @since 0.1.10
+	 * @return int Positive number if available slots, else inverted size of queue.
+	 */
+	public function getAvailableNonQueuedConnectionSlots(): int {
+		$statsResponse = $this->requestFactory->get(
+			$this->haproxyStatsUrl . '/stats;csv;norefresh'
+		);
+		$parser = new HaproxyStatusParser( $statsResponse );
+		return $parser->getAvailableNonQueuedConnectionSlots(
+			$this->config->get( 'WikispeechSpeechoidHaproxyFrontendPxName' ),
+			$this->config->get( 'WikispeechSpeechoidHaproxyFrontendSvName' ),
+			$this->config->get( 'WikispeechSpeechoidHaproxyBackendPxName' ),
+			$this->config->get( 'WikispeechSpeechoidHaproxyBackendSvName' )
+		);
+	}
+
+	/**
+	 * Converts the output from {@link parse_url} to an URL.
+	 *
+	 * @since 0.1.10
+	 * @param array $parsedUrl
+	 * @return string
+	 */
+	private function unparseUrl( array $parsedUrl ): string {
+		$scheme = isset( $parsedUrl['scheme'] ) ? $parsedUrl['scheme'] . '://' : '';
+		$host = $parsedUrl['host'] ?? '';
+		$port = isset( $parsedUrl['port'] ) ? ':' . $parsedUrl['port'] : '';
+		$user = $parsedUrl['user'] ?? '';
+		$pass = isset( $parsedUrl['pass'] ) ? ':' . $parsedUrl['pass'] : '';
+		$pass = ( $user || $pass ) ? "$pass@" : '';
+		$path = $parsedUrl['path'] ?? '';
+		$query = isset( $parsedUrl['query'] ) ? '?' . $parsedUrl['query'] : '';
+		$fragment = isset( $parsedUrl['fragment'] ) ? '#' . $parsedUrl['fragment'] : '';
+		return "$scheme$user$pass$host$port$path$query$fragment";
+	}
+
 }

@@ -1,8 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Vesely35"
-		]
-	},
-	"apierror-wikispeech-listen-invalid-input-too-long": "Giriş mətni $ 1 simvoldan çox olmamalıdır ancaq $ 2 simvoldan ibarət olmalıdır."
-}

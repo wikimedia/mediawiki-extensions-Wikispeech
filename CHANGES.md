@@ -30,8 +30,12 @@ Update version in extension.json.
 
 ## Versions
 
-### 0.1.9-SNAPSHOT
+### 0.1.10-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+### 0.1.9
+2021-05-27
 Speechoid: 0.1.2
 
 * [T282151](https://phabricator.wikimedia.org/T282151) UI for user preferences

@@ -37,6 +37,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Sprechgeschwindigkeit (in Prozent)",
 	"prefs-wikispeech-enable": "Wikispeech aktivieren",
 	"prefs-wikispeech-show-player": "Spieler immer einblenden",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Änderungen an den Voreinstellungen werden beim nächsten Laden einer Seite wirksam. Um die aktuelle Seite mit den neuen Voreinstellungen anzuhören, lade die Seite nach dem Speichern erneut.",
 	"right-wikispeech-listen": "Einer Seite zuhören",
 	"right-wikispeech-read-lexicon": "Lesen im Wikispeech-Lexikon",
 	"right-wikispeech-edit-lexicon": "Wikispeech-Lexikon bearbeiten",

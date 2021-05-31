@@ -1,0 +1,6 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"apierror-wikispeech-listen-invalid-input-too-long": "Uneseni tekst ne smije premašiti broj znakova: $1, no sadržavao je $2."
+}

@@ -4,9 +4,6 @@
 			"Emma Franzen"
 		]
 	},
-	"apihelp-wikispeech-segment-example-3": "segmente a pagina principal em outro wiki.",
-	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Falhou ao obter a pagina com revisao eu ia '$1' do consumidor no URL $2.",
-	"apihelp-wikispeech-listen-example-4": "Sintetize uma declaracao de outro wiki.",
 	"wikispeech-item-id": "Identidade",
 	"wikispeech-lexicon-add-entry-success": "entrada adicionada ao lexico",
 	"wikispeech-lexicon-new": "Nova\nNovo",

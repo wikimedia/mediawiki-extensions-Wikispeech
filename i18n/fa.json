@@ -6,8 +6,8 @@
 			"Mohammad ebz"
 		]
 	},
-	"apihelp-wikispeech-listen-param-lang": "کد زبان.",
 	"prefs-wikispeech-voice": "صدا",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "هرگاه یک صفحه بارگیری شود تغییر در ترجیحات اعمال خواهد شد. برای گوش‌دادن به صفحهٔ کنونی با ترجیحات جدید، پس از ذخیره صفحه را تازه‌سازی کنید.",
 	"wikispeech-item-id": "شناسه",
 	"wikispeech-lexicon-new": "جديد",
 	"wikispeech-lexicon-edit-entry-success": "مدخل با موفقیت ویرایش شد."

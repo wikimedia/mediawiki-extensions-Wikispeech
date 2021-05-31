@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Amire80",
 			"André Costa",
 			"FF11",
 			"Igor Leturia",
@@ -8,8 +9,7 @@
 			"Raymond",
 			"Robby",
 			"Sebastian Berlin",
-			"Umherirrender",
-			"Amire80"
+			"Umherirrender"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "{{doc-apihelp-summary|wikispeech-segment}}",

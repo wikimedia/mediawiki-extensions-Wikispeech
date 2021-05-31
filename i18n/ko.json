@@ -5,9 +5,6 @@
 			"Ykhwong"
 		]
 	},
-	"apihelp-wikispeech-listen-param-lang": "언어 코드입니다.",
-	"apierror-wikispeech-listen-deleted-revision": "삭제된 판은 청취가 불가능합니다.",
-	"apierror-wikispeech-consumer-not-allowed": "원격 위키로부터의 요청은 허용되지 않습니다.",
 	"prefs-wikispeech-speech-rate": "말하기 속도",
 	"prefs-wikispeech-show-player": "플레이어 무조건 표시",
 	"right-wikispeech-read-lexicon": "위키스피치 기호 읽기",

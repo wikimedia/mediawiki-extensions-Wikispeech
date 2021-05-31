@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ykhwong"
+		]
+	},
+	"apihelp-wikispeech-listen-param-lang": "언어 코드입니다.",
+	"apierror-wikispeech-listen-deleted-revision": "삭제된 판은 청취가 불가능합니다.",
+	"apierror-wikispeech-consumer-not-allowed": "원격 위키로부터의 요청은 허용되지 않습니다."
+}

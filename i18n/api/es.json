@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"BnSrSa"
+		]
+	},
+	"apihelp-wikispeech-segment-param-page": "El título de la página por procesar.",
+	"apihelp-wikispeech-listen-param-lang": "Código de idioma.",
+	"apihelp-wikispeech-listen-param-text": "Texto por sintetizar.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Fallo al obtener pagina con id de revisión '$1' del consumidor en URL $2.",
+	"apihelp-wikispeech-listen-example-2": "Utilizar una voz distinta de la predeterminada."
+}

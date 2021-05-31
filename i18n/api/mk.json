@@ -1,0 +1,33 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bjankuloski06"
+		]
+	},
+	"apihelp-wikispeech-segment-summary": "Раздели ја HTML-содржината на страницата на разделоци.",
+	"apihelp-wikispeech-segment-param-page": "Наслов на страницата за разделување.",
+	"apihelp-wikispeech-segment-param-removetags": "HTML-ознаките кои треба сосема да се отстранат при чистењето, како JSON-објект од форматот:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nкаде <code>tag1</code> секогаш се отстранува, <code>tag2</code> се отстранува само ако воедно има CSS-класа <code>css-class</code>, а <code>tag3</code> се отстранува само ако ја има CSS-класата <code>css-class-1</code> или <code>css-class-2</code>.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-ознаките што треба да ги одвојат разделоците.",
+	"apihelp-wikispeech-segment-example-1": "Одделете ја главната страница со помош на стандардни параметри од поставката.",
+	"apihelp-wikispeech-segment-example-2": "Разделокот со прилагодени параметри. Се отстранува ознаката <code>sup</code>, а исто и <code>div</code> кога ја има класата <code>toc</code>. Ознаките <code>h1</code> и <code>h2</code> и одвојуваат разделоците.",
+	"apihelp-wikispeech-segment-example-3": "Подели ја главата страница на друго вики.",
+	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> не претставува важечка JSON-низа.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> не претставува важечки формат. Мора да биде објект чии вредности се Булови, низи или строеви од низи. За да не се отстрани ниедна ознака, задајте му празен објект на <var>removetags</var>, <code>{}</code>.",
+	"apihelp-wikispeech-listen-summary": "Синтетизирај говор.",
+	"apihelp-wikispeech-listen-param-lang": "Јазичен код.",
+	"apihelp-wikispeech-listen-param-revision": "Во која преработка на страницата се наоѓа разделокот.",
+	"apihelp-wikispeech-listen-param-segment": "Раздробник на синтезниот разделок.",
+	"apihelp-wikispeech-listen-param-text": "Текст за синтетизирање.",
+	"apihelp-wikispeech-listen-param-voice": "Кој глас да се користи. Ако не е укажано, ќе се користи стандардниот глас за тој јазик.",
+	"apierror-wikispeech-listen-deleted-revision": "Не можете да преслушувате избришани преработки.",
+	"apierror-wikispeech-listen-notallowed": "Ги немате правада да го повикувате ова дејство од извршникот.",
+	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> не претставува важечки јазик. Треба да биде еден од овие: $2.",
+	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> не претставува важечки глас. Треба да биде еден од овие: $2.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Не можев да ја добијам страницата со преработка „$1“ од потрошувач на адресата $2.",
+	"apierror-wikispeech-consumer-not-allowed": "Не се дозволени барања од далечински викија.",
+	"apihelp-wikispeech-listen-example-1": "Синтетизирај парче говор од англиски.",
+	"apihelp-wikispeech-listen-example-2": "Користи нестандарден глас.",
+	"apihelp-wikispeech-listen-example-3": "Побарај разделок од преработка. Ќе користи меѓускладирана синтеза, ако постои.",
+	"apihelp-wikispeech-listen-example-4": "СИнтетизирај исказ од друго вики.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Внесениот текст не смее да надминува $1 знаци, но содржи $2."
+}

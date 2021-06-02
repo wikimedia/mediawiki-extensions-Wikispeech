@@ -75,6 +75,8 @@ class SpecialEditLexicon extends SpecialPage {
 	 */
 	public function execute( $subpage ) {
 		$this->setHeaders();
+		$this->checkPermissions();
+
 		$request = $this->getRequest();
 		$language = $request->getText( 'language' );
 		$word = $request->getText( 'word' );

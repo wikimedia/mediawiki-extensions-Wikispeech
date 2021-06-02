@@ -12,6 +12,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Брзина на говорот (во постоток)",
 	"prefs-wikispeech-enable": "Овозможи Викиговор",
 	"prefs-wikispeech-show-player": "Прикажи изведувач",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Измените во нагодувањта ќе бидат спроведени следниот пат кога ќе ја вчитате страницата. За да ја преслушате тековната страница со новите нагодувања, превчитајте ја откако ќе ја зачувате.",
 	"right-wikispeech-listen": "Преслушување на страницата",
 	"right-wikispeech-read-lexicon": "Читање на лексиконот на Викиговор",
 	"right-wikispeech-edit-lexicon": "Уредување на лексиконот на Викиговор",

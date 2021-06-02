@@ -18,6 +18,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Débit de parole (en pourcentage)",
 	"prefs-wikispeech-enable": "Activer Wikispeech",
 	"prefs-wikispeech-show-player": "Afficher toujours le joueur",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Les modifications de préférence prendront effet la prochaine fois qu’une page est chargée. Pour écouter la page actuelle avec les nouvelles références, rechargez-la après avoir enregistré.",
 	"right-wikispeech-listen": "Écouter la page",
 	"right-wikispeech-read-lexicon": "Lire le lexique de Wikispeech",
 	"right-wikispeech-edit-lexicon": "Modifier le lexique de Wikispeech",

@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Joseph",
 			"Mim.saitkilic",
 			"MuratTheTurkish"
 		]
@@ -24,7 +25,7 @@
 	"apierror-wikispeech-listen-notallowed": "Bu API eylemini arama haklarına sahip değilsiniz.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> geçerli bir dil değil. Şunlardan biri olmalı: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> geçerli bir ses değil. Şunlardan biri olmalı: $2.",
-	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "URL'deki tüketiciden '$1' revizyon kimliğine sahip sayfa alınamadı.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "$2 URLsindeki tüketiciden '$1' revizyon kimliğine sahip sayfa alınamadı.",
 	"apierror-wikispeech-consumer-not-allowed": "Uzak wikilerden gelen isteklere izin verilmez.",
 	"apihelp-wikispeech-listen-example-1": "İngilizce bir ifadeyi sentezleyin.",
 	"apihelp-wikispeech-listen-example-2": "Varsayılan olmayan bir ses kullanın.",

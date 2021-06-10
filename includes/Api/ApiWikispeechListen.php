@@ -22,11 +22,13 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
+use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\Segmenter;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
+use MWException;
 use Psr\Log\LoggerInterface;
 use Title;
 use WANObjectCache;
@@ -205,7 +207,10 @@ class ApiWikispeechListen extends ApiBase {
 			$revisionId,
 			$consumerUrl
 		);
-
+		if ( $segment === null ) {
+			// @todo die with error?
+			throw new MWException( 'No such segment.' );
+		}
 		return $this->getUtterance(
 			$consumerUrl,
 			$voice,
@@ -245,7 +250,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param string $voice
 	 * @param string $language
 	 * @param int $pageId
-	 * @param array $segment A segments made up of `CleanedTest`bjects
+	 * @param Segment $segment
 	 * @return array Containing base64 'audio' and synthesisMetadata 'tokens'.
 	 * @throws ExternalStoreException
 	 * @throws ConfigException
@@ -257,13 +262,14 @@ class ApiWikispeechListen extends ApiBase {
 		string $voice,
 		string $language,
 		int $pageId,
-		array $segment
+		Segment $segment
 	) {
 		if ( $pageId !== 0 && !$pageId ) {
 			throw new InvalidArgumentException( 'Page ID must be set.' );
 		}
-		if ( !$segment ) {
-			throw new InvalidArgumentException( 'Segment must be set.' );
+		$segmentHash = $segment->getHash();
+		if ( $segmentHash === null ) {
+			throw new InvalidArgumentException( 'Segment hash must be set.' );
 		}
 		if ( !$voice ) {
 			$voice = $this->voiceHandler->getDefaultVoice( $language );
@@ -271,9 +277,6 @@ class ApiWikispeechListen extends ApiBase {
 				throw new ConfigException( "Invalid default voice configuration." );
 			}
 		}
-
-		$segmentHash = $segment['hash'];
-
 		$utterance = $this->utteranceStore->findUtterance(
 			$consumerUrl,
 			$pageId,
@@ -284,13 +287,13 @@ class ApiWikispeechListen extends ApiBase {
 		if ( !$utterance ) {
 			$this->logger->debug( __METHOD__ . ': Creating new utterance for {pageId} {segmentHash}', [
 				'pageId' => $pageId,
-				'segmentHash' => $segmentHash
+				'segmentHash' => $segment->getHash()
 			] );
 
 			// Make a string of all the segment contents.
 			$segmentText = '';
-			foreach ( $segment['content'] as $content ) {
-				$segmentText .= $content->string;
+			foreach ( $segment->getContent() as $content ) {
+				$segmentText .= $content->getString();
 			}
 			$this->validateText( $segmentText );
 

@@ -2,6 +2,8 @@
 
 namespace MediaWiki\Wikispeech\Segment;
 
+use RuntimeException;
+
 /**
  * @file
  * @ingroup Extensions
@@ -14,6 +16,16 @@ namespace MediaWiki\Wikispeech\Segment;
  *
  * @since 0.0.1
  */
+class SegmentBreak implements SegmentContent {
 
-class SegmentBreak {
+	/**
+	 * This class will never be serialized and passed down to the client.
+	 * It is not a DTO, it is an internal class filtered out by the Segmenter.
+	 * @return array
+	 * @throws RuntimeException Always.
+	 */
+	public function serialize(): array {
+		throw new RuntimeException( 'This class is for internal processing only.' );
+	}
+
 }

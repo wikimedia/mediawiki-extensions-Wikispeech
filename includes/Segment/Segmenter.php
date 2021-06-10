@@ -38,14 +38,14 @@ class Segmenter {
 	/**
 	 * An array to which finished segments are added.
 	 *
-	 * @var array
+	 * @var Segment[]
 	 */
 	private $segments;
 
 	/**
 	 * The segment that is currently being built.
 	 *
-	 * @var array $segments
+	 * @var Segment
 	 */
 	private $currentSegment;
 
@@ -61,16 +61,16 @@ class Segmenter {
 	 * @param WANObjectCache $cache
 	 * @param HttpRequestFactory $requestFactory
 	 */
-	public function __construct( $context, $cache, $requestFactory ) {
+	public function __construct(
+		IContextSource $context,
+		WANObjectCache $cache,
+		HttpRequestFactory $requestFactory
+	) {
 		$this->context = $context;
 		$this->cache = $cache;
 		$this->requestFactory = $requestFactory;
 		$this->segments = [];
-		$this->currentSegment = [
-			'content' => [],
-			'startOffset' => null,
-			'endOffset' => null
-		];
+		$this->currentSegment = new Segment();
 	}
 
 	/**
@@ -92,18 +92,18 @@ class Segmenter {
 	 * @param int|null $revisionId Revision to be segmented
 	 * @param string|null $consumerUrl URL to the script path on the consumer,
 	 *  if used as a producer.
-	 * @return array A list of segments each made up of `CleanedTest`
+	 * @return Segment[] A list of segments each made up of `CleanedTest`
 	 *  objects and with start and end offset.
 	 * @throws MWException If failing to create WikiPage from title or an
 	 *  invalid or non-cached and outdated revision was provided.
 	 */
 	public function segmentPage(
-		$title,
-		$removeTags = null,
-		$segmentBreakingTags = null,
-		$revisionId = null,
-		$consumerUrl = null
-	) {
+		Title $title,
+		array $removeTags = null,
+		array $segmentBreakingTags = null,
+		int $revisionId = null,
+		string $consumerUrl = null
+	): array {
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
@@ -146,6 +146,7 @@ class Segmenter {
 		}
 		$cacheKey = $this->cache->makeKey(
 			'Wikispeech.segments',
+			get_class( $this ),
 			$consumerUrl ?? 'local',
 			$revisionId,
 			var_export( $removeTags, true ),
@@ -180,15 +181,16 @@ class Segmenter {
 	 * @param string $pageContent
 	 * @param array $removeTags HTML tags that should not be included.
 	 * @param array $segmentBreakingTags HTML tags that mark segment breaks.
-	 * @return array Title and content represented as `CleanedText`s
+	 * @return SegmentContent[] Title and content represented as `CleanedText`s
 	 *  and `SegmentBreak`s
+	 * @throws MWException If segmented title text is not an instance of CleanedText
 	 */
 	protected function cleanPage(
-		$displayTitle,
-		$pageContent,
-		$removeTags,
-		$segmentBreakingTags
-	) {
+		string $displayTitle,
+		string $pageContent,
+		array $removeTags,
+		array $segmentBreakingTags
+	): array {
 		// Clean HTML.
 		$cleanedText = null;
 		// Parse latest revision, using parser cache.
@@ -205,7 +207,11 @@ class Segmenter {
 		$xpath = new DOMXPath( $dom );
 		$node = $xpath->evaluate( '//text()' )->item( 0 );
 		$titleSegment = $cleaner->cleanHtml( $displayTitle )[0];
-		$titleSegment->path = '/' . $node->getNodePath();
+		if ( $titleSegment instanceof CleanedText ) {
+			$titleSegment->setPath( '/' . $node->getNodePath() );
+		} else {
+			throw new MWException( 'Segmented title is not an instance of CleanedText!' );
+		}
 		// Add the title as a separate utterance to the start.
 		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
 		return $cleanedText;
@@ -226,20 +232,20 @@ class Segmenter {
 	 * a dot (full stop).
 	 *
 	 * @since 0.0.1
-	 * @param array $cleanedContent An array of items returned by
+	 * @param SegmentContent[] $cleanedContent An array of items returned by
 	 *  `Cleaner::cleanHtml()`.
-	 * @return array An array of segments, each containing the
+	 * @return Segment[] An array of segments, each containing the
 	 *  `CleanedText's in that segment.
 	 */
-	private function segmentSentences( $cleanedContent ) {
+	private function segmentSentences( array $cleanedContent ): array {
 		foreach ( $cleanedContent as $item ) {
 			if ( $item instanceof CleanedText ) {
-				$this->addSegments( $item );
+				$this->addContentsToCurrentSegment( $item );
 			} elseif ( $item instanceof SegmentBreak ) {
 				$this->finishSegment();
 			}
 		}
-		if ( $this->currentSegment['content'] ) {
+		if ( $this->currentSegment->getContent() ) {
 			// Add the last segment, unless it's empty.
 			$this->finishSegment();
 		}
@@ -247,7 +253,7 @@ class Segmenter {
 	}
 
 	/**
-	 * Add segments for a string.
+	 * Add segment contents for a string.
 	 *
 	 * Looks for sentence final strings (strings which a sentence ends
 	 * with). When a sentence final string is found, it's sentence is
@@ -256,14 +262,14 @@ class Segmenter {
 	 * @since 0.0.1
 	 * @param CleanedText $text The text to segment.
 	 */
-	private function addSegments( $text ) {
+	private function addContentsToCurrentSegment( CleanedText $text ) {
 		$nextStartOffset = 0;
 		do {
-			$endOffset = $this->addSegment( $text, $nextStartOffset );
+			$endOffset = $this->addContentToCurrentSegment( $text, $nextStartOffset );
 			// The earliest the next segments can start is one after
 			// the end of the current one.
 			$nextStartOffset = $endOffset + 1;
-		} while ( $nextStartOffset < mb_strlen( $text->string ) - 1 );
+		} while ( $nextStartOffset < mb_strlen( $text->getString() ) - 1 );
 	}
 
 	/**
@@ -284,30 +290,33 @@ class Segmenter {
 	 *   sentence. If the sentence didn't end yet, this is the last
 	 *   character of $text.
 	 */
-	private function addSegment( $text, $startOffset = 0 ) {
-		if ( $this->currentSegment['startOffset'] === null ) {
+	private function addContentToCurrentSegment(
+		CleanedText $text,
+		int $startOffset = 0
+	): int {
+		if ( $this->currentSegment->getStartOffset() === null ) {
 			// Move the start offset ahead by the number of leading
 			// whitespaces. This means that whitespaces before or
 			// between segments aren't included.
 			$leadingWhitespacesLength = self::getLeadingWhitespacesLength(
-				mb_substr( $text->string, $startOffset )
+				mb_substr( $text->getString(), $startOffset )
 			);
 			$startOffset += $leadingWhitespacesLength;
 		}
 		// Get the offset for the next sentence final character.
 		$endOffset = self::getSentenceFinalOffset(
-			$text->string,
+			$text->getString(),
 			$startOffset
 		);
 		// If no sentence final character is found, add the rest of
 		// the text and remember that this segment isn't ended.
 		$ended = true;
 		if ( $endOffset === null ) {
-			$endOffset = mb_strlen( $text->string ) - 1;
+			$endOffset = mb_strlen( $text->getString() ) - 1;
 			$ended = false;
 		}
 		$sentence = mb_substr(
-			$text->string,
+			$text->getString(),
 			$startOffset,
 			$endOffset - $startOffset + 1
 		);
@@ -316,15 +325,15 @@ class Segmenter {
 			// newline.
 			$sentenceText = new CleanedText(
 				$sentence,
-				$text->path
+				$text->getPath()
 			);
-			$this->currentSegment['content'][] = $sentenceText;
-			if ( $this->currentSegment['startOffset'] === null ) {
+			$this->currentSegment->addContent( $sentenceText );
+			if ( $this->currentSegment->getStartOffset() === null ) {
 				// Record the start offset if this is the first text
 				// added to the segment.
-				$this->currentSegment['startOffset'] = $startOffset;
+				$this->currentSegment->setStartOffset( $startOffset );
 			}
-			$this->currentSegment['endOffset'] = $endOffset;
+			$this->currentSegment->setEndOffset( $endOffset );
 			if ( $ended ) {
 				$this->finishSegment();
 			}
@@ -340,7 +349,7 @@ class Segmenter {
 	 *  for.
 	 * @return int The number of whitespaces at the start of $string.
 	 */
-	private static function getLeadingWhitespacesLength( $string ) {
+	private static function getLeadingWhitespacesLength( string $string ): int {
 		$trimmedString = ltrim( $string );
 		return mb_strlen( $string ) - mb_strlen( $trimmedString );
 	}
@@ -354,7 +363,10 @@ class Segmenter {
 	 * @return int|null The offset of the first sentence final character
 	 *  that was found, if any, else null.
 	 */
-	private static function getSentenceFinalOffset( $string, $offset ) {
+	private static function getSentenceFinalOffset(
+		string $string,
+		int $offset
+	): ?int {
 		// For every potentially sentence final character after the
 		// first one, we want to start looking from the character
 		// after the last one we found. For the first one however, we
@@ -386,7 +398,10 @@ class Segmenter {
 	 * @param int $index The index in $string of the character to check.
 	 * @return bool True if the character is sentence final, else false.
 	 */
-	private static function isSentenceFinal( $string, $index ) {
+	private static function isSentenceFinal(
+		string $string,
+		int $index
+	): bool {
 		$character = mb_substr( $string, $index, 1 );
 		$nextCharacter = null;
 		if ( mb_strlen( $string ) > $index + 1 ) {
@@ -418,7 +433,7 @@ class Segmenter {
 	 * @param string $string The string to test.
 	 * @return bool true if the entire string is upper case, else false.
 	 */
-	private static function isUpper( $string ) {
+	private static function isUpper( string $string ): bool {
 		return mb_strtoupper( $string ) == $string;
 	}
 
@@ -430,30 +445,25 @@ class Segmenter {
 	 * @since 0.0.1
 	 */
 	private function finishSegment() {
-		if ( count( $this->currentSegment['content'] ) ) {
-			$this->currentSegment['hash'] = $this->evaluateHash( $this->currentSegment );
+		if ( count( $this->currentSegment->getContent() ) ) {
+			$this->currentSegment->setHash( $this->evaluateHash( $this->currentSegment ) );
 			$this->segments[] = $this->currentSegment;
 		}
 		// Create a fresh segment to add following text to.
-		$this->currentSegment = [
-			'content' => [],
-			'startOffset' => null,
-			'endOffset' => null
-		];
+		$this->currentSegment = new Segment();
 	}
 
 	/**
 	 * Used to evaluate hash of segments, the primary key for stored utterances.
 	 *
 	 * @since 0.1.4
-	 * @param array $segment The segment array of {@see CleanedText} to be evaluated.
+	 * @param Segment $segment The segment to be evaluated.
 	 * @return string SHA256 message digest
 	 */
-	public function evaluateHash( $segment ) {
+	public function evaluateHash( Segment $segment ): string {
 		$context = hash_init( 'sha256' );
-		$content = $segment['content'];
-		foreach ( $content as $part ) {
-			hash_update( $context, $part->string );
+		foreach ( $segment->getContent() as $part ) {
+			hash_update( $context, $part->getString() );
 			hash_update( $context, "\n" );
 		}
 		return hash_final( $context );
@@ -475,12 +485,17 @@ class Segmenter {
 	 * @param int $revisionId Revision of the page where the segment was found.
 	 * @param string|null $consumerUrl URL to the script path on the consumer,
 	 *  if used as a producer.
-	 * @return array|null The segment matching $hash.
+	 * @return Segment|null The segment matching $hash.
 	 */
-	public function getSegment( $title, $hash, $revisionId, $consumerUrl = null ) {
+	public function getSegment(
+		Title $title,
+		string $hash,
+		int $revisionId,
+		string $consumerUrl = null
+	): ?Segment {
 		$segments = $this->segmentPage( $title, null, null, $revisionId, $consumerUrl );
 		foreach ( $segments as $segment ) {
-			if ( $segment['hash'] === $hash ) {
+			if ( $segment->getHash() === $hash ) {
 				return $segment;
 			}
 		}

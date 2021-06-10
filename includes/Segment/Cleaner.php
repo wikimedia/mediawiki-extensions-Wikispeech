@@ -38,7 +38,7 @@ class Cleaner {
 	/**
 	 * An array of `CleanedText`s and `SegmentBreak`s.
 	 *
-	 * @var array
+	 * @var SegmentContent[]
 	 */
 	private $cleanedContent;
 
@@ -61,10 +61,10 @@ class Cleaner {
 	 * @since 0.0.1
 	 * @param string $markedUpText Input text that may contain HTML
 	 *  tags.
-	 * @return array An array of `CleanedText`s and `SegmentBreak`s
+	 * @return SegmentContent[] An array of `CleanedText`s and `SegmentBreak`s
 	 *  representing text nodes.
 	 */
-	public function cleanHtml( $markedUpText ) {
+	public function cleanHtml( $markedUpText ): array {
 		$dom = self::createDomDocument( $markedUpText );
 		$xpath = new DOMXPath( $dom );
 		// Only add elements below the dummy element. These are the
@@ -96,7 +96,7 @@ class Cleaner {
 	 *  DOMDocument.
 	 * @return DOMDocument The created DOMDocument.
 	 */
-	private static function createDomDocument( $markedUpText ) {
+	private static function createDomDocument( $markedUpText ): DOMDocument {
 		$dom = new DOMDocument();
 		// Add encoding information and wrap the input text in a dummy
 		// tag to prevent p tags from being added for text nodes.
@@ -119,7 +119,7 @@ class Cleaner {
 	 * @since 0.0.1
 	 * @param DOMNode $node The top node to add from.
 	 */
-	private function addContent( $node ) {
+	private function addContent( $node ): void {
 		if ( !$node instanceof DOMComment && !$this->matchesRemove( $node ) ) {
 			foreach ( $node->childNodes as $child ) {
 				if (
@@ -173,7 +173,7 @@ class Cleaner {
 	 * @return bool true if the node match removal criteria, otherwise
 	 *  false.
 	 */
-	private function matchesRemove( $node ) {
+	private function matchesRemove( $node ): bool {
 		if ( !array_key_exists( $node->nodeName, $this->removeTags ) ) {
 			// The node name isn't found in the removal list.
 			return false;
@@ -210,7 +210,7 @@ class Cleaner {
 	 * @return bool true if the node's class attribute contain
 	 *  $className, otherwise false.
 	 */
-	private static function nodeHasClass( $node, $className ) {
+	private static function nodeHasClass( $node, $className ): bool {
 		$classNode = $node->attributes->getNamedItem( 'class' );
 		if ( $classNode == null ) {
 			return false;

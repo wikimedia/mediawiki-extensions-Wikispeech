@@ -4,7 +4,7 @@
 	 * Loads wikispeech modules from producer
 	 */
 
-	var moduleUrl, parametersString, api, namespace, optionsPage;
+	var moduleUrl, api, optionsPage;
 
 	/**
 	 * Add config variables from the producer's config.
@@ -37,7 +37,6 @@
 			// No user options set if not logged in.
 			done.resolve( {} );
 		} else {
-			api = new mw.Api();
 			api.get( {
 				action: 'parse',
 				page: optionsPage,
@@ -186,22 +185,28 @@
 		null,
 		'anotherwiki'
 	);
-	addConfig();
-	api = new mw.Api();
-	namespace = mw.config.get( 'wgNamespaceIds' ).user;
-	optionsPage = mw.Title.makeTitle( namespace, mw.user.getName() ).getPrefixedText() + '/Wikispeech_preferences';
-	addUserOptions().done( function () {
-		parametersString = $.param( {
-			lang: mw.config.get( 'wgUserLanguage' ),
-			skin: mw.config.get( 'skin' ),
-			raw: 1,
-			safemode: 1,
-			modules: 'ext.wikispeech'
+	mw.loader.using( [ 'mediawiki.api', 'mediawiki.user' ] ).done( function () {
+		var namespace, userPage;
+
+		addConfig();
+		namespace = mw.config.get( 'wgNamespaceIds' ).user;
+		userPage = mw.Title.makeTitle( namespace, mw.user.getName() )
+			.getPrefixedText();
+		optionsPage = userPage + '/Wikispeech_preferences';
+		api = new mw.Api();
+		addUserOptions().done( function () {
+			var parametersString = $.param( {
+				lang: mw.config.get( 'wgUserLanguage' ),
+				skin: mw.config.get( 'skin' ),
+				raw: 1,
+				safemode: 1,
+				modules: 'ext.wikispeech'
+			} );
+			moduleUrl = mw.config.get( 'wgWikispeechProducerUrl' ) +
+				'/load.php?' + parametersString;
+			mw.log( '[Wikispeech] Loading wikispeech module from ' + moduleUrl );
+			mw.loader.load( moduleUrl );
 		} );
-		moduleUrl = mw.config.get( 'wgWikispeechProducerUrl' ) + '/load.php?' +
-			parametersString;
-		mw.log( '[Wikispeech] Loading wikispeech module from ' + moduleUrl );
-		mw.loader.load( moduleUrl );
 	} );
 	mw.loader.using( 'ext.wikispeech' )
 		.done( function () {

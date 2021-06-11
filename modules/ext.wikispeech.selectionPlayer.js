@@ -153,8 +153,9 @@
 				);
 			mw.wikispeech.player.currentUtterance = startUtterance;
 			mw.wikispeech.storage.prepareUtterance(
-				startUtterance,
-				function () {
+				startUtterance
+			)
+				.done( function () {
 					var startToken = mw.wikispeech.storage.getStartToken(
 						startUtterance,
 						startNode,
@@ -162,7 +163,9 @@
 					);
 					self.setStartTime( startUtterance, startToken.startTime );
 					mw.wikispeech.player.playUtterance( startUtterance, false );
-				}
+				} );
+			mw.wikispeech.ui.showBufferingIconIfAudioIsLoading(
+				startUtterance.audio
 			);
 
 			endRange = startRange;
@@ -185,8 +188,9 @@
 				mw.wikispeech.storage.getEndUtterance( endNode, endOffset );
 			self.previousEndUtterance = endUtterance;
 			mw.wikispeech.storage.prepareUtterance(
-				endUtterance,
-				function () {
+				endUtterance
+			)
+				.done( function () {
 					// Prepare the end utterance, since token information
 					// is needed to calculate the correct end token.
 					var endToken = mw.wikispeech.storage.getEndToken(
@@ -195,8 +199,7 @@
 						endOffset
 					);
 					self.setEndTime( endUtterance, endToken.endTime );
-				}
-			);
+				} );
 		};
 
 		/**

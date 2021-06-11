@@ -83,10 +83,47 @@
 			if ( !self.playingSelection ) {
 				mw.wikispeech.highlighter.highlightUtterance( utterance );
 			}
-			utterance.audio.play();
+			self.prepareAndPlayUtterance( utterance );
 			mw.wikispeech.ui.showBufferingIconIfAudioIsLoading(
 				utterance.audio
 			);
+		};
+
+		/**
+		 * Ensure an utterance is ready for playback and play it.
+		 *
+		 * Plays utterance when it is ready. If the utterance fail to
+		 * prepare and it is currently playing, a popup dialog will
+		 * appear, letting the user retry or stop playback.
+		 *
+		 * @param {Object} utterance
+		 */
+
+		this.prepareAndPlayUtterance = function ( utterance ) {
+			mw.wikispeech.storage.prepareUtterance( utterance )
+				.done( function () {
+					if ( utterance === self.currentUtterance ) {
+						utterance.audio.play();
+					}
+				} )
+				.fail( function () {
+					if ( utterance !== self.currentUtterance ) {
+						// Only show dialog if the current utterance
+						// fails to load, to avoid multiple and less
+						// relevant dialogs.
+						return;
+					}
+					mw.wikispeech.ui.showLoadAudioError()
+						.done( function ( data ) {
+							if ( !data || data.action === 'stop' ) {
+								// Stop both when "Stop" is clicked
+								// and when escape is pressed.
+								self.stop();
+							} else if ( data.action === 'retry' ) {
+								self.prepareAndPlayUtterance( utterance );
+							}
+						} );
+				} );
 		};
 
 		/**

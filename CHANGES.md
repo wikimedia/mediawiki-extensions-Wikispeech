@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T284138](https://phabricator.wikimedia.org/T284138) Playback stalled if utterance fail to load when prepared by previous utterance starting to play
 * [T281898](https://phabricator.wikimedia.org/T281898) Use connection queue against Speechoid TTS operations.
 * [T283063](https://phabricator.wikimedia.org/T283063) Title highlighting is wrong
 

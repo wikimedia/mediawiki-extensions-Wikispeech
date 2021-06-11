@@ -18,9 +18,9 @@
 					content: [ { string: 'Utterance one.' } ]
 				}
 			];
-			// Assume that the utterance is already prepared, fire
-			// callback immediately.
-			storage.prepareUtterance.callsArg( 1 );
+			// Assume that the utterance is already prepared,
+			// resolve immediately.
+			storage.prepareUtterance.returns( $.Deferred().resolve() );
 			mw.wikispeech.player =
 				sinon.stub( new mw.wikispeech.Player() );
 			player = mw.wikispeech.player;
@@ -30,6 +30,7 @@
 			$( '#qunit-fixture' ).append(
 				$( '<div>' ).attr( 'id', 'content' )
 			);
+			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 			contentSelector =
 				mw.config.get( 'wgWikispeechContentSelector' );
 			this.clock = sinon.useFakeTimers();

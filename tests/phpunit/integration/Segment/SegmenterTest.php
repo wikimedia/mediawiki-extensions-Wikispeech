@@ -12,6 +12,7 @@ use InvalidArgumentException;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\Segmenter;
 use MediaWiki\Wikispeech\Tests\WikiPageTestUtil;
 use MediaWikiIntegrationTestCase;
@@ -105,30 +106,30 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
-			[
-				'startOffset' => 0,
-				'endOffset' => 3,
-				'content' => [ new CleanedText( 'Page', '//h1/text()' ) ],
-				'hash' => 'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
-			],
-			[
-				'startOffset' => 0,
-				'endOffset' => 10,
-				'content' => [ new CleanedText( 'Sentence 1.', './div/p/text()' ) ],
-				'hash' => '76ca3069cee56491f5b2f465c4e9b57b7fb74ebc12eecc0cd6aad965ea7e247e'
-			],
-			[
-				'startOffset' => 12,
-				'endOffset' => 22,
-				'content' => [ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
-				'hash' => '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac'
-			],
-			[
-				'startOffset' => 24,
-				'endOffset' => 34,
-				'content' => [ new CleanedText( 'Sentence 3.', './div/p/text()' ) ],
-				'hash' => 'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
-			]
+			new Segment(
+				[ new CleanedText( 'Page', '//h1/text()' ) ],
+				0,
+				3,
+				'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
+			),
+			new Segment(
+				[ new CleanedText( 'Sentence 1.', './div/p/text()' ) ],
+				0,
+				10,
+				'76ca3069cee56491f5b2f465c4e9b57b7fb74ebc12eecc0cd6aad965ea7e247e'
+			),
+			new Segment(
+				[ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
+				12,
+				22,
+				'33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac'
+			),
+			new Segment(
+				[ new CleanedText( 'Sentence 3.', './div/p/text()' ) ],
+				24,
+				34,
+				'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
+			)
 		];
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
 		$this->assertEquals( $expectedSegments, $segments );
@@ -140,18 +141,18 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
-			[
-				'startOffset' => 0,
-				'endOffset' => 4,
-				'content' => [ new CleanedText( 'title', '//h1/text()' ) ],
-				'hash' => '1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'
-			],
-			[
-				'startOffset' => 0,
-				'endOffset' => 17,
-				'content' => [ new CleanedText( 'Some content text.', './div/p/text()' ) ],
-				'hash' => '3eb8e91dc31a98b63aebe35a1229364deced3f3abbc26eb09fe67394e5cd5c0f'
-			]
+			new Segment(
+				[ new CleanedText( 'title', '//h1/text()' ) ],
+				0,
+				4,
+				'1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'
+			),
+			new Segment(
+				[ new CleanedText( 'Some content text.', './div/p/text()' ) ],
+				0,
+				17,
+				'3eb8e91dc31a98b63aebe35a1229364deced3f3abbc26eb09fe67394e5cd5c0f'
+			)
 		];
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
 		$this->assertEquals( $expectedSegments, $segments );
@@ -199,27 +200,27 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
-			[
-				'startOffset' => 0,
-				'endOffset' => 3,
-				'content' => [ new CleanedText( 'Page', '//h1/text()' ) ],
-				'hash' => 'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
-			],
-			[
-				'startOffset' => 0,
-				'endOffset' => 2,
-				'content' => [ new CleanedText( 'one', './div/p/text()[1]' ) ],
-				'hash' => '2c8b08da5ce60398e1f19af0e5dccc744df274b826abe585eaba68c525434806'
-			],
-			[
-				'startOffset' => 0,
-				'endOffset' => 1,
-				'content' => [
+			new Segment(
+				[ new CleanedText( 'Page', '//h1/text()' ) ],
+				0,
+				3,
+				'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
+			),
+			new Segment(
+				[ new CleanedText( 'one', './div/p/text()[1]' ) ],
+				0,
+				2,
+				'2c8b08da5ce60398e1f19af0e5dccc744df274b826abe585eaba68c525434806'
+			),
+			new Segment(
+				[
 					new CleanedText( 'two', './div/p/text()[2]' ),
 					new CleanedText( "\n\n", './div/text()[3]' )
 				],
-				'hash' => 'ce53a6624b8515fa2bcf28d50690e8a52b77de083bb166879fb81d737af09cb1'
-			]
+				0,
+				1,
+				'ce53a6624b8515fa2bcf28d50690e8a52b77de083bb166879fb81d737af09cb1'
+			)
 		];
 		$segments = $this->segmenter->segmentPage( $title );
 		$this->assertEquals( $expectedSegments, $segments );
@@ -308,15 +309,15 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 }'
 			);
 		$segments = $this->segmenter->segmentPage(
-			$title, [], [], null, 'https://consumer.url'
+			Title::newFromText( $title ), [], [], null, 'https://consumer.url'
 		);
 		$this->assertSame(
 			'Page',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'Content',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
 	}
 
@@ -327,12 +328,12 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$title = $page->getTitle();
 		$revisionId = $page->getLatest();
 		$hash = '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac';
-		$expectedSegment = [
-			'startOffset' => 12,
-			'endOffset' => 22,
-			'content' => [ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
-			'hash' => $hash
-		];
+		$expectedSegment = new Segment(
+			[ new CleanedText( 'Sentence 2.', './div/p/text()' ) ],
+			12,
+			22,
+			$hash
+		);
 		$segment = $this->segmenter->getSegment( $title, $hash, $revisionId );
 		$this->assertEquals( $expectedSegment, $segment );
 	}

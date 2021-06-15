@@ -16,6 +16,7 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MWException;
@@ -179,12 +180,12 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	public function testGetUtterance_requestNewUtterance_speechoidConnectorExecuted() {
 		$hash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
 		$content = 'Word 1 Word 2 Word 3.';
-		$segment = [
-			'startOffset' => 12,
-			'endOffset' => 22,
-			'content' => [ new CleanedText( $content, './div/p/text()' ) ],
-			'hash' => $hash
-		];
+		$segment = new Segment(
+			[ new CleanedText( $content, './div/p/text()' ) ],
+			12,
+			22,
+			$hash
+	);
 		$synthesizeMetadataJson =
 			'[' .
 			'{"endtime": 295, "orth": "Word"}, ' .
@@ -271,12 +272,12 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	public function testGetUtterance_requestExistingUtterance_speechoidConnectorNotExecuted() {
 		$hash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
 		$content = 'Word 1 Word 2 Word 3.';
-		$segment = [
-			'startOffset' => 12,
-			'endOffset' => 22,
-			'content' => [ new CleanedText( $content, './div/p/text()' ) ],
-			'hash' => $hash
-		];
+		$segment = new Segment(
+			[ new CleanedText( $content, './div/p/text()' ) ],
+			12,
+			22,
+			$hash
+		);
 		$synthesizeMetadataJson =
 			'[' .
 			'{"endtime": 295, "orth": "Word"}, ' .

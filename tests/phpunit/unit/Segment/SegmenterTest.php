@@ -8,13 +8,14 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Segment;
  * @license GPL-2.0-or-later
  */
 
-use HashBagOStuff;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\Segmenter;
 use MediaWikiUnitTestCase;
 use RequestContext;
+use WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -34,7 +35,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$this->segmenter = TestingAccessWrapper::newFromObject(
 			new Segmenter(
 				new RequestContext(),
-				$this->createStub( HashBagOStuff::class ),
+				$this->createStub( WANObjectCache::class ),
 				$this->createMock( HttpRequestFactory::class )
 			)
 		);
@@ -45,24 +46,24 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 			new CleanedText( 'Sentence 1. Sentence 2. Sentence 3.' )
 		];
 		$expectedSegments = [
-			[
-				'startOffset' => 0,
-				'endOffset' => 10,
-				'content' => [ new CleanedText( 'Sentence 1.' ) ],
-				'hash' => '76ca3069cee56491f5b2f465c4e9b57b7fb74ebc12eecc0cd6aad965ea7e247e'
-			],
-			[
-				'startOffset' => 12,
-				'endOffset' => 22,
-				'content' => [ new CleanedText( 'Sentence 2.' ) ],
-				'hash' => '33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac'
-			],
-			[
-				'startOffset' => 24,
-				'endOffset' => 34,
-				'content' => [ new CleanedText( 'Sentence 3.' ) ],
-				'hash' => 'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
-			]
+			new Segment(
+				[ new CleanedText( 'Sentence 1.' ) ],
+				0,
+				10,
+				'76ca3069cee56491f5b2f465c4e9b57b7fb74ebc12eecc0cd6aad965ea7e247e'
+			),
+			new Segment(
+				[ new CleanedText( 'Sentence 2.' ) ],
+				12,
+				22,
+				'33dc64326df9f4b281fc9d680f89423f3261d1056d857a8263d46f7904a705ac'
+			),
+			new Segment(
+				[ new CleanedText( 'Sentence 3.' ) ],
+				24,
+				34,
+				'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
+			)
 		];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals( $expectedSegments, $segments );
@@ -79,7 +80,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( $text ) ],
-			$segments[0]['content']
+			$segments[0]->getContent()
 		);
 	}
 
@@ -97,9 +98,9 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertEquals(
 			[ new CleanedText( 'No sentence final' ) ],
-			$segments[1]['content']
+			$segments[1]->getContent()
 		);
-		$this->assertSame( 26, $segments[1]['endOffset'] );
+		$this->assertSame( 26, $segments[1]->getEndOffset() );
 	}
 
 	public function testSegmentSentences_sentenceSplitIntoMultipleNodes_giveSingleSegment() {
@@ -111,23 +112,23 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			0,
-			$segments[0]['startOffset']
+			$segments[0]->getStartOffset()
 		);
 		$this->assertSame(
 			5,
-			$segments[0]['endOffset']
+			$segments[0]->getEndOffset()
 		);
 		$this->assertSame(
 			'Sentence split ',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'by',
-			$segments[0]['content'][1]->string
+			$segments[0]->getContent()[1]->getString()
 		);
 		$this->assertSame(
 			' tags.',
-			$segments[0]['content'][2]->string
+			$segments[0]->getContent()[2]->getString()
 		);
 	}
 
@@ -139,19 +140,19 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			16,
-			$segments[1]['startOffset']
+			$segments[1]->getStartOffset()
 		);
 		$this->assertSame(
 			10,
-			$segments[2]['startOffset']
+			$segments[2]->getStartOffset()
 		);
 	}
 
 	public function testSegmentSentences_simpleSentence_giveOffsets() {
 		$cleanedContent = [ new CleanedText( 'Sentence.' ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertSame( 0, $segments[0]['startOffset'] );
-		$this->assertSame( 8, $segments[0]['endOffset'] );
+		$this->assertSame( 0, $segments[0]->getStartOffset() );
+		$this->assertSame( 8, $segments[0]->getEndOffset() );
 	}
 
 	public function testSegmentSentences_nodeContainsUnicodeChars_giveSegmentsAndOffsets() {
@@ -163,16 +164,16 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Utterance with å.',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
-		$this->assertSame( 17, $segments[1]['startOffset'] );
-		$this->assertSame( 33, $segments[1]['endOffset'] );
+		$this->assertSame( 17, $segments[1]->getStartOffset() );
+		$this->assertSame( 33, $segments[1]->getEndOffset() );
 		$this->assertSame(
 			'Another normal sentence.',
-			$segments[2]['content'][0]->string
+			$segments[2]->getContent()[0]->getString()
 		);
-		$this->assertSame( 35, $segments[2]['startOffset'] );
-		$this->assertSame( 58, $segments[2]['endOffset'] );
+		$this->assertSame( 35, $segments[2]->getStartOffset() );
+		$this->assertSame( 58, $segments[2]->getEndOffset() );
 	}
 
 	public function testSegmentSentences_nodeStartsWithSentenceFinalCharacter_includeInPriorSegment() {
@@ -183,15 +184,15 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Sentence one',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'.',
-			$segments[0]['content'][1]->string
+			$segments[0]->getContent()[1]->getString()
 		);
 		$this->assertSame(
 			'Sentence two.',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
 	}
 
@@ -203,11 +204,11 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Sentence 1.',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'Sentence 2.',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
 	}
 
@@ -222,11 +223,11 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Text one',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'Text two',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
 	}
 
@@ -238,7 +239,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Sentence 1.',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 	}
 
@@ -247,10 +248,10 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Sentence.',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
-		$this->assertSame( 1, $segments[0]['startOffset'] );
-		$this->assertSame( 9, $segments[0]['endOffset'] );
+		$this->assertSame( 1, $segments[0]->getStartOffset() );
+		$this->assertSame( 9, $segments[0]->getEndOffset() );
 	}
 
 	public function testSegmentSentences_nodeWithOnlyNewline_dontIncludeInSegments() {
@@ -259,10 +260,10 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 			new CleanedText( "\n" )
 		];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
-		$this->assertCount( 1, $segments[0]['content'] );
+		$this->assertCount( 1, $segments[0]->getContent() );
 		$this->assertSame(
 			'text',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 	}
 
@@ -275,15 +276,15 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Sentence one',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'.',
-			$segments[0]['content'][1]->string
+			$segments[0]->getContent()[1]->getString()
 		);
 		$this->assertSame(
 			'Sentence two.',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
 	}
 
@@ -298,15 +299,15 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );
 		$this->assertSame(
 			'Header',
-			$segments[0]['content'][0]->string
+			$segments[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'Paragraph one',
-			$segments[1]['content'][0]->string
+			$segments[1]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'Paragraph two',
-			$segments[2]['content'][0]->string
+			$segments[2]->getContent()[0]->getString()
 		);
 	}
 

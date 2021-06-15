@@ -81,7 +81,7 @@ class ApiWikispeechSegment extends ApiBase {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalidjson' );
 		}
 		$removeTags = $result->getValue();
-		if ( !$this->isValidRemoveTags( $removeTags ) ) {
+		if ( !self::isValidRemoveTags( $removeTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
 		$segmenter = new Segmenter(
@@ -115,7 +115,7 @@ class ApiWikispeechSegment extends ApiBase {
 	 * @param mixed $removeTags The variable to test.
 	 * @return bool true if $removeTags is valid, else false.
 	 */
-	public function isValidRemoveTags( $removeTags ) {
+	public static function isValidRemoveTags( $removeTags ) {
 		if ( !is_array( $removeTags ) ) {
 			return false;
 		}

@@ -37,6 +37,11 @@ use Wikimedia\ParamValidator\ParamValidator;
 /**
  * API module to synthezise text as sounds.
  *
+ * Segments referenced by client are expected to have been created using
+ * the default configuration settings for segmentBreakingTags and removeTags.
+ * If not, segments might be incompatible, causing this API to not find
+ * the requested corresponding utterances.
+ *
  * @since 0.1.3
  */
 class ApiWikispeechListen extends ApiBase {
@@ -123,7 +128,7 @@ class ApiWikispeechListen extends ApiBase {
 			}
 		}
 		if ( isset( $inputParameters['revision'] ) ) {
-			$response = $this->getResponseForRevisionAndSegment(
+			$response = $this->getUtteranceForRevisionAndSegment(
 				$voice,
 				$language,
 				$inputParameters['revision'],
@@ -149,7 +154,25 @@ class ApiWikispeechListen extends ApiBase {
 	}
 
 	/**
-	 * Given a revision ID and a segment hash retrieve the matching utterance.
+	 * @since 0.1.10
+	 * @param int $revisionId
+	 * @param string|null $consumerUrl
+	 * @return string
+	 */
+	private function pageIdAndTitleCacheKeyFactory(
+		int $revisionId,
+		?string $consumerUrl
+	): string {
+		return $this->cache->makeKey(
+			'Wikispeech.pageIdAndTitle',
+			get_class( $this ),
+			$consumerUrl ?? 'local',
+			$revisionId
+		);
+	}
+
+	/**
+	 * Retrieves the matching utterance for a given revision id and segment hash .
 	 *
 	 * @since 0.1.5
 	 * @param string $voice
@@ -158,50 +181,61 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param string $segmentHash
 	 * @param string|null $consumerUrl URL to the script path on the consumer,
 	 *  if used as a producer.
-	 * @return array
+	 * @return array An utterance
 	 */
-	private function getResponseForRevisionAndSegment(
-		$voice,
-		$language,
-		$revisionId,
-		$segmentHash,
-		$consumerUrl = null
-	) {
-		if ( $consumerUrl ) {
-			$request = wfAppendQuery(
-				$consumerUrl . '/api.php',
-				[
-					'action' => 'parse',
-					'format' => 'json',
-					'oldid' => $revisionId,
-				]
-			);
-			$responseString = $this->requestFactory->get( $request );
-			if ( $responseString === null ) {
-				$this->dieWithError( [
-					'apierror-wikispeech-listen-failed-getting-page-from-consumer',
-					$revisionId,
-					$consumerUrl
-				] );
-			}
-			// Phan does not seem to understand what dieWithError() does.
-			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
-			$response = FormatJson::parse( $responseString )->getValue();
-			$pageId = $response->parse->pageid;
-			$title = Title::newFromText(
-				$response->parse->title
-			);
-			if ( $title === null ) {
-				throw new MWException(
-					"Could not parse as Title: '$response->parse->title'"
+	private function getUtteranceForRevisionAndSegment(
+		string $voice,
+		string $language,
+		int $revisionId,
+		string $segmentHash,
+		string $consumerUrl = null
+	): array {
+		$pageIdAndTitleCacheKey = $this->pageIdAndTitleCacheKeyFactory(
+			$revisionId, $consumerUrl
+		);
+		$pageIdAndTitle = $this->cache->get( $pageIdAndTitleCacheKey );
+		if ( $pageIdAndTitle === false ) {
+			if ( $consumerUrl ) {
+				$request = wfAppendQuery(
+					$consumerUrl . '/api.php',
+					[
+						'action' => 'parse',
+						'format' => 'json',
+						'oldid' => $revisionId,
+					]
+				);
+				$responseString = $this->requestFactory->get( $request );
+				if ( $responseString === null ) {
+					$this->dieWithError( [
+						'apierror-wikispeech-listen-failed-getting-page-from-consumer',
+						$revisionId,
+						$consumerUrl
+					] );
+				}
+				// Phan does not seem to understand what dieWithError() does.
+				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+				$response = FormatJson::parse( $responseString )->getValue();
+				$pageId = $response->parse->pageid;
+				$title = Title::newFromText(
+					$response->parse->title
+				);
+				if ( $title === null ) {
+					throw new MWException(
+						"Could not parse as Title: '$response->parse->title'"
+					);
+				}
+			} else {
+				$revisionRecord = $this->getRevisionRecord( $revisionId );
+				$pageId = $revisionRecord->getPageId();
+				$title = Title::newFromLinkTarget(
+					$revisionRecord->getPageAsLinkTarget()
 				);
 			}
-		} else {
-			$revisionRecord = $this->getRevisionRecord( $revisionId );
-			$pageId = $revisionRecord->getPageId();
-			$title = Title::newFromLinkTarget(
-				$revisionRecord->getPageAsLinkTarget()
-			);
+			$pageIdAndTitle = [
+				'pageId' => $pageId,
+				'title' => $title
+			];
+			$this->cache->set( $pageIdAndTitleCacheKey, $pageIdAndTitle, WANObjectCache::TTL_DAY );
 		}
 		$segmenter = new Segmenter(
 			$this->getContext(),
@@ -209,7 +243,7 @@ class ApiWikispeechListen extends ApiBase {
 			$this->requestFactory
 		);
 		$segments = $segmenter->segmentPage(
-			$title,
+			$pageIdAndTitle['title'],
 			null,
 			null,
 			$revisionId,
@@ -217,14 +251,15 @@ class ApiWikispeechListen extends ApiBase {
 		);
 		$segment = $segments->findFirstItemByHash( $segmentHash );
 		if ( $segment === null ) {
-			// @todo die with error?
-			throw new MWException( 'No such segment.' );
+			throw new MWException( 'No such segment. ' .
+				'Did you perhaps reference a segment that was created using incompatible settings ' .
+				'for segmentBreakingTags and/or removeTags?' );
 		}
 		return $this->getUtterance(
 			$consumerUrl,
 			$voice,
 			$language,
-			$pageId,
+			$pageIdAndTitle['pageId'],
 			$segment
 		);
 	}

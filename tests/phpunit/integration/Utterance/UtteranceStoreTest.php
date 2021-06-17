@@ -112,17 +112,17 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			$data['audio'],
 			$data['synthesisMetadata']
 		);
-		$this->assertSame( $data['remoteWikiHash'], $created['remoteWikiHash'] );
-		$this->assertTrue( is_int( $created[ 'utteranceId' ] ) );
-		$this->assertTrue( $started <= $created['dateStored'] );
-		$this->assertSame( $data['pageId'], $created['pageId'] );
-		$this->assertSame( $data['language'], $created['language'] );
-		$this->assertSame( $data['voice'], $created['voice'] );
-		$this->assertSame( $data['segmentHash'], $created['segmentHash'] );
+		$this->assertSame( $data['remoteWikiHash'], $created->getRemoteWikiHash() );
+		$this->assertTrue( is_int( $created->getUtteranceId() ) );
+		$this->assertTrue( $started <= $created->getDateStored() );
+		$this->assertSame( $data['pageId'], $created->getPageId() );
+		$this->assertSame( $data['language'], $created->getLanguage() );
+		$this->assertSame( $data['voice'], $created->getVoice() );
+		$this->assertSame( $data['segmentHash'], $created->getSegmentHash() );
 		$this->assertSelect(
 			UtteranceStore::UTTERANCE_TABLE,
 			[ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
-			[ 'wsu_utterance_id' => $created['utteranceId'] ],
+			[ 'wsu_utterance_id' => $created->getUtteranceId() ],
 			[ [ $data['remoteWikiHash'], $data['pageId'], $data['language'], $data['segmentHash'], $data['voice'] ] ]
 		);
 	}
@@ -156,14 +156,14 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		);
 		$this->assertNotNull( $retrieved, 'Unable to find newly created utterance!' );
 		// assert database values are set
-		$this->assertSame( $data['remoteWikiHash'], $retrieved['remoteWikiHash'] );
-		$this->assertSame( $data['pageId'], $retrieved['pageId'] );
-		$this->assertSame( $data['language'], $retrieved['language'] );
-		$this->assertSame( $data['voice'], $retrieved['voice'] );
-		$this->assertSame( $data['segmentHash'], $retrieved['segmentHash'] );
+		$this->assertSame( $data['remoteWikiHash'], $retrieved->getRemoteWikiHash() );
+		$this->assertSame( $data['pageId'], $retrieved->getPageId() );
+		$this->assertSame( $data['language'], $retrieved->getLanguage() );
+		$this->assertSame( $data['voice'], $retrieved->getVoice() );
+		$this->assertSame( $data['segmentHash'], $retrieved->getSegmentHash() );
 		// assert values from file store is loaded
-		$this->assertEquals( $data['audio'], $retrieved['audio'] );
-		$this->assertEquals( $data['synthesisMetadata'], $retrieved['synthesisMetadata'] );
+		$this->assertEquals( $data['audio'], $retrieved->getAudio() );
+		$this->assertEquals( $data['synthesisMetadata'], $retrieved->getSynthesisMetadata() );
 	}
 
 	public function testFlushUtterancesByExpirationDate() {

@@ -391,9 +391,10 @@ class ApiWikispeechListen extends ApiBase {
 			'segmentHash' => $segmentHash
 		] );
 		return [
-			'audio' => $utterance['audio'],
+			'audio' => $utterance->getAudio(),
 			'tokens' => FormatJson::parse(
-				$utterance['synthesisMetadata'],
+				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable synthesis metadata is set
+				$utterance->getSynthesisMetadata(),
 				FormatJson::FORCE_ASSOC
 			)->getValue()
 		];

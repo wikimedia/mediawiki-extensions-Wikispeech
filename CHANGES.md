@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T285048](https://phabricator.wikimedia.org/T285048) Introduce class Utterance
 * [T300104](https://phabricator.wikimedia.org/T300104) Sort out footer toolbar interaction
 * [T299994](https://phabricator.wikimedia.org/T299994) Buttons do not show up in the player UI
 * [T300120](https://phabricator.wikimedia.org/T300120) Failing Jenkins tests for mw.loader

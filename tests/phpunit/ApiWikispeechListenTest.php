@@ -19,6 +19,7 @@ use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\OutdatedOrInvalidRevisionException;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\Utterance\Utterance;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MWTimestamp;
 use WANObjectCache;
@@ -291,6 +292,18 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 		$api = $this->mockApi();
 
+		$mockedFoundUtterance = new Utterance(
+			1,
+			null,
+			2,
+			'sv',
+			'anna',
+			$hash,
+			MWTimestamp::getInstance( 20020101000000 )
+		);
+		$mockedFoundUtterance->setAudio( 'DummyBase64==' );
+		$mockedFoundUtterance->setSynthesisMetadata( $synthesizeMetadataJson );
+
 		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
 		$utteranceStoreMock
 			->method( 'findUtterance' )
@@ -303,16 +316,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				$this->equalTo( $hash ),
 				$this->equalTo( false )
 			)
-			->willReturn( [
-				'utteranceId' => 1,
-				'pageId' => 2,
-				'language' => 'sv',
-				'voice' => 'anna',
-				'segmentHash' => $hash,
-				'dateStored' => MWTimestamp::getInstance( 20020101000000 ),
-				'audio' => 'DummyBase64==',
-				'synthesisMetadata' => $synthesizeMetadataJson,
-			] );
+			->willReturn( $mockedFoundUtterance );
 		$api->utteranceStore = $utteranceStoreMock;
 
 		$speechoidConnectorMock = $this->createMock( SpeechoidConnector::class );

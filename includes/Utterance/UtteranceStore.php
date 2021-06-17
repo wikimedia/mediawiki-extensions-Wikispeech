@@ -133,7 +133,7 @@ class UtteranceStore {
 	 * @param string $voice Name of synthesis voice.
 	 * @param string $segmentHash Hash of segment representing utterance.
 	 * @param bool $omitAudio If true, then no audio is returned.
-	 * @return array|null Utterance found, or null if non-existing.
+	 * @return Utterance|null Utterance found, or null if non-existing.
 	 */
 	public function findUtterance(
 		?string $consumerUrl,
@@ -142,7 +142,7 @@ class UtteranceStore {
 		string $voice,
 		string $segmentHash,
 		bool $omitAudio = false
-	): ?array {
+	): ?Utterance {
 		$utterance = $this->retrieveUtteranceMetadata(
 			$consumerUrl,
 			$pageId,
@@ -155,6 +155,7 @@ class UtteranceStore {
 		}
 
 		// load utterance audio and synthesis metadata
+		$utteranceId = $utterance->getUtteranceId();
 
 		// @note We might want to keep this as separate function calls,
 		// allowing the user to request when needed, and perhaps
@@ -163,26 +164,26 @@ class UtteranceStore {
 		// Not sure if this is an existing thing in PHP though.
 
 		if ( !$omitAudio ) {
-			$audioSrc = $this->audioUrlFactory( $utterance['utteranceId'] );
+			$audioSrc = $this->audioUrlFactory( $utteranceId );
 			try {
-				$utterance['audio'] = $this->retrieveFileContents(
+				$utterance->setAudio( $this->retrieveFileContents(
 					$audioSrc,
-					$utterance['utteranceId'],
+					$utteranceId,
 					'audio file'
-				);
+				) );
 			} catch ( ExternalStoreException $e ) {
 				$this->logger->warning( __METHOD__ . ': ' . $e->getMessage() );
 				return null;
 			}
 		}
 
-		$synthesisMetadataSrc = $this->synthesisMetadataUrlFactory( $utterance['utteranceId'] );
+		$synthesisMetadataSrc = $this->synthesisMetadataUrlFactory( $utteranceId );
 		try {
-			$utterance['synthesisMetadata'] = $this->retrieveFileContents(
+			$utterance->setSynthesisMetadata( $this->retrieveFileContents(
 				$synthesisMetadataSrc,
-				$utterance['utteranceId'],
+				$utteranceId,
 				'synthesis metadata file'
-			);
+			) );
 		} catch ( ExternalStoreException $e ) {
 			$this->logger->warning( __METHOD__ . ': ' . $e->getMessage() );
 			return null;
@@ -201,7 +202,7 @@ class UtteranceStore {
 	 * @param string $language ISO-639.
 	 * @param string $voice Name of synthesis voice.
 	 * @param string $segmentHash Hash of segment representing utterance.
-	 * @return array|null Utterance or null if not found in database
+	 * @return Utterance|null Utterance or null if not found in database
 	 */
 	public function retrieveUtteranceMetadata(
 		?string $consumerUrl,
@@ -209,7 +210,7 @@ class UtteranceStore {
 		string $language,
 		string $voice,
 		string $segmentHash
-	): ?array {
+	): ?Utterance {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbr = $this->dbLoadBalancer->getConnection( DB_REPLICA );
 		$row = $dbr->selectRow( self::UTTERANCE_TABLE, [
@@ -232,16 +233,15 @@ class UtteranceStore {
 		if ( !$row ) {
 			return null;
 		}
-		$utterance = [
-			'utteranceId' => intval( $row->wsu_utterance_id ),
-			'remoteWikiHash' => $row->wsu_remote_wiki_hash === null ? null : strval( $row->wsu_remote_wiki_hash ),
-			'pageId' => intval( $row->wsu_page_id ),
-			'language' => strval( $row->wsu_lang ),
-			'voice' => strval( $row->wsu_voice ),
-			'segmentHash' => strval( $row->wsu_seg_hash ),
-			'dateStored' => MWTimestamp::getInstance( $row->wsu_date_stored )
-		];
-
+		$utterance = new Utterance(
+			intval( $row->wsu_utterance_id ),
+			$row->wsu_remote_wiki_hash === null ? null : strval( $row->wsu_remote_wiki_hash ),
+			intval( $row->wsu_page_id ),
+			strval( $row->wsu_lang ),
+			strval( $row->wsu_voice ),
+			strval( $row->wsu_seg_hash ),
+			MWTimestamp::getInstance( $row->wsu_date_stored )
+		);
 		return $utterance;
 	}
 
@@ -279,7 +279,7 @@ class UtteranceStore {
 	 * @param string $segmentHash Hash of segment representing utterance.
 	 * @param string $audio Utterance audio.
 	 * @param string $synthesisMetadata JSON form metadata about the audio.
-	 * @return array Inserted utterance.
+	 * @return Utterance Inserted utterance.
 	 * @throws ExternalStoreException If unable to prepare or create files in file backend.
 	 */
 	public function createUtterance(
@@ -290,7 +290,7 @@ class UtteranceStore {
 		string $segmentHash,
 		string $audio,
 		string $synthesisMetadata
-	): array {
+	): Utterance {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbw = $this->dbLoadBalancer->getConnection( DB_PRIMARY );
 		$rows = [
@@ -302,29 +302,31 @@ class UtteranceStore {
 			'wsu_date_stored' => $dbw->timestamp()
 		];
 		$dbw->insert( self::UTTERANCE_TABLE, $rows );
-		$utterance = [
-			'remoteWikiHash' => $remoteWikiHash,
-			'pageId' => $pageId,
-			'language' => $language,
-			'voice' => $voice,
-			'segmentHash' => $segmentHash,
-			'dateStored' => $rows['wsu_date_stored']
-		];
-		$utterance['utteranceId'] = $dbw->insertId();
+		$utterance = new Utterance(
+			intval( $dbw->insertId() ),
+			$remoteWikiHash,
+			$pageId,
+			$language,
+			$voice,
+			$segmentHash,
+			MWTimestamp::getInstance( $rows['wsu_date_stored'] )
+		);
 
 		// create audio file
 		$this->storeFile(
-			$this->audioUrlFactory( $utterance['utteranceId'] ),
+			$this->audioUrlFactory( $utterance->getUtteranceId() ),
 			$audio,
 			'audio file'
 		);
+		$utterance->setAudio( $audio );
 
 		// create synthesis metadata file
 		$this->storeFile(
-			$this->synthesisMetadataUrlFactory( $utterance['utteranceId'] ),
+			$this->synthesisMetadataUrlFactory( $utterance->getUtteranceId() ),
 			$synthesisMetadata,
 			'synthesis metadata file'
 		);
+		$utterance->setSynthesisMetadata( $synthesisMetadata );
 
 		$jobQueue = new FlushUtterancesFromStoreByExpirationJobQueue();
 		$jobQueue->maybeQueueJob();

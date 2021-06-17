@@ -13,7 +13,6 @@ use ApiBase;
 use ApiMain;
 use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\Segmenter;
 use Title;
 use WANObjectCache;
@@ -101,7 +100,7 @@ class ApiWikispeechSegment extends ApiBase {
 		$this->getResult()->addValue(
 			null,
 			$this->getModuleName(),
-			[ 'segments' => Segment::serializeArray( $segments ) ]
+			[ 'segments' => $segments->toArray() ]
 		);
 	}
 

@@ -116,34 +116,4 @@ class Segment {
 		$this->hash = $hash;
 	}
 
-	/**
-	 * @since 0.1.10
-	 * @return array Object serialized to associative array
-	 */
-	public function serialize(): array {
-		$serializedContent = [];
-		foreach ( $this->getContent() as $content ) {
-			$serializedContent[] = $content->serialize();
-		}
-		return [
-			'content' => $serializedContent,
-			'startOffset' => $this->getStartOffset(),
-			'endOffset' => $this->getEndOffset(),
-			'hash' => $this->getHash()
-		];
-	}
-
-	/**
-	 * @since 0.1.10
-	 * @param Segment[] $segments
-	 * @return array
-	 */
-	public static function serializeArray( array $segments ): array {
-		$serializedSegments = [];
-		foreach ( $segments as $segment ) {
-			$serializedSegments[] = $segment->serialize();
-		}
-		return $serializedSegments;
-	}
-
 }

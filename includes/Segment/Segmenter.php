@@ -92,7 +92,7 @@ class Segmenter {
 	 * @param int|null $revisionId Revision to be segmented
 	 * @param string|null $consumerUrl URL to the script path on the consumer,
 	 *  if used as a producer.
-	 * @return Segment[] A list of segments each made up of `CleanedTest`
+	 * @return SegmentList A list of segments each made up of `CleanedTest`
 	 *  objects and with start and end offset.
 	 * @throws MWException If failing to create WikiPage from title or an
 	 *  invalid or non-cached and outdated revision was provided.
@@ -103,7 +103,7 @@ class Segmenter {
 		array $segmentBreakingTags = null,
 		int $revisionId = null,
 		string $consumerUrl = null
-	): array {
+	): SegmentList {
 		$config = MediaWikiServices::getInstance()
 			->getConfigFactory()
 			->makeConfig( 'wikispeech' );
@@ -170,7 +170,7 @@ class Segmenter {
 			$segments = $this->segmentSentences( $cleanedText );
 			$this->cache->set( $cacheKey, $segments, 3600 );
 		}
-		return $segments;
+		return new SegmentList( $segments );
 	}
 
 	/**
@@ -474,31 +474,5 @@ class Segmenter {
 		//		'segment' => $segment,
 		//		'hash' => $hash
 		//	] );
-	}
-
-	/**
-	 * Get a segment from a page.
-	 *
-	 * @since 0.1.5
-	 * @param Title $title
-	 * @param string $hash Hash of the segment to get.
-	 * @param int $revisionId Revision of the page where the segment was found.
-	 * @param string|null $consumerUrl URL to the script path on the consumer,
-	 *  if used as a producer.
-	 * @return Segment|null The segment matching $hash.
-	 */
-	public function getSegment(
-		Title $title,
-		string $hash,
-		int $revisionId,
-		string $consumerUrl = null
-	): ?Segment {
-		$segments = $this->segmentPage( $title, null, null, $revisionId, $consumerUrl );
-		foreach ( $segments as $segment ) {
-			if ( $segment->getHash() === $hash ) {
-				return $segment;
-			}
-		}
-		return null;
 	}
 }

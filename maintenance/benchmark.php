@@ -12,10 +12,12 @@ use EmptyBagOStuff;
 use Maintenance;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Wikispeech\Segment\Segmenter;
 use MediaWiki\Wikispeech\Segment\SegmentList;
+use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
+use MWException;
 use RequestContext;
 use Title;
+use WANObjectCache;
 
 /** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );
@@ -37,8 +39,8 @@ class Benchmark extends Maintenance {
 	/** @var VoiceHandler */
 	private $voiceHandler;
 
-	/** @var Segmenter */
-	private $segmenter;
+	/** @var SegmentPageFactory */
+	private $segmentPageFactory;
 
 	/** @var SpeechoidConnector */
 	private $speechoidConnector;
@@ -144,7 +146,7 @@ class Benchmark extends Maintenance {
 		$requestFactory = MediaWikiServices::getInstance()
 			->getHttpRequestFactory();
 
-		$emptyWanCache = new EmptyBagOStuff();
+		$emptyWanCache = new WANObjectCache( [ 'cache' => new EmptyBagOStuff() ] );
 
 		$logger = LoggerFactory::getInstance( 'Wikispeech' );
 
@@ -156,17 +158,19 @@ class Benchmark extends Maintenance {
 				$logger,
 				$config,
 				$this->speechoidConnector,
-				// @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal
 				$emptyWanCache
 			);
 		}
-		if ( !$this->segmenter ) {
-			$this->segmenter = new Segmenter(
-				new RequestContext(),
-				// @phan-suppress-next-line PhanTypeMismatchArgumentReal
+		if ( !$this->segmentPageFactory ) {
+			$this->segmentPageFactory = new SegmentPageFactory(
 				$emptyWanCache,
-				$requestFactory
+				MediaWikiServices::getInstance()->getConfigFactory()
 			);
+			$this->segmentPageFactory
+				->setUseSegmentsCache( false )
+				->setUseRevisionPropertiesCache( false )
+				->setContextSource( new RequestContext() )
+				->setRevisionStore( MediaWikiServices::getInstance()->getRevisionStore() );
 		}
 	}
 
@@ -221,13 +225,12 @@ class Benchmark extends Maintenance {
 	}
 
 	private function executeSegmenting() {
-		// todo add these three as options?
-		$removeTags = null;
-		$segmentBreakingTags = null;
+		// @todo consider adding revision as script parameter.
+		// Setting null will requests the most recent for the title.
 		$revisionId = null;
 
 		$this->output( 'Benchmarking page ' .
-			"$this->title->getText() using language " .
+			"{$this->title->getText()} using language " .
 			"$this->language and voice " .
 			"$this->voice.\n"
 		);
@@ -235,15 +238,21 @@ class Benchmark extends Maintenance {
 		// We don't want to count time spent rendering to segmenting time,
 		// so we call the segmenter twice. Segmenting cache is turned off.
 		$this->output( "Allowing for MediaWiki to render page...\n" );
-		$this->segmenter->segmentPage(
-			$this->title, $removeTags, $segmentBreakingTags, $revisionId
+		$this->segmentPageFactory->segmentPage(
+			$this->title,
+			$revisionId
 		);
 
 		$this->output( "Segmenting...\n" );
 		$startSegmenting = microtime( true ) * 1000;
-		$this->segments = $this->segmenter->segmentPage(
-			$this->title, $removeTags, $segmentBreakingTags, $revisionId
-		);
+		$segments = $this->segmentPageFactory->segmentPage(
+			$this->title,
+			$revisionId
+		)->getSegments();
+		if ( $segments === null ) {
+			throw new MWException( 'Segments is null!' );
+		}
+		$this->segments = $segments;
 		$endSegmenting = microtime( true ) * 1000;
 		$this->millisecondsSpentSegmenting = $endSegmenting - $startSegmenting;
 	}

@@ -11,9 +11,11 @@ namespace MediaWiki\Wikispeech\Api;
 
 use ApiBase;
 use ApiMain;
+use ConfigFactory;
 use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Revision\RevisionStore;
+use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -31,12 +33,20 @@ class ApiWikispeechSegment extends ApiBase {
 	/** @var HttpRequestFactory */
 	private $requestFactory;
 
+	/** @var RevisionStore */
+	private $revisionStore;
+
+	/** @var ConfigFactory */
+	private $configFactory;
+
 	/**
 	 * @since 0.1.7
 	 * @param ApiMain $mainModule
 	 * @param string $moduleName
 	 * @param WANObjectCache $cache
 	 * @param HttpRequestFactory $requestFactory
+	 * @param RevisionStore $revisionStore
+	 * @param ConfigFactory $configFactory
 	 * @param string $modulePrefix
 	 */
 	public function __construct(
@@ -44,11 +54,15 @@ class ApiWikispeechSegment extends ApiBase {
 		string $moduleName,
 		WANObjectCache $cache,
 		HttpRequestFactory $requestFactory,
+		RevisionStore $revisionStore,
+		ConfigFactory $configFactory,
 		string $modulePrefix = ''
 	) {
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 		$this->cache = $cache;
 		$this->requestFactory = $requestFactory;
+		$this->revisionStore = $revisionStore;
+		$this->configFactory = $configFactory;
 	}
 
 	/**
@@ -84,23 +98,29 @@ class ApiWikispeechSegment extends ApiBase {
 		if ( !self::isValidRemoveTags( $removeTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
-		$segmenter = new Segmenter(
-			$this->getContext(),
+		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
-			$this->requestFactory
+			$this->configFactory
 		);
-		$segments = $segmenter->segmentPage(
-			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
-			$title,
-			$removeTags,
-			$parameters['segmentbreakingtags'],
-			null,
-			$parameters['consumer-url']
-		);
+		$segmentPageResponse = $segmentPageFactory
+			->setSegmentBreakingTags( $parameters['segmentbreakingtags'] )
+			->setRemoveTags( $removeTags )
+			->setUseRevisionPropertiesCache( true )
+			->setRequirePageRevisionProperties( false )
+			->setUseSegmentsCache( true )
+			->setContextSource( $this->getContext() )
+			->setRevisionStore( $this->revisionStore )
+			->setHttpRequestFactory( $this->requestFactory )
+			->setConsumerUrl( $parameters['consumer-url'] )
+			->segmentPage(
+				$title,
+				null
+			);
+
 		$this->getResult()->addValue(
 			null,
 			$this->getModuleName(),
-			[ 'segments' => $segments->toArray() ]
+			[ 'segments' => $segmentPageResponse->getSegments()->toArray() ]
 		);
 	}
 

@@ -16,10 +16,10 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\OutdatedOrInvalidRevisionException;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
-use MWException;
 use MWTimestamp;
 use WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
@@ -341,7 +341,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		WikiPageTestUtil::editPage( $page, 'New' );
 
 		// Purposefully hit the Segmenter Exception to avoid actual synthesis
-		$this->expectException( MWException::class );
+		$this->expectException( OutdatedOrInvalidRevisionException::class );
 		$this->expectExceptionMessage(
 			'An outdated or invalid revision id was provided'
 		);
@@ -443,7 +443,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 
 		// Purposefully hit the Segmenter Exception to avoid actual synthesis
-		$this->expectException( MWException::class );
+		$this->expectException( OutdatedOrInvalidRevisionException::class );
 		$this->expectExceptionMessage(
 			'An outdated or invalid revision id was provided'
 		);

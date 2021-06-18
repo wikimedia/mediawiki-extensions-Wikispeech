@@ -20,10 +20,11 @@ use InvalidArgumentException;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
+use MediaWiki\Wikispeech\Segment\DeletedRevisionException;
+use MediaWiki\Wikispeech\Segment\RemoteWikiPageProviderException;
 use MediaWiki\Wikispeech\Segment\Segment;
-use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\Segment\TextFilter\Sv\SwedishFilter;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
@@ -31,7 +32,6 @@ use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
 use MWException;
 use Psr\Log\LoggerInterface;
-use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
@@ -155,24 +155,6 @@ class ApiWikispeechListen extends ApiBase {
 	}
 
 	/**
-	 * @since 0.1.10
-	 * @param int $revisionId
-	 * @param string|null $consumerUrl
-	 * @return string
-	 */
-	private function pageIdAndTitleCacheKeyFactory(
-		int $revisionId,
-		?string $consumerUrl
-	): string {
-		return $this->cache->makeKey(
-			'Wikispeech.pageIdAndTitle',
-			get_class( $this ),
-			$consumerUrl ?? 'local',
-			$revisionId
-		);
-	}
-
-	/**
 	 * Retrieves the matching utterance for a given revision id and segment hash .
 	 *
 	 * @since 0.1.5
@@ -180,8 +162,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param string $language
 	 * @param int $revisionId
 	 * @param string $segmentHash
-	 * @param string|null $consumerUrl URL to the script path on the consumer,
-	 *  if used as a producer.
+	 * @param string|null $consumerUrl URL to the script path on the consumer, if used as a producer.
 	 * @return array An utterance
 	 */
 	private function getUtteranceForRevisionAndSegment(
@@ -191,76 +172,50 @@ class ApiWikispeechListen extends ApiBase {
 		string $segmentHash,
 		string $consumerUrl = null
 	): array {
-		$pageIdAndTitleCacheKey = $this->pageIdAndTitleCacheKeyFactory(
-			$revisionId, $consumerUrl
-		);
-		$pageIdAndTitle = $this->cache->get( $pageIdAndTitleCacheKey );
-		if ( $pageIdAndTitle === false ) {
-			if ( $consumerUrl ) {
-				$request = wfAppendQuery(
-					$consumerUrl . '/api.php',
-					[
-						'action' => 'parse',
-						'format' => 'json',
-						'oldid' => $revisionId,
-					]
-				);
-				$responseString = $this->requestFactory->get( $request );
-				if ( $responseString === null ) {
-					$this->dieWithError( [
-						'apierror-wikispeech-listen-failed-getting-page-from-consumer',
-						$revisionId,
-						$consumerUrl
-					] );
-				}
-				// Phan does not seem to understand what dieWithError() does.
-				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
-				$response = FormatJson::parse( $responseString )->getValue();
-				$pageId = $response->parse->pageid;
-				$title = Title::newFromText(
-					$response->parse->title
-				);
-				if ( $title === null ) {
-					throw new MWException(
-						"Could not parse as Title: '$response->parse->title'"
-					);
-				}
-			} else {
-				$revisionRecord = $this->getRevisionRecord( $revisionId );
-				$pageId = $revisionRecord->getPageId();
-				$title = Title::newFromLinkTarget(
-					$revisionRecord->getPageAsLinkTarget()
-				);
-			}
-			$pageIdAndTitle = [
-				'pageId' => $pageId,
-				'title' => $title
-			];
-			$this->cache->set( $pageIdAndTitleCacheKey, $pageIdAndTitle, WANObjectCache::TTL_DAY );
-		}
-		$segmenter = new Segmenter(
-			$this->getContext(),
+		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
-			$this->requestFactory
+			// todo inject config factory
+			MediaWikiServices::getInstance()->getConfigFactory()
 		);
-		$segments = $segmenter->segmentPage(
-			$pageIdAndTitle['title'],
-			null,
-			null,
-			$revisionId,
-			$consumerUrl
-		);
-		$segment = $segments->findFirstItemByHash( $segmentHash );
+		try {
+			$segmentPageResponse = $segmentPageFactory
+				->setSegmentBreakingTags( null )
+				->setRemoveTags( null )
+				->setUseSegmentsCache( true )
+				->setUseRevisionPropertiesCache( true )
+				->setContextSource( $this->getContext() )
+				->setRevisionStore( $this->revisionStore )
+				->setHttpRequestFactory( $this->requestFactory )
+				->setConsumerUrl( $consumerUrl )
+				->setRequirePageRevisionProperties( true )
+				->segmentPage(
+					null,
+					$revisionId
+				);
+		} catch ( RemoteWikiPageProviderException $remoteWikiPageProviderException ) {
+			$this->dieWithError( [
+				'apierror-wikispeech-listen-failed-getting-page-from-consumer',
+				$revisionId,
+				$consumerUrl
+			] );
+		} catch ( DeletedRevisionException $deletedRevisionException ) {
+			$this->dieWithError( 'apierror-wikispeech-listen-deleted-revision' );
+		}
+		$segment = $segmentPageResponse->getSegments()->findFirstItemByHash( $segmentHash );
 		if ( $segment === null ) {
 			throw new MWException( 'No such segment. ' .
 				'Did you perhaps reference a segment that was created using incompatible settings ' .
 				'for segmentBreakingTags and/or removeTags?' );
 		}
+		$pageId = $segmentPageResponse->getPageId();
+		if ( $pageId === null ) {
+			throw new MWException( 'Did not retrieve page id for the given revision id.' );
+		}
 		return $this->getUtterance(
 			$consumerUrl,
 			$voice,
 			$language,
-			$pageIdAndTitle['pageId'],
+			$pageId,
 			$segment
 		);
 	}
@@ -479,27 +434,6 @@ class ApiWikispeechListen extends ApiBase {
 			$valueStrings[] = "<kbd>$value</kbd>";
 		}
 		return implode( ', ', $valueStrings );
-	}
-
-	/**
-	 * Get the page id for a revision id.
-	 *
-	 * @since 0.1.5
-	 * @param int $revisionId
-	 * @return RevisionRecord
-	 * @throws ApiUsageException if the revision is deleted or supressed.
-	 */
-	private function getRevisionRecord( $revisionId ) {
-		$revisionRecord = $this->revisionStore->getRevisionById( $revisionId );
-		if ( !$revisionRecord || !$revisionRecord->audienceCan(
-			RevisionRecord::DELETED_TEXT,
-			RevisionRecord::FOR_THIS_USER,
-			$this->getContext()->getUser()
-		) ) {
-			$this->dieWithError( 'apierror-wikispeech-listen-deleted-revision' );
-		}
-		// @phan-suppress-next-line PhanTypeMismatchReturnNullable T240141
-		return $revisionRecord;
 	}
 
 	/**

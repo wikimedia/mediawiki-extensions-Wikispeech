@@ -482,7 +482,9 @@
 			"class": "\\MediaWiki\\Wikispeech\\Api\\ApiWikispeechSegment",
 			"services": [
 				"MainWANObjectCache",
-				"HttpRequestFactory"
+				"HttpRequestFactory",
+				"RevisionStore",
+				"ConfigFactory"
 			]
 		},
 		"wikispeech-listen": {

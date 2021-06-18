@@ -12,6 +12,7 @@ use DOMComment;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
+use MWException;
 
 /**
  * Used for cleaning text with HTML markup. The cleaned text is used
@@ -19,7 +20,6 @@ use DOMXPath;
  *
  * @since 0.0.1
  */
-
 class Cleaner {
 	/**
 	 * An array of tags that should be removed completely during cleaning.
@@ -234,4 +234,43 @@ class Cleaner {
 			return $array[count( $array ) - 1];
 		}
 	}
+
+	/**
+	 * Cleans title and content.
+	 *
+	 * @since 0.1.10
+	 * @param string $displayTitle
+	 * @param string $pageContent
+	 * @return SegmentContent[] Title and content represented as `CleanedText`s and `SegmentBreak`s
+	 * @throws MWException If segmented title text is not an instance of CleanedText
+	 */
+	public function cleanHtmlDom(
+		string $displayTitle,
+		string $pageContent
+	): array {
+		// Clean HTML.
+		$cleanedText = null;
+		// Parse latest revision, using parser cache.
+		$cleanedText = $this->cleanHtml( $pageContent );
+		// Create a DOM for the title to get the Xpath, in case there
+		// are elements within the title. This happens e.g. when the
+		// title is italicized.
+		$dom = new DOMDocument();
+		$dom->loadHTML(
+			'<h1>' . $displayTitle . '</h1>',
+			LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED
+		);
+		$xpath = new DOMXPath( $dom );
+		$node = $xpath->evaluate( '//text()' )->item( 0 );
+		$titleSegment = $this->cleanHtml( $displayTitle )[0];
+		if ( $titleSegment instanceof CleanedText ) {
+			$titleSegment->setPath( '/' . $node->getNodePath() );
+		} else {
+			throw new MWException( 'Segmented title is not an instance of CleanedText!' );
+		}
+		// Add the title as a separate utterance to the start.
+		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
+		return $cleanedText;
+	}
+
 }

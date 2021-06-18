@@ -8,37 +8,27 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Segment;
  * @license GPL-2.0-or-later
  */
 
-use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Cleaner;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
-use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Wikispeech\Segment\StandardSegmenter;
 use MediaWikiUnitTestCase;
-use RequestContext;
-use WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
 
 /**
- * @group Database
- * @group medium
- * @covers \MediaWiki\Wikispeech\Segment\Segmenter
+ * @covers \MediaWiki\Wikispeech\Segment\StandardSegmenter
  */
-class SegmenterTest extends MediaWikiUnitTestCase {
+class StandardSegmenterTest extends MediaWikiUnitTestCase {
 
 	/**
-	 * @var TestingAccessWrapper|Segmenter
+	 * @var TestingAccessWrapper|StandardSegmenter
 	 */
 	private $segmenter;
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->segmenter = TestingAccessWrapper::newFromObject(
-			new Segmenter(
-				new RequestContext(),
-				$this->createStub( WANObjectCache::class ),
-				$this->createMock( HttpRequestFactory::class )
-			)
-		);
+		$this->segmenter = TestingAccessWrapper::newFromObject( new StandardSegmenter() );
 	}
 
 	public function testSegmentSentences_multiSentenceNode_giveMultipleSegments() {
@@ -331,7 +321,8 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		$title = 'Page';
 		$content = '<p>Content</p>';
 
-		$cleanedText = $this->segmenter->cleanPage( $title, $content, [], [] );
+		$cleaner = new Cleaner( [], [] );
+		$cleanedText = $cleaner->cleanHtmlDom( $title, $content );
 
 		$this->assertEquals(
 			[
@@ -350,11 +341,13 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 	public function testCleanPage_titleContainsElements_giveTitleXpath() {
 		$title = '<i>Page</i>';
 
-		$cleanedText = $this->segmenter->cleanPage( $title, '', [], [] );
+		$cleaner = new Cleaner( [], [] );
+		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
 
 		$this->assertEquals(
 			new CleanedText( 'Page', '//h1/i/text()' ),
 			$cleanedText[0]
 		);
 	}
+
 }

@@ -16,10 +16,18 @@ class Segment {
 	/** @var CleanedText[] */
 	private $content;
 
-	/** @var int|null */
+	/**
+	 * The offset of the first character of the segment, within the text node it appears.
+	 * Used to determine start of a segment in the original HTML.
+	 * @var int|null
+	 */
 	private $startOffset;
 
-	/** @var int|null */
+	/**
+	 * The offset of the last character of the segment within the text node it appears.
+	 * Used to determine end of a segment in the original HTML.
+	 * @var int|null
+	 */
 	private $endOffset;
 
 	/** @var string|null */

@@ -88,47 +88,32 @@
 		 * not requesting more than needed.
 		 *
 		 * @param {Object} utterance The utterance to prepare.
-		 * @param {Function} callback A function to call when the
-		 *  utterance is ready to play. Fires immediately if the
-		 *  utterance has already been prepared.
+		 * @return {jQuery.Promise}
 		 */
 
-		this.prepareUtterance = function ( utterance, callback ) {
+		this.prepareUtterance = function ( utterance ) {
 			var $audio, nextUtterance;
 
 			$audio = $( utterance.audio );
-			if ( $audio.attr( 'src' ) ) {
-				if ( callback ) {
-					// Audio already loaded, call callback, if any.
-					callback();
-				}
-			} else if ( utterance.request ) {
-				// Request is ongoing, add callback to fire when it's
-				// done.
-				utterance.request.done( callback );
-			} else {
-				// Only load audio for an utterance if it isn't
-				// already loaded or waiting for response from Speechoid.
-				self.loadAudio( utterance, callback );
-				nextUtterance = self.getNextUtterance( utterance );
-				$audio.on( {
-					playing: function () {
-						var firstToken;
+			if ( !utterance.request ) {
+				// Add event listener only once.
+				$audio.on( 'playing', function () {
+					var firstToken;
 
-						// Highlight token only when the audio starts
-						// playing, since we need the token info from
-						// the response to know what to highlight.
-						if (
-							!mw.wikispeech.player.playingSelection &&
-								$audio.prop( 'currentTime' ) === 0
-						) {
-							firstToken = utterance.tokens[ 0 ];
-							mw.wikispeech.highlighter.startTokenHighlighting(
-								firstToken
-							);
-						}
+					// Highlight token only when the audio starts
+					// playing, since we need the token info from the
+					// response to know what to highlight.
+					if (
+						!mw.wikispeech.player.playingSelection &&
+							$audio.prop( 'currentTime' ) === 0
+					) {
+						firstToken = utterance.tokens[ 0 ];
+						mw.wikispeech.highlighter.startTokenHighlighting(
+							firstToken
+						);
 					}
 				} );
+				nextUtterance = self.getNextUtterance( utterance );
 				if ( nextUtterance ) {
 					$audio.on( {
 						play: function () {
@@ -146,20 +131,25 @@
 					} );
 				}
 			}
+			if ( !utterance.request || utterance.request.state() === 'rejected' ) {
+				// Only load audio for an utterance if it hasn't been
+				// successfully loaded yet.
+				utterance.request = self.loadAudio( utterance );
+			}
+			return utterance.request;
 		};
 
 		/**
 		 * Load audio for an utterance.
 		 *
 		 * Sends a request to the Speechoid service and adds audio and tokens
-		 * when the response is received. If the request fails, the user is
-		 * given the option to retry or stop playback.
+		 * when the response is received.
 		 *
 		 * @param {Object} utterance The utterance to load audio for.
-		 * @param {Function} callback Function to call when audio is loaded.
+		 * @return {jQuery.Promise}
 		 */
 
-		this.loadAudio = function ( utterance, callback ) {
+		this.loadAudio = function ( utterance ) {
 			var audioUrl, utteranceIndex;
 
 			utteranceIndex = self.utterances.indexOf( utterance );
@@ -167,46 +157,19 @@
 				'Loading audio for utterance #' + utteranceIndex + ':',
 				utterance
 			);
-			utterance.request = self.requestTts( utterance.hash, window );
-			utterance.request.done( function ( response ) {
-				audioUrl = 'data:audio/ogg;base64,' +
-					response[ 'wikispeech-listen' ].audio;
-				mw.log(
-					'Setting audio url for: [' + utteranceIndex + ']',
-					utterance, '=',
-					response[ 'wikispeech-listen' ].audio.length + ' base64 bytes'
-				);
-				utterance.audio.setAttribute( 'src', audioUrl );
-				utterance.audio.playbackRate =
-					mw.user.options.get( 'wikispeechSpeechRate' );
-
-				self.addTokens( utterance, response[ 'wikispeech-listen' ].tokens );
-				if ( callback ) {
-					callback();
-				}
-			} )
-				.fail( function () {
-					if ( utterance !== mw.wikispeech.player.currentUtterance ) {
-						// Only show dialog if the current utterance
-						// fails to load, to avoid multiple and less
-						// relevant dialogs.
-						return;
-					}
-					mw.wikispeech.ui.showLoadAudioError()
-						.done( function ( data ) {
-							if ( !data || data.action === 'stop' ) {
-								// Stop both when "Stop" is clicked
-								// and when escape is pressed.
-								mw.wikispeech.player.stop();
-							} else if ( data.action === 'retry' ) {
-								self.loadAudio( utterance, callback );
-							}
-						} );
-				} )
-				.always( function () {
-					// Remove request on success or failure, to allow new
-					// requests if this one fails.
-					utterance.request = null;
+			return self.requestTts( utterance.hash, window )
+				.done( function ( response ) {
+					audioUrl = 'data:audio/ogg;base64,' +
+						response[ 'wikispeech-listen' ].audio;
+					mw.log(
+						'Setting audio url for: [' + utteranceIndex + ']',
+						utterance, '=',
+						response[ 'wikispeech-listen' ].audio.length + ' base64 bytes'
+					);
+					$( utterance.audio ).attr( 'src', audioUrl );
+					utterance.audio.playbackRate =
+						mw.user.options.get( 'wikispeechSpeechRate' );
+					self.addTokens( utterance, response[ 'wikispeech-listen' ].tokens );
 				} );
 		};
 
@@ -252,12 +215,6 @@
 			)
 				.done( function ( data ) {
 					mw.log( 'Response received:', data );
-				} )
-				.fail( function ( jqXHR, textStatus ) {
-					mw.log.warn(
-						'Request failed, error type "' + textStatus + '":',
-						this.url + '?' + this.data
-					);
 				} );
 			return request;
 		};

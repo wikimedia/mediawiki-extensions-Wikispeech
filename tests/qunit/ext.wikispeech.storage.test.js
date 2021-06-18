@@ -15,8 +15,7 @@
 				$( '<div>' ).attr( 'id', 'content' )
 			);
 			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
-			contentSelector =
-				mw.config.get( 'wgWikispeechContentSelector' );
+			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
 			storage.utterances = [
 				{
 					audio: $( '<audio>' ).get( 0 ),
@@ -142,7 +141,7 @@
 	} );
 
 	QUnit.test( 'prepareUtterance()', function () {
-		sinon.stub( storage, 'loadAudio' );
+		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
@@ -153,7 +152,7 @@
 
 	QUnit.test( 'prepareUtterance(): do not request if waiting for response', function () {
 		sinon.spy( storage, 'loadAudio' );
-		storage.utterances[ 0 ].request = { done: function () {} };
+		storage.utterances[ 0 ].request = $.Deferred();
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
@@ -162,10 +161,7 @@
 	} );
 
 	QUnit.test( 'prepareUtterance(): do not load audio if already loaded', function () {
-		storage.utterances[ 0 ].audio.setAttribute(
-			'src',
-			'DummyBase64Audio='
-		);
+		storage.utterances[ 0 ].request = $.Deferred().resolve();
 		sinon.spy( storage, 'loadAudio' );
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
@@ -174,20 +170,22 @@
 	} );
 
 	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', function () {
-		sinon.stub( storage, 'loadAudio' );
+		var utterance, nextUtterance;
+
+		utterance = storage.utterances[ 0 ];
+		nextUtterance = storage.utterances[ 1 ];
 		sinon.spy( storage, 'prepareUtterance' );
-		storage.prepareUtterance( storage.utterances[ 0 ] );
+		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
+		storage.prepareUtterance( utterance );
 
-		$( storage.utterances[ 0 ].audio ).trigger( 'play' );
+		$( utterance.audio ).triggerHandler( 'play' );
 
-		sinon.assert.calledWith(
-			storage.prepareUtterance, storage.utterances[ 1 ]
-		);
+		sinon.assert.calledWith( storage.prepareUtterance, nextUtterance );
 	} );
 
 	QUnit.test( 'prepareUtterance(): do not prepare next audio if it does not exist', function () {
 		sinon.spy( storage, 'prepareUtterance' );
-		sinon.stub( storage, 'loadAudio' );
+		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		storage.prepareUtterance( storage.utterances[ 1 ] );
 
 		$( storage.utterances[ 1 ].audio ).trigger( 'play' );
@@ -196,7 +194,7 @@
 	} );
 
 	QUnit.test( 'prepareUtterance(): skip to next utterance when ended', function () {
-		sinon.stub( storage, 'loadAudio' );
+		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
 		$( storage.utterances[ 0 ].audio ).trigger( 'ended' );
@@ -207,7 +205,7 @@
 	QUnit.test( 'prepareUtterance(): stop when end of text is reached', function () {
 		var lastUtterance;
 
-		sinon.stub( storage, 'loadAudio' );
+		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		lastUtterance = storage.utterances[ 1 ];
 		storage.prepareUtterance( lastUtterance );
 
@@ -260,19 +258,16 @@
 			storage.utterances[ 0 ],
 			[ { orth: 'Utterance' }, { orth: 'zero' }, { orth: '.' } ]
 		);
-		assert.strictEqual( storage.utterances[ 0 ].request, null );
 		assert.strictEqual( storage.utterances[ 0 ].audio.playbackRate, 2.0 );
 	} );
 
 	QUnit.test( 'loadAudio(): request failed', function ( assert ) {
-		storage.utterances[ 0 ].request = { done: function () {} };
 		storage.api.get.returns( $.Deferred().reject() );
 		sinon.spy( storage, 'addTokens' );
 
 		storage.loadAudio( storage.utterances[ 0 ] );
 
 		sinon.assert.notCalled( storage.addTokens );
-		assert.strictEqual( storage.utterances[ 0 ].request, null );
 		assert.strictEqual( storage.utterances[ 0 ].audio.src, '' );
 	} );
 

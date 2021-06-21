@@ -188,7 +188,14 @@ class ApiWikispeechListen extends ApiBase {
 			// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 			$response = FormatJson::parse( $responseString )->getValue();
 			$pageId = $response->parse->pageid;
-			$title = $response->parse->title;
+			$title = Title::newFromText(
+				$response->parse->title
+			);
+			if ( $title === null ) {
+				throw new MWException(
+					"Could not parse as Title: '$response->parse->title'"
+				);
+			}
 		} else {
 			$revisionRecord = $this->getRevisionRecord( $revisionId );
 			$pageId = $revisionRecord->getPageId();

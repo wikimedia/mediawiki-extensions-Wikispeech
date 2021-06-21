@@ -132,7 +132,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			)
 		];
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals( $expectedSegments, $segments->getSegments() );
 	}
 
 	public function testSegmentPage_setDisplayTitle_segmentDisplayTitle() {
@@ -155,7 +155,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			)
 		];
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals( $expectedSegments, $segments->getSegments() );
 	}
 
 	public function testSegmentPage_repeatedRequest_useCache() {
@@ -169,7 +169,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$segments = $this->segmenter->segmentPage( $title, [], [] );
 
 		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [] );
-		$this->assertEquals( $segments, $segmentsAgain );
+		$this->assertEquals( $segments->getSegments(), $segmentsAgain->getSegments() );
 	}
 
 	public function testSegmentPage_differentParameters_dontUseCache() {
@@ -223,7 +223,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			)
 		];
 		$segments = $this->segmenter->segmentPage( $title );
-		$this->assertEquals( $expectedSegments, $segments );
+		$this->assertEquals( $expectedSegments, $segments->getSegments() );
 	}
 
 	public function testSegmentPage_missmatchedRevision_throwException() {
@@ -273,7 +273,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		$this->assertNotEquals( $revisionId, $page->getLatest() );
 		$segmentsAgain = $this->segmenter->segmentPage( $title, [], [], $revisionId );
 
-		$this->assertEquals( $segments, $segmentsAgain );
+		$this->assertEquals( $segments->getSegments(), $segmentsAgain->getSegments() );
 	}
 
 	public function testSegmentPage_provideDefaultParameters_useCache() {
@@ -313,15 +313,15 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 		);
 		$this->assertSame(
 			'Page',
-			$segments[0]->getContent()[0]->getString()
+			$segments->getSegments()[0]->getContent()[0]->getString()
 		);
 		$this->assertSame(
 			'Content',
-			$segments[1]->getContent()[0]->getString()
+			$segments->getSegments()[1]->getContent()[0]->getString()
 		);
 	}
 
-	public function testGetSegment_segmentExists_returnSegment() {
+	public function testFindFirstItemByHash_segmentExists_returnSegment() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
 		$page = WikiPageTestUtil::addPage( $titleString, $content );
@@ -334,18 +334,20 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 			22,
 			$hash
 		);
-		$segment = $this->segmenter->getSegment( $title, $hash, $revisionId );
+		$segments = $this->segmenter->segmentPage( $title, null, null, $revisionId, null );
+		$segment = $segments->findFirstItemByHash( $hash );
 		$this->assertEquals( $expectedSegment, $segment );
 	}
 
-	public function testGetSegment_segmentDoesntExists_returnNull() {
+	public function testFindFirstItemByHash_segmentDoesntExists_returnNull() {
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
 		$page = WikiPageTestUtil::addPage( $titleString, $content );
 		$title = $page->getTitle();
 		$revisionId = $page->getLatest();
 		$hash = 'ThisHashMatchesNoSegment';
-		$segment = $this->segmenter->getSegment( $title, $hash, $revisionId );
+		$segments = $this->segmenter->segmentPage( $title, null, null, $revisionId, null );
+		$segment = $segments->findFirstItemByHash( $hash );
 		$this->assertNull( $segment );
 	}
 }

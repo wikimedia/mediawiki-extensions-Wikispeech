@@ -13,10 +13,4 @@ namespace MediaWiki\Wikispeech\Segment;
  */
 interface SegmentContent {
 
-	/**
-	 * @since 0.1.10
-	 * @return array Object serialized to associative array
-	 */
-	public function serialize(): array;
-
 }

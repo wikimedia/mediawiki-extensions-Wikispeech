@@ -80,12 +80,4 @@ class CleanedText implements SegmentContent {
 		$this->path = $path;
 	}
 
-	/** @inheritDoc */
-	public function serialize(): array {
-		return [
-			'string' => $this->string,
-			'path' => $this->path
-		];
-	}
-
 }

@@ -201,12 +201,14 @@ class ApiWikispeechListen extends ApiBase {
 			$this->cache,
 			$this->requestFactory
 		);
-		$segment = $segmenter->getSegment(
+		$segments = $segmenter->segmentPage(
 			$title,
-			$segmentHash,
+			null,
+			null,
 			$revisionId,
 			$consumerUrl
 		);
+		$segment = $segments->findFirstItemByHash( $segmentHash );
 		if ( $segment === null ) {
 			// @todo die with error?
 			throw new MWException( 'No such segment.' );

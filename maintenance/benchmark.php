@@ -13,6 +13,7 @@ use Maintenance;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Wikispeech\Segment\SegmentList;
 use RequestContext;
 use Title;
 
@@ -45,7 +46,7 @@ class Benchmark extends Maintenance {
 	/** @var bool Whether or not ctrl-c has been pressed. */
 	private $caughtSigInt;
 
-	/** @var array */
+	/** @var SegmentList */
 	private $segments;
 
 	/** @var int */
@@ -254,7 +255,7 @@ class Benchmark extends Maintenance {
 		$this->totalNumberOfTokenCharactersSynthesizedVoice = 0;
 		$this->totalNumberOfTokensSynthesizedVoice = 0;
 		$this->totalMillisecondsSynthesizedVoice = 0;
-		$this->output( 'Synthesizing ' . count( $this->segments ) . " segments... \n" );
+		$this->output( 'Synthesizing ' . count( $this->segments->getSegments() ) . " segments... \n" );
 		$this->output( "Press ^C to abort and calculate on evaluated state.\n" );
 		$this->totalMillisecondsSpentSynthesizing = 0;
 
@@ -263,15 +264,15 @@ class Benchmark extends Maintenance {
 		$progressCounterLength = 40;
 		$segmentCounter = 0;
 		$progressCounter = 0;
-		foreach ( $this->segments as $segment ) {
+		foreach ( $this->segments->getSegments() as $segment ) {
 			if ( $this->caughtSigInt ) {
 				break;
 			}
 			$segmentCounter++;
 
 			$segmentText = '';
-			foreach ( $segment['content'] as $content ) {
-				$segmentText .= $content->string;
+			foreach ( $segment->getContent() as $content ) {
+				$segmentText .= $content->getString();
 			}
 
 			$attempt = 0;
@@ -331,7 +332,7 @@ class Benchmark extends Maintenance {
 					$eta = ', ETA ~';
 					$meanMillisecondsSpentSynthesizingPerSegment =
 						$this->totalMillisecondsSpentSynthesizing / $this->numberOfSuccessfullySynthesizedSegments;
-					$millisecondsEta = intval( count( $this->segments ) - $segmentCounter )
+					$millisecondsEta = intval( count( $this->segments->getSegments() ) - $segmentCounter )
 						* $meanMillisecondsSpentSynthesizingPerSegment;
 					if ( $millisecondsEta < 1000 ) {
 						$eta .= $millisecondsEta . ' ms';
@@ -341,7 +342,11 @@ class Benchmark extends Maintenance {
 						$eta .= intdiv( $millisecondsEta, 1000 * 60 ) . ' minutes';
 					}
 					$eta .= ' (~' .	intdiv( $meanMillisecondsSpentSynthesizingPerSegment, 1000 ) . 's/seg)';
-					$this->output( ' ' . $segmentCounter . ' / ' . count( $this->segments ) . $eta . "\n" );
+					$this->output(
+						' ' .
+						$segmentCounter . ' / ' . count( $this->segments->getSegments() ) .
+						$eta . "\n"
+					);
 				}
 				break;
 			}
@@ -372,11 +377,11 @@ class Benchmark extends Maintenance {
 		$this->output( "\n" );
 
 		$this->output( 'Number of segments: ' .
-			count( $this->segments ) . "\n" );
+			count( $this->segments->getSegments() ) . "\n" );
 		$this->output( "Milliseconds spent segmenting: $this->millisecondsSpentSegmenting\n" );
 
 		$meanMillisecondsSpentSegmentingPerSegment =
-			$this->millisecondsSpentSegmenting / count( $this->segments );
+			$this->millisecondsSpentSegmenting / count( $this->segments->getSegments() );
 
 		$this->output( 'Mean milliseconds spent segmenting per segment: ' .
 			"$meanMillisecondsSpentSegmentingPerSegment\n" );
@@ -416,7 +421,7 @@ class Benchmark extends Maintenance {
 		$this->output( 'Mean milliseconds spent segmenting per token character synthesized: ' .
 			"$meanMillisecondsSpentSegmentingPerTokenCharacter\n" );
 
-		if ( $this->numberOfSuccessfullySynthesizedSegments != count( $this->segments ) ) {
+		if ( $this->numberOfSuccessfullySynthesizedSegments != count( $this->segments->getSegments() ) ) {
 			$this->output( 'Warning! Not all segments synthesized, ' .
 				"mean segmenting per token values might be slightly off.\n" );
 		}

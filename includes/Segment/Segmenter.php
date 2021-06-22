@@ -74,6 +74,29 @@ class Segmenter {
 	}
 
 	/**
+	 * @since 0.1.10
+	 * @param array $removeTags
+	 * @param array $segmentBreakingTags
+	 * @param int $revisionId
+	 * @param null|string $consumerUrl
+	 * @return string
+	 */
+	private function segmentCacheKeyFactory(
+		array $removeTags,
+		array $segmentBreakingTags,
+		int $revisionId,
+		?string $consumerUrl
+	): string {
+		return $this->cache->makeKey(
+			'Wikispeech.segments',
+			get_class( $this ),
+			$consumerUrl ?? 'local',
+			$revisionId,
+			var_export( $removeTags, true ),
+			implode( '-', $segmentBreakingTags ) );
+	}
+
+	/**
 	 * Split the content of a page into segments.
 	 *
 	 * Non-latest revisions are only handled if already in the cache.
@@ -113,6 +136,21 @@ class Segmenter {
 		if ( $segmentBreakingTags === null ) {
 			$segmentBreakingTags = $config->get( 'WikispeechSegmentBreakingTags' );
 		}
+
+		if ( $revisionId ) {
+			$segments = $this->cache->get(
+				$this->segmentCacheKeyFactory(
+					$removeTags,
+					$segmentBreakingTags,
+					$revisionId,
+					$consumerUrl
+				)
+			);
+			if ( $segments !== false ) {
+				return new SegmentList( $segments );
+			}
+		}
+
 		$page = null;
 		if ( $consumerUrl ) {
 			$request = wfAppendQuery(
@@ -144,13 +182,12 @@ class Segmenter {
 				$revisionId = $page->getLatest();
 			}
 		}
-		$cacheKey = $this->cache->makeKey(
-			'Wikispeech.segments',
-			get_class( $this ),
-			$consumerUrl ?? 'local',
+		$cacheKey = $this->segmentCacheKeyFactory(
+			$removeTags,
+			$segmentBreakingTags,
 			$revisionId,
-			var_export( $removeTags, true ),
-			implode( '-', $segmentBreakingTags ) );
+			$consumerUrl
+		);
 		$segments = $this->cache->get( $cacheKey );
 		if ( $segments === false ) {
 			LoggerFactory::getInstance( 'Wikispeech' )
@@ -475,4 +512,5 @@ class Segmenter {
 		//		'hash' => $hash
 		//	] );
 	}
+
 }

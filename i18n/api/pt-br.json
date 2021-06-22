@@ -7,7 +7,7 @@
 	"apihelp-wikispeech-segment-summary": "Divida o conteúdo HTML de uma página em segmentos.",
 	"apihelp-wikispeech-segment-param-page": "O título da página a ser segmentada.",
 	"apihelp-wikispeech-segment-param-removetags": "Etiquetas HTML que devem ser removidas completamente durante a limpeza, como um objeto JSON do formato:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nonde <code>tag1</code> é sempre removido, <code>tag2</code> será removido apenas se também tiver a classe CSS <code>css-class</code> e <code>tag3</code> será removido apenas se também tiver a classe CSS <code>css-class-1</code> or <code>css-class-2</code>.",
-	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Etiquetas HTML que devem quebrar segmentos.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Etiquetas HTML que devem quebrar segmentos. Esteja ciente de que o Wikispeech - Ouvir usa a configuração padrão para segmentação e pode não ser compatível com segmentos produzidos com uma configuração ad hoc deste parâmetro.",
 	"apihelp-wikispeech-segment-example-1": "Segmente a página principal usando os parâmetros padrão da configuração.",
 	"apihelp-wikispeech-segment-example-2": "Segmente usando parâmetros personalizados. A etiqueta <code>sup</code> é removido e por isso é <code>div</code> quando tem a classe <code>toc</code>. Essas etiquetas <code>h1</code> e <code>h2</code> quebram segmentos.",
 	"apihelp-wikispeech-segment-example-3": "Segmente a página principal em outra wiki.",

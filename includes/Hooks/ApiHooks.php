@@ -290,7 +290,7 @@ class ApiHooks implements
 			// virtual page. These should all use the interface language.
 			$pageContentLanguage = $out->getLanguage();
 		} else {
-			$pageContentLanguage = $out->getWikiPage()->getTitle()->getPageLanguage();
+			$pageContentLanguage = $out->getTitle()->getPageLanguage();
 		}
 		$validLanguages = array_keys( $this->config->get( 'WikispeechVoices' ) );
 		if ( !in_array( $pageContentLanguage->getCode(), $validLanguages ) ) {

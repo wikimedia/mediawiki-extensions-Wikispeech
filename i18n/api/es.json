@@ -1,12 +1,18 @@
 {
 	"@metadata": {
 		"authors": [
-			"BnSrSa"
+			"BnSrSa",
+			"Jackiezelaya"
 		]
 	},
 	"apihelp-wikispeech-segment-param-page": "El título de la página por procesar.",
+	"apihelp-wikispeech-segment-param-removetags": "Etiquetas HTML que deben eliminarse por completo durante la limpieza, como un objeto JSON del formato:! N!<pre> {!¡NORTE! \"tag1\": cierto,! N! \"tag2\": \"clase-css\",! N! \"tag3\": [\"clase-css-1\", \"clase-css-2\"]! N!}</pre> ! N! Donde <code>tag1</code> siempre se elimina, <code>tag2</code> solo se elimina si también tiene la clase CSS <code>css-class</code> y <code>tag3</code> solo se elimina si también tiene la clase CSS <code>css-class-1</code> o <code>css-class-2</code> . Tenga en cuenta que wikispeech-listen utiliza la configuración predeterminada para la segmentación y es posible que no sea compatible con los segmentos producidos con una configuración ad hoc de este parámetro.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Etiquetas HTML que deben romper segmentos. Tenga en cuenta que wikispeech-listen utiliza la configuración predeterminada para la segmentación y podría no ser compatible con los segmentos producidos con una configuración ad hoc de este parámetro.",
+	"apihelp-wikispeech-segment-param-consumer-url": "Dirección URL a la ruta de acceso del script de la wiki de consumidor.",
 	"apihelp-wikispeech-listen-param-lang": "Código de idioma.",
 	"apihelp-wikispeech-listen-param-text": "Texto por sintetizar.",
+	"apihelp-wikispeech-listen-param-ipa": "Cadena IPA para sintetizar.",
+	"apihelp-wikispeech-listen-param-consumer-url": "Dirección URL a la ruta de acceso del script de la wiki de consumidor.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Fallo al obtener pagina con id de revisión '$1' del consumidor en URL $2.",
 	"apihelp-wikispeech-listen-example-2": "Utilizar una voz distinta de la predeterminada."
 }

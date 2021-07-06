@@ -1,7 +1,11 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Joao Xavier"
+		]
 	},
 	"apihelp-wikispeech-segment-param-page": "Titulo di la pagino por traktar.",
+	"apihelp-wikispeech-segment-param-removetags": "HTML tags that should be removed completely during cleaning, as a JSON object of the format:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nwhere <code>tag1</code> is always removed, <code>tag2</code> is only removed if it also has the CSS class <code>css-class</code> and <code>tag3</code> is only removed if it also has the CSS class <code>css-class-1</code> or <code>css-class-2</code>. Be aware that wikispeech-listen uses default configuration for segmenting and might not be compatible with segments produced with an ad hoc setting of this parameter.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML tags that should breaks segments. Be aware that wikispeech-listen uses default configuration for segmenting and might not be compatible with segments produced with an ad hoc setting of this parameter.",
 	"apihelp-wikispeech-listen-param-lang": "Linguala kodexo."
 }

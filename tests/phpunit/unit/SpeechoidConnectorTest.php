@@ -93,10 +93,10 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->assertSame( [ 'speechoid' => 'response' ], $response );
 	}
 
-	public function testSynthesize_textOrIpaNotInParameters_throwException() {
+	public function testSynthesize_textIpaOrSsmlNotInParameters_throwException() {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage(
-			'$parameters must contain one of "text" and "ipa".'
+			'$parameters must contain one of "text", "ipa" or "ssml".'
 		);
 
 		$this->speechoidConnector->synthesize(

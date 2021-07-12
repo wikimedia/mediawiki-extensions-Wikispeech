@@ -165,27 +165,19 @@
 	mw.wikispeech = mw.wikispeech || {};
 	mw.wikispeech.consumerMode = true;
 
-	// Register module to be loaded from the producer. This is
-	// required for loader.using() below, since the module is not
-	// registered on the consumer.
-	mw.loader.register(
-		'ext.wikispeech',
-		'',
-		[
-			'mediawiki.ForeignApi',
-			'oojs-ui',
-			'oojs-ui-core',
-			'oojs-ui-toolbars',
-			'oojs-ui-windows',
-			'oojs-ui.styles.icons-media',
-			'oojs-ui.styles.icons-movement',
-			'oojs-ui.styles.icons-interactions',
-			'oojs-ui.styles.icons-editing-core'
-		],
-		null,
-		'anotherwiki'
-	);
-	mw.loader.using( [ 'mediawiki.api', 'mediawiki.user' ] ).done( function () {
+	mw.loader.using( [
+		'mediawiki.api',
+		'mediawiki.user',
+		'mediawiki.ForeignApi',
+		'oojs-ui',
+		'oojs-ui-core',
+		'oojs-ui-toolbars',
+		'oojs-ui-windows',
+		'oojs-ui.styles.icons-media',
+		'oojs-ui.styles.icons-movement',
+		'oojs-ui.styles.icons-interactions',
+		'oojs-ui.styles.icons-editing-core'
+	] ).done( function () {
 		var namespace, userPage;
 
 		addConfig();
@@ -202,22 +194,24 @@
 				safemode: 1,
 				modules: 'ext.wikispeech'
 			} );
-			moduleUrl = mw.config.get( 'wgWikispeechProducerUrl' ) +
-				'/load.php?' + parametersString;
+			moduleUrl = mw.wikispeech.producerUrl + '/load.php?' +
+				parametersString;
 			mw.log( '[Wikispeech] Loading wikispeech module from ' + moduleUrl );
-			mw.loader.load( moduleUrl );
+			mw.loader.getScript( moduleUrl )
+				.done( function () {
+					mw.loader.using( 'ext.wikispeech' )
+						.done( function () {
+							mw.wikispeech.ui.ready.done( function () {
+								extendUi();
+							} );
+						} )
+						.fail( function ( error ) {
+							mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
+						} );
+				} )
+				.fail( function ( error ) {
+					mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
+				} );
 		} );
 	} );
-	mw.loader.using( 'ext.wikispeech' )
-		.done( function () {
-			var producerApiUrl = mw.config.get( 'wgWikispeechProducerUrl' ) + '/api.php';
-			mw.wikispeech.storage.api = new mw.ForeignApi( producerApiUrl );
-
-			mw.wikispeech.ui.ready.done( function () {
-				extendUi();
-			} );
-		} )
-		.fail( function ( error ) {
-			mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
-		} );
 }() );

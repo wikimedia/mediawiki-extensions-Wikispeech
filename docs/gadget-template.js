@@ -11,7 +11,8 @@ var producerUrl, parametersString, moduleUrl;
 // "/w".
 producerUrl = 'https://.../w';
 
-mw.config.set( 'wgWikispeechProducerUrl', producerUrl );
+mw.wikispeech = mw.wikispeech || {};
+mw.wikispeech.producerUrl = producerUrl;
 parametersString = $.param( {
 	lang: mw.config.get( 'wgUserLanguage' ),
 	skin: mw.config.get( 'skin' ),

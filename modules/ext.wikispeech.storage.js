@@ -11,12 +11,18 @@
 	 */
 
 	function Storage() {
-		var self;
+		var self, producerApiUrl;
 
 		self = this;
 		self.utterances = [];
-		self.api = null;
 		self.utterancesLoaded = $.Deferred();
+
+		if ( mw.wikispeech.consumerMode ) {
+			producerApiUrl = mw.wikispeech.producerUrl + '/api.php';
+			self.api = new mw.ForeignApi( producerApiUrl );
+		} else {
+			self.api = new mw.Api();
+		}
 
 		/**
 		 * Load all utterances.

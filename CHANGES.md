@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T286579](https://phabricator.wikimedia.org/T286579) Introduced optional metrics logging in ApiWikispeechListen.
 * [T285141](https://phabricator.wikimedia.org/T285141) Major refactor of Segmenter.
 * [T286198](https://phabricator.wikimedia.org/T286198) Empty node causes Speechoid error
 * [T286372](https://phabricator.wikimedia.org/T286372) Introduced pre-Speechoid text processors that transform numbers, years and dates to Swedish text. 

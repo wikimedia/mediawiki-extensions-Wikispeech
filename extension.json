@@ -467,6 +467,17 @@
 				"from the consumer wiki on that URL."
 			],
 			"value": false
+		},
+		"WikispeechListenDoJournalMetrics": {
+			"description": "Whether or not to log usage metrics for TTS API",
+			"value": true
+		},
+		"WikispeechListenMetricsJournalFile": {
+			"description": [
+				"Location of file in which to log usage metrics from TTS API.",
+				"Defaults to UploadDirectory/wikispeechListenMetrics.log"
+			],
+			"value": ""
 		}
 	},
 	"DefaultUserOptions": {

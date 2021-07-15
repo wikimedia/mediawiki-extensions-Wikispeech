@@ -81,4 +81,14 @@ class SegmentList {
 		return $serializedSegments;
 	}
 
+	/**
+	 * @since 0.1.10
+	 * @param Segment $segment
+	 * @return int Index of $segment in this SegmentList. -1 if not existing.
+	 */
+	public function indexOf( Segment $segment ): int {
+		$index = array_search( $segment, $this->getSegments(), true );
+		return $index === false ? -1 : $index;
+	}
+
 }

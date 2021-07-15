@@ -31,7 +31,9 @@ use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
 use MWException;
+use MWTimestamp;
 use Psr\Log\LoggerInterface;
+use Throwable;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
@@ -71,6 +73,9 @@ class ApiWikispeechListen extends ApiBase {
 	/** @var VoiceHandler */
 	private $voiceHandler;
 
+	/** @var ListenMetricsEntry */
+	private $listenMetricEntry;
+
 	/**
 	 * @since 0.1.5
 	 * @param ApiMain $mainModule
@@ -108,6 +113,7 @@ class ApiWikispeechListen extends ApiBase {
 			$this->speechoidConnector,
 			$cache
 		);
+		$this->listenMetricEntry = new ListenMetricsEntry();
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 	}
 
@@ -117,6 +123,9 @@ class ApiWikispeechListen extends ApiBase {
 	 * @since 0.1.3
 	 */
 	public function execute() {
+		$started = microtime( true );
+		$this->listenMetricEntry->setTimestamp( MWTimestamp::getInstance() );
+
 		$inputParameters = $this->extractRequestParams();
 		$this->validateParameters( $inputParameters );
 
@@ -152,6 +161,41 @@ class ApiWikispeechListen extends ApiBase {
 			$this->getModuleName(),
 			$response
 		);
+
+		$charactersInSegment = 0;
+		foreach ( $response['tokens'] as $token ) {
+			$charactersInSegment += mb_strlen( $token['orth'] );
+			// whitespace and sentence ends counts too
+			$charactersInSegment += 1;
+		}
+		$this->listenMetricEntry->setCharactersInSegment( $charactersInSegment );
+		$this->listenMetricEntry->setLanguage( $inputParameters['lang'] );
+		$this->listenMetricEntry->setVoice( $voice );
+		$this->listenMetricEntry->setPageRevisionId( $inputParameters['revision'] );
+		$this->listenMetricEntry->setSegmentHash( $inputParameters['segment'] );
+		$this->listenMetricEntry->setConsumerUrl( $inputParameters['consumer-url'] );
+		$this->listenMetricEntry->setRemoteWikiHash(
+			UtteranceStore::evaluateRemoteWikiHash( $inputParameters['consumer-url'] )
+		);
+		$this->listenMetricEntry->setMillisecondsSpeechInUtterance(
+			$response['tokens'][count( $response['tokens'] ) - 1]['endtime']
+		);
+		$this->listenMetricEntry->setMicrosecondsSpent( intval( 1000000 * ( microtime( true ) - $started ) ) );
+
+		// All other metrics fields has been set in other functions of this class.
+
+		if ( $this->config->get( 'WikispeechListenDoJournalMetrics' ) ) {
+			$metricsJournal = new ListenMetricsEntryFileJournal( $this->config );
+			try {
+				$metricsJournal->appendEntry( $this->listenMetricEntry );
+			} catch ( Throwable $exception ) {
+				// Catch everything. This should not bother the user!
+				$this->logger->warning(
+					'Exception caught while appending to metrics journal {exception}',
+					[ 'exception' => $exception ]
+				);
+			}
+		}
 	}
 
 	/**
@@ -211,6 +255,11 @@ class ApiWikispeechListen extends ApiBase {
 		if ( $pageId === null ) {
 			throw new MWException( 'Did not retrieve page id for the given revision id.' );
 		}
+
+		$this->listenMetricEntry->setSegmentIndex( $segmentPageResponse->getSegments()->indexOf( $segment ) );
+		$this->listenMetricEntry->setPageId( $pageId );
+		$this->listenMetricEntry->setPageTitle( $segmentPageResponse->getTitle()->getText() );
+
 		return $this->getUtterance(
 			$consumerUrl,
 			$voice,
@@ -284,6 +333,9 @@ class ApiWikispeechListen extends ApiBase {
 			$voice,
 			$segmentHash
 		);
+
+		$this->listenMetricEntry->setUtteranceSynthesized( $utterance === null );
+
 		if ( !$utterance ) {
 			$this->logger->debug( __METHOD__ . ': Creating new utterance for {pageId} {segmentHash}', [
 				'pageId' => $pageId,

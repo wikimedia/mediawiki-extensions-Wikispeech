@@ -243,6 +243,12 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
+	public function testSegmentSentences_segmentWithOnlyWhitespace_dontAddSegment() {
+		$cleanedContent = [ new CleanedText( "  \n" ) ];
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
+		$this->assertCount( 0, $segments );
+	}
+
 	public function testSegmentSentences_leadingAndTrailingWhitespacesInNode_dontIncludeInSegments() {
 		$cleanedContent = [ new CleanedText( ' Sentence. ' ) ];
 		$segments = $this->segmenter->segmentSentences( $cleanedContent );

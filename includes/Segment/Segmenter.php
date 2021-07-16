@@ -387,7 +387,7 @@ class Segmenter {
 	 * @return int The number of whitespaces at the start of $string.
 	 */
 	private static function getLeadingWhitespacesLength( string $string ): int {
-		$trimmedString = ltrim( $string );
+		$trimmedString = preg_replace( '/^\s+/u', '', $string );
 		return mb_strlen( $string ) - mb_strlen( $trimmedString );
 	}
 

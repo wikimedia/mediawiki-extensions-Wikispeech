@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T286198](https://phabricator.wikimedia.org/T286198) Empty node causes Speechoid error
 * [T286372](https://phabricator.wikimedia.org/T286372) Introduced pre-Speechoid text processors that transform numbers, years and dates to Swedish text. 
 * [T284138](https://phabricator.wikimedia.org/T284138) Playback stalled if utterance fail to load when prepared by previous utterance starting to play.
 * [T281898](https://phabricator.wikimedia.org/T281898) Use connection queue against Speechoid TTS operations.

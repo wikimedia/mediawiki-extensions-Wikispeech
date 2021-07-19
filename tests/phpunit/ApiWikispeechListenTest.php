@@ -242,12 +242,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$speechoidConnectorMock = $this->createMock( SpeechoidConnector::class );
 		$speechoidConnectorMock
 			->expects( $this->once() )
-			->method( 'synthesizeText' )
-			->with(
-				$this->equalTo( 'sv' ),
-				$this->equalTo( 'anna' ),
-				$this->equalTo( $content )
-			)
+			->method( 'synthesize' )
 			->willReturn( [
 				"audio_data" => "DummyBase64==",
 				"tokens" => $synthesizeMetadataArray

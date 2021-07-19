@@ -34,46 +34,47 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
-* [T284138](https://phabricator.wikimedia.org/T284138) Playback stalled if utterance fail to load when prepared by previous utterance starting to play
+* [T286372](https://phabricator.wikimedia.org/T286372) Introduced pre-Speechoid text processors that transform numbers, years and dates to Swedish text. 
+* [T284138](https://phabricator.wikimedia.org/T284138) Playback stalled if utterance fail to load when prepared by previous utterance starting to play.
 * [T281898](https://phabricator.wikimedia.org/T281898) Use connection queue against Speechoid TTS operations.
-* [T283063](https://phabricator.wikimedia.org/T283063) Title highlighting is wrong
+* [T283063](https://phabricator.wikimedia.org/T283063) Title highlighting is wrong.
 
 ### 0.1.9
 2021-05-27
 Speechoid: 0.1.2
 
-* [T282151](https://phabricator.wikimedia.org/T282151) UI for user preferences
+* [T282151](https://phabricator.wikimedia.org/T282151) UI for user preferences.
 * [T281803](https://phabricator.wikimedia.org/T281803) Handle gadget consumer URL in utterance store.
-* [T282513](https://phabricator.wikimedia.org/T282513) Config variable for producer mode
-* [T281667](https://phabricator.wikimedia.org/T281667) Load user options from consumer wiki
-* [T281665](https://phabricator.wikimedia.org/T281665) Load modules and settings
-* [T281663](https://phabricator.wikimedia.org/T281663) Communication between consumer and producer
+* [T282513](https://phabricator.wikimedia.org/T282513) Config variable for producer mode.
+* [T281667](https://phabricator.wikimedia.org/T281667) Load user options from consumer wiki.
+* [T281665](https://phabricator.wikimedia.org/T281665) Load modules and settings.
+* [T281663](https://phabricator.wikimedia.org/T281663) Communication between consumer and producer.
 * [T280233](https://phabricator.wikimedia.org/T280233) Control creation of LexiconStorage from config in extension.json.
 * [T281262](https://phabricator.wikimedia.org/T281262) Treat Speechoid lexicon identity as int.
 * [T279632](https://phabricator.wikimedia.org/T279632) Introduce LexiconWikiStorage.
-* [T277242](https://phabricator.wikimedia.org/T277242) Ensure new lexicon edits are CC0
-* [T277153](https://phabricator.wikimedia.org/T277153) Allow user to decide on updating or adding new entry if entry with same spelling exists
+* [T277242](https://phabricator.wikimedia.org/T277242) Ensure new lexicon edits are CC0.
+* [T277153](https://phabricator.wikimedia.org/T277153) Allow user to decide on updating or adding new entry if entry with same spelling exists.
 * [T280244](https://phabricator.wikimedia.org/T280244) Optionally mark utterance files with TTL in Swift.
-* [T133857](https://phabricator.wikimedia.org/T133857) Only add edit button to the player if user has right to edit lexicon
-* [T280239](https://phabricator.wikimedia.org/T280239) Use GET requests for segments and utterances
+* [T133857](https://phabricator.wikimedia.org/T133857) Only add edit button to the player if user has right to edit lexicon.
+* [T280239](https://phabricator.wikimedia.org/T280239) Use GET requests for segments and utterances.
 
 ### 0.1.8
 2021-04-01
 Speechoid: 0.1.2
 
-* [T275756](https://phabricator.wikimedia.org/T275756) Add trigger for purging the UtteranceStore upon lexicon edit
-* [T133857](https://phabricator.wikimedia.org/T133857) Link to Special:EditLexicon from player
-* [T274649](https://phabricator.wikimedia.org/T274649) Add lexicon entries using Special:EditLexicon
+* [T275756](https://phabricator.wikimedia.org/T275756) Add trigger for purging the UtteranceStore upon lexicon edit.
+* [T133857](https://phabricator.wikimedia.org/T133857) Link to Special:EditLexicon from player.
+* [T274649](https://phabricator.wikimedia.org/T274649) Add lexicon entries using Special:EditLexicon.
 * [T277145](https://phabricator.wikimedia.org/T277145) Implement lexicon delete features.
 * [T274504](https://phabricator.wikimedia.org/T274504) Introduce LexiconHandler.
-* [T274486](https://phabricator.wikimedia.org/T274486) Preview transcription in lexicon editor
-* [T274645](https://phabricator.wikimedia.org/T274645) Create edit lexicon special page
-* [T133872](https://phabricator.wikimedia.org/T133872) A user right for corrections to the lexicon of pronunciations
-* [T265335](https://phabricator.wikimedia.org/T265335) Introduce namespaces to extension Wikispeech
+* [T274486](https://phabricator.wikimedia.org/T274486) Preview transcription in lexicon editor.
+* [T274645](https://phabricator.wikimedia.org/T274645) Create edit lexicon special page.
+* [T133872](https://phabricator.wikimedia.org/T133872) A user right for corrections to the lexicon of pronunciations.
+* [T265335](https://phabricator.wikimedia.org/T265335) Introduce namespaces to extension Wikispeech.
 * [T265130](https://phabricator.wikimedia.org/T265130) Switch from static scope hooks to instance scope hooks with injections.
 * [T264403](https://phabricator.wikimedia.org/T264403) Speechoid/Wikispeech benchmark maintenance script.
-* [T263112](https://phabricator.wikimedia.org/T263112) Listening action should not be available in non-read view
-* [T261288](https://phabricator.wikimedia.org/T261288) Add option to deactivate and reactivate player in menu
+* [T263112](https://phabricator.wikimedia.org/T263112) Listening action should not be available in non-read view.
+* [T261288](https://phabricator.wikimedia.org/T261288) Add option to deactivate and reactivate player in menu.
 
 ### 0.1.7
 2020-10-19

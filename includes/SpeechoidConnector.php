@@ -82,8 +82,8 @@ class SpeechoidConnector {
 	 * @since 0.1.5
 	 * @param string $language
 	 * @param string $voice
-	 * @param array $parameters Should contain either 'text' or
-	 *  'ipa'. Determines input string and type.
+	 * @param array $parameters Should contain either 'text', 'ipa' or 'ssml'.
+	 *  Determines input string and type.
 	 * @param int|null $responseTimeoutSeconds Seconds before timing out awaiting response.
 	 *  Falsy value defaults to config value WikispeechSpeechoidResponseTimeoutSeconds,
 	 *  which if falsy (e.g. 0) defaults to MediaWiki default.
@@ -111,9 +111,12 @@ class SpeechoidConnector {
 			$postData['input_type'] = 'ipa';
 		} elseif ( isset( $parameters['text'] ) ) {
 			$postData['input'] = $parameters['text'];
+		} elseif ( isset( $parameters['ssml'] ) ) {
+			$postData['input'] = $parameters['ssml'];
+			$postData['input_type'] = 'ssml';
 		} else {
 			throw new InvalidArgumentException(
-				'$parameters must contain one of "text" and "ipa".'
+				'$parameters must contain one of "text", "ipa" or "ssml".'
 			);
 		}
 		$options = [ 'postData' => $postData ];

@@ -24,6 +24,7 @@ use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\Segmenter;
+use MediaWiki\Wikispeech\Segment\TextFilter\Sv\SwedishFilter;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
@@ -341,11 +342,26 @@ class ApiWikispeechListen extends ApiBase {
 			}
 			$this->validateText( $segmentText );
 
-			$speechoidResponse = $this->speechoidConnector->synthesizeText(
-				$language,
-				$voice,
-				$segmentText
-			);
+			/** @var string $ssml text/xml Speech Synthesis Markup Language */
+			$ssml = null;
+			if ( $language === 'sv' ) {
+				// @todo implement a per language selecting content text filter facade
+				$textFilter = new SwedishFilter( $segmentText );
+				$ssml = $textFilter->process();
+			}
+			if ( $ssml !== null ) {
+				$speechoidResponse = $this->speechoidConnector->synthesize(
+					$language,
+					$voice,
+					[ 'ssml' => $ssml ]
+				);
+			} else {
+				$speechoidResponse = $this->speechoidConnector->synthesizeText(
+					$language,
+					$voice,
+					$segmentText
+				);
+			}
 			$this->utteranceStore->createUtterance(
 				$consumerUrl,
 				$pageId,

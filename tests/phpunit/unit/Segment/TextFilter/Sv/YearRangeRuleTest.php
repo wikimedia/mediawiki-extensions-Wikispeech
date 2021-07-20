@@ -35,6 +35,7 @@ class YearRangeRuleTest extends RegexFilterRuleTest {
 			'From is more than to' => [ '1100–1000', 'elva hundra till tusen', true ],
 			'From is equals to to' => [ '1000–1000', 'tusen till tusen', true ],
 			'From is less than to' => [ '1000–1100', 'tusen till elva hundra', true ],
+			'to is two digits' => [ '1110–15', 'elva hundra tio till femton', true ]
 		];
 	}
 

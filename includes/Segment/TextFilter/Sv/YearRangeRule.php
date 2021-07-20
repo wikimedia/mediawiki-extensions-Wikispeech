@@ -20,7 +20,7 @@ class YearRangeRule extends RegexFilterRule {
 	 */
 	public function __construct() {
 		parent::__construct(
-			'/(^|\D)(?P<main>(?P<fromYear>\d{3,4})(–|-)(?P<toYear>\d{3,4}))(\D|$)/',
+			'/(^|\D)(?P<main>(?P<fromYear>\d{3,4})(–|-)(?P<toYear>\d{2,4}))(\D|$)/',
 			'main'
 		);
 	}
@@ -34,7 +34,13 @@ class YearRangeRule extends RegexFilterRule {
 		// todo allow for years before 100?
 		// todo assert that from-year is less than to-year?
 		$fromYear = YearRule::getYearAlias( $matches['fromYear'][0] );
-		$toYear = YearRule::getYearAlias( $matches['toYear'][0] );
+		$toDigits = $matches['toYear'][0];
+		if ( strlen( $toDigits ) === 2 ) {
+			$digitsToWords = new DigitsToSwedishWords();
+			$toYear = $digitsToWords->intToWords( intval( $toDigits ) );
+		} else {
+			$toYear = YearRule::getYearAlias( $toDigits );
+		}
 		if ( $fromYear === null || $toYear === null ) {
 			// @todo log unsupported from- and/or to-year
 			return null;

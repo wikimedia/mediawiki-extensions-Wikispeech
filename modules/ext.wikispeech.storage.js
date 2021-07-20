@@ -386,15 +386,27 @@
 			items,
 			searchOffset
 		) {
-			var concatenatedText, startOffsetInUtteranceString;
+			var concatenatedText, startOffsetInUtteranceString,
+				stringBeforeReplace;
 
 			// The concatenation of the strings from items. Used to
 			// find tokens that span multiple text nodes.
 			concatenatedText = '';
 			content.every( function ( item ) {
-				// Look through the items until we find a
-				// substring matching the token.
-				concatenatedText += item.string;
+				// Look through the items until we find a substring
+				// matching the token.
+				// The `replaceAll` replaces non-breaking space with a
+				// normal space. This is required if Speechoid returns
+				// normal spaces in "orth" for a token. See
+				// https://phabricator.wikimedia.org/T286997
+				concatenatedText += item.string.replace( ' ', ' ' );
+
+				// Eslint does not allow replaceAll().
+				do {
+					stringBeforeReplace = concatenatedText;
+					concatenatedText = concatenatedText.replace( ' ', ' ' );
+				} while ( stringBeforeReplace !== concatenatedText );
+
 				items.push( item );
 				if ( searchOffset > concatenatedText.length ) {
 					// Don't look in text elements that end before

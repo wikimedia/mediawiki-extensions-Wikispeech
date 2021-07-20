@@ -631,6 +631,22 @@
 		assert.strictEqual( storage.utterances[ 0 ].tokens[ 2 ].endOffset, 4 );
 	} );
 
+	QUnit.test( 'addTokens(): non-breaking space', function ( assert ) {
+		var tokens;
+
+		// The spaces in the two following expressions are non-breaking.
+		util.setContentHtml( '1 234 456' );
+		storage.utterances[ 0 ].content[ 0 ].string = '1 234 456';
+		tokens = [
+			{ orth: '1 234 456' }
+		];
+
+		storage.addTokens( storage.utterances[ 0 ], tokens );
+
+		assert.strictEqual( storage.utterances[ 0 ].tokens[ 0 ].startOffset, 0 );
+		assert.strictEqual( storage.utterances[ 0 ].tokens[ 0 ].endOffset, 8 );
+	} );
+
 	QUnit.test( 'isSilent(): no duration', function ( assert ) {
 		var actual, token;
 

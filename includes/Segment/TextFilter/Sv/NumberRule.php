@@ -22,10 +22,10 @@ class NumberRule extends RegexFilterRule {
 		parent::__construct(
 			'/(^|\D)' .
 			'(?P<main>' .
-			'(?P<integer>(\d{1,3})(([ .])\d{3}(\4\d{3})*)?)' .
+			'(?P<integer>(\d{1,3})(([  .])\d{3}(\4\d{3})*)?)' .
 			'((?P<comma>,)(?P<decimals>\d+))?' .
 			')' .
-			'(\D|$)/',
+			'(\D|$)/u',
 			'main'
 		);
 	}
@@ -37,7 +37,7 @@ class NumberRule extends RegexFilterRule {
 	 */
 	public function createAlias( array $matches ): ?string {
 		// remove all whitespaces and magnitude separating dots
-		$integer = intval( str_replace( [ '.', ' ' ], '', $matches['integer'][0] ) );
+		$integer = intval( str_replace( [ '.', ' ', ' ' ], '', $matches['integer'][0] ) );
 		$decimals = $matches['comma'][0] === ',' ? $matches['decimals'][0] : null;
 		$digitsToWords = new DigitsToSwedishWords();
 		return $digitsToWords->stringFloatToWords( $integer, $decimals );

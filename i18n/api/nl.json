@@ -1,11 +1,13 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"McDutchie"
+		]
 	},
 	"apihelp-wikispeech-segment-summary": "Verwerk een pagina die gebruikt zal worden door de Wikispeech uitbreiding.",
 	"apihelp-wikispeech-segment-param-page": "De titel van de te verwerken pagina.",
-	"apihelp-wikispeech-segment-param-removetags": "De labels die volledig verwijderd moeten worden tijdens reiniging, als een JSON object van het formaat:\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\",\n  \"tagName3\": [\"cssClass1\", \"cssClass2\"]\n}</pre>\nwaarbij <code>tagName1</code> altijd verwijderd wordt, <code>tagName2</code> wordt enkel verwijderd als het ook de CSS class <code>cssClass</code> bezit en <code>tagName3</code> wordt enkel verwijders als het ook de CSS class <code>cssClass2</code> of <code>cssClass1</code> bezit.",
-	"apihelp-wikispeech-segment-param-segmentbreakingtags": "De labelnamen voor labels die segmentonderbrekingen zouden moeten toevoegen.",
+	"apihelp-wikispeech-segment-param-removetags": "HTML-tags die volledig verwijderd moeten worden tijdens de reiniging, als JSON-object in het formaat:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nwaarbij <code>tag1</code> altijd verwijderd wordt, <code>tag2</code> enkel verwijderd wordt als het ook de CSS class <code>css-class</code> bezit en <code>tag3</code> enkel verwijderd wordt als het ook de CSS class <code>css-class-1</code> of <code>css-class-2</code> bezit. Houd er rekening mee dat \"wikispeech-listen\" de standaardconfiguratie gebruikt voor segmentering en mogelijk niet compatibel is met segmenten die zijn geproduceerd met een ad-hocinstelling van deze parameter.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-tags die segmenten moeten onderbreken. Houd er rekening mee dat \"wikispeech-listen\" de standaardconfiguratie gebruikt voor segmentering en mogelijk niet compatibel is met segmenten die zijn geproduceerd met een ad-hocinstelling van deze parameter.",
 	"apihelp-wikispeech-segment-example-1": "Verkrijg segmenten voor de Wikispeech uitbreiding. Het label <code>sup</code> wordt verwijderd en ook <code>div</code> als het de classe <code>toc</code> heeft. De labels <code>h1</code> en <code>h2</code> breken segmenten.",
 	"apihelp-wikispeech-segment-example-2": "Verkrijg originele HTML inhoud en gezuiverde tekst.",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> is geen geldige JSON string.",

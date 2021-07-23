@@ -13,7 +13,7 @@ use MediaWiki\Wikispeech\WikispeechServices;
 return [
 	'Wikispeech.ConfiguredLexiconStorage' => static function (
 		MediaWikiServices $services
-	) : ConfiguredLexiconStorage {
+	): ConfiguredLexiconStorage {
 		return new ConfiguredLexiconStorage(
 			$services->getConfigFactory()
 				->makeConfig( 'wikispeech' )
@@ -21,29 +21,29 @@ return [
 			$services
 		);
 	},
-	'Wikispeech.LexiconHandler' => static function ( MediaWikiServices $services ) : LexiconHandler {
+	'Wikispeech.LexiconHandler' => static function ( MediaWikiServices $services ): LexiconHandler {
 		return new LexiconHandler(
 			WikispeechServices::getLexiconSpeechoidStorage(),
 			WikispeechServices::getLexiconWanCacheStorage()
 		);
 	},
-	'Wikispeech.LexiconSpeechoidStorage' => static function ( MediaWikiServices $services ) : LexiconSpeechoidStorage {
+	'Wikispeech.LexiconSpeechoidStorage' => static function ( MediaWikiServices $services ): LexiconSpeechoidStorage {
 		return new LexiconSpeechoidStorage(
 			WikispeechServices::getSpeechoidConnector(),
 			$services->getMainWANObjectCache()
 		);
 	},
-	'Wikispeech.LexiconWanCacheStorage' => static function ( MediaWikiServices $services ) : LexiconWanCacheStorage {
+	'Wikispeech.LexiconWanCacheStorage' => static function ( MediaWikiServices $services ): LexiconWanCacheStorage {
 		return new LexiconWanCacheStorage(
 			$services->getMainWANObjectCache()
 		);
 	},
-	'Wikispeech.LexiconWikiStorage' => static function ( MediaWikiServices $services ) : LexiconWikiStorage {
+	'Wikispeech.LexiconWikiStorage' => static function ( MediaWikiServices $services ): LexiconWikiStorage {
 		return new LexiconWikiStorage(
 			RequestContext::getMain()->getUser()
 		);
 	},
-	'Wikispeech.SpeechoidConnector' => static function ( MediaWikiServices $services ) : SpeechoidConnector {
+	'Wikispeech.SpeechoidConnector' => static function ( MediaWikiServices $services ): SpeechoidConnector {
 		return new SpeechoidConnector(
 			$services->getMainConfig(),
 			$services->getHttpRequestFactory()

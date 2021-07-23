@@ -167,7 +167,7 @@ class SpeechoidConnector {
 	 * @return array Map language => voice
 	 * @throws SpeechoidConnectorException On Speechoid I/O- or JSON parse errors.
 	 */
-	public function listDefaultVoicePerLanguage() : array {
+	public function listDefaultVoicePerLanguage(): array {
 		$defaultVoicesJson = $this->requestDefaultVoices();
 		$status = FormatJson::parse(
 			$defaultVoicesJson,

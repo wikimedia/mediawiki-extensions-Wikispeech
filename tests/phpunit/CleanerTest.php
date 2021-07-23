@@ -22,7 +22,7 @@ class CleanerTest extends MediaWikiTestCase {
 	/** @var Cleaner */
 	private $cleaner;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$removeTags = [
 			'sup' => 'reference',

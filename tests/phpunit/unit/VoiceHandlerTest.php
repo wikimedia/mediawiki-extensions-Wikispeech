@@ -30,7 +30,7 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 	/** @var MockObject|SpeechoidConnector */
 	private $speechoidConnectorMock;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$logger = $this->createStub( AbstractLogger::class );
 		$this->speechoidConnectorMock = $this->createMock(

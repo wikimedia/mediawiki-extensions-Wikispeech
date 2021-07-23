@@ -705,7 +705,7 @@ class UtteranceStore {
 	 *
 	 * @return MWTimestamp Utterance parts with timestamp <= this is expired.
 	 */
-	public function getWikispeechUtteranceExpirationTimestamp() : MWTimestamp {
+	public function getWikispeechUtteranceExpirationTimestamp(): MWTimestamp {
 		return MWTimestamp::getInstance(
 			strtotime( '-' . $this->getWikispeechUtteranceTimeToLiveDays() . 'days' )
 		);

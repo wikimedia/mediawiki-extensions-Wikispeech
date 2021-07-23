@@ -23,7 +23,7 @@ class UtteranceStoreUrlPathFactoryTest extends MediaWikiUnitTestCase {
 	/** @var TestingAccessWrapper|UtteranceStore */
 	private $utteranceStore;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->utteranceStore = TestingAccessWrapper::newFromObject( new class extends UtteranceStore {
 			public function __construct() {

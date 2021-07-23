@@ -30,7 +30,7 @@ use Wikimedia\TestingAccessWrapper;
  */
 class ApiWikispeechListenTest extends ApiTestCase {
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		// Should be implementable using
 		// $wgConfigRegistry['wikispeech'] see T255497

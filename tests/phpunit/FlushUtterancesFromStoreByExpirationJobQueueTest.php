@@ -27,7 +27,7 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiTestCase
 	/** @var string */
 	private $cacheKey;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$this->cacheKey = $this->cache->makeKey(

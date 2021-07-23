@@ -21,7 +21,7 @@ class WikispeechServices {
 	 */
 	public static function getConfiguredLexiconStorage(
 		ContainerInterface $services = null
-	) : ConfiguredLexiconStorage {
+	): ConfiguredLexiconStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.ConfiguredLexiconStorage' );
 	}
@@ -35,7 +35,7 @@ class WikispeechServices {
 	 */
 	public static function getLexiconHandler(
 		ContainerInterface $services = null
-	) : LexiconHandler {
+	): LexiconHandler {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconHandler' );
 	}
@@ -49,7 +49,7 @@ class WikispeechServices {
 	 */
 	public static function getLexiconWikiStorage(
 		ContainerInterface $services = null
-	) : LexiconWikiStorage {
+	): LexiconWikiStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconWikiStorage' );
 	}
@@ -63,7 +63,7 @@ class WikispeechServices {
 	 */
 	public static function getLexiconSpeechoidStorage(
 		ContainerInterface $services = null
-	) : LexiconSpeechoidStorage {
+	): LexiconSpeechoidStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconSpeechoidStorage' );
 	}
@@ -77,7 +77,7 @@ class WikispeechServices {
 	 */
 	public static function getLexiconWanCacheStorage(
 		ContainerInterface $services = null
-	) : LexiconWanCacheStorage {
+	): LexiconWanCacheStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconWanCacheStorage' );
 	}
@@ -91,7 +91,7 @@ class WikispeechServices {
 	 */
 	public static function getSpeechoidConnector(
 		ContainerInterface $services = null
-	) : SpeechoidConnector {
+	): SpeechoidConnector {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.SpeechoidConnector' );
 	}

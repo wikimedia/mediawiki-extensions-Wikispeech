@@ -34,7 +34,7 @@ class SegmenterTest extends MediaWikiIntegrationTestCase {
 	 */
 	private $segmenter;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->requestFactory = $this->createMock( HttpRequestFactory::class );
 		$this->segmenter = TestingAccessWrapper::newFromObject(

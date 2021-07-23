@@ -30,7 +30,7 @@ class SegmenterTest extends MediaWikiUnitTestCase {
 	 */
 	private $segmenter;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->segmenter = TestingAccessWrapper::newFromObject(
 			new Segmenter(

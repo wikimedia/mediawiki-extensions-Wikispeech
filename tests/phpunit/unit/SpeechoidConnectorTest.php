@@ -29,7 +29,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 	/** @var SpeechoidConnector|MockObject */
 	private $speechoidConnector;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		$this->requestFactory = $this->createMock( HttpRequestFactory::class );
 		$this->config = new HashConfig();
 		$this->config->set( 'WikispeechSpeechoidResponseTimeoutSeconds', null );

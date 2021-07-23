@@ -34,7 +34,7 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 		$this->entriesTouched = [];
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		$user = $this->getTestSysop()->getUser();
 		foreach ( $this->entriesTouched as $entry ) {
 			try {

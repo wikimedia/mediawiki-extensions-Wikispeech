@@ -34,7 +34,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 	 */
 	private $logger;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->setMwGlobals( [
 			'wgWikispeechUtteranceFileBackendContainerName' => 'foo_container',

@@ -57,7 +57,7 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 			'1' => [ 1, 'ett' ],
 			'12' => [ 12, 'tolv' ],
 			'123' => [ 123, 'ett hundra tjugotre' ],
-			'1234' => [ 1234, 'en tusen två hundra trettiofyra' ],
+			'1234' => [ 1234, 'ett tusen två hundra trettiofyra' ],
 			'12345' => [ 12345, 'tolv tusen tre hundra fyrtiofem' ],
 			'123456' => [ 123456, 'ett hundra tjugotre tusen fyra hundra femtiosex' ],
 			'1234567' => [ 1234567, 'en miljon två hundra trettiofyra tusen fem hundra sextiosju' ],
@@ -67,12 +67,15 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 			'12345678901' => [ 12345678901, 'tolv miljarder tre hundra fyrtiofem miljoner sex hundra sjuttioåtta tusen nio hundra ett' ],
 			'123456789012' => [ 123456789012, 'ett hundra tjugotre miljarder fyra hundra femtiosex miljoner sju hundra åttionio tusen tolv' ],
 			'1234567890123' => [ 1234567890123, 'en biljon två hundra trettiofyra miljarder fem hundra sextiosju miljoner åtta hundra nittio tusen ett hundra tjugotre' ],
-			'12345678901234' => [ 12345678901234, 'tolv biljoner tre hundra fyrtiofem miljarder sex hundra sjuttioåtta miljoner nio hundra en tusen två hundra trettiofyra' ],
+			'12345678901234' => [ 12345678901234, 'tolv biljoner tre hundra fyrtiofem miljarder sex hundra sjuttioåtta miljoner nio hundra ett tusen två hundra trettiofyra' ],
 			'123456789012345' => [ 123456789012345, 'ett hundra tjugotre biljoner fyra hundra femtiosex miljarder sju hundra åttionio miljoner tolv tusen tre hundra fyrtiofem' ],
 			'1234567890123456' => [ 1234567890123456, 'en biljard två hundra trettiofyra biljoner fem hundra sextiosju miljarder åtta hundra nittio miljoner ett hundra tjugotre tusen fyra hundra femtiosex' ],
 			'12345678901234567' => [ 12345678901234567, 'tolv biljarder tre hundra fyrtiofem biljoner sex hundra sjuttioåtta miljarder nio hundra en miljoner två hundra trettiofyra tusen fem hundra sextiosju' ],
 			'123456789012345678' => [ 123456789012345678, 'ett hundra tjugotre biljarder fyra hundra femtiosex biljoner sju hundra åttionio miljarder tolv miljoner tre hundra fyrtiofem tusen sex hundra sjuttioåtta' ],
 			'1234567890123456789' => [ 1234567890123456789, 'en triljon två hundra trettiofyra biljarder fem hundra sextiosju biljoner åtta hundra nittio miljarder ett hundra tjugotre miljoner fyra hundra femtiosex tusen sju hundra åttionio' ],
+			'100' => [ 100, 'ett hundra' ],
+			'1000' => [ 1000, 'ett tusen' ],
+			'10000' => [ 10000, 'tio tusen' ],
 			'100000' => [ 100000, 'ett hundra tusen' ],
 			'1000000' => [ 1000000, 'en miljon' ],
 			'2000000' => [ 2000000, 'två miljoner' ],
@@ -97,6 +100,7 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 			'3,1' => [ 3.1, 'tre komma ett' ],
 			'3,14' => [ 3.14, 'tre komma fjorton' ],
 			'3,1415' => [ 3.1415, 'tre komma ett fyra ett fem' ],
+			'21,21' => [ 21.21, 'tjugoett komma tjugoett' ],
 		];
 	}
 

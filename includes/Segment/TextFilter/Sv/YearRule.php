@@ -41,8 +41,9 @@ class YearRule extends RegexFilterRule {
 	 */
 	public static function getYearAlias( string $year ): ?string {
 		// @todo assert $year is all numbers
+		$digitsToWords = new DigitsToSwedishWords();
 		if ( strlen( $year ) < 4 ) {
-			return $year;
+			return $digitsToWords->intToWords( intval( $year ) );
 		}
 		$alias = '';
 		$mille = substr( $year, 0, 2 );
@@ -75,7 +76,6 @@ class YearRule extends RegexFilterRule {
 
 		$cent = substr( $year, 2 );
 		if ( $cent !== '00' ) {
-			$digitsToWords = new DigitsToSwedishWords();
 			$centWords = $digitsToWords->intToWords( intval( $cent ) );
 			if ( $centWords === null ) {
 				// @todo log?

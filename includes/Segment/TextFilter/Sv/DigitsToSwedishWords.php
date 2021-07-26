@@ -14,6 +14,12 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
+ * Translates digits to words in Swedish.
+ * Supports gender of the number 1, i.e. 'en' or 'ett',
+ * e.g. the difference between 901 as "niohundra ett" and "niohundra en".
+ * It is however up to the developer to know and select the grammatical context.
+ *
+ * @see DigitsToSwedishWords
  * @since 0.1.10
  */
 class DigitsToSwedishWords extends AbstractDigitsToWords {
@@ -32,7 +38,7 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 	/** @var string[] text values values less than 20: zero, one, two... nineteen. */
 	private const SUB_DECAS = [
 		'noll',
-		'ett', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio',
+		'ONE PLACEHOLDER', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio',
 		'tio', 'elva', 'tolv', 'tretton', 'fjorton', 'femton', 'sexton', 'sjutton', 'arton', 'nitton'
 	];
 
@@ -61,9 +67,18 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 	];
 
 	/**
-	 * @since 0.1.10
+	 * @var string There are two genders for 'one' in Swedish: 'en' and 'ett'.
+	 * Setting this value to 'en' cause an output such as 'nio hundra en' as in a sum,
+	 * while 'ett' cause an output such as 'nio hundra ett' as in the year.
 	 */
-	public function __construct() {
+	private $one;
+
+	/**
+	 * @since 0.1.10
+	 * @param string $one There are two species for 'one' in Swedish: 'en' and 'ett'.
+	 */
+	public function __construct( string $one = 'ett' ) {
+		$this->one = $one;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 	}
 
@@ -98,7 +113,22 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 	}
 
 	/**
-	 * Translate floating point to text value, e.g. floatval( 3.14 ) -> 'tre komma ett fyra'.
+	 * Translate integer to text value, e.g. 1 -> 'ett', 13 -> 'tretton'.
+	 *
+	 * @since 0.1.10
+	 * @param int $input
+	 * @return string|null Null if input value is not supported.
+	 */
+	public function intToWords( int $input ): ?string {
+		$words = $this->buildWords( $input );
+		if ( $words === null ) {
+			// @todo log?
+		}
+		return $words;
+	}
+
+	/**
+	 * Translate floating point to text value, e.g. the floating point ( 3.14 ) -> 'tre komma ett fyra'.
 	 *
 	 * @since 0.1.10
 	 * @param int $integer Integer part of the floating value
@@ -139,21 +169,6 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 	}
 
 	/**
-	 * Translate integer to text value, e.g. 1 -> 'ett', 13 -> 'tretton'.
-	 *
-	 * @since 0.1.10
-	 * @param int $input
-	 * @return string|null Null if input value is not supported.
-	 */
-	public function intToWords( int $input ): ?string {
-		$words = $this->buildWords( $input );
-		if ( $words === null ) {
-			// @todo log?
-		}
-		return $words;
-	}
-
-	/**
 	 * @since 0.1.10
 	 * @param int $inputNumber
 	 * @param array|null $invokingMagnitude
@@ -165,6 +180,8 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 	): string {
 		if ( $invokingMagnitude !== null && $inputNumber === 1 ) {
 			return $invokingMagnitude[2];
+		} elseif ( $inputNumber === 1 ) {
+			return $this->one;
 		} else {
 			return self::SUB_DECAS[ $inputNumber ];
 		}
@@ -219,19 +236,12 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 				if ( $inputNumber < $magnitude[0] ) {
 					$previousMagnitude = self::MAGNITUDES[ $i - 1 ];
 					$floor = intval( floor( $inputNumber / $previousMagnitude[0] ) );
-					$word = $this->buildWords( $floor, [], $magnitude );
+					$word = $this->buildWords( $floor, [], $previousMagnitude );
 					if ( $word === null ) {
-						// don't log here, this is a recursive action that will flood the log.
+						// Don't log here, this is a recursive action that will flood the log.
+						// Perhaps log if invokingMagnitude is null.
 						return null;
 					}
-					// begin hack to solve 901 000 000 as
-					// 'nio hundra EN miljoner'
-					// rather than
-					// 'nio hundra ETT miljoner'
-					if ( $magnitude[2] !== 'ett' ) {
-						$word = mb_ereg_replace( '^(.*)(ett)$', '\\1' . $magnitude[2], $word );
-					}
-					// end hack
 					$word .= ' ';
 					$word .= $previousMagnitude[1];
 					if ( $floor > 1 ) {
@@ -258,7 +268,7 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 		if ( $leftovers === 0 ) {
 			return $this->assembleWords( $wordsBuilder );
 		}
-		return $this->buildWords( $leftovers, $wordsBuilder );
+		return $this->buildWords( $leftovers, $wordsBuilder, $invokingMagnitude );
 	}
 
 }

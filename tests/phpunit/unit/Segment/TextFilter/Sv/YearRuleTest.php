@@ -41,6 +41,7 @@ class YearRuleTest extends RegexFilterRuleTest {
 			'1600' => [ '1600', 'sexton hundra', true ],
 			'1700' => [ '1700', 'sjutton hundra', true ],
 			'1800' => [ '1800', 'arton hundra', true ],
+			'1891' => [ '1891', 'arton hundra nittioett', true ],
 			'1900' => [ '1900', 'nitton hundra', true ],
 			'2000' => [ '2000', 'tjugo hundra', true ],
 			'2002' => [ '2002', 'tjugo hundra två', true ],

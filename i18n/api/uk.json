@@ -1,0 +1,36 @@
+{
+	"@metadata": {
+		"authors": [
+			"DDPAT"
+		]
+	},
+	"apihelp-wikispeech-segment-summary": "Розділіть HTML-вміст сторінки на сегменти.",
+	"apihelp-wikispeech-segment-param-page": "Заголовок сторінки для сегментування.",
+	"apihelp-wikispeech-segment-param-removetags": "HTML-теги, які слід повністю вилучити під час очищення, як об’єкт JSON у форматі:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nде <code>tag1</code> завжди вилучається, <code>tag2</code> видаляється лише за наявності класу <code>css-class</code> і <code>tag3</code> вилучається, лише якщо він також має клас CSS <code>css-class-1</code> або <code>css-class-2</code>. Майте на увазі, що функція прослуховування вікіспісу використовує стандартну конфігурацію для сегментації та може бути несумісною з сегментами, створеними за допомогою спеціальних налаштувань цього параметра.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-теги, які повинні розбивати сегменти. Майте на увазі, що функція прослуховування Вікіспісу використовує стандартну конфігурацію для сегментації та може бути несумісною з сегментами, створеними за допомогою спеціальних налаштувань цього параметра.",
+	"apihelp-wikispeech-segment-param-consumer-url": "URL-адреса шляху до скрипту споживчої вікі.",
+	"apihelp-wikispeech-segment-example-1": "Сегментуйте головну сторінку, використовуючи параметри за замовчуванням, з конфігурації.",
+	"apihelp-wikispeech-segment-example-2": "Сегментувати за допомогою користувацьких параметрів. Тег <code>sup</code> вилучається, а також <code>div</code> якщо він має клас <code>toc</code>. Теги <code>h1</code> і <code>h2</code> розбивають сегменти.",
+	"apihelp-wikispeech-segment-example-3": "Сегментуйте головну сторінку в іншій вікі.",
+	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> не є дійсним рядком JSON.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> недійсного формату. Це має бути об'єкт зі значеннями, які є логічними, рядками або масивами рядків. Щоб не вилучати жодні теги, встановіть <var>removetags</var> на порожній об’єкт <code>{}</code>.",
+	"apihelp-wikispeech-listen-summary": "Синтезувати мовлення.",
+	"apihelp-wikispeech-listen-param-lang": "Код мови.",
+	"apihelp-wikispeech-listen-param-revision": "Версія сторінки, на якій знайдено сегмент.",
+	"apihelp-wikispeech-listen-param-segment": "Хеш сегмента синтезують.",
+	"apihelp-wikispeech-listen-param-text": "Текст для синтезу.",
+	"apihelp-wikispeech-listen-param-ipa": "Рядок IPA для синтезу.",
+	"apihelp-wikispeech-listen-param-voice": "Голос для використання. Якщо не вказано голос за замовчуванням для мови.",
+	"apihelp-wikispeech-listen-param-consumer-url": "URL-адреса шляху до скрипту споживчої вікі.",
+	"apierror-wikispeech-listen-deleted-revision": "Видалені редакції не можна слухати.",
+	"apierror-wikispeech-listen-notallowed": "Ви не маєте права викликати цю дію API.",
+	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> не є дійсною мовою. Має бути одне з: $2.",
+	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> недійсний голос. Має бути одне з: $2.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Не вдалося отримати сторінку з ідентифікатором версії \"$1\" від споживача за URL-адресою $2.",
+	"apierror-wikispeech-consumer-not-allowed": "Запити із віддалених вікі не дозволяються.",
+	"apihelp-wikispeech-listen-example-1": "Синтезуйте висловлювання англійською мовою.",
+	"apihelp-wikispeech-listen-example-2": "Використовуйте голос за замовчуванням.",
+	"apihelp-wikispeech-listen-example-3": "Надіслати запит на сегмент із версії. Буде використовувати кешований синтез, якщо він існує.",
+	"apihelp-wikispeech-listen-example-4": "Синтезуйте висловлювання з іншої вікі.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Введений текст не повинен перевищувати $1 символу, але містити $2 символи."
+}

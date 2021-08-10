@@ -1,9 +1,42 @@
 {
 	"@metadata": {
 		"authors": [
+			"DDPAT",
 			"Ата"
 		]
 	},
 	"wikispeech": "Вікімовлення",
-	"wikispeech-desc": "Інструмент синтезу мовлення з тексту, з метою зробити проєкти Вікімедіа більш доступними для людей, що з різних причин мають труднощі з читанням."
+	"wikispeech-desc": "Інструмент синтезу мовлення з тексту, з метою зробити проєкти Вікімедіа більш доступними для людей, що з різних причин мають труднощі з читанням.",
+	"prefs-wikispeech": "Вікімовлення",
+	"prefs-wikispeech-voice": "Голос",
+	"prefs-wikispeech-speech-rate": "Швидкість мовлення",
+	"prefs-wikispeech-speech-rate-percent": "Швидкість мовлення (у відсотках)",
+	"prefs-wikispeech-enable": "Увімкніть Вікіпіч",
+	"prefs-wikispeech-show-player": "Завжди показувати плеєр",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Зміни в налаштуваннях набудуть чинності при наступному завантаженні сторінки. Щоб прослухати поточну сторінку з новими налаштуваннями, перезавантажте сторінку після збереження.",
+	"right-wikispeech-listen": "Слухати сторінку",
+	"right-wikispeech-read-lexicon": "Прочитайте лексикон Вікіспіча",
+	"right-wikispeech-edit-lexicon": "Редагувати лексикон Вікіспіча",
+	"action-wikispeech-listen": "слухати сторінку",
+	"action-wikispeech-read-lexicon": "читати лексикон Вікіспіча",
+	"action-wikispeech-edit-lexicon": "редагувати лексикон Вікіспіча",
+	"wikispeech-listen": "Слухати",
+	"wikispeech-dont-listen": "Не слухати",
+	"wikispeech-error-loading-audio-title": "Не вдалося завантажити аудіо",
+	"wikispeech-error-loading-audio-message": "Це може бути викликано поганим підключенням до Інтернету або помилкою на сервері. Повторити спробу або зупинити відтворення?",
+	"wikispeech-retry": "Повторити",
+	"wikispeech-stop": "Зупинити",
+	"editlexicon": "Редагувати лексикон",
+	"wikispeech-language": "Мова",
+	"wikispeech-word": "Слово",
+	"wikispeech-transcription": "Транскрипція",
+	"wikispeech-item-id": "Id",
+	"wikispeech-preview": "Попередній перегляд",
+	"wikispeech-lexicon-add-entry-success": "Запис додано до лексикону.",
+	"wikispeech-lexicon-new": "Новий",
+	"wikispeech-lexicon-add-entry-conflict": "Запис з таким правописом уже існує. Виберіть ідентифікатор, щоб змінити цей запис, або \"Новий\", щоб додати новий запис.",
+	"wikispeech-lexicon-edit-entry-success": "Запис відредаговано.",
+	"wikispeech-lexicon-copyrightnote": "Зберігаючи зміни, ви погоджуєтесь звільнити свій внесок відповідно до [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"group-wikispeech-edit-lexicon": "Редактори лексиконів Вікіспічі",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Редактор лексиконів Вікіспічі}}"
 }

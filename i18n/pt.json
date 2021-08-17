@@ -1,13 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Emma Franzen"
+			"Emma Franzen",
+			"Hamilton Abreu"
 		]
 	},
 	"wikispeech-item-id": "Identidade",
 	"wikispeech-lexicon-add-entry-success": "entrada adicionada ao lexico",
 	"wikispeech-lexicon-new": "Nova\nNovo",
 	"wikispeech-lexicon-add-entry-conflict": "Já existe uma entrada com essa grafia. Selecione um id para editar essa entrada ou \"Novo\" para adicionar uma nova entrada.",
-	"wikispeech-lexicon-edit-entry-success": "entrada editada",
+	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",
 	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com [https://creativecommons.org/publicdomain/zero/1.0/ CC0]."
 }

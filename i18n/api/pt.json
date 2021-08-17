@@ -1,10 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Emma Franzen"
+			"Emma Franzen",
+			"Hamilton Abreu"
 		]
 	},
-	"apihelp-wikispeech-segment-example-3": "segmente a pagina principal em outro wiki.",
-	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Falhou ao obter a pagina com revisao eu ia '$1' do consumidor no URL $2.",
-	"apihelp-wikispeech-listen-example-4": "Sintetize uma declaracao de outro wiki."
+	"apihelp-wikispeech-segment-example-3": "Segmentar a página principal de outra wiki.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Não foi possível obter a página com o identificador de revisao '$1' do consumidor no URL $2.",
+	"apihelp-wikispeech-listen-example-4": "Sintetizar uma declaração de outra wiki."
 }

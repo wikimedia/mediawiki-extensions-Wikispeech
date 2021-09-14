@@ -24,6 +24,13 @@
 				return;
 			}
 
+			if ( mw.config.get( 'wgMFMode' ) ) {
+				// Do not load Wikispeech if MobileFrontend is
+				// enabled since it does not support its mobile
+				// view. See T169059.
+				return;
+			}
+
 			mw.wikispeech.storage.loadUtterances( window );
 			// Prepare the first utterance for playback.
 			mw.wikispeech.ui.init();

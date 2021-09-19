@@ -297,7 +297,7 @@ class UtteranceStore {
 		string $synthesisMetadata
 	): array {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
-		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
+		$dbw = $this->dbLoadBalancer->getConnection( DB_PRIMARY );
 		$rows = [
 			'wsu_remote_wiki_hash' => $remoteWikiHash,
 			'wsu_page_id' => $pageId,
@@ -381,7 +381,7 @@ class UtteranceStore {
 	 * @return int Number of utterances flushed.
 	 */
 	public function flushUtterancesByExpirationDate( $expirationDate ) {
-		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
+		$dbw = $this->dbLoadBalancer->getConnection( DB_PRIMARY );
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ],
 			[ 1 => 'wsu_date_stored <= ' . $expirationDate->getTimestamp( TS_MW ) ]
@@ -402,7 +402,7 @@ class UtteranceStore {
 		int $pageId
 	): int {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
-		$dbw = $this->dbLoadBalancer->getConnection( DB_MASTER );
+		$dbw = $this->dbLoadBalancer->getConnection( DB_PRIMARY );
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ],
 			[
@@ -429,7 +429,7 @@ class UtteranceStore {
 		if ( $voice != null ) {
 			$conditions['wsu_voice'] = $voice;
 		}
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ], $conditions
 		);

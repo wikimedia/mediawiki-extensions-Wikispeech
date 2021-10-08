@@ -9,7 +9,7 @@
 	"scripts": {
 		"test": [
 			"parallel-lint . --exclude vendor --exclude node_modules",
-			"phpcs -p -s",
+			"@phpcs",
 			"minus-x check ."
 		],
 		"fix": [
@@ -20,6 +20,7 @@
 			"DOXYGEN_FILTER='php ../../maintenance/mwdoc-filter.php' doxygen",
 			"jsduck"
 		],
-		"phan": "phan -d . --long-progress-bar"
+		"phan": "phan -d . --long-progress-bar",
+		"phpcs": "phpcs -sp --cache"
 	}
 }

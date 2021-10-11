@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech\Tests;
 
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Title;
 use Wikimedia\TestingAccessWrapper;
 
@@ -19,7 +19,7 @@ use Wikimedia\TestingAccessWrapper;
  *
  * @since 0.1.7
  */
-class FlushUtterancesFromStoreByExpirationJobTest extends MediaWikiTestCase {
+class FlushUtterancesFromStoreByExpirationJobTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * Runs a test on an empty UtteranceStore and makes sure no errors occur

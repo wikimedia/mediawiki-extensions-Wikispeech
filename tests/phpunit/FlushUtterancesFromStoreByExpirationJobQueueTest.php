@@ -11,7 +11,7 @@ namespace MediaWiki\Wikispeech\Tests;
 use DateTime;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use WANObjectCache;
 
 /**
@@ -19,7 +19,7 @@ use WANObjectCache;
  *
  * @since 0.1.7
  */
-class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiTestCase {
+class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrationTestCase {
 
 	/** @var WANObjectCache A disabled WAN cache, backed by EmptyBagOStuff. */
 	private $cache;
@@ -37,7 +37,7 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiTestCase
 	}
 
 	/**
-	 * Activates a WANCache previously disabled by MediaWikiTestCase.
+	 * Activates a WANCache previously disabled by MediaWikiIntegrationTestCase.
 	 *
 	 * Any previous instance of WANObjectCache picked up (e.g. the class field
 	 * instantiated in the constructor) will not be changed by calling this

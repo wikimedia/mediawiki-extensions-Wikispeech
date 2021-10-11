@@ -12,7 +12,7 @@ use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\User\UserOptionsManager;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Message;
 use OutputPage;
 use PHPUnit\Framework\MockObject\Stub;
@@ -23,7 +23,7 @@ use Title;
 /**
  * @covers \MediaWiki\Wikispeech\Hooks\ApiHooks
  */
-class ApiHooksTest extends MediaWikiTestCase {
+class ApiHooksTest extends MediaWikiIntegrationTestCase {
 
 	/** @var OutputPage */
 	private $out;

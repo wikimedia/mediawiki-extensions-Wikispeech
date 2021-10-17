@@ -184,7 +184,8 @@ class ApiWikispeechListen extends ApiBase {
 
 		// All other metrics fields has been set in other functions of this class.
 
-		if ( $this->config->get( 'WikispeechListenDoJournalMetrics' ) ) {
+		if ( !$inputParameters['skip-journal-metrics']
+			&& $this->config->get( 'WikispeechListenDoJournalMetrics' ) ) {
 			$metricsJournal = new ListenMetricsEntryFileJournal( $this->config );
 			try {
 				$metricsJournal->appendEntry( $this->listenMetricEntry );
@@ -519,6 +520,10 @@ class ApiWikispeechListen extends ApiBase {
 				],
 				'consumer-url' => [
 					ParamValidator::PARAM_TYPE => 'string'
+				],
+				'skip-journal-metrics' => [
+					ParamValidator::PARAM_TYPE => 'boolean',
+					ParamValidator::PARAM_DEFAULT => false
 				]
 			]
 		);

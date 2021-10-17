@@ -26,6 +26,7 @@
 	"apihelp-wikispeech-listen-param-ipa": "IPA string to synthesize.",
 	"apihelp-wikispeech-listen-param-voice": "Voice to use. If not provided the default voice for the language will be used.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL to the consumer wiki's script path.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Defaults to false. If true, anonymous data will not be stored in journal metrics log. Primarily used when executing pre rendering to avoid adding robot requests to statistics.",
 	"apierror-wikispeech-listen-deleted-revision": "Deleted revisions cannot be listened to.",
 	"apierror-wikispeech-listen-notallowed": "You do not have the rights to call this API action.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is not a valid language. Should be one of: $2.",

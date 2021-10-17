@@ -30,6 +30,7 @@
 	"apihelp-wikispeech-listen-param-ipa": "{{doc-apihelp-param|wikispeech-listen|ipa}}",
 	"apihelp-wikispeech-listen-param-voice": "{{doc-apihelp-param|wikispeech-listen|voice}}",
 	"apihelp-wikispeech-listen-param-consumer-url": "{{doc-apihelp-param|wikispeech-listen|consumer-url}}",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "{{doc-apihelp-param|wikispeech-listen|skip-journal-metrics}}",
 	"apierror-wikispeech-listen-deleted-revision": "{{doc-apierror}}",
 	"apierror-wikispeech-listen-notallowed": "{{doc-apierror}}",
 	"apierror-wikispeech-listen-invalid-language": "{{doc-apierror}}",

@@ -4,7 +4,8 @@
 			"Dutchy45",
 			"McDutchie",
 			"Nickthijssen1994",
-			"PonkoSasuke"
+			"PonkoSasuke",
+			"Romaine"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -18,5 +19,7 @@
 	"action-wikispeech-listen": "luister naar pagina",
 	"wikispeech-listen": "Beluisteren",
 	"wikispeech-error-loading-audio-title": "Audio kon niet geladen worden",
-	"wikispeech-retry": "Probeer opnieuw"
+	"wikispeech-retry": "Probeer opnieuw",
+	"wikispeech-language": "Taal",
+	"wikispeech-lexicon-new": "Nieuw"
 }

@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Dr Lotus Black"
+		]
+	},
+	"prefs-wikispeech-voice": "စကားပြောသံ",
+	"wikispeech-listen": "နားထောင်ရန်",
+	"wikispeech-dont-listen": "မနားထောင်ရန်",
+	"wikispeech-language": "ဘာသာစကား",
+	"wikispeech-preview": "ကြိုတင်အစမ်းကြည့်ရှုရန်"
+}

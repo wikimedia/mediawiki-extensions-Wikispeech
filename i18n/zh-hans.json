@@ -3,10 +3,14 @@
 		"authors": [
 			"Shuiwater",
 			"Si109",
-			"坑触可"
+			"坑触可",
+			"FakeGreenHand",
+			"Grace03",
+			"Lakejason0",
+			"Zhang8569"
 		]
 	},
-	"prefs-wikispeech-show-player": "显示播放器",
+	"prefs-wikispeech-show-player": "总是显示播放器",
 	"wikispeech-listen": "听",
 	"wikispeech-preview": "预览"
 }

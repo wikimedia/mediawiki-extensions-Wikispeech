@@ -1,9 +1,28 @@
 {
 	"@metadata": {
 		"authors": [
-			"Ата"
+			"Ата",
+			"DDPAT"
 		]
 	},
 	"wikispeech": "Вікімовлення",
-	"wikispeech-desc": "Інструмент синтезу мовлення з тексту, з метою зробити проєкти Вікімедіа більш доступними для людей, що з різних причин мають труднощі з читанням."
+	"wikispeech-desc": "Інструмент синтезу мовлення з тексту, з метою зробити проєкти Вікімедіа більш доступними для людей, що з різних причин мають труднощі з читанням.",
+	"prefs-wikispeech": "Вікімовлення",
+	"prefs-wikispeech-voice": "Голос",
+	"prefs-wikispeech-speech-rate": "Швидкість мовлення",
+	"prefs-wikispeech-enable": "Увімкніть Вікіпіч",
+	"prefs-wikispeech-show-player": "Завжди показувати плеєр",
+	"right-wikispeech-listen": "Слухати сторінку",
+	"right-wikispeech-read-lexicon": "Прочитайте лексикон Вікіспіча",
+	"right-wikispeech-edit-lexicon": "Редагувати лексикон Вікіспіча",
+	"action-wikispeech-listen": "слухати сторінку",
+	"action-wikispeech-read-lexicon": "читати лексикон Вікіспіча",
+	"action-wikispeech-edit-lexicon": "редагувати лексикон Вікіспіча",
+	"wikispeech-listen": "Слухати",
+	"wikispeech-dont-listen": "Не слухати",
+	"editlexicon": "Редагувати лексикон",
+	"wikispeech-language": "Мова",
+	"wikispeech-word": "Слово",
+	"wikispeech-transcription": "Транскрипція",
+	"wikispeech-preview": "Попередній перегляд"
 }

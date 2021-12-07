@@ -2,10 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"Steeve815",
-			"YaronSh"
+			"YaronSh",
+			"Amire80",
+			"Neriah"
 		]
 	},
-	"wikispeech-desc": "כלי המרת טקסט לדיבור כדי להפוך את המיזמים של ויקימדיה לנגישים יותר עבור כאלו שמסיבות שונות ומשונות חווים קשיים בקריאה.",
+	"wikispeech-desc": "כלי המרת טקסט לדיבור כדי להפוך את מיזמי ויקימדיה לנגישים יותר עבור כאלו שמסיבות שונות חווים קשיים בקריאה.",
 	"apihelp-wikispeech-segment-summary": "פיצול תוכן ה־HTML של הדף למקטעים.",
 	"apihelp-wikispeech-segment-param-page": "כותרת הדף לחלוקה למקטעים.",
 	"apihelp-wikispeech-segment-param-removetags": "תגיות HTML שאמורות להימחק לחלוטין במהלך הניקוי בתצורת עצם JSON שנראה כך:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nכאשר <code>tag1</code> יימחק תמיד, <code>tag2</code> יימחק רק אם יש לו את מחלקת ה־CSS <code>css-class</code> ו־<code>tag3</code> יימחק רק אם יש לו את אחת ממחלקות ה־CSS{כ} <code>css-class-1</code> או <code>css-class-2</code>.",
@@ -28,11 +30,20 @@
 	"apihelp-wikispeech-listen-example-3": "לבקש מקטע מגרסה. ייעשה שימוש בעיבוד להקראה מהזיכרון אם יש.",
 	"prefs-wikispeech-voice": "קול",
 	"prefs-wikispeech-speech-rate": "מהירות דיבור",
+	"prefs-wikispeech-enable": "הפעלת ויקידיבור",
 	"prefs-wikispeech-show-player": "תמיד להציג נגן",
 	"right-wikispeech-listen": "האזנה לדף",
-	"action-wikispeech-listen": "האזנה לדף",
+	"right-wikispeech-read-lexicon": "קריאת המילון של ויקידיבור",
+	"right-wikispeech-edit-lexicon": "עריכת המילון של ויקידיבור",
+	"action-wikispeech-listen": "להאזין לדף",
+	"action-wikispeech-read-lexicon": "לקרוא את המילון של ויקידיבור",
+	"action-wikispeech-edit-lexicon": "לערוך את המילון של ויקידיבור",
 	"apierror-wikispeech-listen-invalid-input-too-long": "טקסט הקלט לא יכול לחרוג מעל $1 תווים אך הוא הכיל $2 תווים.",
 	"wikispeech-listen": "להאזין",
+	"wikispeech-dont-listen": "לא להאזין",
+	"editlexicon": "עריכת המילון",
 	"wikispeech-language": "שפה",
-	"wikispeech-word": "מילה"
+	"wikispeech-word": "מילה",
+	"wikispeech-transcription": "תעתיק",
+	"wikispeech-preview": "תצוגה מקדימה"
 }

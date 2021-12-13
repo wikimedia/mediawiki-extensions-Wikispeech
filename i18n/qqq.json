@@ -5,7 +5,10 @@
 			"Igor Leturia",
 			"Karl Wettin",
 			"Sebastian Berlin",
-			"Umherirrender"
+			"Umherirrender",
+			"André Costa",
+			"Raymond",
+			"Robby"
 		]
 	},
 	"wikispeech": "{{name}}\nThe name of the extension",
@@ -27,7 +30,7 @@
 	"apierror-wikispeechlisten-invalid-voice": "{{doc-apierror}}",
 	"apihelp-wikispeechlisten-example-1": "{{doc-apihelp-example|wikispeechlisten}}",
 	"apihelp-wikispeechlisten-example-2": "{{doc-apihelp-example|wikispeechlisten}}",
-	"prefs-wikispeech": "Used in user preferences as a tab heading.",
+	"prefs-wikispeech": "{{optional}}\nUsed in user preferences as a tab heading.",
 	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
@@ -35,5 +38,5 @@
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",
 	"action-wikispeech-listen": "{{doc-action|wikispeech-listen}}",
 	"apierror-wikispeechlisten-invalid-input-too-long": "{{doc-apierror}}",
-	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood."
+	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-dont-listen}}"
 }

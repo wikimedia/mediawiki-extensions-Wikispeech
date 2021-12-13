@@ -1,8 +1,17 @@
 {
 	"@metadata": {
 		"authors": [
-			"Steeve815"
+			"Steeve815",
+			"Amire80",
+			"Neriah",
+			"YaronSh"
 		]
 	},
-	"wikispeech-listen": "להקשיב"
+	"wikispeech-desc": "כלי המרת טקסט לדיבור כדי להפוך את מיזמי ויקימדיה לנגישים יותר עבור כאלו שמסיבות שונות חווים קשיים בקריאה.",
+	"prefs-wikispeech-voice": "קול",
+	"prefs-wikispeech-speech-rate": "מהירות דיבור",
+	"prefs-wikispeech-enable": "הפעלת ויקידיבור",
+	"right-wikispeech-listen": "האזנה לדף",
+	"action-wikispeech-listen": "להאזין לדף",
+	"wikispeech-listen": "להאזין"
 }

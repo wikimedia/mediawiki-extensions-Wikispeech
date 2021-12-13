@@ -1,9 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
-			"আফতাবুজ্জামান"
+			"আফতাবুজ্জামান",
+			"Al Riaz Uddin Ripon",
+			"R4356th",
+			"Sibabrata Banerjee",
+			"WikiAbuHuraira",
+			"YahyA"
 		]
 	},
 	"apihelp-wikispeechlisten-param-lang": "ভাষা কোড।",
-	"prefs-wikispeech-voice": "কণ্ঠ"
+	"prefs-wikispeech-voice": "কণ্ঠ",
+	"wikispeech-listen": "শুনুন"
 }

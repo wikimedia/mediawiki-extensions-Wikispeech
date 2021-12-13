@@ -1,7 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"BaRaN6161 TURK"
+			"BaRaN6161 TURK",
+			"Joseph",
+			"Melissadilara",
+			"Mim.saitkilic",
+			"MuratTheTurkish",
+			"SaldırganSincap"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -26,7 +31,7 @@
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Ses",
 	"prefs-wikispeech-speech-rate": "Konuşma oranı",
-	"prefs-wikispeech-enable": "Wikispeech'i etkinleştir",
+	"prefs-wikispeech-enable": "Vikisöylev'i etkinleştir",
 	"prefs-wikispeech-show-player": "Oynatıcıyı göster",
 	"right-wikispeech-listen": "Sayfayı dinle",
 	"action-wikispeech-listen": "sayfayı dinle",

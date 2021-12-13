@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jon Harald Søby"
+		]
+	},
+	"wikispeech-desc": "Et tekst-til-tale-verktøy som gjør Wikimedia-prosjektene mer tilgjengelige for de som av forskjellige grunner har problemer med å lese.",
+	"prefs-wikispeech-voice": "Stemme",
+	"prefs-wikispeech-speech-rate": "Talehastighet",
+	"prefs-wikispeech-enable": "Aktiver Wikispeech",
+	"right-wikispeech-listen": "Lytte til side",
+	"action-wikispeech-listen": "lytte til side",
+	"wikispeech-listen": "Lytt"
+}

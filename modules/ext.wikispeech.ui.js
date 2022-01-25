@@ -170,7 +170,7 @@
 				// Open link in new tab or window.
 				button.setTarget( '_blank' );
 			}
-			group.addItems( button );
+			group.addItems( [ button ] );
 			return button;
 		};
 

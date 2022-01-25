@@ -107,7 +107,13 @@ class FlushUtterancesFromStoreByExpirationJobQueue {
 	 */
 	public function queueJob() {
 		$this->cache->set( $this->cacheKey, new DateTime() );
-		JobQueueGroup::singleton()->push(
+		if ( method_exists( MediaWikiServices::class, 'getJobQueueGroup' ) ) {
+			// MW 1.37+
+			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
+		} else {
+			$jobQueueGroup = JobQueueGroup::singleton();
+		}
+		$jobQueueGroup->push(
 			new FlushUtterancesFromStoreByExpirationJob(
 				Title::newMainPage(),
 				[]

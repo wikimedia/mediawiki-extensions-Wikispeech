@@ -212,7 +212,7 @@ class UtteranceStore {
 	): ?array {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbr = $this->dbLoadBalancer->getConnection( DB_REPLICA );
-		$res = $dbr->select( self::UTTERANCE_TABLE, [
+		$row = $dbr->selectRow( self::UTTERANCE_TABLE, [
 			'wsu_utterance_id',
 			'wsu_remote_wiki_hash',
 			'wsu_page_id',
@@ -228,12 +228,7 @@ class UtteranceStore {
 			'wsu_seg_hash' => $segmentHash
 		], __METHOD__, [
 			'ORDER BY date_stored DESC',
-			'LIMIT 1'
 		] );
-		if ( !$res ) {
-			return null;
-		}
-		$row = $dbr->fetchObject( $res );
 		if ( !$row ) {
 			return null;
 		}

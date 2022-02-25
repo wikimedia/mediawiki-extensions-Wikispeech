@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"DDPAT"
+			"DDPAT",
+			"Ice bulldog"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Розділіть HTML-вміст сторінки на сегменти.",

@@ -13,7 +13,7 @@ use IContextSource;
 use InvalidArgumentException;
 use LogicException;
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Storage\RevisionStore;
+use MediaWiki\Revision\RevisionStore;
 use MWException;
 use Title;
 use WANObjectCache;

@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
 
 use ConfigFactory;
 use HashBagOStuff;
-use MediaWiki\Storage\RevisionStore;
+use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;

@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Gomoko"
+			"Gomoko",
+			"Verdy p"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Diviser le contenu d’une page HTML en segments.",
@@ -22,6 +23,7 @@
 	"apihelp-wikispeech-listen-param-ipa": "Chaîne IPA à synthétiser.",
 	"apihelp-wikispeech-listen-param-voice": "Voix à utiliser. Si non fourni, la voix par défaut pour la langue sera utilisée.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL vers le chemin de script du wiki consommateur.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "« false » par défaut. Si « true », les données anonymes ne seront pas stockées dans les journaux d’analyse. Principalement utilisé lors de l’exécution d’un pré-rendu pour éviter d’ajouter des requêtes robotisées aux statistiques.",
 	"apierror-wikispeech-listen-deleted-revision": "Les révisions supprimées ne peuvent pas être écoutées.",
 	"apierror-wikispeech-listen-notallowed": "Vous n’avez pas le droit d’appeler cette action de l’API.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> n’est pas une langue valide. Doit appartenir à la liste : $2.",

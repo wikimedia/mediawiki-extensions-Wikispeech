@@ -22,6 +22,7 @@
 	"apihelp-wikispeech-listen-param-ipa": "МФА-низата што ќе се синтетизира.",
 	"apihelp-wikispeech-listen-param-voice": "Кој глас да се користи. Ако не е укажано, ќе се користи стандардниот глас за тој јазик.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL до патеката на потрошувачката викискрипта.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "По основно е неточно. Ако е точно, во дневникот на мерила нем ада се складираат анонимни податоци. Претежно се користи при вршење на предиспис со цел да се избегнат роботски барања за статистика.",
 	"apierror-wikispeech-listen-deleted-revision": "Не можете да преслушувате избришани преработки.",
 	"apierror-wikispeech-listen-notallowed": "Ги немате правада да го повикувате ова дејство од извршникот.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> не претставува важечки јазик. Треба да биде еден од овие: $2.",

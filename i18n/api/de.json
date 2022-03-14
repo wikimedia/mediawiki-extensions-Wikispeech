@@ -20,6 +20,7 @@
 	"apihelp-wikispeech-listen-param-ipa": "IPA-Zeichenkette zum Synthetisieren.",
 	"apihelp-wikispeech-listen-param-voice": "Zu benutzende Stimme. Wenn nicht angegeben, wird die Standardstimme benutzt.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL zum Skriptpfad des Verbraucher-Wikis.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Der Standardwert ist false. Wenn true, werden anonyme Daten nicht im Journal Metrics Log gespeichert. Wird in erster Linie bei der Ausführung von Pre-Rendering verwendet, um zu vermeiden, dass Roboteranfragen zu den Statistiken hinzugefügt werden.",
 	"apierror-wikispeech-listen-deleted-revision": "Gelöschte Versionen können nicht angehört werden.",
 	"apierror-wikispeech-listen-notallowed": "Du hast nicht die Rechte, diese API-Aktion aufzurufen.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ist keine gültige Sprache. Es sollte eine der folgenden Sprachen sein: $2.",

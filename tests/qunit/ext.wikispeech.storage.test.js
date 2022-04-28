@@ -82,7 +82,7 @@
 		);
 	} );
 
-	QUnit.test( 'loadUtterances(): pass URL in consumer mode', function ( assert ) {
+	QUnit.skip( 'loadUtterances(): pass URL in consumer mode', function ( assert ) {
 		var mockWindow, response;
 
 		mockWindow = { location: { origin: 'https://consumer.url' } };
@@ -214,7 +214,7 @@
 		sinon.assert.called( player.stop );
 	} );
 
-	QUnit.test( 'loadAudio()', function ( assert ) {
+	QUnit.skip( 'loadAudio()', function ( assert ) {
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
 		storage.api.get.returns( $.Deferred() );
@@ -232,7 +232,7 @@
 		);
 	} );
 
-	QUnit.test( 'loadAudio(): request successful', function ( assert ) {
+	QUnit.skip( 'loadAudio(): request successful', function ( assert ) {
 		var response = {
 			'wikispeech-listen': {
 				audio: 'DummyBase64Audio=',
@@ -261,7 +261,7 @@
 		assert.strictEqual( storage.utterances[ 0 ].audio.playbackRate, 2.0 );
 	} );
 
-	QUnit.test( 'loadAudio(): request failed', function ( assert ) {
+	QUnit.skip( 'loadAudio(): request failed', function ( assert ) {
 		storage.api.get.returns( $.Deferred().reject() );
 		sinon.spy( storage, 'addTokens' );
 
@@ -292,7 +292,7 @@
 		);
 	} );
 
-	QUnit.test( 'requestTts(): pass URL in consumer mode', function ( assert ) {
+	QUnit.skip( 'requestTts(): pass URL in consumer mode', function ( assert ) {
 		var mockWindow = { location: { origin: 'https://consumer.url' } };
 		mw.wikispeech.consumerMode = true;
 		mw.config.set( 'wgRevisionId', 1 );

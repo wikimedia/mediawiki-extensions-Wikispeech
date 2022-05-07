@@ -19,7 +19,7 @@ use WANObjectCache;
 /**
  * Periodically flushes out old utterances from the utterance store.
  *
- * This is an important part of the the extension architecture, making sure
+ * This is an important part of the extension architecture, making sure
  * that utterance audio files and synthesis metadata files are updated
  * when underlying voice synthesis is improved.
  *

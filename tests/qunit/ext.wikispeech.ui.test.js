@@ -28,8 +28,7 @@
 		}
 	} );
 
-	// Will be re-enabled in T299994.
-	QUnit.skip( 'addControlPanel(): add help button if page is set', function ( assert ) {
+	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
 		sinon.stub( ui, 'addBufferingIcon' );
@@ -44,8 +43,7 @@
 		);
 	} );
 
-	// Will be re-enabled in T299994.
-	QUnit.skip( 'addControlPanel(): add feedback button', function ( assert ) {
+	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
 		sinon.stub( ui, 'addBufferingIcon' );

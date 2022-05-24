@@ -49,6 +49,24 @@ class LexiconEntryItem {
 		$this->properties = $properties;
 	}
 
+	/**
+	 * Get the first transcription for this item
+	 *
+	 * It's assumed that there is only one transcription. While it's
+	 * technically possible to have multiple transcriptions in
+	 * Speechoid, it's unclear when this would happen.
+	 *
+	 * @since 0.1.10
+	 * @return string
+	 */
+	public function getTranscription(): string {
+		if ( $this->properties === null ) {
+			return '';
+		}
+
+		return $this->properties['transcriptions'][0]['strn'];
+	}
+
 	// access helpers.
 
 	/**

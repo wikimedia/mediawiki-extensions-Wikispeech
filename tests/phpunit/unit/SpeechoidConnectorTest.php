@@ -106,7 +106,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testIpaToSampa_ipaGiven_giveSampa() {
+	public function testToIpa_LangugesSymbolsetStringGiven_giveIpa() {
 		$this->speechoidConnector
 			->method( 'findLexiconByLanguage' )
 			->willReturn( 'lexicon-name' );
@@ -114,19 +114,44 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 			->method( 'get' )
 			->withConsecutive(
 				[ 'speechoid.url/lexserver/lexicon/info/lexicon-name' ],
-				[ 'symbolset.url/mapper/map/ipa/target-symbol-set/ipa transcription' ]
+				[ 'symbolset.url/mapper/map/target-symbol-set/ipa/transcription' ]
 			)
 			->will( $this->onConsecutiveCalls(
 				'{"symbolSetName": "target-symbol-set"}',
-				'{"Result": "sampa transcription"}'
+				'{"Result": "ipa transcription"}'
 			) );
 
-		$sampa = $this->speechoidConnector->ipaToSampa(
+		$status = $this->speechoidConnector->toIpa(
+			'transcription',
+			'en'
+		);
+
+		$this->assertTrue( $status->isOk() );
+		$this->assertSame( 'ipa transcription', $status->getValue() );
+	}
+
+	public function testFromIpa_ipaGiven_giveLangugesSymbolsetString() {
+		$this->speechoidConnector
+			->method( 'findLexiconByLanguage' )
+			->willReturn( 'lexicon-name' );
+		$this->requestFactory
+			->method( 'get' )
+			->withConsecutive(
+				[ 'speechoid.url/lexserver/lexicon/info/lexicon-name' ],
+				[ 'symbolset.url/mapper/map/ipa/target-symbol-set/ipa%20transcription' ]
+			)
+			->will( $this->onConsecutiveCalls(
+				'{"symbolSetName": "target-symbol-set"}',
+				'{"Result": "transcription"}'
+			) );
+
+		$status = $this->speechoidConnector->fromIpa(
 			'ipa transcription',
 			'en'
 		);
 
-		$this->assertSame( 'sampa transcription', $sampa );
+		$this->assertTrue( $status->isOk() );
+		$this->assertSame( 'transcription', $status->getValue() );
 	}
 
 	public function testDeleteLexiconEntry_goodLexiconNameAndIdentityGiven_isOK() {

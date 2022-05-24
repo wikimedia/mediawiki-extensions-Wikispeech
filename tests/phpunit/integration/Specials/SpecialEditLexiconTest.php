@@ -11,6 +11,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use SpecialPageTestBase;
+use Status;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -87,10 +88,14 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 
 	public function testSubmit_formFilled_addEntryToLexicon() {
 		$page = $this->newSpecialPage();
+		$this->speechoidConnector
+			->method( 'fromIpa' )
+			->with( 'ipa transcription' )
+			->willReturn( Status::newGood( 'transcription' ) );
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'sampa transcription' ] ],
+			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
 			'status' => [
 				'name' => 'ok'
 			]
@@ -102,10 +107,7 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 				$this->equalTo( 'monkey' ),
 				$this->equalTo( $item )
 			);
-		$this->speechoidConnector
-			->method( 'ipaToSampa' )
-			->with( 'ipa transcription' )
-			->willReturn( 'sampa transcription' );
+
 		$page->submit( [
 			'language' => 'en',
 			'word' => 'monkey',
@@ -146,9 +148,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 				$this->equalTo( $updatedItem )
 			);
 		$this->speechoidConnector
-			->method( 'ipaToSampa' )
+			->method( 'fromIpa' )
 			->with( 'ipa transcription' )
-			->willReturn( 'new transcription' );
+			->willReturn( Status::newGood( 'new transcription' ) );
 
 		$page->submit( [
 			'language' => 'en',
@@ -163,7 +165,7 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'sampa transcription' ] ],
+			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
 			'status' => [
 				'name' => 'ok'
 			]
@@ -179,9 +181,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 				$this->equalTo( 'monkey' ),
 				$this->equalTo( $item )
 			);
-		$this->speechoidConnector->method( 'ipaToSampa' )
+		$this->speechoidConnector->method( 'fromIpa' )
 			->with( 'ipa transcription' )
-			->willReturn( 'sampa transcription' );
+			->willReturn( Status::newGood( 'transcription' ) );
 
 		$page->submit( [
 			'language' => 'en',

@@ -67,6 +67,36 @@ class LexiconEntryItem {
 		return $this->properties['transcriptions'][0]['strn'];
 	}
 
+	/**
+	 * Get preferred for this item
+	 *
+	 * @since 0.1.10
+	 * @return bool The value of preferred or false if not present.
+	 */
+	public function getPreferred(): bool {
+		if (
+			$this->properties === null ||
+			!array_key_exists( 'preferred', $this->properties )
+		) {
+			return false;
+		}
+
+		return $this->properties['preferred'];
+	}
+
+	/**
+	 * Remove preferred for this item
+	 *
+	 * @since 0.1.10
+	 */
+	public function removePreferred() {
+		if ( $this->properties === null ) {
+			return;
+		}
+
+		unset( $this->properties['preferred'] );
+	}
+
 	// access helpers.
 
 	/**

@@ -126,6 +126,10 @@ class SpecialEditLexicon extends SpecialPage {
 			$name = $field['name'];
 			$value = $request->getVal( $name );
 			if ( $value !== null ) {
+				// There's no extra conversion logic so default values
+				// are set to strings and handled down the
+				// line. E.g. boolean values are true for "false" or
+				// "no".
 				$fields[$name]['default'] = $value;
 			}
 		}
@@ -233,9 +237,9 @@ class SpecialEditLexicon extends SpecialPage {
 	/**
 	 * Create a field descriptor for adding an entry or item
 	 *
-	 * Has a field for transcription. Item id is held by a hidden
-	 * field. Also shows fields for language and word from previous
-	 * page, but readonly.
+	 * Has fields for transcription and preferred. Item id is held by
+	 * a hidden field. Also shows fields for language and word from
+	 * previous page, but readonly.
 	 *
 	 * @since 0.1.10
 	 * @param string $language
@@ -255,6 +259,11 @@ class SpecialEditLexicon extends SpecialPage {
 				'buttontype' => 'button',
 				'buttondefault' => $this->msg( 'wikispeech-preview' )->text(),
 				'buttonid' => 'ext-wikispeech-preview-button'
+			],
+			'preferred' => [
+				'name' => 'preferred',
+				'type' => 'check',
+				'label' => $this->msg( 'wikispeech-preferred' )->text()
 			]
 		];
 		return $fields;
@@ -263,7 +272,7 @@ class SpecialEditLexicon extends SpecialPage {
 	/**
 	 * Create a field descriptor for editing an item
 	 *
-	 * Has a field for transcription with default value
+	 * Has fields for transcription and preferred with default values
 	 * from the lexicon. Item id is held by a hidden field. Also shows
 	 * fields for language and word from previous page, but readonly.
 	 *
@@ -293,6 +302,7 @@ class SpecialEditLexicon extends SpecialPage {
 		}
 
 		$fields['transcription']['default'] = $transcription;
+		$fields['preferred']['default'] = $item->getPreferred();
 		return $fields;
 	}
 
@@ -316,7 +326,8 @@ class SpecialEditLexicon extends SpecialPage {
 			!array_key_exists( 'word', $data ) ||
 			!array_key_exists( 'id', $data ) ||
 			!array_key_exists( 'transcription', $data ) ||
-			$data['transcription'] === null
+			$data['transcription'] === null ||
+			!array_key_exists( 'preferred', $data )
 		) {
 			// We don't have all the information we need to make an
 			// edit yet.
@@ -337,6 +348,7 @@ class SpecialEditLexicon extends SpecialPage {
 		$sampa = $sampaStatus->getValue();
 		$word = $data['word'];
 		$id = $data['id'];
+		$preferred = $data['preferred'];
 		if ( $id === '' ) {
 			// Empty id, create new item.
 			$item = new LexiconEntryItem();
@@ -348,6 +360,9 @@ class SpecialEditLexicon extends SpecialPage {
 					'name' => 'ok'
 				]
 			];
+			if ( $preferred ) {
+				$properties['preferred'] = true;
+			}
 			$item->setProperties( $properties );
 			$this->lexiconStorage->createEntryItem(
 				$language,
@@ -363,6 +378,11 @@ class SpecialEditLexicon extends SpecialPage {
 			}
 			$properties = $item->getProperties();
 			$properties['transcriptions'] = [ [ 'strn' => $sampa ] ];
+			if ( $preferred ) {
+				$properties['preferred'] = true;
+			} else {
+				unset( $properties['preferred'] );
+			}
 			$item->setProperties( $properties );
 			$this->lexiconStorage->updateEntryItem(
 				$language,

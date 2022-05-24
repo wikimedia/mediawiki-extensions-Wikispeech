@@ -202,6 +202,7 @@ class LexiconHandler implements LexiconStorage {
 			throw new InvalidArgumentException( '$item->properties must not be null.' );
 		}
 		$itemSpeechoidIdentity = $item->getSpeechoidIdentity();
+		$wasPreferred = false;
 		if ( $itemSpeechoidIdentity === null ) {
 			$this->speechoidStorage->createEntryItem( $language, $key, $item );
 			$this->localStorage->createEntryItem( $language, $key, $item );
@@ -221,10 +222,43 @@ class LexiconHandler implements LexiconStorage {
 				if ( $currentSpeechoidEntryItem === null ) {
 					throw new MWException( 'Expected current Speechoid entry item to exists.' );
 				}
+				$wasPreferred = $currentSpeechoidEntryItem->getPreferred();
 				$this->localStorage->createEntryItem( $language, $key, $currentSpeechoidEntryItem );
+			} else {
+				$currentLocalEntry = $this->localStorage->
+					getEntry( $language, $key );
+				$currentLocalEntryItem = $currentLocalEntry->
+					findItemBySpeechoidIdentity( $itemSpeechoidIdentity );
+				$wasPreferred = $currentLocalEntryItem->getPreferred();
 			}
 			$this->speechoidStorage->updateEntryItem( $language, $key, $item );
 			$this->localStorage->updateEntryItem( $language, $key, $item );
+		}
+		if ( $item->getPreferred() && !$wasPreferred ) {
+			$this->removePreferred( $language, $key, $item );
+		}
+	}
+
+	/**
+	 * Remove "preferred" from all item in the an entry except one
+	 *
+	 * This is used to mirror the behaviour of Speechoid, which does
+	 * this internally when preferred is set to true.
+	 *
+	 * @since 0.1.10
+	 * @param string $language
+	 * @param string $key
+	 * @param LexiconEntryItem $excludedItem This item will not be
+	 *  touched. Used to keep the preferred on the item that was just
+	 *  set to true.
+	 */
+	private function removePreferred( $language, $key, $excludedItem ): void {
+		$entry = $this->localStorage->getEntry( $language, $key );
+		foreach ( $entry->getItems() as $item ) {
+			if ( $item->getSpeechoidIdentity() !== $excludedItem->getSpeechoidIdentity() ) {
+				$item->removePreferred();
+				$this->localStorage->updateEntryItem( $language, $key, $item );
+			}
 		}
 	}
 

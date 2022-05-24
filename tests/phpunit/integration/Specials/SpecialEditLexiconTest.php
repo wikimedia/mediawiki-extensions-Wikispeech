@@ -112,7 +112,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			'language' => 'en',
 			'word' => 'monkey',
 			'transcription' => 'ipa transcription',
-			'id' => ''
+			'id' => '',
+			'preferred' => false
 		] );
 	}
 
@@ -138,7 +139,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			'status' => [
 				'name' => 'ok'
 			],
-			'id' => 123
+			'id' => 123,
+			'preferred' => true
 		] );
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'updateEntryItem' )
@@ -156,7 +158,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			'language' => 'en',
 			'word' => 'monkey',
 			'transcription' => 'ipa transcription',
-			'id' => 123
+			'id' => 123,
+			'preferred' => true
 		] );
 	}
 
@@ -189,7 +192,90 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			'language' => 'en',
 			'word' => 'monkey',
 			'transcription' => 'ipa transcription',
-			'id' => ''
+			'id' => '',
+			'preferred' => false
+		] );
+	}
+
+	public function testSubmit_newSelectedAndPreferredIsTrue_createNewItemWithPreferredTrue() {
+		$page = $this->newSpecialPage();
+		$item = new LexiconEntryItem();
+		$item->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			],
+			'preferred' => true
+		] );
+		$entry = new LexiconEntry();
+		$entry->setItems( [ $item ] );
+		$this->lexiconStorage->method( 'getEntry' )
+			->willReturn( $entry );
+		$this->speechoidConnector->method( 'fromIpa' )
+			->with( 'ipa transcription' )
+			->willReturn( Status::newGood( 'transcription' ) );
+
+		$this->lexiconStorage->expects( $this->once() )
+			->method( 'createEntryItem' )
+			->with(
+				$this->equalTo( 'en' ),
+				$this->equalTo( 'monkey' ),
+				$this->equalTo( $item )
+			);
+
+		$page->submit( [
+			'language' => 'en',
+			'word' => 'monkey',
+			'transcription' => 'ipa transcription',
+			'id' => '',
+			'preferred' => true
+		] );
+	}
+
+	public function testSubmit_preferredFieldIsFalse_preferredRemovedFromProperties() {
+		$page = $this->newSpecialPage();
+		$item = new LexiconEntryItem();
+		$item->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			],
+			'id' => 123,
+			'preferred' => true
+		] );
+		$entry = new LexiconEntry();
+		$entry->setItems( [ $item ] );
+		$this->lexiconStorage->method( 'getEntry' )
+			->willReturn( $entry );
+		$updatedItem = new LexiconEntryItem();
+		$updatedItem->setProperties( [
+			'strn' => 'monkey',
+			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
+			'status' => [
+				'name' => 'ok'
+			],
+			'id' => 123
+		] );
+		$this->lexiconStorage->expects( $this->once() )
+			->method( 'updateEntryItem' )
+			->with(
+				$this->equalTo( 'en' ),
+				$this->equalTo( 'monkey' ),
+				$this->equalTo( $updatedItem )
+			);
+		$this->speechoidConnector
+			->method( 'fromIpa' )
+			->with( 'ipa transcription' )
+			->willReturn( Status::newGood( 'transcription' ) );
+
+		$page->submit( [
+			'language' => 'en',
+			'word' => 'monkey',
+			'transcription' => 'ipa transcription',
+			'id' => 123,
+			'preferred' => false
 		] );
 	}
 }

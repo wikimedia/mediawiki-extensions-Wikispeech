@@ -311,9 +311,11 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			->with( 'sv', 'tomten', $item );
 
 		$localMock = $this->createMock( LexiconWanCacheStorage::class );
+		$entry = new LexiconEntry();
+		$entry->setItems( [ $item ] );
 		$localMock
-			->expects( $this->never() )
-			->method( 'getEntry' );
+			->method( 'getEntry' )
+			->willReturn( $entry );
 		$localMock
 			->expects( $this->once() )
 			->method( 'entryItemExists' )
@@ -334,6 +336,144 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			$item
 		);
 	}
+
+	public function testUpdateEntryItem_updatedItemPreferred_preferredRemovedFromOtherItems() {
+		$localMock = $this->createMock( LexiconWanCacheStorage::class );
+		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
+		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
+
+		$item1 = new LexiconEntryItem();
+		$item1->setProperties( [
+			'id' => 0,
+			'preferred' => true
+		] );
+		$item2 = new LexiconEntryItem();
+		$item2->setProperties( [ 'id' => 1 ] );
+		$localEntry = new LexiconEntry();
+		$localEntry->setKey( 'tomten' );
+		$localEntry->setLanguage( 'sv' );
+		$localEntry->setItems( [ $item1, $item2 ] );
+		$localMock
+			->method( 'getEntry' )
+			->with( 'sv', 'tomten' )
+			->willReturn( $localEntry );
+		$localMock
+			->method( 'entryItemExists' )
+			->willReturn( true );
+
+		$newItem1 = new LexiconEntryItem();
+		$newItem1->setProperties( [ 'id' => 0 ] );
+		$newItem2 = new LexiconEntryItem();
+		$newItem2->setProperties( [
+			'id' => 1,
+			'preferred' => true
+		] );
+
+		$localMock
+			->expects( $this->exactly( 2 ) )
+			->method( 'updateEntryItem' )
+			->withConsecutive(
+				[ 'sv', 'tomten', $newItem2 ],
+				[ 'sv', 'tomten', $newItem1 ]
+			);
+
+		$lexiconHandler->updateEntryItem(
+			'sv',
+			'tomten',
+			$newItem2
+		);
+	}
+
+	public function testUpdateEntryItem_itemAlreadyPreferred_dontUpdateOtherItems() {
+		$localMock = $this->createMock( LexiconWanCacheStorage::class );
+		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
+		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
+
+		$item1 = new LexiconEntryItem();
+		$item1->setProperties( [
+			'id' => 0,
+			'preferred' => true,
+			'parameter' => 'old'
+		] );
+		$item2 = new LexiconEntryItem();
+		$item2->setProperties( [ 'id' => 1 ] );
+		$localEntry = new LexiconEntry();
+		$localEntry->setKey( 'tomten' );
+		$localEntry->setLanguage( 'sv' );
+		$localEntry->setItems( [ $item1, $item2 ] );
+		$localMock
+			->method( 'getEntry' )
+			->with( 'sv', 'tomten' )
+			->willReturn( $localEntry );
+		$localMock
+			->method( 'entryItemExists' )
+			->willReturn( true );
+
+		$newItem1 = new LexiconEntryItem();
+		$newItem1->setProperties( [
+			'id' => 0,
+			'preferred' => true,
+			'parameter' => 'new'
+		] );
+
+		$localMock
+			->expects( $this->once() )
+			->method( 'updateEntryItem' )
+			->with( 'sv', 'tomten', $newItem1 );
+
+		$lexiconHandler->updateEntryItem(
+			'sv',
+			'tomten',
+			$newItem1
+		);
+	}
+
+public function testCreateEntryItem_newItemPreferred_preferredRemovedFromOtherItems() {
+		$localMock = $this->createMock( LexiconWanCacheStorage::class );
+		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
+		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
+
+		$item1 = new LexiconEntryItem();
+		$item1->setProperties( [
+			'id' => 0,
+			'preferred' => true
+		] );
+		$localEntry = new LexiconEntry();
+		$localEntry->setKey( 'tomten' );
+		$localEntry->setLanguage( 'sv' );
+		$localEntry->setItems( [ $item1 ] );
+		$localMock
+			->method( 'getEntry' )
+			->with( 'sv', 'tomten' )
+			->willReturn( $localEntry );
+		$localMock
+			->method( 'entryItemExists' )
+			->with( 'sv', 'tomten', $item1 )
+			->willReturn( true );
+
+		$newItem1 = new LexiconEntryItem();
+		$newItem1->setProperties( [ 'id' => 0 ] );
+		$newItem2 = new LexiconEntryItem();
+		$newItem2->setProperties( [
+			'preferred' => true
+		] );
+		$newItem2WithId = new LexiconEntryItem();
+		$newItem2WithId->setProperties( [
+			'id' => 1,
+			'preferred' => true
+		] );
+
+		$localMock
+			->expects( $this->once() )
+			->method( 'updateEntryItem' )
+			->with( 'sv', 'tomten', $newItem1 );
+
+		$lexiconHandler->createEntryItem(
+			'sv',
+			'tomten',
+			$newItem2
+		);
+}
 
 	/**
 	 * Updates as item that exists in Speechoid but not in local storage.

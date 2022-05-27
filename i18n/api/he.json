@@ -24,6 +24,7 @@
 	"apihelp-wikispeech-listen-param-ipa": "מחרוזת יפ\"א לסנתוז.",
 	"apihelp-wikispeech-listen-param-voice": "קול לשימוש. אם לא צוין ייעשה שימוש בקול ברירת המחדל עבור השפה.",
 	"apihelp-wikispeech-listen-param-consumer-url": "כתובת URL לנתיב הסקריפטים של הוויקי הצרכן.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "ברירת המחדל היא false. אם זה true, נתונים אלמוניים לא יאוחסנו ביומן מדדי כתב־עת. משמש בעיקר בעת ביצוע קדם־תיצוג למען הימנעות מהוספת בקשות רובוט לסטטיסטיקה.",
 	"apierror-wikispeech-listen-deleted-revision": "לא ניתן להאזין לגרסאות שנמחקו.",
 	"apierror-wikispeech-listen-notallowed": "אין לך הרשאות לקרוא לפעולת ה־API הזאת.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> אינה שפה תקנית. אמורה להיות אחת מאלה: $2.",

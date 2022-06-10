@@ -36,7 +36,6 @@
 	"wikispeech-preview": "Preview",
 	"wikispeech-lexicon-add-entry-success": "Entry added to lexicon.",
 	"wikispeech-lexicon-new": "New",
-	"wikispeech-lexicon-add-entry-conflict": "An entry with that spelling already exists. Select an id to edit that entry or \"New\" to add a new entry.",
 	"wikispeech-lexicon-edit-entry-success": "Entry edited.",
 	"wikispeech-lexicon-copyrightnote": "By saving changes, you agree to release your contribution under the [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Wikispeech lexicon editors",

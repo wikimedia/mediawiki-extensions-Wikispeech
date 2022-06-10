@@ -83,6 +83,10 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		string $language,
 		string $key
 	): ?LexiconEntry {
+		if ( !$language || !$key ) {
+			return null;
+		}
+
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
 			throw new MWException( "No lexicon available for language $language" );

@@ -122,7 +122,10 @@ class SpeechoidConnector {
 		$options = [ 'postData' => $postData ];
 		$responseString = $this->requestFactory->post( $this->haproxyQueueUrl, $options );
 		if ( !$responseString ) {
-			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
+			throw new SpeechoidConnectorException(
+				'Unable to communicate with Speechoid. ' .
+				$this->haproxyQueueUrl . var_export( $options, true )
+			);
 		}
 		$status = FormatJson::parse(
 			$responseString,
@@ -420,17 +423,16 @@ class SpeechoidConnector {
 		if ( $words === [] ) {
 			throw new InvalidArgumentException( 'Must contain at least one word' );
 		}
-		$responseString = $this->requestFactory->get(
-			wfAppendQuery(
-				$this->url . '/lexserver/lexicon/lookup',
-				[
-					'lexicons' => $lexicon,
-					'words' => implode( ",", $words )
-				]
-			)
+		$url = wfAppendQuery(
+			$this->url . '/lexserver/lexicon/lookup',
+			[
+				'lexicons' => $lexicon,
+				'words' => implode( ',', $words )
+			]
 		);
+		$responseString = $this->requestFactory->get( $url );
 		if ( !$responseString ) {
-			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
+			throw new SpeechoidConnectorException( "Unable to communicate with Speechoid.  '$url'" );
 		}
 		return FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
 	}

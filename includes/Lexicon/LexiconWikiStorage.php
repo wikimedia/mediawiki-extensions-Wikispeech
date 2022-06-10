@@ -102,6 +102,10 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 		string $language,
 		string $key
 	): ?LexiconEntry {
+		if ( !$language || !$key ) {
+			return null;
+		}
+
 		$wikiPage = $this->lexiconEntryWikiPageFactory( $language, $key );
 		if ( !$wikiPage->exists() ) {
 			return null;

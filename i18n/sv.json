@@ -34,7 +34,6 @@
 	"wikispeech-preview": "Förhandsgranska",
 	"wikispeech-lexicon-add-entry-success": "Uppslagsord har lagts till i lexikonet.",
 	"wikispeech-lexicon-new": "Ny",
-	"wikispeech-lexicon-add-entry-conflict": "Ett uppslagsord med den stavningen finns redan. Välj ett ID för att redigera det uppslagsordet eller \"Ny\" för att lägga till ett nytt uppslagsord.",
 	"wikispeech-lexicon-edit-entry-success": "Uppslagsord redigerat.",
 	"wikispeech-lexicon-copyrightnote": "Genom att spara dina ändringar godkänner du att ditt bidrag släpps under [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Wikispeech-lexikonredigerare",

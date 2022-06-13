@@ -34,7 +34,6 @@
 	"wikispeech-preview": "תצוגה מקדימה",
 	"wikispeech-lexicon-add-entry-success": "הרשומה נוספה למילון.",
 	"wikispeech-lexicon-new": "הוספה",
-	"wikispeech-lexicon-add-entry-conflict": "רשומה עם אותו כתיב בדיוק כבר קיימת. נא לבחור מזהה לעריכת הרשומה ההיא או \"הוספה\" כדי להוסיף רשומה חדשה.",
 	"wikispeech-lexicon-edit-entry-success": "הרשומה נערכה.",
 	"wikispeech-lexicon-copyrightnote": "שמירת השינויים מהווה את הסכמתך לשחרור התרומה שלך לפי תנאי [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "עורכי מילון ויקידיבור",

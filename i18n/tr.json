@@ -38,7 +38,6 @@
 	"wikispeech-preview": "Önizleme",
 	"wikispeech-lexicon-add-entry-success": "Girdi sözlüğe eklendi.",
 	"wikispeech-lexicon-new": "Yeni",
-	"wikispeech-lexicon-add-entry-conflict": "Bu şekilde yazılan bir girdi zaten mevcut. O girdiyi düzenlemek için bir kimlik seçin ya da yeni bir girdi eklemek için \"Yeni\"yi seçin.",
 	"wikispeech-lexicon-edit-entry-success": "Girdi düzenlendi.",
 	"wikispeech-lexicon-copyrightnote": "Değişiklikleri kaydederek, katkınızı [https://creativecommons.org/publicdomain/zero/1.0/ CC0] ile yayınlamayı kabul edersiniz.",
 	"group-wikispeech-edit-lexicon": "Vikisöylev sözlük editörleri",

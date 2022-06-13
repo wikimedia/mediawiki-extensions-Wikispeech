@@ -33,7 +33,6 @@
 	"wikispeech-preview": "Преглед",
 	"wikispeech-lexicon-add-entry-success": "Ставката е внесена во лексиконот.",
 	"wikispeech-lexicon-new": "Нов",
-	"wikispeech-lexicon-add-entry-conflict": "Веќе постои запис со истоветните зборови. Изберете назнака за да го уредите тој запис или „Нов“ за да направите нов запис.",
 	"wikispeech-lexicon-edit-entry-success": "Записот е уреден.",
 	"wikispeech-lexicon-copyrightnote": "Зачувувајќи ги промените, се согласувате дека вашиот придонес го објавувате под лиценцата [https://creativecommons.org/publicdomain/zero/1.0/deed.mk CC0].",
 	"group-wikispeech-edit-lexicon": "Лексиконски уредници на Викиговор",

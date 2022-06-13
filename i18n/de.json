@@ -33,7 +33,6 @@
 	"wikispeech-preview": "Vorschau",
 	"wikispeech-lexicon-add-entry-success": "Eintrag zum Lexikon hinzugefügt.",
 	"wikispeech-lexicon-new": "Neu",
-	"wikispeech-lexicon-add-entry-conflict": "Ein Eintrag mit dieser Schreibweise ist bereits vorhanden. Wähle eine ID, um diesen Eintrag zu bearbeiten, oder „Neu“, um einen neuen Eintrag hinzuzufügen.",
 	"wikispeech-lexicon-edit-entry-success": "Eintrag bearbeitet.",
 	"wikispeech-lexicon-copyrightnote": "Durch das Speichern von Änderungen stimmst du zu, deinen Beitrag unter der [https:/creativecommons.orgpublicdomainzero1.0 CC0] zu veröffentlichen.",
 	"group-wikispeech-edit-lexicon": "Wikispeech-Lexikon-Bearbeiter",

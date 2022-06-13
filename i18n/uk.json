@@ -35,7 +35,6 @@
 	"wikispeech-preview": "Попередній перегляд",
 	"wikispeech-lexicon-add-entry-success": "Запис додано до лексикону.",
 	"wikispeech-lexicon-new": "Новий",
-	"wikispeech-lexicon-add-entry-conflict": "Запис з таким правописом уже існує. Виберіть ідентифікатор, щоб змінити цей запис, або \"Новий\", щоб додати новий запис.",
 	"wikispeech-lexicon-edit-entry-success": "Запис відредаговано.",
 	"wikispeech-lexicon-copyrightnote": "Зберігаючи зміни, ви погоджуєтесь звільнити свій внесок відповідно до [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Редактори лексиконів Вікіспічі",

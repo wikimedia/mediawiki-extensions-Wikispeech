@@ -34,7 +34,6 @@
 	"wikispeech-preview": "Pré-visualizar",
 	"wikispeech-lexicon-add-entry-success": "Entrada adicionada ao léxico.",
 	"wikispeech-lexicon-new": "Novo",
-	"wikispeech-lexicon-add-entry-conflict": "Já existe uma entrada com essa grafia. Selecione um id para editar essa entrada ou \"Novo\" para adicionar uma nova entrada.",
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",
 	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com o [https://creativecommons.org/publicdomain/zero/1.0/ CC0]."
 }

@@ -39,7 +39,7 @@
 	"wikispeech-item-id": "Label for item id field on the edit lexicon special page.",
 	"wikispeech-preview": "Label for preview button on the edit lexicon special page.",
 	"wikispeech-lexicon-add-entry-success": "Displayed on the success page after adding a lexicon entry with Special:EditLexicon.",
-	"wikispeech-lexicon-new": "Label for creating new entry in Special:EditLexicon.\nSee also:\n{{msg-mw|wikispeech-lexicon-add-entry-conflict}}\n{{identical|New}}",
+	"wikispeech-lexicon-new": "Label for creating new entry in Special:EditLexicon.\nSee also:\n{{identical|New}}",
 	"wikispeech-lexicon-add-entry-conflict": "Tells the user that there was already an entry with that spelling and asks them to select an entry to edit or add a new one.",
 	"wikispeech-lexicon-edit-entry-success": "Displayed on the success page after editing a lexicon entry with Special:EditLexicon.",
 	"wikispeech-lexicon-copyrightnote": "Displayed on Special:EditLexicon under the submit button.",

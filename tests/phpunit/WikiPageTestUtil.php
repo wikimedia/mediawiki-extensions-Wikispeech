@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Tests;
 
 use CommentStoreComment;
 use FatalError;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\RevisionSlotsUpdate;
 use MWException;
@@ -41,7 +42,12 @@ class WikiPageTestUtil {
 		if ( is_string( $title ) ) {
 			$title = Title::newFromText( $title, $namespace );
 		}
-		$page = WikiPage::factory( $title );
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			// MW 1.36+
+			$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
+		} else {
+			$page = WikiPage::factory( $title );
+		}
 		if ( $page->exists() ) {
 			throw new MWException( 'Page already exists: ' . $title );
 		}

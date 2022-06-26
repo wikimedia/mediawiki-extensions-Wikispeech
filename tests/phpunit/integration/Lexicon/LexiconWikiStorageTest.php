@@ -8,6 +8,7 @@ namespace MediaWiki\Wikispeech\Tests\Itegration\Lexicon;
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
@@ -36,13 +37,23 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 
 	protected function tearDown(): void {
 		$user = $this->getTestSysop()->getUser();
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			// MW 1.36+
+			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+		} else {
+			$wikiPageFactory = null;
+		}
 		foreach ( $this->entriesTouched as $entry ) {
 			try {
-				$p = WikiPage::factory(
-					Title::newFromText(
+				$entrySubpage = Title::newFromText(
 						$entry->getLanguage(), NS_PRONUNCIATION_LEXICON
-					)->getSubpage( $entry->getKey() )
-				);
+					)->getSubpage( $entry->getKey() );
+				if ( $wikiPageFactory !== null ) {
+					// MW 1.36+
+					$p = $wikiPageFactory->newFromTitle( $entrySubpage );
+				} else {
+					$p = WikiPage::factory( $entrySubpage );
+				}
 				if ( $p->exists() ) {
 					$p->doDeleteArticleReal( "testing done.", $user );
 				}

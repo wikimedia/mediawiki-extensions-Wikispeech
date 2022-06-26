@@ -9,6 +9,7 @@ namespace MediaWiki\Wikispeech\Segment;
  */
 
 use IContextSource;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use Title;
@@ -65,7 +66,12 @@ class LocalWikiPageProvider extends AbstractPageProvider {
 	 * @since 0.1.10
 	 */
 	public function loadData( Title $title ): void {
-		$page = WikiPage::factory( $title );
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			// MW 1.36+
+			$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
+		} else {
+			$page = WikiPage::factory( $title );
+		}
 		$parserOptions = $page->makeParserOptions( $this->context );
 		$parserOutput = $page->getParserOutput( $parserOptions );
 		$this->setDisplayTitle( $parserOutput->getDisplayTitle() );

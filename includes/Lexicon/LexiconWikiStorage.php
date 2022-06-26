@@ -14,6 +14,7 @@ use ExternalStoreException;
 use FormatJson;
 use InvalidArgumentException;
 use JsonContent;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use MWException;
@@ -70,7 +71,13 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 		string $language,
 		string $key
 	): WikiPage {
-		return WikiPage::factory( $this->lexiconEntryTitleFactory( $language, $key ) );
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			// MW 1.36+
+			return MediaWikiServices::getInstance()->getWikiPageFactory()
+				->newFromTitle( $this->lexiconEntryTitleFactory( $language, $key ) );
+		} else {
+			return WikiPage::factory( $this->lexiconEntryTitleFactory( $language, $key ) );
+		}
 	}
 
 	/**

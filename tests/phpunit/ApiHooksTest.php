@@ -182,7 +182,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertTrue( $this->configLoaded() );
 	}
 
-	public function testOnSkinTemplateNavigation_addListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_addListenTab() {
 		// This stubbing is required to not get an error about Message::text().
 		$this->skin->method( 'msg' )->willReturn(
 			Message::newFromKey( 'wikispeech-listen' )
@@ -190,55 +190,55 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', false );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_wikispeechDisabled_dontAddListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_wikispeechDisabled_dontAddListenTab() {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechEnable', false );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_lackingRights_dontAddListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_lackingRights_dontAddListenTab() {
 		$this->permissionsManager
 			->overrideUserRightsForTesting( $this->out->getUser(), [] );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_serverUrlInvalid_dontAddListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_serverUrlInvalid_dontAddListenTab() {
 		$this->setMwGlobals(
 			'wgWikispeechSpeechoidUrl',
 			'invalid-url'
 		);
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_wrongNamespace_dontAddListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_wrongNamespace_dontAddListenTab() {
 		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_revisionNotAccessible_dontAddListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_revisionNotAccessible_dontAddListenTab() {
 		$inaccessibleRevisionId = $this->out->getTitle()->getLatestRevId() - 1;
 		$this->out->setRevisionId( $inaccessibleRevisionId );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
-	public function testOnSkinTemplateNavigation_invalidPageContentLanguage_dontAddListenTab() {
+	public function testOnSkinTemplateNavigation__Universal_invalidPageContentLanguage_dontAddListenTab() {
 		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation', [ $this->skin, &$links ] );
+		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 }

@@ -298,6 +298,7 @@
 				]
 			} )
 				.on( 'click', mw.wikispeech.player.playOrStop );
+			self.selectionPlayer.toggle( false );
 			$( document.body ).append( self.selectionPlayer.$element );
 			$( document ).on( 'mouseup', function () {
 				if (

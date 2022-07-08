@@ -81,20 +81,17 @@
 	} );
 
 	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function () {
-		var textNode, expectedLeft, event;
+		var textNode, event;
 
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
 		selectionPlayer.isSelectionValid.returns( true );
-		self.stubGetSelection( textNode, textNode, { right: 15, bottom: 10 } );
+		self.stubGetSelection( textNode, textNode, { right: 50, bottom: 10 } );
 		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
+		ui.selectionPlayer.$element.width( 30 );
 		sinon.spy( ui.selectionPlayer.$element, 'css' );
 		sinon.spy( ui.selectionPlayer, 'toggle' );
-		expectedLeft =
-			15 -
-			$( '.ext-wikispeech-selection-player' ).width() +
-			$( document ).scrollLeft();
 		event = $.Event( 'mouseup' );
 
 		$( document ).trigger( event );
@@ -103,7 +100,7 @@
 		sinon.assert.calledWith(
 			ui.selectionPlayer.$element.css,
 			{
-				left: expectedLeft + 'px',
+				left: '20px',
 				top: 10 + $( document ).scrollTop() + 'px'
 			}
 		);
@@ -233,6 +230,12 @@
 		$( document ).trigger( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
+	} );
+
+	QUnit.test( 'addSelectionPlayer(): hide selection player initially', function ( assert ) {
+		ui.addSelectionPlayer();
+
+		assert.false( ui.selectionPlayer.isVisible() );
 	} );
 
 	/**

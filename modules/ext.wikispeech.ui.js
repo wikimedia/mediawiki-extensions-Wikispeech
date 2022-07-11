@@ -52,11 +52,8 @@
 		 */
 
 		this.addControlPanel = function ( addEditButton ) {
-			var $footer, toolFactory, toolGroupFactory, playerGroup,
-				linkGroup, height, padding;
+			var toolFactory, toolGroupFactory, playerGroup, linkGroup, height;
 
-			// eslint-disable-next-line no-jquery/no-global-selector
-			$footer = $( '#footer' );
 			toolFactory = new OO.ui.ToolFactory();
 			toolGroupFactory = new OO.ui.ToolGroupFactory();
 			self.toolbar = new OO.ui.Toolbar(
@@ -129,9 +126,15 @@
 			// Add extra padding at the bottom of the page to not have
 			// the player cover anything.
 			height = self.toolbar.$element.height();
-			padding =
-				Number( $footer.css( 'padding-bottom' ).slice( 0, -2 ) );
-			$footer.css( 'padding-bottom', padding + height );
+			self.$playerFooter = $( '<div>' )
+				.height( height )
+				// A bit of CSS is needed to make it interact properly
+				// with the other floating elements in the footer.
+				.css( {
+					float: 'left',
+					width: '100%'
+				} )
+				.appendTo( '#footer' );
 			self.addBufferingIcon();
 		};
 
@@ -500,9 +503,11 @@
 			if ( self.isShown() ) {
 				self.toolbar.toggle( false );
 				self.selectionPlayer.toggle( false );
+				self.$playerFooter.hide();
 			} else {
 				self.toolbar.toggle( true );
 				self.selectionPlayer.toggle( true );
+				self.$playerFooter.show();
 			}
 		};
 

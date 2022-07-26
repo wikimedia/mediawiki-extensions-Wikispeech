@@ -345,7 +345,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		// insert test utterances
 		foreach ( $mockedUtterances as &$mockedUtterance ) {
 			$this->db->insert( UtteranceStore::UTTERANCE_TABLE, [
-				'wsu_date_stored' => strval( $mockedUtterance['dateStored'] ),
+				'wsu_date_stored' => $this->db->timestamp( $mockedUtterance['dateStored'] ),
 				'wsu_page_id' => $mockedUtterance['pageId'],
 				'wsu_lang' => $mockedUtterance['language'],
 				'wsu_voice' => $mockedUtterance['voice'],

@@ -65,10 +65,8 @@
 			{
 				"name": "wsu_date_stored",
 				"comment": "Timestamp of when the utterance was stored in database. Used to flush out old utterances on update.",
-				"type": "binary",
+				"type": "mwtimestamp",
 				"options": {
-					"length": 14,
-					"fixed": true,
 					"notnull": true
 				}
 			}

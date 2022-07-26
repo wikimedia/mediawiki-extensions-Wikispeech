@@ -23,9 +23,16 @@ class DatabaseHooks
 	 * @since 0.1.8
 	 */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
+		$type = $updater->getDB()->getType();
+		$path = dirname( __DIR__ ) . '/../sql';
 		$updater->addExtensionTable(
 			'wikispeech_utterance',
-			dirname( __DIR__ ) . "/../sql/{$updater->getDB()->getType()}/tables-generated.sql"
+			"$path/$type/tables-generated.sql"
 		);
+		if ( $type === 'postgres' ) {
+			$updater->modifyExtensionField(
+				'wikispeech_utterance', 'wsu_date_stored', "$path/$type/patch-wikispeech_utterance-wsu_date_stored.sql"
+			);
+		}
 	}
 }

@@ -9,7 +9,7 @@ CREATE TABLE wikispeech_utterance (
   wsu_lang TEXT NOT NULL,
   wsu_seg_hash CHAR(64) NOT NULL,
   wsu_voice VARCHAR(30) NOT NULL,
-  wsu_date_stored TEXT NOT NULL,
+  wsu_date_stored TIMESTAMPTZ NOT NULL,
   PRIMARY KEY(wsu_utterance_id)
 );
 

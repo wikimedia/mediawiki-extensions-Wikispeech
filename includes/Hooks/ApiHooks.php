@@ -19,7 +19,7 @@ use IApiMessage;
 use MediaWiki\Api\Hook\ApiCheckCanExecuteHook;
 use MediaWiki\Hook\ApiBeforeMainHook;
 use MediaWiki\Hook\BeforePageDisplayHook;
-use MediaWiki\Hook\SkinTemplateNavigationHook;
+use MediaWiki\Hook\SkinTemplateNavigation__UniversalHook;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Languages\LanguageFactory;
 use MediaWiki\Logger\LoggerFactory;
@@ -46,7 +46,7 @@ class ApiHooks implements
 	ResourceLoaderGetConfigVarsHook,
 	GetPreferencesHook,
 	ApiCheckCanExecuteHook,
-	SkinTemplateNavigationHook
+	SkinTemplateNavigation__UniversalHook
 {
 	/** @var Config */
 	private $config;
@@ -452,7 +452,7 @@ class ApiHooks implements
 	 *  the UI is built.
 	 * @param array &$links Navigation links.
 	 */
-	public function onSkinTemplateNavigation( $skinTemplate, &$links ): void {
+	public function onSkinTemplateNavigation__Universal( $skinTemplate, &$links ): void { // phpcs:ignore MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName, Generic.Files.LineLength.TooLong
 		$out = $skinTemplate->getOutput();
 		if ( $this->shouldWikispeechRun( $out ) ) {
 			$links['actions']['listen'] = [

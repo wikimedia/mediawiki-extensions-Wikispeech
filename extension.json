@@ -176,7 +176,7 @@
 		"ResourceLoaderGetConfigVars": "ApiHooks",
 		"GetPreferences": "ApiHooks",
 		"ApiCheckCanExecute": "ApiHooks",
-		"SkinTemplateNavigation": "ApiHooks",
+		"SkinTemplateNavigation::Universal": "ApiHooks",
 		"CustomEditor": "LexiconHooks"
 	},
 	"ConfigRegistry": {

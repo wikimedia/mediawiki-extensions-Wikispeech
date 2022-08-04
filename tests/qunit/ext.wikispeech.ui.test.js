@@ -325,22 +325,26 @@
 	QUnit.test( 'toggleVisibility(): hide', function () {
 		ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
 		ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
+		ui.$playerFooter = sinon.stub( $( '<div>' ) );
 		sinon.stub( ui, 'isShown' ).returns( true );
 
 		ui.toggleVisibility();
 
 		sinon.assert.calledWith( ui.toolbar.toggle, false );
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
+		sinon.assert.called( ui.$playerFooter.hide );
 	} );
 
 	QUnit.test( 'toggleVisibility(): show', function () {
 		ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
 		ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
+		ui.$playerFooter = sinon.stub( $( '<div>' ) );
 		sinon.stub( ui, 'isShown' ).returns( false );
 
 		ui.toggleVisibility();
 
 		sinon.assert.calledWith( ui.toolbar.toggle, true );
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
+		sinon.assert.called( ui.$playerFooter.show );
 	} );
 }() );

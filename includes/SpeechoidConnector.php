@@ -549,16 +549,29 @@ class SpeechoidConnector {
 	}
 
 	/**
-	 * Convert a string of IPA to a string of SAMPA
+	 * Convert a string to IPA from the symbolset used for the given language
 	 *
-	 * @since 0.1.8
-	 * @param string $ipa
+	 * @since 0.1.10
+	 * @param string $string
 	 * @param string $language Tell Speechoid to use the symbol set
 	 *  for this language.
-	 * @return string
-	 * @throws SpeechoidConnectorException
+	 * @return Status
 	 */
-	public function ipaToSampa( string $ipa, string $language ): string {
+	public function toIpa( string $string, string $language ): Status {
+		return $this->map( $string, $language, true );
+	}
+
+	/**
+	 * Convert a string to or from IPA
+	 *
+	 * @since 0.1.8
+	 * @param string $string
+	 * @param string $language Tell Speechoid to use the symbol set
+	 *  for this language.
+	 * @param bool $toIpa Converts to IPA if true, otherwise from IPA
+	 * @return Status
+	 */
+	private function map( string $string, string $language, bool $toIpa ): Status {
 		// Get the symbol set to convert to
 		$lexicon = $this->findLexiconByLanguage( $language );
 		$symbolsetRequestUrl = "$this->url/lexserver/lexicon/info/$lexicon";
@@ -568,23 +581,44 @@ class SpeechoidConnector {
 			FormatJson::FORCE_ASSOC
 		);
 		if ( !$symbolSetStatus->isOK() ) {
-			throw new SpeechoidConnectorException(
+			return Status::newFatal(
 				"Failed to parse response from $symbolsetRequestUrl as JSON: " .
-				"$symbolSetResponse"
+				$symbolSetResponse
 			);
 		}
 		$symbolSet = $symbolSetStatus->getValue()['symbolSetName'];
 
-		$mapRequestUrl = "$this->symbolSetUrl/mapper/map/ipa/$symbolSet/$ipa";
+		if ( $toIpa ) {
+			$from = $symbolSet;
+			$to = 'ipa';
+		} else {
+			$from = 'ipa';
+			$to = $symbolSet;
+		}
+		$mapRequestUrl = "$this->symbolSetUrl/mapper/map/$from/$to/" .
+			rawurlencode( $string );
 		$mapResponse = $this->requestFactory->get( $mapRequestUrl );
 		$mapStatus = FormatJson::parse( $mapResponse, FormatJson::FORCE_ASSOC );
 		if ( !$mapStatus->isOK() ) {
-			throw new SpeechoidConnectorException(
+			return Status::newFatal(
 				"Failed to parse response from $mapRequestUrl as JSON: " .
-				"$mapResponse"
+				$mapResponse
 			);
 		}
-		return $mapStatus->getValue()['Result'];
+		return Status::newGood( $mapStatus->getValue()['Result'] );
+	}
+
+	/**
+	 * Convert a string from IPA to the symbolset used for the given language
+	 *
+	 * @since 0.1.10
+	 * @param string $string
+	 * @param string $language Tell Speechoid to use the symbol set
+	 *  for this language.
+	 * @return Status
+	 */
+	public function fromIpa( string $string, string $language ): Status {
+		return $this->map( $string, $language, false );
 	}
 
 	/**

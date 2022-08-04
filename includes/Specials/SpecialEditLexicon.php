@@ -95,22 +95,29 @@ class SpecialEditLexicon extends SpecialPage {
 		$this->postText = Html::rawElement( 'p', [], $copyrightNote );
 		$successMessage = '';
 
+		$formId = '';
 		if ( !$language || !$word ) {
+			$formId = 'lookup';
 			$fields = $this->getLookupFields();
 		} elseif ( $entry === null ) {
-			$fields = $this->getItemFields( $language, $word );
+			$formId = 'newEntry';
+			$fields = $this->getAddFields( $language, $word );
 			$successMessage = 'wikispeech-lexicon-add-entry-success';
 		} elseif ( !in_array( 'id', $request->getValueNames() ) ) {
+			$formId = 'selectItem';
 			$fields = $this->getSelectFields( $language, $word, $entry );
 		} elseif ( $id ) {
-			$fields = $this->getItemFields( $language, $word );
+			$formId = 'editItem';
+			$fields = $this->getEditFields( $language, $word, $id );
 			$successMessage = 'wikispeech-lexicon-edit-entry-success';
 		} elseif ( $id === '' ) {
-			$fields = $this->getItemFields( $language, $word );
+			$formId = 'newItem';
+			$fields = $this->getAddFields( $language, $word );
 			$successMessage = 'wikispeech-lexicon-add-entry-success';
 		} else {
 			// We have a set of parameters that we can't do anything
 			// with. Show the first page.
+			$formId = 'lookup';
 			$fields = $this->getLookupFields();
 		}
 
@@ -127,6 +134,7 @@ class SpecialEditLexicon extends SpecialPage {
 			$fields,
 			$this->getContext()
 		);
+		$form->setFormIdentifier( $formId );
 		$form->setSubmitCallback( [ $this, 'submit' ] );
 		$form->setPostText( $this->postText );
 		if ( $form->show() && $successMessage ) {
@@ -223,7 +231,7 @@ class SpecialEditLexicon extends SpecialPage {
 	}
 
 	/**
-	 * Create a field descriptor for creating entry or item, or editing item
+	 * Create a field descriptor for adding an entry or item
 	 *
 	 * Has a field for transcription. Item id is held by a hidden
 	 * field. Also shows fields for language and word from previous
@@ -234,7 +242,7 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @param string $word
 	 * @return array
 	 */
-	private function getItemFields( string $language, string $word ): array {
+	private function getAddFields( string $language, string $word ): array {
 		$fields = $this->getSelectFields( $language, $word );
 		$fields['id']['type'] = 'hidden';
 		$fields += [
@@ -249,6 +257,42 @@ class SpecialEditLexicon extends SpecialPage {
 				'buttonid' => 'ext-wikispeech-preview-button'
 			]
 		];
+		return $fields;
+	}
+
+	/**
+	 * Create a field descriptor for editing an item
+	 *
+	 * Has a field for transcription with default value
+	 * from the lexicon. Item id is held by a hidden field. Also shows
+	 * fields for language and word from previous page, but readonly.
+	 *
+	 * @since 0.1.10
+	 * @param string $language
+	 * @param string $word
+	 * @param int $id
+	 * @return array
+	 */
+	private function getEditFields( string $language, string $word, int $id ): array {
+		$fields = $this->getAddFields( $language, $word );
+		$entry = $this->lexiconStorage->getEntry( $language, $word );
+		$item = $entry->findItemBySpeechoidIdentity( $id );
+		if ( $item === null ) {
+			throw new MWException( "No item with id '$id' found." );
+			// TODO: Show error message (T308562).
+		}
+		$transcriptionStatus = $this->speechoidConnector->toIpa(
+			$item->getTranscription(),
+			$language
+		);
+		if ( $transcriptionStatus->isOk() ) {
+			$transcription = $transcriptionStatus->getValue();
+		} else {
+			$transcription = '';
+			// TODO: Show error message (T308562).
+		}
+
+		$fields['transcription']['default'] = $transcription;
 		return $fields;
 	}
 
@@ -281,10 +325,16 @@ class SpecialEditLexicon extends SpecialPage {
 
 		$language = $data['language'];
 		$transcription = $data['transcription'];
-		$sampa = $this->speechoidConnector->ipaToSampa(
+		$sampaStatus = $this->speechoidConnector->fromIpa(
 			$transcription,
 			$language
 		);
+		if ( !$sampaStatus->isOk() ) {
+			// TODO: Show error message (T308562).
+			return false;
+		}
+
+		$sampa = $sampaStatus->getValue();
 		$word = $data['word'];
 		$id = $data['id'];
 		if ( $id === '' ) {

@@ -1,8 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Beta16"
+			"Beta16",
+			"Ajeje Brazorf",
+			"Yiyi"
 		]
 	},
+	"wikispeech-desc": "Uno strumento di sintesi vocale per rendere i progetti di Wikimedia più accessibili per le persone che per diversi motivi hanno difficoltà di lettura.",
+	"prefs-wikispeech-voice": "Voce",
+	"prefs-wikispeech-enable": "Abilita Wikispeech",
 	"wikispeech-listen": "Ascolta"
 }

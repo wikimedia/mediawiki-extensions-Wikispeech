@@ -16,4 +16,4 @@ then
     path=/vagrant/mediawiki/extensions/Wikispeech/tests/phpunit
 fi
 
-/vagrant/mediawiki/tests/phpunit/phpunit.php --wiki wiki $filter $path
+PHPUNIT_WIKI=wiki php /vagrant/mediawiki/tests/phpunit/phpunit.php $filter $path

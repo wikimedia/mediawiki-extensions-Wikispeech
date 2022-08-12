@@ -34,10 +34,14 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T300104](https://phabricator.wikimedia.org/T300104) Sort out footer toolbar interaction
+* [T299994](https://phabricator.wikimedia.org/T299994) Buttons do not show up in the player UI
+* [T300120](https://phabricator.wikimedia.org/T300120) Failing Jenkins tests for mw.loader
+* [T293578](https://phabricator.wikimedia.org/T293578) Skip metrics logging for pre-rendered pages
 * [T286579](https://phabricator.wikimedia.org/T286579) Introduced optional metrics logging in ApiWikispeechListen.
 * [T285141](https://phabricator.wikimedia.org/T285141) Major refactor of Segmenter.
 * [T286198](https://phabricator.wikimedia.org/T286198) Empty node causes Speechoid error
-* [T286372](https://phabricator.wikimedia.org/T286372) Introduced pre-Speechoid text processors that transform numbers, years and dates to Swedish text. 
+* [T286372](https://phabricator.wikimedia.org/T286372) Introduced pre-Speechoid text processors that transform numbers, years and dates to Swedish text.
 * [T284138](https://phabricator.wikimedia.org/T284138) Playback stalled if utterance fail to load when prepared by previous utterance starting to play.
 * [T281898](https://phabricator.wikimedia.org/T281898) Use connection queue against Speechoid TTS operations.
 * [T283063](https://phabricator.wikimedia.org/T283063) Title highlighting is wrong.

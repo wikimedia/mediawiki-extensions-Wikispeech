@@ -51,6 +51,8 @@ interface DigitsToWords {
 	/**
 	 * Translate integer to text value, e.g. 1 -> 'one', 13 -> 'thirteen'.
 	 *
+	 * @todo This does not support for leading zeros. 007 will be transformed to "seven".
+	 *  In order to implement, introduce new function stringIntToWords.
 	 * @since 0.1.10
 	 * @param int $input
 	 * @return string|null Null if input value is not supported.

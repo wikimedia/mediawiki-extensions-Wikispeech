@@ -1,6 +1,8 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Huñvreüs"
+		]
 	},
 	"apihelp-wikispeech-segment-summary": "Ober war-dro ur bajenn da vezañ implijet gant an astenn Wikispeech",
 	"apihelp-wikispeech-segment-param-page": "Titl ar bajenn da vezañ pledet ganti.",
@@ -9,7 +11,7 @@
 	"apihelp-wikispeech-segment-example-1": "Tapout rannoù an astenn Wikispeech. Diverket eo an dikedenn <code>sup</code> ha kemend-all evit <code>div</code> pa vez gant ar c'hevrennad <code>toc</code>. An tikedennoù <code>h1</code> ha <code>h2</code> a droc'h ar rannoù.",
 	"apihelp-wikispeech-segment-example-2": "Kaout an danvez HTML orin hag an destenn kempennet.",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> n'eo ket un neudennad JSON reizh.",
-	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> n'eo ket ur furmad reizh. Rankout a ra bezañ un draezenn dezhi talvoudoù boulean, neudennadoù pe heuliadoù neudennadoù. Kuit da zilemel tikedenn ebet, merkañ <var>removetags</var> evel un draezenn c'houllo, <code>{}</code>.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> n'eo ket ur furmad reizh. Rankout a ra bezañ un draezenn dezhi talvoudoù boolean, chadennoù pe taolennoù chadennoù. Evit chom hep zilemel tikedenn ebet, merkañ <var>removetags</var> evel un draezenn c'houllo, <code>{}</code>.",
 	"apihelp-wikispeech-listen-summary": "Yezh kenaozet.",
 	"apihelp-wikispeech-listen-param-lang": "Kod yezh.",
 	"apihelp-wikispeech-listen-param-text": "Testenn da genaozañ.",

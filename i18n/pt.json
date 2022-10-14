@@ -2,8 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Emma Franzen",
-			"Hamilton Abreu"
+			"Hamilton Abreu",
+			"Marinaazev"
 		]
 	},
+	"wikispeech-preferred": "Preferido",
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada."
 }

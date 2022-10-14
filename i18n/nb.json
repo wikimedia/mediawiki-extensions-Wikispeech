@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Jon Harald Søby"
+			"Jon Harald Søby",
+			"Telaneo"
 		]
 	},
 	"wikispeech-desc": "Et tekst-til-tale-verktøy som gjør Wikimedia-prosjektene mer tilgjengelige for de som av forskjellige grunner har problemer med å lese.",
@@ -12,5 +13,6 @@
 	"right-wikispeech-listen": "Lytte til side",
 	"action-wikispeech-listen": "lytte til side",
 	"wikispeech-listen": "Lytt",
-	"wikispeech-dont-listen": "Ikke lytt"
+	"wikispeech-dont-listen": "Ikke lytt",
+	"wikispeech-preferred": "Foretrukket"
 }

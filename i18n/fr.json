@@ -5,6 +5,7 @@
 			"Gomoko",
 			"Pamputt",
 			"Scratcheur-2020Send",
+			"SleaY",
 			"Thibaut120094",
 			"Verdy p",
 			"Wladek92"
@@ -37,6 +38,7 @@
 	"wikispeech-transcription": "Transcription",
 	"wikispeech-item-id": "Identifiant",
 	"wikispeech-preview": "Aperçu",
+	"wikispeech-preferred": "Préféré",
 	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée au lexique.",
 	"wikispeech-lexicon-new": "Nouveau",
 	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",

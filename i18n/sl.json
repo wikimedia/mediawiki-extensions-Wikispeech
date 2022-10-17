@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"wikispeech": "Wikigovor",
+	"wikispeech-desc": "Orodje za pretvarjanje besedila v govor, kar bo projekte Wikimedie napravilo dostopnejše za ljudi, ki imajo zaradi različnih razlogov težave z branjem.",
+	"prefs-wikispeech": "Wikigovor",
+	"prefs-wikispeech-voice": "Glas",
+	"prefs-wikispeech-speech-rate": "Hitrost govora",
+	"prefs-wikispeech-enable": "Omogoči Wikigovor",
+	"right-wikispeech-listen": "Poslušaj stran",
+	"action-wikispeech-listen": "poslušanje strani",
+	"wikispeech-listen": "Poslušaj"
+}

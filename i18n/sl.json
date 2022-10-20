@@ -1,0 +1,40 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"wikispeech": "Wikigovor",
+	"wikispeech-desc": "Orodje za pretvarjanje besedila v govor, kar bo projekte Wikimedie napravilo dostopnejše za ljudi, ki imajo zaradi različnih razlogov težave z branjem.",
+	"prefs-wikispeech": "Wikigovor",
+	"prefs-wikispeech-voice": "Glas",
+	"prefs-wikispeech-speech-rate": "Hitrost govora",
+	"prefs-wikispeech-speech-rate-percent": "Hitrost govora (v odstotkih)",
+	"prefs-wikispeech-enable": "Omogoči Wikigovor",
+	"prefs-wikispeech-show-player": "Vedno prikaži igralca",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Spremembe nastavitev bodo začele veljati ob naslednji naložitvi strani. Če želite poslušati trenutno stran z novimi nastavitvami, stran po shranjevanju naložite znova.",
+	"right-wikispeech-listen": "Poslušaj stran",
+	"right-wikispeech-read-lexicon": "Branje leksikona Wikigovora",
+	"right-wikispeech-edit-lexicon": "Urejanje leksikona Wikigovora",
+	"action-wikispeech-listen": "poslušanje strani",
+	"action-wikispeech-read-lexicon": "branje leksikona Wikigovora",
+	"action-wikispeech-edit-lexicon": "urejanje leksikona Wikigovora",
+	"wikispeech-listen": "Poslušaj",
+	"wikispeech-dont-listen": "Ne posluišaj",
+	"wikispeech-error-loading-audio-title": "Zvoka ni bilo mogoče naložiti",
+	"wikispeech-error-loading-audio-message": "To je lahko posledica slabe internetne povezave ali napake v strežniku. Ali želite znova poskusiti ali ustaviti branje?",
+	"wikispeech-retry": "Poskusi znova",
+	"wikispeech-stop": "Ustavi",
+	"editlexicon": "Urejanje leksikona",
+	"wikispeech-language": "Jezik",
+	"wikispeech-word": "Beseda",
+	"wikispeech-transcription": "Prepis",
+	"wikispeech-item-id": "ID",
+	"wikispeech-preview": "Predogled",
+	"wikispeech-lexicon-add-entry-success": "Vnos je bil dodan v leksikon.",
+	"wikispeech-lexicon-new": "Novo",
+	"wikispeech-lexicon-edit-entry-success": "Vnos urejen.",
+	"wikispeech-lexicon-copyrightnote": "S shranitvijo sprememb se strinjate, da je vaš prispevek objavljen pod licenco [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"group-wikispeech-edit-lexicon": "Urejevalci leksikona Wikigovora",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Urejevalec leksikona Wikigovora|Urejevalka leksikona Wikigovora|Urejevalec/ka leksikona Wikigovora}}"
+}

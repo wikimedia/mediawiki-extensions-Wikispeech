@@ -2,8 +2,39 @@
 	"@metadata": {
 		"authors": [
 			"Emma Franzen",
-			"Hamilton Abreu"
+			"Hamilton Abreu",
+			"Marinaazev"
 		]
 	},
-	"wikispeech-lexicon-edit-entry-success": "Entrada editada."
+	"wikispeech-desc": "Uma ferramenta de conversão de texto em fala para tornar os projetos da Wikimedia mais acessíveis a pessoas que, por vários motivos, têm dificuldades de leitura.",
+	"prefs-wikispeech-voice": "Voz",
+	"prefs-wikispeech-speech-rate": "Ritmo da fala",
+	"prefs-wikispeech-speech-rate-percent": "Ritmo da fala (em percentagem)",
+	"prefs-wikispeech-enable": "Ativar Wikispeech",
+	"prefs-wikispeech-show-player": "Mostrar sempre o leitor",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "As alterações nas preferências surtirão efeito na próxima vez que uma página for carregada. Para ouvir a página atual com as novas preferências, recarregue a página depois de gravar.",
+	"right-wikispeech-listen": "Ouvir a página",
+	"right-wikispeech-read-lexicon": "Ler o léxico do Wikispeech",
+	"right-wikispeech-edit-lexicon": "Editar o léxico do Wikispeech",
+	"action-wikispeech-listen": "ouvir a página",
+	"action-wikispeech-read-lexicon": "ler o léxico do Wikispeech",
+	"action-wikispeech-edit-lexicon": "editar o léxico do Wikispeech",
+	"wikispeech-listen": "Ouvir",
+	"wikispeech-dont-listen": "Não ouvir",
+	"wikispeech-error-loading-audio-title": "Não foi possível carregar o áudio",
+	"wikispeech-error-loading-audio-message": "A causa pode ser uma falha na ligação à internet ou um erro no servidor. Deseja voltar a tentar ou parar a reprodução?",
+	"wikispeech-retry": "Tentar novamente",
+	"wikispeech-stop": "Parar",
+	"editlexicon": "Editar léxico",
+	"wikispeech-language": "Língua",
+	"wikispeech-word": "Palavra",
+	"wikispeech-transcription": "Transcrição",
+	"wikispeech-item-id": "Identificador",
+	"wikispeech-preview": "Antever",
+	"wikispeech-lexicon-add-entry-success": "Entrada adicionada ao léxico.",
+	"wikispeech-lexicon-new": "Nova",
+	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",
+	"wikispeech-lexicon-copyrightnote": "Ao gravar as alterações, concorda em publicar a sua contribuição nos termos da [https://creativecommons.org/publicdomain/zero/1.0/deed.pt/ CC0].",
+	"group-wikispeech-edit-lexicon": "Editores do léxico Wikispeech",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Editor|Editora}} do léxico Wikispeech"
 }

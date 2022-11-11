@@ -32,6 +32,7 @@ class FlushUtterancesByExpirationDateOnFileJobQueue {
 			// MW 1.37+
 			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
 		} else {
+			// @phan-suppress-next-line PhanUndeclaredStaticMethod
 			$jobQueueGroup = JobQueueGroup::singleton();
 		}
 		$jobQueueGroup->push( new FlushUtterancesByExpirationDateOnFileJob(

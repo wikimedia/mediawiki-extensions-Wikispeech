@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Emma Franzen",
+			"Hamilton Abreu",
+			"Marinaazev"
+		]
+	},
+	"wikispeech-desc": "Uma ferramenta de conversão de texto em fala para tornar os projetos da Wikimedia mais acessíveis a pessoas que, por vários motivos, têm dificuldades de leitura.",
+	"prefs-wikispeech-voice": "Voz",
+	"prefs-wikispeech-speech-rate": "Ritmo da fala",
+	"prefs-wikispeech-enable": "Ativar Wikispeech",
+	"right-wikispeech-listen": "Ouvir a página",
+	"action-wikispeech-listen": "ouvir a página",
+	"wikispeech-listen": "Ouvir"
+}

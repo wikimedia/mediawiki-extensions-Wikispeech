@@ -34,7 +34,7 @@
 	"wikispeech-lexicon-add-entry-success": "Vnos je bil dodan v leksikon.",
 	"wikispeech-lexicon-new": "Novo",
 	"wikispeech-lexicon-edit-entry-success": "Vnos urejen.",
-	"wikispeech-lexicon-copyrightnote": "S shranitvijo sprememb se strinjate, da je vaš prispevek objavljen pod licenco [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"wikispeech-lexicon-copyrightnote": "S shranitvijo sprememb privoljujete v objavo svojega prispevka pod licenco [https://creativecommons.org/publicdomain/zero/1.0/deed.sl CC0].",
 	"group-wikispeech-edit-lexicon": "Urejevalci leksikona Wikigovora",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Urejevalec leksikona Wikigovora|Urejevalka leksikona Wikigovora|Urejevalec/ka leksikona Wikigovora}}"
 }

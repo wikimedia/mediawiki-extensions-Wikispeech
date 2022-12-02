@@ -470,7 +470,7 @@ class ApiWikispeechListen extends ApiBase {
 		}
 
 		// Validate input text.
-		$input = $parameters['text'];
+		$input = $parameters['text'] ?? '';
 		$this->validateText( $input );
 	}
 

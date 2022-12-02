@@ -34,7 +34,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 	}
 
 	public function testSegmentText() {
-		$this->markTestSkipped( 'Fails on Jenkins.' );
+		$this->markTestSkipped( 'T322402' );
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech-segment',
 			'page' => 'Talk:' . TITLE

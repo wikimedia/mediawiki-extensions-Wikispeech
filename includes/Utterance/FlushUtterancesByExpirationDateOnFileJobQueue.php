@@ -8,7 +8,6 @@ namespace MediaWiki\Wikispeech\Utterance;
  * @license GPL-2.0-or-later
  */
 
-use JobQueueGroup;
 use MediaWiki\MediaWikiServices;
 use Title;
 
@@ -28,12 +27,7 @@ class FlushUtterancesByExpirationDateOnFileJobQueue {
 	 * @since 0.1.7
 	 */
 	public function queueJob() {
-		if ( method_exists( MediaWikiServices::class, 'getJobQueueGroup' ) ) {
-			// MW 1.37+
-			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
-		} else {
-			$jobQueueGroup = JobQueueGroup::singleton();
-		}
+		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
 		$jobQueueGroup->push( new FlushUtterancesByExpirationDateOnFileJob(
 				Title::newMainPage(),
 				[]

@@ -9,7 +9,6 @@ namespace MediaWiki\Wikispeech\Utterance;
  */
 
 use DateTime;
-use JobQueueGroup;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
@@ -107,12 +106,7 @@ class FlushUtterancesFromStoreByExpirationJobQueue {
 	 */
 	public function queueJob() {
 		$this->cache->set( $this->cacheKey, new DateTime() );
-		if ( method_exists( MediaWikiServices::class, 'getJobQueueGroup' ) ) {
-			// MW 1.37+
-			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
-		} else {
-			$jobQueueGroup = JobQueueGroup::singleton();
-		}
+		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
 		$jobQueueGroup->push(
 			new FlushUtterancesFromStoreByExpirationJob(
 				Title::newMainPage(),

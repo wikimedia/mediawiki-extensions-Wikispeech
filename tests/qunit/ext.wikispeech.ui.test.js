@@ -299,26 +299,23 @@
 		assert.strictEqual( player[ functionName ].called, true );
 	}
 
-	// Skipping these tests for now since they are causing
-	// trouble. They will likely not be needed, or at least be
-	// reworked, once we switch to OOUI (T181780).
-	QUnit.skip( 'Pressing keyboard shortcut for play/stop', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for play/stop', function ( assert ) {
 		testKeyboardShortcut( assert, 'playOrStop', 32, 'c' );
 	} );
 
-	QUnit.skip( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
 	} );
 
-	QUnit.skip( 'Pressing keyboard shortcut for skipping back sentence', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipBackUtterance', 37, 'c' );
 	} );
 
-	QUnit.skip( 'Pressing keyboard shortcut for skipping ahead word', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping ahead word', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipAheadToken', 40, 'c' );
 	} );
 
-	QUnit.skip( 'Pressing keyboard shortcut for skipping back word', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping back word', function ( assert ) {
 		testKeyboardShortcut( assert, 'skipBackToken', 38, 'c' );
 	} );
 

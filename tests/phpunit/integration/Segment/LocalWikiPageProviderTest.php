@@ -39,7 +39,7 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testSegmentPage_contentContainsSentences_giveTitleAndContent() {
-		$this->markTestSkipped( 'Fails on Jenkins.' );
+		$this->markTestSkipped( 'T322402' );
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
 		WikiPageTestUtil::addPage( $titleString, $content );

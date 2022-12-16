@@ -67,6 +67,10 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 	}
 
 	public function testExpire_expireAndOtherParameters_executeFails() {
+		// Needed by showHelp, called in this failure cases
+		$this->maintenance->mSelf = $this->getMaintenanceClass();
+		$this->maintenance->parameters->setName( $this->maintenance->mSelf );
+
 		$this->maintenance->loadWithArgv( [
 			'--expire',
 			'--language', 'sv'
@@ -127,6 +131,10 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 	}
 
 	public function testPage_pageAndOtherParameters_executeFails() {
+		// Needed by showHelp, called in this failure cases
+		$this->maintenance->mSelf = $this->getMaintenanceClass();
+		$this->maintenance->parameters->setName( $this->maintenance->mSelf );
+
 		$this->maintenance->loadWithArgv( [
 			'--page', '1',
 			'--language', 'sv'
@@ -188,6 +196,10 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 	}
 
 	public function testLanguage_languageAndOtherParameters_executeFails() {
+		// Needed by showHelp, called in this failure cases
+		$this->maintenance->mSelf = $this->getMaintenanceClass();
+		$this->maintenance->parameters->setName( $this->maintenance->mSelf );
+
 		$this->maintenance->loadWithArgv( [
 			'--language', 'sv',
 			'--page', '1'
@@ -245,6 +257,10 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 	}
 
 	public function testVoice_languageMissing_executeFails() {
+		// Needed by showHelp, called in this failure cases
+		$this->maintenance->mSelf = $this->getMaintenanceClass();
+		$this->maintenance->parameters->setName( $this->maintenance->mSelf );
+
 		$this->maintenance->loadWithArgv( [
 			'--voice', 'anna',
 		] );
@@ -252,6 +268,10 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 	}
 
 	public function testVoice_languageAndOtherParameters_executeFails() {
+		// Needed by showHelp, called in this failure cases
+		$this->maintenance->mSelf = $this->getMaintenanceClass();
+		$this->maintenance->parameters->setName( $this->maintenance->mSelf );
+
 		$this->maintenance->loadWithArgv( [
 			'--language', 'sv',
 			'--voice', 'anna',

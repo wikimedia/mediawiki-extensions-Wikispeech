@@ -9,7 +9,6 @@ namespace MediaWiki\Wikispeech;
  */
 
 use Maintenance;
-
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByLanguageAndVoiceJobQueue;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByPageIdJobQueue;

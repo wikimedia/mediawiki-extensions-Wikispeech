@@ -11,7 +11,6 @@ namespace MediaWiki\Wikispeech\Tests;
  */
 
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
-
 use MediaWiki\Wikispeech\FlushUtterances;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByLanguageAndVoiceJobQueue;

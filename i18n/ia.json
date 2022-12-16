@@ -1,0 +1,39 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"wikispeech-desc": "Un instrumento de synthese vocal pro render le projectos de Wikimedia plus accessibile pro personas que pro diverse rationes ha difficultates de lectura.",
+	"prefs-wikispeech-voice": "Voce",
+	"prefs-wikispeech-speech-rate": "Velocitate de parola",
+	"prefs-wikispeech-speech-rate-percent": "Velocitate de parola (in percentage)",
+	"prefs-wikispeech-enable": "Activar Wikispeech",
+	"prefs-wikispeech-show-player": "Monstrar sempre le reproductor",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Le modificationes del preferentias habera effecto le proxime vice que un pagina es cargate. Pro audir le pagina actual con le nove preferentias, recarga le pagina post salveguardar.",
+	"right-wikispeech-listen": "Ascoltar paginas",
+	"right-wikispeech-read-lexicon": "Leger le lexico de Wikispeech",
+	"right-wikispeech-edit-lexicon": "Modificar le lexico de Wikispeech",
+	"action-wikispeech-listen": "ascoltar le pagina",
+	"action-wikispeech-read-lexicon": "leger le lexico de Wikispeech",
+	"action-wikispeech-edit-lexicon": "modificar le lexico de Wikispeech",
+	"wikispeech-listen": "Ascoltar",
+	"wikispeech-dont-listen": "Non ascoltar",
+	"wikispeech-error-loading-audio-title": "Non poteva cargar audio",
+	"wikispeech-error-loading-audio-message": "Isto pote esser causate per un connexion a internet defectuose o un error in le servitor. Vole tu tentar de novo o stoppar le reproduction?",
+	"wikispeech-retry": "Reprobar",
+	"wikispeech-stop": "Stoppar",
+	"editlexicon": "Modificar lexico",
+	"wikispeech-language": "Lingua",
+	"wikispeech-word": "Parola",
+	"wikispeech-transcription": "Transcription",
+	"wikispeech-item-id": "ID",
+	"wikispeech-preview": "Previsualisar",
+	"wikispeech-preferred": "Preferite",
+	"wikispeech-lexicon-add-entry-success": "Entrata addite al lexico.",
+	"wikispeech-lexicon-new": "Nove",
+	"wikispeech-lexicon-edit-entry-success": "Entrata modificate.",
+	"wikispeech-lexicon-copyrightnote": "Salveguardante le modificationes, tu accepta de liberar tu contribution sub le licentia [https://creativecommons.org/publicdomain/zero/1.0/deed.ia CC0].",
+	"group-wikispeech-edit-lexicon": "Modificatores del lexico de Wikispeech",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|modificator del lexico de Wikispeech}}"
+}

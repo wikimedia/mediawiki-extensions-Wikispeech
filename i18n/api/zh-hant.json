@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Kly"
+			"Kly",
+			"捍粵者"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "將頁面的 HTML 內容切分成音段。",
@@ -25,5 +26,5 @@
 	"apihelp-wikispeech-listen-example-1": "用英語來合成發聲。",
 	"apihelp-wikispeech-listen-example-2": "使用非預設語音。",
 	"apihelp-wikispeech-listen-example-3": "從修訂請求切分。若存在的話，會使用快取的合成。",
-	"apierror-wikispeech-listen-invalid-input-too-long": "輸入文字包含了 $2 個字元，超過 $1 個字元上限。"
+	"apierror-wikispeech-listen-invalid-input-too-long": "輸入文字有$2字元，超過$1字元的上限。"
 }

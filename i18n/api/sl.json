@@ -5,5 +5,6 @@
 		]
 	},
 	"apihelp-wikispeech-segment-example-3": "Segmentira glavno stran v drugem vikiju.",
+	"apihelp-wikispeech-listen-param-text": "Besedilo za sintezo.",
 	"apierror-wikispeech-listen-deleted-revision": "Izbrisanih redakcij ni mogoče poslušati."
 }

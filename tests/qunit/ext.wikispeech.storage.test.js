@@ -214,6 +214,7 @@
 		sinon.assert.called( player.stop );
 	} );
 
+	// T322405
 	QUnit.skip( 'loadAudio()', function ( assert ) {
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
@@ -232,6 +233,7 @@
 		);
 	} );
 
+	// T322405
 	QUnit.skip( 'loadAudio(): request successful', function ( assert ) {
 		var response = {
 			'wikispeech-listen': {
@@ -261,6 +263,7 @@
 		assert.strictEqual( storage.utterances[ 0 ].audio.playbackRate, 2.0 );
 	} );
 
+	// T322405
 	QUnit.skip( 'loadAudio(): request failed', function ( assert ) {
 		storage.api.get.returns( $.Deferred().reject() );
 		sinon.spy( storage, 'addTokens' );

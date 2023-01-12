@@ -8,7 +8,6 @@ namespace MediaWiki\Wikispeech\Utterance;
  * @license GPL-2.0-or-later
  */
 
-use JobQueueGroup;
 use MediaWiki\MediaWikiServices;
 use Title;
 
@@ -34,13 +33,7 @@ class FlushUtterancesFromStoreByLanguageAndVoiceJobQueue {
 	 * @param string|null $voice
 	 */
 	public function queueJob( $language, $voice = null ) {
-		if ( method_exists( MediaWikiServices::class, 'getJobQueueGroup' ) ) {
-			// MW 1.37+
-			$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
-		} else {
-			// @phan-suppress-next-line PhanUndeclaredStaticMethod
-			$jobQueueGroup = JobQueueGroup::singleton();
-		}
+		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
 		$jobQueueGroup->push(
 			new FlushUtterancesFromStoreByLanguageAndVoiceJob(
 				Title::newMainPage(),

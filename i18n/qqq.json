@@ -30,6 +30,8 @@
 	"wikispeech-dont-listen": "The text of the tab that hides the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-listen}}",
 	"wikispeech-error-loading-audio-title": "Title for error dialog when audio could not load",
 	"wikispeech-error-loading-audio-message": "Message for error dialog when audio could not load.",
+	"wikispeech-error-generate-preview-title": "Title for error dialog when transcription preview fails to generate",
+	"wikispeech-error-generate-preview-message": "Message for error dialog when transcription preview fails to generate. Followed by an error message from the server which will always be in English.",
 	"wikispeech-retry": "Label for button to retry.\n{{identical|Retry}}",
 	"wikispeech-stop": "Label for button to stop.",
 	"editlexicon": "Edit lexicon special page title.",

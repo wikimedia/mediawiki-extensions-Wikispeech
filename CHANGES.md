@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T279774](https://phabricator.wikimedia.org/T279774) LexiconEditor should handle internal api error
 * [T284060](https://phabricator.wikimedia.org/T284060) Allow setting "preferred" in Special:EditLexicon
 * [T285048](https://phabricator.wikimedia.org/T285048) Introduce class Utterance
 * [T300104](https://phabricator.wikimedia.org/T300104) Sort out footer toolbar interaction

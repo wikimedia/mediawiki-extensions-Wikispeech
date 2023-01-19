@@ -31,7 +31,7 @@ TranscriptionPreviewer.prototype.play = function () {
 	var transcription = this.$transcription.val();
 	// Rewind in case it is already playing. Just calling play() is not enought to play from start.
 	this.$player.prop( 'currentTime', 0 );
-	if ( transcription !== this.lastTranscription ) {
+	if ( transcription !== this.lastTranscription || !this.$player.attr( 'src' ) ) {
 		this.fetchAudio();
 		this.lastTranscription = transcription;
 	} else {
@@ -43,7 +43,7 @@ TranscriptionPreviewer.prototype.play = function () {
  * Get audio for the player using the listen API
  */
 TranscriptionPreviewer.prototype.fetchAudio = function () {
-	var language, voice, transcription, self;
+	var language, voice, transcription, self, message, title;
 	language = this.$language.val();
 	voice = util.getUserVoice( language );
 	transcription = this.$transcription.val();
@@ -59,7 +59,12 @@ TranscriptionPreviewer.prototype.fetchAudio = function () {
 		self.$player.attr( 'src', 'data:audio/ogg;base64,' + audioData );
 		self.$player.get( 0 ).play();
 	} ).fail( function ( code, result ) {
+		self.$player.attr( 'src', '' );
 		mw.log.error( 'Failed to synthesize:', code, result );
+		message = mw.msg( 'wikispeech-error-generate-preview-message' ) +
+			result.error.info;
+		title = mw.msg( 'wikispeech-error-generate-preview-title' );
+		OO.ui.alert( message, { title: title } );
 	} );
 };
 

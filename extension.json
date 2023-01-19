@@ -74,8 +74,13 @@
 				"ext.wikispeech.transcriptionPreviewer.js",
 				"ext.wikispeech.util.js"
 			],
+			"messages": [
+				"wikispeech-error-generate-preview-title",
+				"wikispeech-error-generate-preview-message"
+			],
 			"dependencies": [
 				"mediawiki.api",
+				"oojs-ui",
 				"oojs-ui-core"
 			]
 		},

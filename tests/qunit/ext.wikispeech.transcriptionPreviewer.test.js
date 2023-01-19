@@ -78,11 +78,30 @@ QUnit.test( 'play(): fetch new audio when not played before', function ( assert 
 	);
 } );
 
+QUnit.test( 'play(): fetch new audio when no audio data', function () {
+	this.transcriptionPreviewer.lastTranscription = 'same transcription';
+	this.transcriptionPreviewer.$transcription.val.returns(
+		'same transcription'
+	);
+	this.transcriptionPreviewer.$player.attr.returns( '' );
+	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' );
+
+	this.transcriptionPreviewer.play();
+
+	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
+	// Audio is played as part of fetchAudio(), so we do not want to
+	// do it again.
+	sinon.assert.notCalled(
+		this.transcriptionPreviewer.$player.get( 0 ).play
+	);
+} );
+
 QUnit.test( 'play(): play same audio if transcription has not changed', function () {
 	this.transcriptionPreviewer.lastTranscription = 'same transcription';
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'same transcription'
 	);
+	this.transcriptionPreviewer.$player.attr.returns( 'not empty' );
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' );
 
 	this.transcriptionPreviewer.play();
@@ -95,6 +114,7 @@ QUnit.test( 'play(): play same audio if transcription has not changed', function
 
 QUnit.test( 'play(): rewind before playing', function () {
 	this.transcriptionPreviewer.$player.currentTime = 1.0;
+	this.transcriptionPreviewer.$player.attr.returns( 'not empty' );
 
 	this.transcriptionPreviewer.play();
 

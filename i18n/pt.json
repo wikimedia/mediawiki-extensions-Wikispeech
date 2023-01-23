@@ -23,6 +23,8 @@
 	"wikispeech-dont-listen": "Não ouvir",
 	"wikispeech-error-loading-audio-title": "Não foi possível carregar o áudio",
 	"wikispeech-error-loading-audio-message": "A causa pode ser uma falha na ligação à internet ou um erro no servidor. Deseja voltar a tentar ou parar a reprodução?",
+	"wikispeech-error-generate-preview-title": "Não foi possível gerar a antevisão",
+	"wikispeech-error-generate-preview-message": "O erro do servidor foi:",
 	"wikispeech-retry": "Tentar novamente",
 	"wikispeech-stop": "Parar",
 	"editlexicon": "Editar léxico",

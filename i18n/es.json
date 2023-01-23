@@ -4,6 +4,7 @@
 			"Agent",
 			"BnSrSa",
 			"Fitoschido",
+			"JDíaz32",
 			"ZealousBlaze"
 		]
 	},
@@ -12,5 +13,7 @@
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Cambios a las preferencias tomarán efecto la próxima vez que la página sea recargada. Para escuchar la página actual con las nuevas preferencias, recarga la página después de salvar.",
 	"right-wikispeech-listen": "Escuchar página",
 	"action-wikispeech-listen": "escuchar página",
+	"wikispeech-error-generate-preview-title": "No se pudo generar la vista previa",
+	"wikispeech-error-generate-preview-message": "El error del servidor fue:",
 	"wikispeech-preview": "Vista previa"
 }

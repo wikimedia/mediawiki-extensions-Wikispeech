@@ -7,18 +7,19 @@
 			"Scratcheur-2020Send",
 			"Thibaut120094",
 			"Verdy p",
-			"Wladek92"
+			"Wladek92",
+			"SleaY"
 		]
 	},
 	"wikispeech": "Wikispeech",
-	"wikispeech-desc": "Un outil texte-vers-parole pour rendre les projets de Wikimédia plus accessibles aux gens qui, pour diverses raisons, ont des difficultés à lire.",
+	"wikispeech-desc": "Un outil de synthèse vocale pour rendre les projets de Wikimédia plus accessibles aux gens qui, pour diverses raisons, ont des difficultés à lire.",
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Voix",
 	"prefs-wikispeech-speech-rate": "Débit de parole",
 	"prefs-wikispeech-speech-rate-percent": "Débit de parole (en pourcentage)",
 	"prefs-wikispeech-enable": "Activer Wikispeech",
-	"prefs-wikispeech-show-player": "Afficher toujours le joueur",
-	"wikispeech-notice-prefs-apply-on-next-page-load": "Les modifications de préférence prendront effet la prochaine fois qu’une page est chargée. Pour écouter la page actuelle avec les nouvelles références, rechargez-la après avoir enregistré.",
+	"prefs-wikispeech-show-player": "Toujours afficher le lecteur",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Les modifications de préférence prendront effet au prochain chargement d’une page. Pour écouter la page actuelle avec les nouvelles références, rechargez la après l’avoir enregistrée.",
 	"right-wikispeech-listen": "Écouter la page",
 	"right-wikispeech-read-lexicon": "Lire le lexique de Wikispeech",
 	"right-wikispeech-edit-lexicon": "Modifier le lexique de Wikispeech",
@@ -41,7 +42,7 @@
 	"wikispeech-lexicon-new": "Nouveau",
 	"wikispeech-lexicon-add-entry-conflict": "Une entrée avec cette orthographe existe déjà. Sélectionnez un id pour modifier cette entrée, ou « Nouveau » pour ajouter une nouvelle entrée.",
 	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",
-	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de mettre votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de publier votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Modificateurs du lexique Wikispeech",
 	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech"
 }

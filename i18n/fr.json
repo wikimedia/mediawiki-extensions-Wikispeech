@@ -5,11 +5,14 @@
 			"Gomoko",
 			"Pamputt",
 			"Thibaut120094",
-			"Wladek92"
+			"Wladek92",
+			"Scratcheur-2020Send",
+			"SleaY",
+			"Verdy p"
 		]
 	},
 	"wikispeech": "Wikispeech",
-	"wikispeech-desc": "Un outil texte-vers-parole pour rendre les projets de Wikimédia plus accessibles aux gens qui, pour diverses raisons, ont des difficultés à lire.",
+	"wikispeech-desc": "Un outil de synthèse vocale pour rendre les projets de Wikimédia plus accessibles aux gens qui, pour diverses raisons, ont des difficultés à lire.",
 	"apihelp-wikispeech-summary": "Séparer le contenu d’une page HTML en segments.",
 	"apihelp-wikispeech-param-page": "Le titre de la page à segmenter.",
 	"apihelp-wikispeech-param-removetags": "Les balises HTML qui doivent être complètement supprimées lors du nettoyage, sous forme d’objet JSON au format :\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\noù <code>tag1</code> est toujours supprimé, <code>tag2</code> n’est supprimé que s’il a la classe CSS <code>css-class</code>, et <code>tag3</code> est supprimé seulement s’il a aussi la classe CSS <code>css-class-1</code> ou <code>css-class-2</code>.",

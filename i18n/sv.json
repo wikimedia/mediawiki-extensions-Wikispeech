@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"André Costa (WMSE)",
 			"Jopparn",
 			"Sabelöga",
 			"WikiPhoenix"
@@ -14,6 +15,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Talhastighet (i procent)",
 	"prefs-wikispeech-enable": "Aktivera Wikispeech",
 	"prefs-wikispeech-show-player": "Visa alltid spelare",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Ändringar av inställningar träder i kraft nästa gång en sida laddas. För att lyssna på den aktuella sidan med de nya inställningarna, ladda om sidan efter att du har sparat.",
 	"right-wikispeech-listen": "Lyssna på sidan",
 	"right-wikispeech-read-lexicon": "Läs Wikispeehs lexikon",
 	"right-wikispeech-edit-lexicon": "Redigera Wikispeechs lexikon",
@@ -24,6 +26,8 @@
 	"wikispeech-dont-listen": "Lyssna inte",
 	"wikispeech-error-loading-audio-title": "Kunde inte ladda ljud",
 	"wikispeech-error-loading-audio-message": "Detta kan ske på grund av en dålig internetanslutning eller ett fel på servern. Vill du försöka igen eller stoppa uppspelningen?",
+	"wikispeech-error-generate-preview-title": "Förhandsgranskningen kunde inte skapas",
+	"wikispeech-error-generate-preview-message": "Felet från servern var:",
 	"wikispeech-retry": "Försök igen",
 	"wikispeech-stop": "Stopp",
 	"editlexicon": "Redigera lexikon",
@@ -32,6 +36,7 @@
 	"wikispeech-transcription": "Transkribering",
 	"wikispeech-item-id": "ID",
 	"wikispeech-preview": "Förhandsgranska",
+	"wikispeech-preferred": "Föredragen",
 	"wikispeech-lexicon-add-entry-success": "Uppslagsord har lagts till i lexikonet.",
 	"wikispeech-lexicon-new": "Ny",
 	"wikispeech-lexicon-edit-entry-success": "Uppslagsord redigerat.",

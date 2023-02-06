@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Dutchy45",
+			"Mainframe98",
 			"McDutchie",
 			"Nickthijssen1994",
 			"PonkoSasuke",
@@ -13,6 +14,7 @@
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "Stem",
 	"prefs-wikispeech-speech-rate": "Spreektempo",
+	"prefs-wikispeech-speech-rate-percent": "Spreeksnelheid (in procenten)",
 	"prefs-wikispeech-enable": "Schakel Wikispeech in",
 	"prefs-wikispeech-show-player": "De speler altijd tonen",
 	"right-wikispeech-listen": "Luister naar pagina",
@@ -22,6 +24,11 @@
 	"wikispeech-error-generate-preview-title": "Kon geen voorbeeld genereren",
 	"wikispeech-error-generate-preview-message": "De fout van de server was:",
 	"wikispeech-retry": "Probeer opnieuw",
+	"wikispeech-stop": "Stoppen",
 	"wikispeech-language": "Taal",
+	"wikispeech-word": "Woord",
+	"wikispeech-transcription": "Transcriptie",
+	"wikispeech-preview": "Voorvertoning",
+	"wikispeech-preferred": "Voorkeur",
 	"wikispeech-lexicon-new": "Nieuw"
 }

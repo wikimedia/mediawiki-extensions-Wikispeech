@@ -3,7 +3,8 @@
 		"authors": [
 			"Jopparn",
 			"Sabelöga",
-			"WikiPhoenix"
+			"WikiPhoenix",
+			"André Costa (WMSE)"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -14,6 +15,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Talhastighet (i procent)",
 	"prefs-wikispeech-enable": "Aktivera Wikispeech",
 	"prefs-wikispeech-show-player": "Visa alltid spelare",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Ändringar av inställningar träder i kraft nästa gång en sida laddas. För att lyssna på den aktuella sidan med de nya inställningarna, ladda om sidan efter att du har sparat.",
 	"right-wikispeech-listen": "Lyssna på sidan",
 	"right-wikispeech-read-lexicon": "Läs Wikispeehs lexikon",
 	"right-wikispeech-edit-lexicon": "Redigera Wikispeechs lexikon",

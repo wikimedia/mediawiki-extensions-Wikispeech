@@ -30,7 +30,12 @@ class RegisteredJobsTest extends MediaWikiIntegrationTestCase {
 			[ 'JobClasses' ],
 			MediaWikiServices::getInstance()->getMainConfig()
 		);
-		foreach ( $serviceOptions->get( 'JobClasses' ) as $name => $class ) {
+		foreach ( $serviceOptions->get( 'JobClasses' ) as $name => $defintion ) {
+			if ( is_array( $defintion ) ) {
+				$class = $defintion['class'];
+			} else {
+				$class = $defintion;
+			}
 			$this->assertTrue( class_exists( $class ),
 				"Class $class with alias $name does not exist" );
 			$this->assertTrue( is_subclass_of( $class, 'Job' ),

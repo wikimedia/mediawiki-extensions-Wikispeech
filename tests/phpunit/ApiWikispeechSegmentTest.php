@@ -100,32 +100,6 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 			],
 			$res[0]['wikispeech-segment']['segments']
 		);
-		// $this->assertEquals(
-		// 	[
-		// 		'startOffset' => 0,
-		// 		'endOffset' => 3,
-		// 		'content' => [
-		// 			[
-		// 				'string' => 'Talking about ',
-		// 				'path' => './div/p/text()[1]'
-		// 			],
-		// 			[
-		// 				'string' => 'italic',
-		// 				'path' => './div/p/i/text()'
-		// 			],
-		// 			[
-		// 				'string' => ' ',
-		// 				'path' => './div/p/text()[2]'
-		// 			],
-		// 			[
-		// 				'string' => 'bold',
-		// 				'path' => './div/p/b/text()'
-		// 			]
-		// 		],
-		// 		'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'
-		// 	],
-		// 	$res[0]['wikispeech-segment']['segments'][1]
-		// );
 	}
 
 	public function testRemoveTagsInvalidJsonThrowsException() {

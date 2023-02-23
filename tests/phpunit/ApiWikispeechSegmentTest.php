@@ -34,52 +34,98 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 	}
 
 	public function testSegmentText() {
-		$this->markTestSkipped( 'T322402' );
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech-segment',
 			'page' => 'Talk:' . TITLE
 		] );
-		$this->assertCount( 2, $res[0]['wikispeech-segment']['segments'] );
+		$this->assertCount( 4, $res[0]['wikispeech-segment']['segments'] );
 		$this->assertEquals(
 			[
-				'startOffset' => 0,
-				'endOffset' => 13,
-				'content' => [
-					[
-						'string' => 'Talk:Test Page',
-						'path' => '//h1/text()'
-					]
+				[
+					'startOffset' => 0,
+					'endOffset' => 3,
+					'content' => [
+						[
+							'string' => 'Talk',
+							'path' => '//h1/span[1]/text()'
+						]
+					],
+					'hash' => '1e6560b6663ac62cafb6778e71dcc66c26a3ccd3960e3956f7194a620fd2d174'
 				],
-				'hash' => '50c0083861b4c8bc5e6c1402bbb18ab093cfdf930aa8f5ef9297764e01137a26'
-			],
-			$res[0]['wikispeech-segment']['segments'][0]
-		);
-		$this->assertEquals(
-			[
-				'startOffset' => 0,
-				'endOffset' => 3,
-				'content' => [
-					[
-						'string' => 'Talking about ',
-						'path' => './div/p/text()[1]'
+				[
+					'startOffset' => 0,
+					'endOffset' => 0,
+					'content' => [
+						[
+							'string' => ':',
+							'path' => '//h1/span[2]/text()'
+						]
 					],
-					[
-						'string' => 'italic',
-						'path' => './div/p/i/text()'
-					],
-					[
-						'string' => ' ',
-						'path' => './div/p/text()[2]'
-					],
-					[
-						'string' => 'bold',
-						'path' => './div/p/b/text()'
-					]
+					'hash' => 'f3743a0a18e53d13922cc21a70d783d875a12560c22ff8d28bda5f5ca9fe05c3'
 				],
-				'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'
+				[
+					'startOffset' => 0,
+					'endOffset' => 8,
+					'content' => [
+						[
+							'string' => 'Test Page',
+							'path' => '//h1/span[3]/text()'
+						]
+					],
+					'hash' => 'f35b4a5363b82d289322b5a6e8d22b492dbd4c8b564e28c49f4dae3839892f63'
+				],
+				[
+					'startOffset' => 0,
+					'endOffset' => 3,
+					'content' => [
+						[
+							'string' => 'Talking about ',
+							'path' => './div/p/text()[1]'
+						],
+						[
+							'string' => 'italic',
+							'path' => './div/p/i/text()'
+						],
+						[
+							'string' => ' ',
+							'path' => './div/p/text()[2]'
+						],
+						[
+							'string' => 'bold',
+							'path' => './div/p/b/text()'
+						]
+					],
+					'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'
+				]
 			],
-			$res[0]['wikispeech-segment']['segments'][1]
+			$res[0]['wikispeech-segment']['segments']
 		);
+		// $this->assertEquals(
+		// 	[
+		// 		'startOffset' => 0,
+		// 		'endOffset' => 3,
+		// 		'content' => [
+		// 			[
+		// 				'string' => 'Talking about ',
+		// 				'path' => './div/p/text()[1]'
+		// 			],
+		// 			[
+		// 				'string' => 'italic',
+		// 				'path' => './div/p/i/text()'
+		// 			],
+		// 			[
+		// 				'string' => ' ',
+		// 				'path' => './div/p/text()[2]'
+		// 			],
+		// 			[
+		// 				'string' => 'bold',
+		// 				'path' => './div/p/b/text()'
+		// 			]
+		// 		],
+		// 		'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'
+		// 	],
+		// 	$res[0]['wikispeech-segment']['segments'][1]
+		// );
 	}
 
 	public function testRemoveTagsInvalidJsonThrowsException() {

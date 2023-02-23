@@ -318,7 +318,7 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 	}
 
 	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
-		$title = 'Page';
+		$title = '<span>Page<span>';
 		$content = '<p>Content</p>';
 
 		$cleaner = new Cleaner( [], [] );
@@ -326,15 +326,11 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 
 		$this->assertEquals(
 			[
-				new CleanedText( 'Page', '//h1/text()' ),
+				new CleanedText( 'Page', '//h1/span/text()' ),
 				new SegmentBreak(),
 				new CleanedText( 'Content', './p/text()' )
 			],
-			// For some reason, there are a number of HTML nodes
-			// containing only newlines, which adds extra
-			// CleanText's. They don't cause any issues in the end
-			// though. See T255152.
-			array_slice( $cleanedText, 0, 3 )
+			$cleanedText
 		);
 	}
 
@@ -350,4 +346,21 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
+	public function testCleanPage_titleContainsNamespace_giveCleanedTextArray() {
+		$title = '<span>Namespace</span><span>:</span><span>Page</span>';
+
+		$cleaner = new Cleaner( [], [] );
+		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
+
+		$this->assertEquals(
+			[
+				new CleanedText( 'Namespace', '//h1/span[1]/text()' ),
+				new SegmentBreak(),
+				new CleanedText( ':', '//h1/span[2]/text()' ),
+				new SegmentBreak(),
+				new CleanedText( 'Page', '//h1/span[3]/text()' )
+			],
+			$cleanedText
+		);
+	}
 }

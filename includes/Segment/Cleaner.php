@@ -261,15 +261,31 @@ class Cleaner {
 			LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED
 		);
 		$xpath = new DOMXPath( $dom );
-		$node = $xpath->evaluate( '//text()' )->item( 0 );
-		$titleSegment = $this->cleanHtml( $displayTitle )[0];
-		if ( $titleSegment instanceof CleanedText ) {
-			$titleSegment->setPath( '/' . $node->getNodePath() );
-		} else {
-			throw new MWException( 'Segmented title is not an instance of CleanedText!' );
+		$titleSegments = [];
+		$i = 0;
+		foreach ( $this->cleanHtml( $displayTitle ) as $titlePart ) {
+			if ( !$titlePart instanceof CleanedText ) {
+				throw new MWException(
+					'Segmented title is not an instance of CleanedText!'
+				);
+			}
+
+			$node = $xpath->evaluate( '//text()' )->item( $i );
+			$titlePart->setPath( '/' . $node->getNodePath() );
+			$titleSegments[] = $titlePart;
+			$titleSegments[] = new SegmentBreak();
+			$i++;
 		}
-		// Add the title as a separate utterance to the start.
-		array_unshift( $cleanedText, $titleSegment, new SegmentBreak() );
+		array_pop( $titleSegments );
+		if ( $cleanedText ) {
+			$cleanedText = array_merge(
+				$titleSegments,
+				[ new SegmentBreak() ],
+				$cleanedText
+			);
+		} else {
+			$cleanedText = $titleSegments;
+		}
 		return $cleanedText;
 	}
 

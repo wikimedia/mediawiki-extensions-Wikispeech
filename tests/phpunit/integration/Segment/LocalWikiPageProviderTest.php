@@ -39,14 +39,13 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testSegmentPage_contentContainsSentences_giveTitleAndContent() {
-		$this->markTestSkipped( 'T322402' );
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
 		WikiPageTestUtil::addPage( $titleString, $content );
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
 			new Segment(
-				[ new CleanedText( 'Page', '//h1/text()' ) ],
+				[ new CleanedText( 'Page', '//h1/span/text()' ) ],
 				0,
 				3,
 				'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'

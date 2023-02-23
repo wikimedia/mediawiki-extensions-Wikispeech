@@ -14,3 +14,10 @@ $wgWikispeechSymbolSetUrl = 'https://wikispeech-symbolset-dev.wmcloud.org/';
 // Only allow logged in users to listen, to check permissions are respected
 $wgGroupPermissions['*']['wikispeech-listen'] = false;
 $wgGroupPermissions['user']['wikispeech-listen'] = true;
+
+// You can enable Wikispeech for additional namespaces by adding their
+// numbers to this array. By default it's only enabled in the
+// Main namespace.
+$wgWikispeechNamespaces = [
+	NS_USER
+];

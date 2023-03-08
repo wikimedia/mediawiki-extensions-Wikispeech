@@ -30,8 +30,13 @@ Update version in extension.json.
 
 ## Versions
 
-### 0.1.10-SNAPSHOT
+### 0.1.11-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+
+### 0.1.10-SNAPSHOT
+2023-03-08
 Speechoid: 0.1.2
 
 * [T255152](https://phabricator.wikimedia.org/T255152) Fix newline CleanedText's being added at the end when cleaning

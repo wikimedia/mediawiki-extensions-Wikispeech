@@ -96,12 +96,14 @@ class SpecialEditLexicon extends SpecialPage {
 		$successMessage = '';
 
 		$formId = '';
+		$submitMessage = 'wikispeech-lexicon-next';
 		if ( !$language || !$word ) {
 			$formId = 'lookup';
 			$fields = $this->getLookupFields();
 		} elseif ( $entry === null ) {
 			$formId = 'newEntry';
 			$fields = $this->getAddFields( $language, $word );
+			$submitMessage = 'wikispeech-lexicon-save';
 			$successMessage = 'wikispeech-lexicon-add-entry-success';
 		} elseif ( !in_array( 'id', $request->getValueNames() ) ) {
 			$formId = 'selectItem';
@@ -109,10 +111,12 @@ class SpecialEditLexicon extends SpecialPage {
 		} elseif ( $id ) {
 			$formId = 'editItem';
 			$fields = $this->getEditFields( $language, $word, $id );
+			$submitMessage = 'wikispeech-lexicon-save';
 			$successMessage = 'wikispeech-lexicon-edit-entry-success';
 		} elseif ( $id === '' ) {
 			$formId = 'newItem';
 			$fields = $this->getAddFields( $language, $word );
+			$submitMessage = 'wikispeech-lexicon-save';
 			$successMessage = 'wikispeech-lexicon-add-entry-success';
 		} else {
 			// We have a set of parameters that we can't do anything
@@ -140,6 +144,7 @@ class SpecialEditLexicon extends SpecialPage {
 		);
 		$form->setFormIdentifier( $formId );
 		$form->setSubmitCallback( [ $this, 'submit' ] );
+		$form->setSubmitTextMsg( $submitMessage );
 		$form->setPostText( $this->postText );
 		if ( $form->show() && $successMessage ) {
 			$this->success( $successMessage );

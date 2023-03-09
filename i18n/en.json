@@ -37,6 +37,8 @@
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "Preview",
 	"wikispeech-preferred": "Preferred",
+	"wikispeech-lexicon-next": "Next",
+	"wikispeech-lexicon-save": "Save",
 	"wikispeech-lexicon-add-entry-success": "Entry added to lexicon.",
 	"wikispeech-lexicon-new": "New",
 	"wikispeech-lexicon-edit-entry-success": "Entry edited.",

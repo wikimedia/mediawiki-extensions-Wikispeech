@@ -13,7 +13,7 @@
 	"apihelp-wikispeech-segment-example-2": "Segmentar usante parametros personalisate. Le etiquetta <code>sup</code> es removite e le etiquetta <code>div</code> es tamben removite4 quando illo ha le classe CSS <code>toc</code>. Le etiquettas <code>h1</code> e <code>h2</code> interrumpe segmentos.",
 	"apihelp-wikispeech-segment-example-3": "Segmentar le pagina principal sur un altere wiki.",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> non es un catena JSON valide.",
-	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> non es in un formato valide. Debe esser un objecto con valores boolean, de catena, o de matrice/array de catena. Pro non remover alcun etiquetta, mitte <var>removetags</var> al objecto vacue, <code>{}</code>.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> non es in un formato valide. Debe esser un objecto con valores boolean, de catena, o de matrice de catena. Pro non remover alcun etiquetta, defini <var>removetags</var> como objecto vacue, <code>{}</code>.",
 	"apihelp-wikispeech-listen-summary": "Synthese vocal.",
 	"apihelp-wikispeech-listen-param-lang": "Codice de lingua.",
 	"apihelp-wikispeech-listen-param-revision": "Le version del pagina in le qual se trova le segmento.",

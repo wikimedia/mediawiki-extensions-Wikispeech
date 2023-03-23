@@ -169,8 +169,8 @@
 
 		player.playUtterance( utterance );
 
-		assert.assertTrue( storage.prepareUtterance.firstCall.calledWithExactly( utterance ) );
-		assert.assertTrue( storage.prepareUtterance.secondCall.calledWithExactly( utterance ) );
+		assert.true( storage.prepareUtterance.firstCall.calledWithExactly( utterance ) );
+		assert.true( storage.prepareUtterance.secondCall.calledWithExactly( utterance ) );
 	} );
 
 	QUnit.test( 'stopUtterance()', function ( assert ) {

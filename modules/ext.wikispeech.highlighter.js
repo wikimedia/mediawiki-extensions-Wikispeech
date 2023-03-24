@@ -246,9 +246,9 @@
 				// Merge first and last text nodes, if the original was
 				// divided by adding the <span>.
 				// ESLint thinks this is String.normalize, not Text.normalize
-				// eslint-disable-next-line no-restricted-properties
+				// eslint-disable-next-line es-x/no-string-prototype-normalize
 				parents[ 0 ].normalize();
-				// eslint-disable-next-line no-restricted-properties
+				// eslint-disable-next-line es-x/no-string-prototype-normalize
 				parents[ parents.length - 1 ].normalize();
 			}
 		};

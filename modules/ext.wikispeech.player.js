@@ -214,8 +214,6 @@
 				// last token, the last token is the current.
 				currentToken = lastTokenWithDuration;
 			} else {
-				// TODO: Array.prototype.find is not supported in IE11
-				// eslint-disable-next-line no-restricted-syntax
 				currentToken = tokensWithDuration.find( function ( token ) {
 					return token.startTime <= currentTime &&
 						token.endTime > currentTime;

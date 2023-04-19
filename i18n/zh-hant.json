@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Eason329",
-			"Kly"
+			"Kly",
+			"Winston Sung"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -32,7 +33,7 @@
 	"wikispeech-transcription": "轉錄",
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "預覽",
-	"wikispeech-lexicon-add-entry-success": "項目添加到語彙。",
+	"wikispeech-lexicon-add-entry-success": "已將項目新增至語彙。",
 	"wikispeech-lexicon-new": "新",
 	"wikispeech-lexicon-edit-entry-success": "已編輯項目。",
 	"wikispeech-lexicon-copyrightnote": "藉由儲存更改，您同意在[https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW 公眾領域貢獻宣告]下釋出您的貢獻。",

@@ -4,5 +4,6 @@
 			"Milicevic01"
 		]
 	},
-	"wikispeech-error-generate-preview-message": "Грешка са сервера:"
+	"wikispeech-error-generate-preview-message": "Грешка са сервера:",
+	"wikispeech-lexicon-save": "Сачувај"
 }

@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Bonfire12"
+			"Bonfire12",
+			"MathXplore"
 		]
 	},
-	"wikispeech-listen": "聞く"
+	"wikispeech-listen": "聞く",
+	"wikispeech-lexicon-save": "保存"
 }

@@ -34,6 +34,8 @@
 	"wikispeech-item-id": "ID",
 	"wikispeech-preview": "Predogled",
 	"wikispeech-preferred": "Prednostno",
+	"wikispeech-lexicon-next": "Naprej",
+	"wikispeech-lexicon-save": "Shrani",
 	"wikispeech-lexicon-add-entry-success": "Vnos je bil dodan v leksikon.",
 	"wikispeech-lexicon-new": "Novo",
 	"wikispeech-lexicon-edit-entry-success": "Vnos urejen.",

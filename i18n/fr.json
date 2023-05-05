@@ -41,6 +41,8 @@
 	"wikispeech-item-id": "Identifiant",
 	"wikispeech-preview": "Aperçu",
 	"wikispeech-preferred": "Préféré",
+	"wikispeech-lexicon-next": "Suivant",
+	"wikispeech-lexicon-save": "Enregistrer",
 	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée au lexique.",
 	"wikispeech-lexicon-new": "Nouveau",
 	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",

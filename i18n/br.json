@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Adriendelucca",
 			"Fulup"
 		]
 	},
@@ -11,5 +12,7 @@
 	"prefs-wikispeech-speech-rate": "Lusk ar vouezh",
 	"prefs-wikispeech-enable": "Gweredekaat Wikispeech",
 	"right-wikispeech-listen": "Selaou ouzh ar bajenn",
-	"action-wikispeech-listen": "Selaou ouzh ar bajenn"
+	"action-wikispeech-listen": "Selaou ouzh ar bajenn",
+	"wikispeech-lexicon-next": "War-lerc'h",
+	"wikispeech-lexicon-save": "Enrollañ"
 }

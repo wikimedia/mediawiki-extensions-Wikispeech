@@ -27,7 +27,7 @@ class DateRuleTest extends RegexFilterRuleTest {
 		$this->assertRegexFilterRule( new DateRule(), $input, $alias, $shouldMatch );
 	}
 
-	public function provider(): array {
+	public static function provider(): array {
 		return [
 			'1 jan 1001' => [ '1 januari 1001', 'första januari tusen ett', true ],
 			'1 januari 1001' => [ '1 januari 1001', 'första januari tusen ett', true ],

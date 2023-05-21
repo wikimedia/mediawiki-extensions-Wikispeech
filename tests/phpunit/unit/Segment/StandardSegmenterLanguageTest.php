@@ -39,7 +39,7 @@ class StandardSegmenterLanguageTest extends MediaWikiUnitTestCase {
 	/**
 	 * @return array[]
 	 */
-	public function provideTestLanguageData() {
+	public static function provideTestLanguageData() {
 		return [
 			'Swedish' => [
 				'Räksmörgås eller räkmacka är en smörgås med räkor som pålägg. Förutom räkor ingår ofta pålägg som t.ex. "majonnäs", ägg, kaviar och citron. En räksmörgås kan vara formad som en "landgång".',

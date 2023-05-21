@@ -74,7 +74,7 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function provideTestSegmentSentences_dontSegment() {
+	public static function provideTestSegmentSentences_dontSegment() {
 		return [
 			'ellipses' => [ 'This is... one sentence.' ],
 			'abbreviation' => [ 'One sentence i.e. one segment.' ],

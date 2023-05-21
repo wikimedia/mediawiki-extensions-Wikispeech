@@ -61,7 +61,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function provideTestCreateAndFindUtterance() {
+	public static function provideTestCreateAndFindUtterance() {
 		return [
 			'withConsumerUrl' => [
 				[

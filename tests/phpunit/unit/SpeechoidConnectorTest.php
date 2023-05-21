@@ -347,7 +347,7 @@ stats,FRONTEND,,,2,2,2000,7,8606,79568,0,0,0,,,,,OPEN,,,,,,,,,1,3,0,,,,0,1,0,2,,
 		$this->assertSame( $url, $unparsedUrl );
 	}
 
-	public function unparseUrlProvider() {
+	public static function unparseUrlProvider() {
 		return [
 			[ 'http://usr:pss@example.com:81/mypath/myfile.html?a=b&b[]=2&b[]=3#myfragment' ],
 			[ 'http://localhost:10000' ],

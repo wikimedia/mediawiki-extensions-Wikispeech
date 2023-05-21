@@ -27,7 +27,7 @@ class YearRangeRuleTest extends RegexFilterRuleTest {
 		$this->assertRegexFilterRule( new YearRangeRule(), $input, $alias, $shouldMatch );
 	}
 
-	public function provider(): array {
+	public static function provider(): array {
 		return [
 			'bad separator' => [ '1000/1100', 'will not match', false ],
 			'em dash' => [ '1000–1100', 'tusen till elva hundra', true ],

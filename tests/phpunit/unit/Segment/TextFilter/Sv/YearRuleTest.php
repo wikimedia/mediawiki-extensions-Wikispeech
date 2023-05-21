@@ -27,7 +27,7 @@ class YearRuleTest extends RegexFilterRuleTest {
 		$this->assertRegexFilterRule( new YearRule(), $input, $alias, $shouldMatch );
 	}
 
-	public function provider(): array {
+	public static function provider(): array {
 		return [
 			'Number, not a year' => [ '123 456 789', 'will not match', false ],
 			'Before 1000 does not match' => [ '999', 'will not match', false ],

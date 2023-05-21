@@ -32,7 +32,7 @@ class UtteranceStoreUrlPathFactoryTest extends MediaWikiUnitTestCase {
 		} );
 	}
 
-	public function dataProvider(): array {
+	public static function dataProvider(): array {
 		return [
 			'1 character integer' => [ '/', 1 ],
 			'2 character integer' => [ '/', 12 ],

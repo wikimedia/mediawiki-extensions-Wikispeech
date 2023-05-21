@@ -25,7 +25,7 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 		$this->assertSame( $words, $digits2words->intToOrdinal( $digits ) );
 	}
 
-	public function provide_testIntToOrdinal(): array {
+	public static function provide_testIntToOrdinal(): array {
 		return [
 			'1' => [ 1, 'första' ],
 			'10' => [ 10, 'tionde' ],
@@ -93,7 +93,7 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 		$this->assertSame( $words, $digits2words->floatToWords( $digits ) );
 	}
 
-	public function provide_testFloatToWords(): array {
+	public static function provide_testFloatToWords(): array {
 		return [
 			'3' => [ 3, 'tre' ],
 			'3,0' => [ 3.0, 'tre' ],
@@ -112,7 +112,7 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 		$this->assertSame( $words, $digits2words->stringFloatToWords( $integer, $decimals ) );
 	}
 
-	public function provide_testStringFloatToWords(): array {
+	public static function provide_testStringFloatToWords(): array {
 		return [
 			'3' => [ 3, null, 'tre' ],
 			'3,0' => [ 3, '0', 'tre komma noll' ],

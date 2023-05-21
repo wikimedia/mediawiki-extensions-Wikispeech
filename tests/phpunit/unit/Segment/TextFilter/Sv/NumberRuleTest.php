@@ -27,7 +27,7 @@ class NumberRuleTest extends RegexFilterRuleTest {
 		$this->assertRegexFilterRule( new NumberRule(), $input, $alias, $shouldMatch );
 	}
 
-	public function provider(): array {
+	public static function provider(): array {
 		return [
 			'float' => [ '123,45', 'ett hundra tjugotre komma fyrtiofem', true ],
 			'int' => [ '123', 'ett hundra tjugotre', true ],

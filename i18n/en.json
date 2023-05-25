@@ -27,7 +27,6 @@
 	"wikispeech-error-loading-audio-title": "Could not load audio",
 	"wikispeech-error-loading-audio-message": "This can be caused by bad internet connection or an error on the server. Do you want to retry or stop playback?",
 	"wikispeech-error-generate-preview-title": "Could not generate preview",
-	"wikispeech-error-generate-preview-message": "The error from the server was: ",
 	"wikispeech-retry": "Retry",
 	"wikispeech-stop": "Stop",
 	"editlexicon": "Edit lexicon",

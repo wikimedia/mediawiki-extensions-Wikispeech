@@ -61,10 +61,9 @@ TranscriptionPreviewer.prototype.fetchAudio = function () {
 	} ).fail( function ( code, result ) {
 		self.$player.attr( 'src', '' );
 		mw.log.error( 'Failed to synthesize:', code, result );
-		message = mw.msg( 'wikispeech-error-generate-preview-message' ) +
-			result.error.info;
+		message = result.error.info;
 		title = mw.msg( 'wikispeech-error-generate-preview-title' );
-		OO.ui.alert( message, { title: title } );
+		OO.ui.alert( message, { title: title, size: 'medium' } );
 	} );
 };
 

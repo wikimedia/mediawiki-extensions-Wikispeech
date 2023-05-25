@@ -132,9 +132,7 @@ class SpeechoidConnector {
 			FormatJson::FORCE_ASSOC
 		);
 		if ( !$status->isOK() ) {
-			throw new SpeechoidConnectorException(
-				'Unexpected response from Speechoid: ' . $responseString
-			);
+			throw new SpeechoidConnectorException( $responseString );
 		}
 		return $status->getValue();
 	}

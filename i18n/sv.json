@@ -27,7 +27,6 @@
 	"wikispeech-error-loading-audio-title": "Kunde inte ladda ljud",
 	"wikispeech-error-loading-audio-message": "Detta kan ske på grund av en dålig internetanslutning eller ett fel på servern. Vill du försöka igen eller stoppa uppspelningen?",
 	"wikispeech-error-generate-preview-title": "Förhandsgranskningen kunde inte skapas",
-	"wikispeech-error-generate-preview-message": "Felet från servern var:",
 	"wikispeech-retry": "Försök igen",
 	"wikispeech-stop": "Stopp",
 	"editlexicon": "Redigera lexikon",

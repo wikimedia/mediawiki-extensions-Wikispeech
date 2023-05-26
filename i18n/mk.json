@@ -24,7 +24,6 @@
 	"wikispeech-error-loading-audio-title": "Не можев да го вчитам звучниот запис",
 	"wikispeech-error-loading-audio-message": "Ова може да се должи на лоша врска со семрежјето, или пак на грешка во опслужувачот. Дали сакате да пробате пак, или да го запрете пуштањето?",
 	"wikispeech-error-generate-preview-title": "Не можев да го создадам прегледот",
-	"wikispeech-error-generate-preview-message": "Грешката во опслужувачот беше:",
 	"wikispeech-retry": "Пробај пак",
 	"wikispeech-stop": "Запри",
 	"editlexicon": "Уреди лексикон",

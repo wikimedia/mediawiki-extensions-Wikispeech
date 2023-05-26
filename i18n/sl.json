@@ -24,7 +24,6 @@
 	"wikispeech-error-loading-audio-title": "Zvoka ni bilo mogoče naložiti",
 	"wikispeech-error-loading-audio-message": "To je lahko posledica slabe internetne povezave ali napake v strežniku. Ali želite znova poskusiti ali ustaviti branje?",
 	"wikispeech-error-generate-preview-title": "Predogleda ni bilo mogoče ustvariti",
-	"wikispeech-error-generate-preview-message": "Napaka strežnika je bila:",
 	"wikispeech-retry": "Poskusi znova",
 	"wikispeech-stop": "Ustavi",
 	"editlexicon": "Urejanje leksikona",

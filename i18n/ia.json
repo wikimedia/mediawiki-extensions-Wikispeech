@@ -22,7 +22,6 @@
 	"wikispeech-error-loading-audio-title": "Non poteva cargar audio",
 	"wikispeech-error-loading-audio-message": "Isto pote esser causate per un connexion a internet defectuose o un error in le servitor. Vole tu tentar de novo o stoppar le reproduction?",
 	"wikispeech-error-generate-preview-title": "Non poteva generar previsualisation",
-	"wikispeech-error-generate-preview-message": "Le error del servitor esseva:",
 	"wikispeech-retry": "Reprobar",
 	"wikispeech-stop": "Stoppar",
 	"editlexicon": "Modificar lexico",

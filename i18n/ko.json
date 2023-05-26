@@ -15,7 +15,6 @@
 	"wikispeech-dont-listen": "듣지 않음",
 	"wikispeech-error-loading-audio-title": "오디오를 로드하지 못했습니다",
 	"wikispeech-error-generate-preview-title": "미리 보기를 생성하지 못했습니다",
-	"wikispeech-error-generate-preview-message": "서버의 오류는 다음과 같습니다:",
 	"wikispeech-retry": "다시 시도",
 	"wikispeech-stop": "중지",
 	"wikispeech-language": "언어",

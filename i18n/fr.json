@@ -31,7 +31,6 @@
 	"wikispeech-error-loading-audio-title": "Impossible de charger l’audio",
 	"wikispeech-error-loading-audio-message": "Cela peut être dû à une mauvaise connexion internet ou à une erreur sur le serveur. Voulez-vous réessayer ou arrêter la lecture ?",
 	"wikispeech-error-generate-preview-title": "Impossible de générer l’aperçu",
-	"wikispeech-error-generate-preview-message": "L'erreur du serveur était :",
 	"wikispeech-retry": "Réessayer",
 	"wikispeech-stop": "Arrêter",
 	"editlexicon": "Modifier le lexique",

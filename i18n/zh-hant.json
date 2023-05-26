@@ -26,7 +26,6 @@
 	"wikispeech-error-loading-audio-title": "無法載入音訊",
 	"wikispeech-error-loading-audio-message": "這可能是網際網路連接有問題或是伺服器上的錯誤造成的。您要重試還是停止播放？",
 	"wikispeech-error-generate-preview-title": "無法產生預覽",
-	"wikispeech-error-generate-preview-message": "來自伺服器的錯誤：",
 	"wikispeech-retry": "重試",
 	"wikispeech-stop": "停止",
 	"editlexicon": "編輯語彙",

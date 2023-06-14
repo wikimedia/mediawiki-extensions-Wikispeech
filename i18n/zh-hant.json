@@ -35,6 +35,8 @@
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "預覽",
 	"wikispeech-preferred": "優先",
+	"wikispeech-lexicon-next": "下一步",
+	"wikispeech-lexicon-save": "儲存",
 	"wikispeech-lexicon-add-entry-success": "已將項目新增至語彙。",
 	"wikispeech-lexicon-new": "新",
 	"wikispeech-lexicon-edit-entry-success": "已編輯項目。",

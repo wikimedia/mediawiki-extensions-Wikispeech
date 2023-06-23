@@ -15,7 +15,6 @@ use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
 use MediaWikiIntegrationTestCase;
 use MWException;
 use Title;
-use WikiPage;
 
 /**
  * @since 0.1.9
@@ -37,23 +36,13 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 
 	protected function tearDown(): void {
 		$user = $this->getTestSysop()->getUser();
-		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
-			// MW 1.36+
-			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
-		} else {
-			$wikiPageFactory = null;
-		}
+		$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
 		foreach ( $this->entriesTouched as $entry ) {
 			try {
 				$entrySubpage = Title::newFromText(
 						$entry->getLanguage(), NS_PRONUNCIATION_LEXICON
 					)->getSubpage( $entry->getKey() );
-				if ( $wikiPageFactory !== null ) {
-					// MW 1.36+
-					$p = $wikiPageFactory->newFromTitle( $entrySubpage );
-				} else {
-					$p = WikiPage::factory( $entrySubpage );
-				}
+				$p = $wikiPageFactory->newFromTitle( $entrySubpage );
 				if ( $p->exists() ) {
 					$p->doDeleteArticleReal( "testing done.", $user );
 				}

@@ -13,7 +13,6 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use Title;
-use WikiPage;
 
 /**
  * @since 0.1.10
@@ -66,12 +65,7 @@ class LocalWikiPageProvider extends AbstractPageProvider {
 	 * @since 0.1.10
 	 */
 	public function loadData( Title $title ): void {
-		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
-			// MW 1.36+
-			$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
-		} else {
-			$page = WikiPage::factory( $title );
-		}
+		$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		$parserOptions = $page->makeParserOptions( $this->context );
 		$parserOutput = $page->getParserOutput( $parserOptions );
 		$this->setDisplayTitle( $parserOutput->getDisplayTitle() );

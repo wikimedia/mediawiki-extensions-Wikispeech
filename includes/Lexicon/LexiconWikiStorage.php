@@ -71,13 +71,8 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 		string $language,
 		string $key
 	): WikiPage {
-		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
-			// MW 1.36+
-			return MediaWikiServices::getInstance()->getWikiPageFactory()
-				->newFromTitle( $this->lexiconEntryTitleFactory( $language, $key ) );
-		} else {
-			return WikiPage::factory( $this->lexiconEntryTitleFactory( $language, $key ) );
-		}
+		return MediaWikiServices::getInstance()->getWikiPageFactory()
+			->newFromTitle( $this->lexiconEntryTitleFactory( $language, $key ) );
 	}
 
 	/**

@@ -42,12 +42,7 @@ class WikiPageTestUtil {
 		if ( is_string( $title ) ) {
 			$title = Title::newFromText( $title, $namespace );
 		}
-		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
-			// MW 1.36+
-			$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
-		} else {
-			$page = WikiPage::factory( $title );
-		}
+		$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		if ( $page->exists() ) {
 			throw new MWException( 'Page already exists: ' . $title );
 		}

@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Winston Sung"
+		]
+	},
+	"apihelp-wikispeech-segment-summary": "Podijeli HTML-sadržaj stranice u segmente.",
+	"apihelp-wikispeech-segment-param-page": "Naslov stranice za segmentiranje."
+}

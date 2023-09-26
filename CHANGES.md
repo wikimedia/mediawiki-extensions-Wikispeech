@@ -35,9 +35,10 @@ YYYY-MM-DD
 Speechoid: 0.1.2
 
 * [T276332](https://phabricator.wikimedia.org/T276332) Editor: disable preview to indicate that the system is busy
+* [T276332](https://phabricator.wikimedia.org/T276332) Simplify message for error when mapping transcriptions
+* [T279412](https://phabricator.wikimedia.org/T279412) Change label of submit button in lexicon editor to reflect what it does
 
-
-### 0.1.10-SNAPSHOT
+### 0.1.10
 2023-03-08
 Speechoid: 0.1.2
 

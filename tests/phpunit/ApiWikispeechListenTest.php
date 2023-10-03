@@ -26,6 +26,7 @@ use WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
 
 /**
+ * @group Database
  * @group medium
  * @covers \MediaWiki\Wikispeech\Api\ApiWikispeechListen
  */

@@ -18,6 +18,7 @@ use Title;
 
 /**
  * @since 0.1.9
+ * @group Database
  * @covers \MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage
  */
 class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {

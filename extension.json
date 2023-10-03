@@ -20,7 +20,7 @@
 		]
 	},
 	"requires": {
-		"MediaWiki": ">= 1.39"
+		"MediaWiki": ">= 1.41"
 	},
 	"AutoloadNamespaces": {
 		"MediaWiki\\Wikispeech\\": "includes/"

@@ -10,12 +10,12 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Lexicon;
 
 use FormatJson;
 use HashBagOStuff;
+use MediaWiki\Status\Status;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWikiUnitTestCase;
 use MWException;
-use Status;
 
 /**
  * @since 0.1.8

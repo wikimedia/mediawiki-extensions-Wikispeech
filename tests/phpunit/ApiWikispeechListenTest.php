@@ -27,6 +27,7 @@ use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group medium
+ * @group Database
  * @covers \MediaWiki\Wikispeech\Api\ApiWikispeechListen
  */
 class ApiWikispeechListenTest extends ApiTestCase {

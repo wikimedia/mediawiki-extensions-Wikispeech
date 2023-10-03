@@ -21,6 +21,7 @@ use SkinTemplate;
 use Title;
 
 /**
+ * @group Database
  * @covers \MediaWiki\Wikispeech\Hooks\ApiHooks
  */
 class ApiHooksTest extends MediaWikiIntegrationTestCase {

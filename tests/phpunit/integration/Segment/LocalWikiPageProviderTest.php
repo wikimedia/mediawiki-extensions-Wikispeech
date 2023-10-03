@@ -21,6 +21,7 @@ use Title;
 use WANObjectCache;
 
 /**
+ * @group Database
  * @covers \MediaWiki\Wikispeech\Segment\LocalWikiPageProvider
  */
 class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {

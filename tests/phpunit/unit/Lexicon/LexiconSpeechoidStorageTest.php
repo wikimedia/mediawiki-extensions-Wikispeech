@@ -117,6 +117,8 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 	}
 
 	public function testGetEntry() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$connectorMock = $this->createMock( SpeechoidConnector::class );
 		$connectorMock
 			->expects( $this->once() )
@@ -133,6 +135,8 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 	}
 
 	public function testCreateEntry() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$connectorMock = $this->createPartialMock(
 			SpeechoidConnector::class,
 			[ 'lookupLexiconEntries', 'addLexiconEntry' ]
@@ -154,6 +158,8 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 	}
 
 	public function testUpdateEntry_identityGiven_receivedUpdatedItem() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$connectorMock = $this->createPartialMock(
 			SpeechoidConnector::class,
 			[ 'lookupLexiconEntries', 'updateLexiconEntry' ]

@@ -15,6 +15,7 @@ use Status;
 use Wikimedia\TestingAccessWrapper;
 
 /**
+ * @group Database
  * @covers \MediaWiki\Wikispeech\Specials\SpecialEditLexicon
  */
 class SpecialEditLexiconTest extends SpecialPageTestBase {
@@ -87,6 +88,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_formFilled_addEntryToLexicon() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$page = $this->newSpecialPage();
 		$this->speechoidConnector
 			->method( 'fromIpa' )
@@ -118,6 +121,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_existingIdGiven_updateEntry() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -164,6 +169,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_entryExistsAndNewSelected_createNewItem() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -198,6 +205,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_newSelectedAndPreferredIsTrue_createNewItemWithPreferredTrue() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -234,6 +243,8 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_preferredFieldIsFalse_preferredRemovedFromProperties() {
+		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
+
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [

@@ -4,7 +4,7 @@
 			"GuoPC"
 		]
 	},
-	"apihelp-wikispeech-segment-param-removetags": "清除时应当完全移除的HTML标签，其格式为JSON对象：\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n<code>tag1</code>为总是移除，<code>tag2</code>为仅当其拥有CSS类<code>css-class</code>时才移除，<code>tag3</code>为仅当其拥有CSS类<code>css-class-1</code>或<code>css-class-2</code>时才移除。请注意wikispeech-listen使用默认配置进行分段，并且可能与使用此参数的特别设置生成的分段不兼容。",
+	"apihelp-wikispeech-segment-param-removetags": "清除时应当完全移除的HTML标签，其格式为JSON对象：\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n\n<code>tag1</code>为总是移除，<code>tag2</code>为仅当其拥有CSS类<code>css-class</code>时才移除，<code>tag3</code>为仅当其拥有CSS类<code>css-class-1</code>或<code>css-class-2</code>时才移除。请注意wikispeech-listen使用默认配置进行分段，并且可能与使用此参数的特别设置生成的分段不兼容。",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "应中断分段的HTML标签。请注意wikispeech-listen使用默认配置进行分段，并且可能与使用此参数的特别设置生成的分段不兼容。",
 	"apihelp-wikispeech-listen-param-ipa": "需要合成的IPA字符串。"
 }

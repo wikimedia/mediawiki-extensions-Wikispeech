@@ -1,13 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"Amire80",
 			"Emma Franzen",
 			"Hamilton Abreu"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Dividir o conteúdo HTML de uma página em segmentos.",
 	"apihelp-wikispeech-segment-param-page": "O título da página a ser segmentada.",
-	"apihelp-wikispeech-segment-param-removetags": "As etiquetas HTML que devem ser completamente removidas durante a limpeza, como objeto JSON de formato:\n<pre>{\n \"etiqueta1\": verdadeiro,\n \"etiqueta2\": \"classe-css\",\n \"etiqueta3\": [\"classe-css-1\", \"classe-css-2\"]\n}</pre> \nonde <code>etiqueta1</code> é sempre removida, <code>etiqueta2</code> só é removida se também tiver a classe CSS <code>classe-css</code> e <code>etiqueta3</code> só é removida se também tiver a classe CSS <code>classe-css-1</code> ou <code>classe-css-2</code> . Esteja ciente de que wikispeech-listen usa configuração padrão para segmentar e pode não ser compatível com segmentos produzidos com uma configuração ''ad hoc'' deste parâmetro.",
+	"apihelp-wikispeech-segment-param-removetags": "As etiquetas HTML que devem ser completamente removidas durante a limpeza, como objeto JSON de formato:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nonde <code>etiqueta1</code> é sempre removida, <code>etiqueta2</code> só é removida se também tiver a classe CSS <code>classe-css</code> e <code>etiqueta3</code> só é removida se também tiver a classe CSS <code>classe-css-1</code> ou <code>classe-css-2</code> . Esteja ciente de que wikispeech-listen usa configuração padrão para segmentar e pode não ser compatível com segmentos produzidos com uma configuração ''ad hoc'' deste parâmetro.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Etiquetas HTML que devem quebrar segmentos. Esteja ciente de que wikispeech-listen usa configuração padrão para segmentar e pode não ser compatível com segmentos produzidos com uma configuração ''ad hoc'' deste parâmetro.",
 	"apihelp-wikispeech-segment-param-consumer-url": "URL para o caminho de ''scripts'' da wiki consumidora.",
 	"apihelp-wikispeech-segment-example-1": "Segmentar a página principal usando os parâmetros padrão da configuração.",

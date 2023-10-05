@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Amire80",
 			"Eleassar"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Razdeli HTML-vsebino strani v segmente.",
 	"apihelp-wikispeech-segment-param-page": "Naslov strani za segmentiranje.",
-	"apihelp-wikispeech-segment-param-removetags": "Značke HTML, ki jih je treba med čiščenjem popolnoma odstraniti, kot objekt JSON v formatu:\n<pre> {\n \"tag1\": res,\n \"tag2\": \"css-razred\",\n \"tag3\": [\"css-razred-1\", \"css-razred-2\"]\n}</pre> \npri čemer se <code>tag1</code> vedno odstrani, <code>tag2</code> se odstrani samo, če ima tudi razred CSS <code>css-class</code>, <code>tag3</code> pa se odstrani samo, če ima tudi razred CSS <code>css-class-1</code> ali <code>css-class-2</code>. Upoštevajte, da wikispeech-listen uporablja za segmentiranje prednastavljeno konfiguracijo in morda ni združljiv s segmenti, ustvarjenimi z ad hoc nastavitvijo tega parametra.",
+	"apihelp-wikispeech-segment-param-removetags": "Značke HTML, ki jih je treba med čiščenjem popolnoma odstraniti, kot objekt JSON v formatu:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\npri čemer se <code>tag1</code> vedno odstrani, <code>tag2</code> se odstrani samo, če ima tudi razred CSS <code>css-class</code>, <code>tag3</code> pa se odstrani samo, če ima tudi razred CSS <code>css-class-1</code> ali <code>css-class-2</code>. Upoštevajte, da wikispeech-listen uporablja za segmentiranje prednastavljeno konfiguracijo in morda ni združljiv s segmenti, ustvarjenimi z ad hoc nastavitvijo tega parametra.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-značke, ki bi morale razcepiti segmente. Upoštevajte, da wikispeech-listen za segmentiranje uporablja prednastavljeno konfiguracijo in morda ni združljiv s segmenti, ustvarjenimi z ad hoc nastavitvijo tega parametra.",
 	"apihelp-wikispeech-segment-param-consumer-url": "URL do skriptne poti porabniškega vikija.",
 	"apihelp-wikispeech-segment-example-1": "Segmentiranje glavne strani s prednastavljenimi parametri iz konfiguracije",

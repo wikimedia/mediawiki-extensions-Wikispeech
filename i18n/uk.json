@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Base",
 			"DDPAT",
 			"Ice bulldog",
 			"Ата"
@@ -25,6 +26,7 @@
 	"wikispeech-dont-listen": "Не слухати",
 	"wikispeech-error-loading-audio-title": "Не вдалося завантажити аудіо",
 	"wikispeech-error-loading-audio-message": "Це може бути викликано поганим підключенням до Інтернету або помилкою на сервері. Повторити спробу або зупинити відтворення?",
+	"wikispeech-error-generate-preview-title": "Не вдалося створити попередній перегляд",
 	"wikispeech-retry": "Повторити",
 	"wikispeech-stop": "Зупинити",
 	"editlexicon": "Редагувати лексикон",
@@ -33,6 +35,7 @@
 	"wikispeech-transcription": "Транскрипція",
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "Попередній перегляд",
+	"wikispeech-preferred": "Бажаний",
 	"wikispeech-lexicon-add-entry-success": "Запис додано до лексикону.",
 	"wikispeech-lexicon-new": "Новий",
 	"wikispeech-lexicon-edit-entry-success": "Запис відредаговано.",

@@ -5,6 +5,7 @@
 			"BnSrSa",
 			"Fitoschido",
 			"JDíaz32",
+			"No se",
 			"ZealousBlaze"
 		]
 	},
@@ -15,6 +16,7 @@
 	"action-wikispeech-listen": "escuchar página",
 	"wikispeech-error-generate-preview-title": "No se pudo generar la vista previa",
 	"wikispeech-preview": "Vista previa",
+	"wikispeech-preferred": "Preferido",
 	"wikispeech-lexicon-next": "Siguiente",
 	"wikispeech-lexicon-save": "Guardar"
 }

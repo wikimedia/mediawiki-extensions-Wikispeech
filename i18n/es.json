@@ -5,7 +5,8 @@
 			"BnSrSa",
 			"Fitoschido",
 			"JDíaz32",
-			"ZealousBlaze"
+			"ZealousBlaze",
+			"No se"
 		]
 	},
 	"prefs-wikispeech-voice": "Voz",
@@ -15,5 +16,6 @@
 	"action-wikispeech-listen": "escuchar página",
 	"wikispeech-error-generate-preview-title": "No se pudo generar la vista previa",
 	"wikispeech-error-generate-preview-message": "El error del servidor fue:",
-	"wikispeech-preview": "Vista previa"
+	"wikispeech-preview": "Vista previa",
+	"wikispeech-preferred": "Preferido"
 }

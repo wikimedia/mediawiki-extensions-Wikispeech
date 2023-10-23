@@ -1,5 +1,5 @@
 var Previewer, $content, $transcription, $language, api, $previewPlayer,
-	previewer;
+	previewer, previewButton;
 
 Previewer = require( './ext.wikispeech.transcriptionPreviewer.js' );
 // eslint-disable-next-line no-jquery/no-global-selector
@@ -10,7 +10,16 @@ api = new mw.Api();
 $previewPlayer = $( '<audio>' ).insertAfter( $transcription );
 previewer = new Previewer( $language, $transcription, api, $previewPlayer );
 
-$content.find( '#ext-wikispeech-preview-button' ).on(
+previewButton = OO.ui.infuse( $content.find( '#ext-wikispeech-preview-button' ) );
+previewButton.on(
 	'click',
-	previewer.play.bind( previewer )
+	function () {
+		previewButton.setDisabled( true );
+		previewer.play().then( function () {
+			previewButton.setDisabled( false );
+		},
+		function () {
+			previewButton.setDisabled( false );
+		} );
+	}
 );

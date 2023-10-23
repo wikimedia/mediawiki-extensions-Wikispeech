@@ -34,6 +34,8 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T276332](https://phabricator.wikimedia.org/T276332) Editor: disable preview to indicate that the system is busy
+
 
 ### 0.1.10-SNAPSHOT
 2023-03-08

@@ -2,11 +2,14 @@
 	"@metadata": {
 		"authors": [
 			"Tala Ali",
-			"محمد أحمد عبد الفتاح"
+			"محمد أحمد عبد الفتاح",
+			"Alshamiri1"
 		]
 	},
 	"prefs-wikispeech-voice": "الصوت",
 	"right-wikispeech-listen": "الاستماع إلى الصفحة",
 	"action-wikispeech-listen": "الاستماع إلى الصفحة",
-	"wikispeech-preview": "معاينة"
+	"wikispeech-preview": "معاينة",
+	"wikispeech-lexicon-next": "التالي",
+	"wikispeech-lexicon-save": "حفظ"
 }

@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Joquliina"
+			"Joquliina",
+			"Pyscowicz"
 		]
 	},
-	"wikispeech-preview": "Esikatselu"
+	"wikispeech-preview": "Esikatselu",
+	"wikispeech-lexicon-save": "Tallenna"
 }

@@ -4,7 +4,7 @@
 	},
 	"apihelp-wikispeech-segment-summary": "Dividi el contegnuo HTML de na voxe in segminti.",
 	"apihelp-wikispeech-segment-param-page": "El tìtoło de na voxe da segmentar.",
-	"apihelp-wikispeech-segment-param-removetags": "HTML tags that should be removed completely during cleaning, as a JSON object of the format:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nwhere <code>tag1</code> is always removed, <code>tag2</code> is only removed if it also has the CSS class <code>css-class</code> and <code>tag3</code> is only removed if it also has the CSS class <code>css-class-1</code> or <code>css-class-2</code>.",
+	"apihelp-wikispeech-segment-param-removetags": "HTML tags that should be removed completely during cleaning, as a JSON object of the format:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n\nwhere <code>tag1</code> is always removed, <code>tag2</code> is only removed if it also has the CSS class <code>css-class</code> and <code>tag3</code> is only removed if it also has the CSS class <code>css-class-1</code> or <code>css-class-2</code>.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Tag HTML che i garia da desfar in segminti.",
 	"apihelp-wikispeech-segment-example-1": "Segmenta ła pàjina prinsipałe doparando i paràmatri de configurasion.",
 	"apihelp-wikispeech-segment-example-2": "Segment using custom parameters. The tag <code>sup</code> is removed and so is <code>div</code> when it has the class <code>toc</code>. The tags <code>h1</code> and <code>h2</code> break segments.",

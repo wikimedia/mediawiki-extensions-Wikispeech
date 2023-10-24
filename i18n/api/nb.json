@@ -6,7 +6,7 @@
 	},
 	"apihelp-wikispeech-segment-summary": "Del en sides HTML-innhold inn i segmenter.",
 	"apihelp-wikispeech-segment-param-page": "Tittelen til siden som skal segmenteres.",
-	"apihelp-wikispeech-segment-param-removetags": "HTML-tagger som bør fjernes fullstending under rydding, som et JSON-objekt med formatet:\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nder <code>tag1</code> alltid fjernes, <code>tag2</code> kun fjernes om den også har CSS-klassen <code>css-class</code> og <code>tag3</code> kun fjernes om den også har CSS-klassene <code>css-class-1</code> eller <code>css-class-2</code>.",
+	"apihelp-wikispeech-segment-param-removetags": "HTML-tagger som bør fjernes fullstending under rydding, som et JSON-objekt med formatet:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n\nder <code>tag1</code> alltid fjernes, <code>tag2</code> kun fjernes om den også har CSS-klassen <code>css-class</code> og <code>tag3</code> kun fjernes om den også har CSS-klassene <code>css-class-1</code> eller <code>css-class-2</code>.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-tagger som burde bryte segmenter.",
 	"apihelp-wikispeech-segment-example-1": "Segmenter hovedsiden med standardparametere fra konfigurasjonen.",
 	"apihelp-wikispeech-segment-example-2": "Segmenter med egendefinerte parametre. Taggen <code>sup</code> fjernes, det samme med <code>div</code> når den har klassen <code>toc</code>. Taggene <code>h1</code> og <code>h2</code> bryter segmenter.",

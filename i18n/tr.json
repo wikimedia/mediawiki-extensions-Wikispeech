@@ -6,7 +6,8 @@
 			"Melissadilara",
 			"Mim.saitkilic",
 			"MuratTheTurkish",
-			"SaldırganSincap"
+			"SaldırganSincap",
+			"Sayginer"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -28,6 +29,7 @@
 	"wikispeech-dont-listen": "Dinlemeyin",
 	"wikispeech-error-loading-audio-title": "Ses yüklenemedi",
 	"wikispeech-error-loading-audio-message": "Bunun nedeni kötü internet bağlantısı veya sunucudaki bir hata olabilir. Oynatmayı yeniden denemek mi yoksa durdurmak mı istiyorsunuz?",
+	"wikispeech-error-generate-preview-title": "Önizleme oluşturulamadı",
 	"wikispeech-retry": "Tekrar dene",
 	"wikispeech-stop": "Durdur",
 	"editlexicon": "Sözlüğü değiştir",

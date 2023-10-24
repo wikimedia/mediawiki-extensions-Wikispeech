@@ -4,5 +4,8 @@
 			"Saraiki"
 		]
 	},
-	"wikispeech-language": "زبان"
+	"wikispeech-language": "زبان",
+	"wikispeech-preferred": "ترجیحی",
+	"wikispeech-lexicon-next": "اڳلا",
+	"wikispeech-lexicon-save": "بچاؤ"
 }

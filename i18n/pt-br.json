@@ -3,7 +3,8 @@
 		"authors": [
 			"Eduardo Addad de Oliveira",
 			"Eduardoaddad",
-			"TheEduGobi"
+			"TheEduGobi",
+			"Re demz"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -24,6 +25,7 @@
 	"wikispeech-dont-listen": "Não escutar",
 	"wikispeech-error-loading-audio-title": "Não foi possível carregar áudio",
 	"wikispeech-error-loading-audio-message": "Isso pode ser causado por conexão má Internet ou um erro no servidor. Você quer repetir ou parar a reprodução?",
+	"wikispeech-error-generate-preview-title": "Não foi possível gerar a antevisão",
 	"wikispeech-retry": "Tentar novamente",
 	"wikispeech-stop": "Parar",
 	"editlexicon": "Editar léxico",

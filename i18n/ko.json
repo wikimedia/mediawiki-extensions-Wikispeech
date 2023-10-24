@@ -14,10 +14,13 @@
 	"wikispeech-listen": "듣기",
 	"wikispeech-dont-listen": "듣지 않음",
 	"wikispeech-error-loading-audio-title": "오디오를 로드하지 못했습니다",
+	"wikispeech-error-generate-preview-title": "미리 보기를 생성하지 못했습니다",
 	"wikispeech-retry": "다시 시도",
 	"wikispeech-stop": "중지",
 	"wikispeech-language": "언어",
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "미리 보기",
+	"wikispeech-lexicon-next": "다음",
+	"wikispeech-lexicon-save": "저장",
 	"wikispeech-lexicon-new": "새 항목"
 }

@@ -1,11 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Kareyac"
+			"Kareyac",
+			"Coring"
 		]
 	},
 	"wikispeech-language": "Язык",
 	"wikispeech-word": "Слово",
 	"wikispeech-transcription": "Транскрипция",
-	"wikispeech-preview": "Предпросмотр"
+	"wikispeech-preview": "Предпросмотр",
+	"wikispeech-lexicon-save": "Сохранить"
 }

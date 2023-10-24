@@ -21,11 +21,13 @@
 	"action-wikispeech-listen": "luister naar pagina",
 	"wikispeech-listen": "Beluisteren",
 	"wikispeech-error-loading-audio-title": "Audio kon niet geladen worden",
+	"wikispeech-error-generate-preview-title": "Kon geen voorbeeld genereren",
 	"wikispeech-retry": "Probeer opnieuw",
 	"wikispeech-stop": "Stoppen",
 	"wikispeech-language": "Taal",
 	"wikispeech-word": "Woord",
 	"wikispeech-transcription": "Transcriptie",
 	"wikispeech-preview": "Voorvertoning",
+	"wikispeech-preferred": "Voorkeur",
 	"wikispeech-lexicon-new": "Nieuw"
 }

@@ -4,7 +4,9 @@
 			"Agent",
 			"BnSrSa",
 			"Fitoschido",
-			"ZealousBlaze"
+			"ZealousBlaze",
+			"JDíaz32",
+			"No se"
 		]
 	},
 	"prefs-wikispeech-voice": "Voz",
@@ -12,5 +14,9 @@
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Cambios a las preferencias tomarán efecto la próxima vez que la página sea recargada. Para escuchar la página actual con las nuevas preferencias, recarga la página después de salvar.",
 	"right-wikispeech-listen": "Escuchar página",
 	"action-wikispeech-listen": "escuchar página",
-	"wikispeech-preview": "Vista previa"
+	"wikispeech-error-generate-preview-title": "No se pudo generar la vista previa",
+	"wikispeech-preview": "Vista previa",
+	"wikispeech-preferred": "Preferido",
+	"wikispeech-lexicon-next": "Siguiente",
+	"wikispeech-lexicon-save": "Guardar"
 }

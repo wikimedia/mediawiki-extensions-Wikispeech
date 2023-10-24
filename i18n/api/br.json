@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Huñvreüs"
+			"Huñvreüs",
+			"Amire80"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Ober war-dro ur bajenn da vezañ implijet gant an astenn Wikispeech",
 	"apihelp-wikispeech-segment-param-page": "Titl ar bajenn da vezañ pledet ganti.",
-	"apihelp-wikispeech-segment-param-removetags": "An tikedennoù da vezañ lamet kuit da vat e-pad an taol kempenn, e stumm un draezenn JSON dezhi ar furmad :\n<pre>{\n  \"tagName1\": true,\n  \"tagName2\": \"cssClass\",\n  \"tagName3\": [\"cssClass1\", \"cssClass2\"]\n}</pre>\nma vez lamet kuit atav <code>tagName1</code>, ma vez lamet kuit <code>tagName2</code> hepken pa vez dezhañ ar c'hevrennad CSS <code>cssClass</code> ha ma vez dilamet <code>tagName3</code> hepken mard en deus ivez ar c'hevrennad CSS <code>cssClass2</code> pe <code>cssClass1</code>.",
+	"apihelp-wikispeech-segment-param-removetags": "An tikedennoù da vezañ lamet kuit da vat e-pad an taol kempenn, e stumm un draezenn JSON dezhi ar furmad :\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nma vez lamet kuit atav <code>tagName1</code>, ma vez lamet kuit <code>tagName2</code> hepken pa vez dezhañ ar c'hevrennad CSS <code>cssClass</code> ha ma vez dilamet <code>tagName3</code> hepken mard en deus ivez ar c'hevrennad CSS <code>cssClass2</code> pe <code>cssClass1</code>.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Anvioù an tikedennoù evit an tikedennoù o deus da ouzhpennañ troc'hoù tre ar rannoù.",
 	"apihelp-wikispeech-segment-example-1": "Tapout rannoù an astenn Wikispeech. Diverket eo an dikedenn <code>sup</code> ha kemend-all evit <code>div</code> pa vez gant ar c'hevrennad <code>toc</code>. An tikedennoù <code>h1</code> ha <code>h2</code> a droc'h ar rannoù.",
 	"apihelp-wikispeech-segment-example-2": "Kaout an danvez HTML orin hag an destenn kempennet.",

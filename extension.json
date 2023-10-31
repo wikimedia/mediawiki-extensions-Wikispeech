@@ -102,7 +102,8 @@
 						"WikispeechFeedbackPage",
 						"WikispeechSpeechoidUrl",
 						"WikispeechNamespaces",
-						"WikispeechVoices"
+						"WikispeechVoices",
+						"WikispeechAllowConsumerEdits"
 					]
 				},
 				{
@@ -498,6 +499,13 @@
 			"description": [
 				"When true, redirect the user to login page if they visit ",
 				"the edit lexicon page and is not logged in."
+			],
+			"value": false
+		},
+		"WikispeechAllowConsumerEdits": {
+			"description": [
+				"When true, an edit button is added to the toolbar that ",
+				"leads to the edit lexicon page on the producer wiki."
 			],
 			"value": false
 		}

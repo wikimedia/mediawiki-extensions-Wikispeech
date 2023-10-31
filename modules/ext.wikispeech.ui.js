@@ -18,23 +18,7 @@
 
 		this.init = function () {
 			self.addSelectionPlayer();
-			if ( mw.wikispeech.consumerMode ) {
-				// No edit lexicon button since we can not check the rights
-				// on the producer.
-				self.addControlPanel( false );
-			} else {
-				mw.user.getRights()
-					.done( function ( rights ) {
-						var canEditLexicon = rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
-						self.addControlPanel( canEditLexicon );
-					} )
-					.fail( function () {
-						// If we can not get the rights we still want to
-						// show the player. Assume the user does not have
-						// the right to edit lexicon.
-						self.addControlPanel( false );
-					} );
-			}
+			self.addControlPanel();
 			self.addKeyboardShortcuts();
 			self.windowManager = new OO.ui.WindowManager();
 			self.addDialogs();
@@ -46,13 +30,10 @@
 		 *
 		 * The panel contains buttons for controlling playback and
 		 * links to related pages.
-		 *
-		 * @param {boolean} addEditButton Whether the button for edit
-		 *  lexicon should be added or not.
 		 */
 
-		this.addControlPanel = function ( addEditButton ) {
-			var toolFactory, toolGroupFactory, playerGroup, linkGroup, height;
+		this.addControlPanel = function () {
+			var toolFactory, toolGroupFactory, playerGroup, height;
 
 			toolFactory = new OO.ui.ToolFactory();
 			toolGroupFactory = new OO.ui.ToolGroupFactory();
@@ -94,32 +75,28 @@
 				mw.wikispeech.player.skipAheadUtterance
 			);
 
-			linkGroup = self.addToolbarGroup();
+			self.linkGroup = self.addToolbarGroup();
 			self.addLinkConfigButton(
-				linkGroup,
+				self.linkGroup,
 				'help',
 				'wgWikispeechHelpPage'
 			);
 			self.addLinkConfigButton(
-				linkGroup,
+				self.linkGroup,
 				'feedback',
 				'wgWikispeechFeedbackPage'
 			);
-			if ( addEditButton ) {
-				self.addButton(
-					linkGroup,
-					'edit',
-					mw.util.getUrl(
-						'Special:EditLexicon',
-						// Send URL parameters to the edit lexicon special
-						// page. These will populate the fields.
-						{
-							language: mw.config.get( 'wgPageContentLanguage' ),
-							page: mw.config.get( 'wgArticleId' )
-						}
-					)
-				);
-			}
+			var api = new mw.Api();
+			api.getUserInfo()
+				.done( function ( info ) {
+					var canEditLexicon = info.rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
+					if ( !canEditLexicon ) {
+						return;
+					}
+
+					self.addEditButton();
+				} );
+
 			$( document.body ).append( self.toolbar.$element );
 			self.toolbar.initialize();
 
@@ -136,6 +113,36 @@
 				} )
 				.appendTo( '#footer' );
 			self.addBufferingIcon();
+		};
+
+		/**
+		 * Add button that takes the user to the lexicon editor.
+		 *
+		 * @param {string} If given, this is used to build the URL for
+		 *  the editor page. It should be the URL to the script
+		 *  endpoint of a wiki, i.e. "...index.php". If not given the
+		 *  link will go to the page on the local wiki.
+		 */
+
+		this.addEditButton = function ( scriptUrl ) {
+			var editUrl;
+			if ( scriptUrl ) {
+				editUrl = scriptUrl;
+			} else {
+				editUrl = mw.config.get( 'wgScript' );
+			}
+			editUrl += '?' + new URLSearchParams( {
+				title: 'Special:EditLexicon',
+				language: mw.config.get( 'wgPageContentLanguage' ),
+				page: mw.config.get( 'wgArticleId' )
+			} );
+			self.addButton(
+				self.linkGroup,
+				'edit',
+				editUrl,
+				null,
+				'wikispeech-edit'
+			);
 		};
 
 		/**
@@ -156,15 +163,17 @@
 		 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
 		 * @param {string} icon Name of button icon.
 		 * @param {Function|string} onClick Function to call or link.
-		 * @param {string[]} classes CSS classes.
+		 * @param {string[]} classes Classes to add to the button.
+		 * @param {string} id Id to add to the button.
 		 * @return {OO.ui.ButtonWidget}
 		 */
 
-		this.addButton = function ( group, icon, onClick, classes ) {
+		this.addButton = function ( group, icon, onClick, classes, id ) {
 			// eslint-disable-next-line mediawiki/class-doc
 			var button = new OO.ui.ButtonWidget( {
 				icon: icon,
-				classes: classes
+				classes: classes,
+				id: id
 			} );
 			if ( typeof onClick === 'function' ) {
 				button.on( 'click', onClick );

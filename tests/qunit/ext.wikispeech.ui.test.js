@@ -1,7 +1,7 @@
 ( function () {
 	var sandbox, contentSelector, selectionPlayer, player, ui;
 
-	QUnit.module( 'ext.wikispeech.ui', {
+	QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 		beforeEach: function () {
 			mw.wikispeech.player = sinon.stub( new mw.wikispeech.Player() );
 			player = mw.wikispeech.player;
@@ -9,13 +9,12 @@
 				sinon.stub( new mw.wikispeech.SelectionPlayer() );
 			selectionPlayer = mw.wikispeech.selectionPlayer;
 			ui = new mw.wikispeech.Ui();
+			sinon.stub( ui, 'addBufferingIcon' );
 			$( '#qunit-fixture' ).append(
 				$( '<div>' ).attr( 'id', 'content' ),
 				$( '<div>' ).attr( 'id', 'footer' )
 			);
-			mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
-			contentSelector =
-				mw.config.get( 'wgWikispeechContentSelector' );
+			contentSelector = '#mw-content-text';
 			sandbox = sinon.sandbox.create();
 		},
 		afterEach: function () {
@@ -26,12 +25,11 @@
 			$( '#qunit-fixture' ).empty();
 			$( '.ext-wikispeech-control-panel, .ext-wikispeech-selection-player' ).remove();
 		}
-	} );
+	} ) );
 
 	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
-		sinon.stub( ui, 'addBufferingIcon' );
 
 		ui.addControlPanel();
 
@@ -46,7 +44,6 @@
 	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
-		sinon.stub( ui, 'addBufferingIcon' );
 
 		ui.addControlPanel();
 
@@ -55,6 +52,52 @@
 				.find( '.oo-ui-buttonElement-button[href="./Feedback"]' )
 				.length,
 			1
+		);
+	} );
+
+	QUnit.test( 'addEditButton(): add edit button with link to local URL', function () {
+		var addButton;
+
+		mw.config.set( 'wgPageContentLanguage', 'en' );
+		mw.config.set( 'wgArticleId', 1 );
+		mw.config.set( 'wgScript', '/wiki/index.php' );
+		ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
+		addButton = this.sandbox.stub( ui, 'addButton' );
+
+		ui.addEditButton();
+
+		sinon.assert.calledWith(
+			addButton,
+			ui.linkGroup,
+			'edit',
+			// The colon in "Special:EditLexicon" is URL encoded, see:
+			// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
+			'/wiki/index.php?title=Special%3AEditLexicon&language=en&page=1',
+			null,
+			'wikispeech-edit'
+		);
+	} );
+
+	QUnit.test( 'addEditButton(): add edit button with link to given script URL', function () {
+		var addButton;
+
+		mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
+		mw.config.set( 'wgPageContentLanguage', 'en' );
+		mw.config.set( 'wgArticleId', 1 );
+		ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
+		addButton = this.sandbox.stub( ui, 'addButton' );
+
+		ui.addEditButton( 'http://producer.url/w/index.php' );
+
+		sinon.assert.calledWith(
+			addButton,
+			ui.linkGroup,
+			'edit',
+			// The colon in "Special:EditLexicon" is URL encoded, see:
+			// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
+			'http://producer.url/w/index.php?title=Special%3AEditLexicon&language=en&page=1',
+			null,
+			'wikispeech-edit'
 		);
 	} );
 

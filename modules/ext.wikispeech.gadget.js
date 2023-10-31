@@ -8,6 +8,9 @@
 
 	/**
 	 * Add config variables from the producer's config.
+	 *
+	 * The config values are specified in extension.json under
+	 * ResourceModules -> ext.wikispeech.gadget.
 	 */
 
 	function addConfig() {
@@ -160,6 +163,23 @@
 				}
 			);
 		} );
+		if ( mw.config.get( 'wgWikispeechAllowConsumerEdits' ) ) {
+			var producerApi = new mw.ForeignApi(
+				mw.wikispeech.producerUrl +
+					'/api.php'
+			);
+			producerApi.get( {
+				action: 'query',
+				format: 'json',
+				meta: 'siteinfo',
+				siprop: 'general'
+			} )
+				.done( function ( response ) {
+					var producerInfo = response.query.general,
+						scriptPath = producerInfo.server + producerInfo.script;
+					mw.wikispeech.ui.addEditButton( scriptPath );
+				} );
+		}
 	}
 
 	mw.wikispeech = mw.wikispeech || {};

@@ -493,6 +493,13 @@
 				"Defaults to UploadDirectory/wikispeechListenMetrics.log"
 			],
 			"value": ""
+		},
+		"WikispeechEditLexiconAutoLogin": {
+			"description": [
+				"When true, redirect the user to login page if they visit ",
+				"the edit lexicon page and is not logged in."
+			],
+			"value": false
 		}
 	},
 	"DefaultUserOptions": {

@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T339840](https://phabricator.wikimedia.org/T339840) Editor: Redirect logged out users to login page if they lack right to edit lexicon
 * [T276332](https://phabricator.wikimedia.org/T276332) Editor: disable preview to indicate that the system is busy
 * [T276332](https://phabricator.wikimedia.org/T276332) Simplify message for error when mapping transcriptions
 * [T279412](https://phabricator.wikimedia.org/T279412) Change label of submit button in lexicon editor to reflect what it does

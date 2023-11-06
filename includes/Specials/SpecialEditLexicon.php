@@ -73,6 +73,10 @@ class SpecialEditLexicon extends SpecialPage {
 	 */
 	public function execute( $subpage ) {
 		$this->setHeaders();
+		if ( $this->redirectToLoginPage() ) {
+			return;
+		}
+
 		$this->checkPermissions();
 
 		$request = $this->getRequest();
@@ -146,6 +150,46 @@ class SpecialEditLexicon extends SpecialPage {
 		$this->getOutput()->addModules( [
 			'ext.wikispeech.specialEditLexicon'
 		] );
+	}
+
+	/**
+	 * Redirect the user to login page when appropriate
+	 *
+	 * If the the user is not logged in and config variable
+	 * `WikispeechEditLexiconAutoLogin` is true this adds a redirect
+	 * to the output. Returns to this special page after login and
+	 * keeps any URL parameters that were originally given.
+	 *
+	 * @since 0.1.11
+	 * @return bool True if a redirect was added, else false.
+	 */
+	private function redirectToLoginPage(): bool {
+		if ( $this->getUser()->isNamed() ) {
+			// User already logged in.
+			return false;
+		}
+
+		if ( !$this->getConfig()->get( 'WikispeechEditLexiconAutoLogin' ) ) {
+			return false;
+		}
+
+		$lexiconUrl = $this->getPageTitle()->getPrefixedText();
+		$lexiconRequest = $this->getRequest();
+
+		$loginParemeters = [
+			'returnto' => $lexiconUrl
+		];
+		if ( $lexiconRequest->getValues() ) {
+			// Add any parameters to this page to include after
+			// logging in.
+			$lexiconParametersString = http_build_query( $lexiconRequest->getValues() );
+			$loginParemeters['returntoquery'] = $lexiconParametersString;
+		}
+		$title = SpecialPage::getTitleFor( 'Userlogin' );
+		$loginUrl = $title->getFullURL( $loginParemeters );
+		$this->getOutput()->redirect( $loginUrl );
+
+		return true;
 	}
 
 	/**

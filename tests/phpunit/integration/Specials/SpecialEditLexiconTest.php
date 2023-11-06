@@ -2,14 +2,18 @@
 
 namespace MediaWiki\Wikispeech\Tests\Integration\Special;
 
+use FauxRequest;
 use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use PermissionsError;
 use SpecialPageTestBase;
 use Status;
+use User;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -27,6 +31,17 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	/** @var SpeechoidConnector */
 	private $speechoidConnector;
 
+	/** @var User */
+	private $user;
+
+	/** @var SpecialEditLexicon */
+	private $page;
+
+	protected function setUp(): void {
+		parent::setUp();
+		$this->overrideConfigValue( MainConfigNames::Server, '//wiki.test' );
+	}
+
 	/**
 	 * Returns a new instance of the special page under test.
 	 *
@@ -36,11 +51,17 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->languageNameUtils = $this->createStub( LanguageNameUtils::class );
 		$this->lexiconStorage = $this->createMock( LexiconStorage::class );
 		$this->speechoidConnector = $this->createStub( SpeechoidConnector::class );
-		return new SpecialEditLexicon(
+
+		$this->page = new SpecialEditLexicon(
 			$this->languageNameUtils,
 			$this->lexiconStorage,
 			$this->speechoidConnector
 		);
+		if ( $this->user ) {
+			$this->page->getContext()->setUser( $this->user );
+		}
+
+		return $this->page;
 	}
 
 	public function testGetLanguageOptions_configHasVoices_giveLanguageOptions() {
@@ -280,5 +301,34 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			'id' => 123,
 			'preferred' => false
 		] );
+	}
+
+	public function testExecute_autoLoginOnNotLoggedInLackingRight_redirectToLoginPage() {
+		$this->user = null;
+		$this->setGroupPermissions( '*', 'wikispeech-edit-lexicon', false );
+		$this->overrideConfigValue( 'WikispeechEditLexiconAutoLogin', true );
+		$this->overrideConfigValue( MainConfigNames::Script, '/wiki/index.php' );
+		$request = new FauxRequest( [
+			'language' => 'en',
+			'word' => 'monkey'
+		] );
+
+		$this->executeSpecialPage( '', $request );
+
+		$this->assertSame(
+            // phpcs:ignore Generic.Files.LineLength
+			'http://wiki.test/wiki/index.php?title=Special:UserLogin&returnto=Special%3AEditLexicon&returntoquery=language%3Den%26word%3Dmonkey',
+			$this->page->getOutput()->getRedirect()
+		);
+	}
+
+	public function testExecute_autoLoginOffNotLoggedInLackingRight_permissionError() {
+		$this->user = null;
+		$this->setGroupPermissions( '*', 'wikispeech-edit-lexicon', false );
+		$this->overrideConfigValue( 'WikispeechEditLexiconAutoLogin', false );
+
+		$this->expectException( PermissionsError::class );
+
+		$this->executeSpecialPage();
 	}
 }

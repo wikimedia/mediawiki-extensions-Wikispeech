@@ -1,6 +1,6 @@
 let storage, player, util, contentSelector;
 
-QUnit.module( 'ext.wikispeech.storage', {
+QUnit.module( 'ext.wikispeech.storage', QUnit.newMwEnvironment( {
 	beforeEach: function () {
 		util = mw.wikispeech.test.util;
 		mw.wikispeech.player = {
@@ -32,7 +32,7 @@ QUnit.module( 'ext.wikispeech.storage', {
 		mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 		mw.wikispeech.consumerMode = false;
 	}
-} );
+} ) );
 
 QUnit.test( 'loadUtterances()', ( assert ) => {
 	sinon.stub( storage, 'prepareUtterance' );
@@ -79,7 +79,7 @@ QUnit.test( 'loadUtterances()', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
+QUnit.test( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
 	mw.wikispeech.consumerMode = true;
 	sinon.stub( storage, 'prepareUtterance' );
@@ -203,9 +203,9 @@ QUnit.test( 'prepareUtterance(): stop when end of text is reached', () => {
 	sinon.assert.called( player.stop );
 } );
 
-// T322405
-QUnit.skip( 'loadAudio()', ( assert ) => {
+QUnit.test( 'loadAudio()', ( assert ) => {
 	mw.config.set( 'wgRevisionId', 1 );
+	mw.config.set( 'wgPageContentLanguage', 'en' );
 	storage.utterances[ 0 ].hash = 'hash1234';
 	storage.api.get.returns( $.Deferred() );
 
@@ -222,8 +222,8 @@ QUnit.skip( 'loadAudio()', ( assert ) => {
 	);
 } );
 
-// T322405
-QUnit.skip( 'loadAudio(): request successful', ( assert ) => {
+QUnit.test( 'loadAudio(): request successful', ( assert ) => {
+	mw.config.set( 'wgPageContentLanguage', 'en' );
 	const response = {
 		'wikispeech-listen': {
 			audio: 'DummyBase64Audio=',
@@ -252,8 +252,8 @@ QUnit.skip( 'loadAudio(): request successful', ( assert ) => {
 	assert.strictEqual( storage.utterances[ 0 ].audio.playbackRate, 2.0 );
 } );
 
-// T322405
-QUnit.skip( 'loadAudio(): request failed', ( assert ) => {
+QUnit.test( 'loadAudio(): request failed', ( assert ) => {
+	mw.config.set( 'wgPageContentLanguage', 'en' );
 	storage.api.get.returns( $.Deferred().reject() );
 	sinon.spy( storage, 'addTokens' );
 
@@ -284,11 +284,11 @@ QUnit.test( 'loadAudio(): non-default voice', ( assert ) => {
 	);
 } );
 
-QUnit.skip( 'requestTts(): pass URL in consumer mode', ( assert ) => {
+QUnit.test( 'requestTts(): pass URL in consumer mode', ( assert ) => {
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
 	mw.wikispeech.consumerMode = true;
 	mw.config.set( 'wgRevisionId', 1 );
-	mw.config.get( 'wgPageContentLanguage', 'en' );
+	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgScriptPath', '/w' );
 	storage.api.get.returns( $.Deferred() );
 

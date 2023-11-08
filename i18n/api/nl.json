@@ -16,7 +16,7 @@
 	"apihelp-wikispeech-listen-param-lang": "Taalcode.",
 	"apihelp-wikispeech-listen-param-text": "Te synthethiseren text.",
 	"apihelp-wikispeech-listen-param-voice": "Te gebruiken stem. Indien niet voorzien zal de standaardstem van de taal gebruikt worden.",
-	"apierror-wikispeech-listen-notallowed": "Je hebt niet de rechten om deze API actie af te roepen.",
+	"apierror-wikispeech-listen-notallowed": "U hebt niet de rechten om deze API-handeling aan te roepen.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is geen geldige taal. Moet één zijn van: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> is geen geldige stem. Moet één zijn van: $2.",
 	"apihelp-wikispeech-listen-example-1": "Synthethiseer een uiting in het Nederlands.",

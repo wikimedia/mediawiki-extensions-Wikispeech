@@ -14,7 +14,7 @@ use MediaWikiUnitTestCase;
 /**
  * @since 0.1.10
  */
-abstract class RegexFilterRuleTest extends MediaWikiUnitTestCase {
+abstract class RegexFilterRuleTestBase extends MediaWikiUnitTestCase {
 
 	/**
 	 * @param RegexFilterRule $rule

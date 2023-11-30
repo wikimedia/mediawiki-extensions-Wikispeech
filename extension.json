@@ -26,7 +26,8 @@
 		"MediaWiki\\Wikispeech\\": "includes/"
 	},
 	"TestAutoloadNamespaces": {
-		"MediaWiki\\Wikispeech\\Tests\\": "tests/phpunit/"
+		"MediaWiki\\Wikispeech\\Tests\\": "tests/phpunit/",
+		"MediaWiki\\Wikispeech\\Tests\\Unit\\": "tests/phpunit/unit/"
 	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"

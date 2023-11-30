@@ -369,13 +369,15 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			'preferred' => true
 		] );
 
+		$expectedItems = [ $newItem2, $newItem1 ];
 		$localMock
 			->expects( $this->exactly( 2 ) )
 			->method( 'updateEntryItem' )
-			->withConsecutive(
-				[ 'sv', 'tomten', $newItem2 ],
-				[ 'sv', 'tomten', $newItem1 ]
-			);
+			->willReturnCallback( function ( $lang, $key, $item ) use ( &$expectedItems ) {
+				$this->assertSame( 'sv', $lang );
+				$this->assertSame( 'tomten', $key );
+				$this->assertEquals( array_shift( $expectedItems ), $item );
+			} );
 
 		$lexiconHandler->updateEntryItem(
 			'sv',

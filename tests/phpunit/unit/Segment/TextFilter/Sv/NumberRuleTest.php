@@ -9,13 +9,13 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Segment\TextFilter\Sv;
  */
 
 use MediaWiki\Wikispeech\Segment\TextFilter\Sv\NumberRule;
-use MediaWiki\Wikispeech\Tests\Unit\Segment\TextFilter\RegexFilterRuleTest;
+use MediaWiki\Wikispeech\Tests\Unit\Segment\TextFilter\RegexFilterRuleTestBase;
 
 /**
  * @since 0.1.10
  * @covers \MediaWiki\Wikispeech\Segment\TextFilter\Sv\NumberRule
  */
-class NumberRuleTest extends RegexFilterRuleTest {
+class NumberRuleTest extends RegexFilterRuleTestBase {
 
 	/**
 	 * @dataProvider provider

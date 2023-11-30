@@ -110,16 +110,13 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->speechoidConnector
 			->method( 'findLexiconByLanguage' )
 			->willReturn( 'lexicon-name' );
+		$returnMap = [
+			'speechoid.url/lexserver/lexicon/info/lexicon-name' => '{"symbolSetName": "target-symbol-set"}',
+			'symbolset.url/mapper/map/target-symbol-set/ipa/transcription' => '{"Result": "ipa transcription"}',
+		];
 		$this->requestFactory
 			->method( 'get' )
-			->withConsecutive(
-				[ 'speechoid.url/lexserver/lexicon/info/lexicon-name' ],
-				[ 'symbolset.url/mapper/map/target-symbol-set/ipa/transcription' ]
-			)
-			->will( $this->onConsecutiveCalls(
-				'{"symbolSetName": "target-symbol-set"}',
-				'{"Result": "ipa transcription"}'
-			) );
+			->willReturnCallback( static fn ( $url ) => $returnMap[$url] );
 
 		$status = $this->speechoidConnector->toIpa(
 			'transcription',
@@ -134,16 +131,14 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 		$this->speechoidConnector
 			->method( 'findLexiconByLanguage' )
 			->willReturn( 'lexicon-name' );
+
+		$returnMap = [
+			'speechoid.url/lexserver/lexicon/info/lexicon-name' => '{"symbolSetName": "target-symbol-set"}',
+			'symbolset.url/mapper/map/ipa/target-symbol-set/ipa%20transcription' => '{"Result": "transcription"}',
+		];
 		$this->requestFactory
 			->method( 'get' )
-			->withConsecutive(
-				[ 'speechoid.url/lexserver/lexicon/info/lexicon-name' ],
-				[ 'symbolset.url/mapper/map/ipa/target-symbol-set/ipa%20transcription' ]
-			)
-			->will( $this->onConsecutiveCalls(
-				'{"symbolSetName": "target-symbol-set"}',
-				'{"Result": "transcription"}'
-			) );
+			->willReturnCallback( static fn ( $url ) => $returnMap[$url] );
 
 		$status = $this->speechoidConnector->fromIpa(
 			'ipa transcription',

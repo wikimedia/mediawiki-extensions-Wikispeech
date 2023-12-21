@@ -2,13 +2,14 @@
 	"@metadata": {
 		"authors": [
 			"Kly",
-			"捍粵者"
+			"捍粵者",
+			"SunAfterRain"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "將頁面的 HTML 內容切分成音段。",
 	"apihelp-wikispeech-segment-param-page": "要切成音段的頁面標題。",
 	"apihelp-wikispeech-segment-param-removetags": "在清除期間 HTML 標籤應要完全移除，其格式為 JSON 物件：\n<pre>{\n  \"tag1\": true,\n  \"tag2\": \"css-class\",\n  \"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n<code>tag1</code> 為絕對會被移除，<code>tag2</code> 則是僅會在有 <code>css-class</code> CSS 類別時被移除，而 <code>tag3</code> 是僅會在有 <code>css-class-1</code> 或 <code>css-class-2</code> CSS 類別時被移除。",
-	"apihelp-wikispeech-segment-param-segmentbreakingtags": "應切分成音段的 HTML 標籤。",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "應中斷分段的HTML標籤。請注意wikispeech-listen使用預設組態進行分段，並且可能與使用此參數的特別設定生成的分段不相容。",
 	"apihelp-wikispeech-segment-example-1": "使用來自設定的預設參數將主頁面弄成音段。",
 	"apihelp-wikispeech-segment-example-2": "使用自定義參數的音段。標籤 <code>sup</code> 已移除，帶有類別 <code>toc</code> 的 <code>div</code> 也會被移除。標籤 <code>h1</code> 與 <code>h2</code> 切分了音段",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> 不是有效的 JSON 字串。",
@@ -18,6 +19,7 @@
 	"apihelp-wikispeech-listen-param-revision": "在所找出音段的頁面修訂。",
 	"apihelp-wikispeech-listen-param-segment": "音段合成的雜湊。",
 	"apihelp-wikispeech-listen-param-text": "要合成的文字。",
+	"apihelp-wikispeech-listen-param-ipa": "需要合成的IPA字串。",
 	"apihelp-wikispeech-listen-param-voice": "要使用的語音。若未提供的話，會使用語言的預設語音。",
 	"apierror-wikispeech-listen-deleted-revision": "刪除的修訂無法聆聽。",
 	"apierror-wikispeech-listen-notallowed": "您沒有權限來呼叫這個 API 操作。",

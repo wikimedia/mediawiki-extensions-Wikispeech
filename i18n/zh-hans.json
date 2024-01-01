@@ -1,9 +1,17 @@
 {
 	"@metadata": {
 		"authors": [
-			"Shuiwater"
+			"Shuiwater",
+			"FakeGreenHand",
+			"Grace03",
+			"LNDDYL",
+			"Lakejason0",
+			"Si109",
+			"Zhang8569",
+			"坑触可"
 		]
 	},
+	"prefs-wikispeech-enable": "启用Wikispeech",
 	"prefs-wikispeech-show-player": "显示播放器",
 	"wikispeech-listen": "听"
 }

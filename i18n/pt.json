@@ -33,6 +33,8 @@
 	"wikispeech-item-id": "Identificador",
 	"wikispeech-preview": "Antever",
 	"wikispeech-preferred": "Preferido",
+	"wikispeech-lexicon-next": "Seguinte",
+	"wikispeech-lexicon-save": "Gravar",
 	"wikispeech-lexicon-add-entry-success": "Entrada adicionada ao léxico.",
 	"wikispeech-lexicon-new": "Nova",
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",

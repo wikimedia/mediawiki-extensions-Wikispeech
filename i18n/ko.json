@@ -6,11 +6,7 @@
 			"Ykhwong"
 		]
 	},
-	"wikispeech-desc": "다양한 이유로 위키미디어 프로젝트를 읽기 어려운 사람이 더 접근할 수 있게 하는 음성 합성 도구.",
-	"prefs-wikispeech-voice": "목소리",
 	"prefs-wikispeech-speech-rate": "말하기 속도",
-	"prefs-wikispeech-speech-rate-percent": "말하기 빠르기 (%)",
-	"prefs-wikispeech-enable": "위키스피치 활성화해",
 	"prefs-wikispeech-show-player": "플레이어 무조건 표시",
 	"right-wikispeech-read-lexicon": "위키스피치 기호 읽기",
 	"right-wikispeech-edit-lexicon": "위키스피치 기호 편집",

@@ -383,7 +383,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			$this->logger->debug(
 				'Inserted utterance {utterance} from mock', [
 					'utterance' => $mockedUtterance
-			] );
+				] );
 		}
 		unset( $mockedUtterance );
 
@@ -395,7 +395,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 				$this->logger->debug(
 					'Expecting to flush {mockedUtterance}', [
 						'mockedUtterance' => $mockedUtterance
-				] );
+					] );
 			}
 		}
 
@@ -420,7 +420,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			$this->logger->debug(
 				'Inspecting {mockedUtterance}', [
 					'mockedUtterance' => $mockedUtterance
-			] );
+				] );
 			$this->assertTrue( is_int( $mockedUtterance['utteranceId'] ) );
 			if ( $mockedUtterance['expectedToFlush'] ) {
 				// utterance should have been flushed out

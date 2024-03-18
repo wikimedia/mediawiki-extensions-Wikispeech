@@ -355,7 +355,7 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		$segmenter = $this->createMock( Segmenter::class );
 		$segmenter
-			->expects( $this->exactly( 1 ) )
+			->expects( $this->once() )
 			->method( 'segmentSentences' )
 			->willReturn( [] );
 

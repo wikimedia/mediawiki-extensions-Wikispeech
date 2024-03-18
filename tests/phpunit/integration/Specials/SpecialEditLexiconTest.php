@@ -106,9 +106,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'createEntryItem' )
 			->with(
-				$this->equalTo( 'en' ),
-				$this->equalTo( 'monkey' ),
-				$this->equalTo( $item )
+				'en',
+				'monkey',
+				$item
 			);
 
 		$page->submit( [
@@ -150,9 +150,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'updateEntryItem' )
 			->with(
-				$this->equalTo( 'en' ),
-				$this->equalTo( 'monkey' ),
-				$this->equalTo( $updatedItem )
+				'en',
+				'monkey',
+				$updatedItem
 			);
 		$this->speechoidConnector
 			->method( 'fromIpa' )
@@ -187,9 +187,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'createEntryItem' )
 			->with(
-				$this->equalTo( 'en' ),
-				$this->equalTo( 'monkey' ),
-				$this->equalTo( $item )
+				'en',
+				'monkey',
+				$item
 			);
 		$this->speechoidConnector->method( 'fromIpa' )
 			->with( 'ipa transcription' )
@@ -228,9 +228,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'createEntryItem' )
 			->with(
-				$this->equalTo( 'en' ),
-				$this->equalTo( 'monkey' ),
-				$this->equalTo( $item )
+				'en',
+				'monkey',
+				$item
 			);
 
 		$page->submit( [
@@ -272,9 +272,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'updateEntryItem' )
 			->with(
-				$this->equalTo( 'en' ),
-				$this->equalTo( 'monkey' ),
-				$this->equalTo( $updatedItem )
+				'en',
+				'monkey',
+				$updatedItem
 			);
 		$this->speechoidConnector
 			->method( 'fromIpa' )

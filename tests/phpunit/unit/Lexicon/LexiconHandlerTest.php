@@ -430,7 +430,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-public function testCreateEntryItem_newItemPreferred_preferredRemovedFromOtherItems() {
+	public function testCreateEntryItem_newItemPreferred_preferredRemovedFromOtherItems() {
 		$localMock = $this->createMock( LexiconWanCacheStorage::class );
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
@@ -475,7 +475,7 @@ public function testCreateEntryItem_newItemPreferred_preferredRemovedFromOtherIt
 			'tomten',
 			$newItem2
 		);
-}
+	}
 
 	/**
 	 * Updates as item that exists in Speechoid but not in local storage.

@@ -103,7 +103,7 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->method( 'flushUtterancesByPage' )
 			->with(
 				$this->isNull(),
-				$this->equalTo( 1 )
+				1
 			)
 			->willReturn( 0 );
 		$this->maintenance->utteranceStore = $utteranceStoreMock;
@@ -120,7 +120,7 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->expects( $this->once() )
 			->method( 'queueJob' )
 			->with(
-				$this->equalTo( 1 )
+				1
 			);
 		$this->maintenance->flushUtterancesFromStoreByPageIdJobQueue = $jobQueue;
 		$this->maintenance->loadWithArgv( [
@@ -167,8 +167,8 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->method( 'flushUtterancesByLanguageAndVoice' )
 			->willReturn( 0 )
 			->with(
-				$this->equalTo( 'sv' ),
-				$this->equalTo( null )
+				'sv',
+				null
 			);
 		$this->maintenance->utteranceStore = $utteranceStoreMock;
 		$this->maintenance->loadWithArgv( [
@@ -184,8 +184,8 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->expects( $this->once() )
 			->method( 'queueJob' )
 			->with(
-				$this->equalTo( 'sv' ),
-				$this->equalTo( null )
+				'sv',
+				null
 			);
 		$this->maintenance->flushUtterancesFromStoreByLanguageAndVoiceJobQueue = $jobQueue;
 		$this->maintenance->loadWithArgv( [
@@ -225,8 +225,8 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->expects( $this->once() )
 			->method( 'flushUtterancesByLanguageAndVoice' )
 			->with(
-				$this->equalTo( 'sv' ),
-				$this->equalTo( 'anna' )
+				'sv',
+				'anna'
 			)
 			->willReturn( 0 );
 		$this->maintenance->utteranceStore = $utteranceStoreMock;
@@ -244,8 +244,8 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 			->expects( $this->once() )
 			->method( 'queueJob' )
 			->with(
-				$this->equalTo( 'sv' ),
-				$this->equalTo( 'anna' )
+				'sv',
+				'anna'
 			);
 		$this->maintenance->flushUtterancesFromStoreByLanguageAndVoiceJobQueue = $jobQueue;
 		$this->maintenance->loadWithArgv( [

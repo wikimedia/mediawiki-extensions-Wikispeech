@@ -54,7 +54,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'post' )
 			->with(
-				$this->equalTo( 'haproxy.speechoid.url' ),
+				'haproxy.speechoid.url',
 				$this->equalTo( [ 'postData' => [
 					'lang' => 'en',
 					'voice' => 'en-voice',
@@ -77,7 +77,7 @@ class SpeechoidConnectorTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'post' )
 			->with(
-				$this->equalTo( 'haproxy.speechoid.url' ),
+				'haproxy.speechoid.url',
 				$this->equalTo( [ 'postData' => [
 					'lang' => 'en',
 					'voice' => 'en-voice',

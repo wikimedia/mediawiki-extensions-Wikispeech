@@ -188,7 +188,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			12,
 			22,
 			$hash
-	);
+		);
 		$synthesizeMetadataJson =
 			'[' .
 			'{"endtime": 295, "orth": "Word"}, ' .
@@ -220,11 +220,11 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			->with(
 				// $consumerUrl, $pageId, $language, $voice, $segmentHash, $omitAudio = false
 				$this->isNull(),
-				$this->equalTo( 2 ),
-				$this->equalTo( 'sv' ),
-				$this->equalTo( 'anna' ),
-				$this->equalTo( $hash ),
-				$this->equalTo( false )
+				2,
+				'sv',
+				'anna',
+				$hash,
+				false
 			)
 			->willReturn( null );
 		$utteranceStoreMock
@@ -232,13 +232,13 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			->with(
 				// $consumerUrl, $pageId, $language, $voice, $segmentHash, $audio, $synthesisMetadata
 				$this->isNull(),
-				$this->equalTo( 2 ),
-				$this->equalTo( 'sv' ),
-				$this->equalTo( 'anna' ),
-				$this->equalTo( $hash ),
-				$this->equalTo( 'DummyBase64==' ),
+				2,
+				'sv',
+				'anna',
+				$hash,
+				'DummyBase64==',
 				// this is the reason for re-serializing the JSON string .
-				$this->equalTo( $synthesizeMetadataJson )
+				$synthesizeMetadataJson
 			);
 		$api->utteranceStore = $utteranceStoreMock;
 
@@ -312,11 +312,11 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			->with(
 				// $consumerUrl, $pageId, $language, $voice, $segmentHash, $omitAudio = false=
 				$this->isNull(),
-				$this->equalTo( 2 ),
-				$this->equalTo( 'sv' ),
-				$this->equalTo( 'anna' ),
-				$this->equalTo( $hash ),
-				$this->equalTo( false )
+				2,
+				'sv',
+				'anna',
+				$hash,
+				false
 			)
 			->willReturn( $mockedFoundUtterance );
 		$api->utteranceStore = $utteranceStoreMock;

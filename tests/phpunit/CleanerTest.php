@@ -101,7 +101,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		array $cleanedContents,
 		bool $testPaths = true
 	) {
-		$this->assertCount( count( $expectedCleanedContents ), $cleanedContents );
+		$this->assertSameSize( $expectedCleanedContents, $cleanedContents );
 		foreach ( $expectedCleanedContents as $i => $expectedCleanedContent ) {
 			$this->assertContentEquals( $expectedCleanedContent, $cleanedContents[$i], $testPaths );
 		}

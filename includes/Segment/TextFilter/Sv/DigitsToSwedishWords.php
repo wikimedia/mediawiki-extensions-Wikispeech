@@ -58,7 +58,7 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 		[ 10, 'tio', null, null ],
 		[ 100, 'hundra', 'ett', '' ],
 		[ 1000, 'tusen', 'ett', '' ],
-		[ 1000000 , 'miljon', 'en', 'er' ],
+		[ 1000000, 'miljon', 'en', 'er' ],
 		[ 1000000000, 'miljard', 'en', 'er' ],
 		[ 1000000000000, 'biljon', 'en', 'er' ],
 		[ 1000000000000000, 'biljard', 'en', 'er' ],

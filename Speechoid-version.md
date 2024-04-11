@@ -19,7 +19,7 @@ of [all components in the downstream git repositories](https://gerrit.wikimedia.
 
 ## Versions
 
-### 0.1.3-SNAPSHOT
+### 0.1.4-SNAPSHOT
 YYYY-MM-DD
 
 #### Components
@@ -28,9 +28,29 @@ YYYY-MM-DD
 * Pronlex @commit id
 * Symbolset @commit id
 * Wikispeech-server @commit id
+* Sox proxy @commit id
 
 #### Events
 * No major events.
+
+### 0.1.3
+2024-03-25
+
+#### Components
+* MaryTTS @commit ad87696b1c6c16fd9cffad603ec5c9c1626f75d6
+* Mishkal @commit 319e83b7345047ec0639c1947aa7e38c1ab43a2c
+* Pronlex @commit a9cc527bda93dff8faebec0822b96008d34e6ca5
+* Symbolset @commit 1b5872c85b8c50a5ac7403aa6b12d8bb7e2fe434
+* Wikispeech-server @commit 24717fd5304df91b79dcde54121a7c49cd589233
+* Sox proxy @commit f180bf166b09fe35d62accf0d7d790fb7d4be9e4
+
+#### Events
+* Add Sox proxy component.
+* Update Blubber pipeline.
+* Pronlex: [T280237](https://phabricator.wikimedia.org/T280237) Configure to use MariaDB or SQLite using env variable
+* Wikispeech server: Add HAProxy
+* Wikispeech server: Only remove the temporary files related to an utterance when it's done
+* Wikispeech server: Support for ipa ssml
 
 ### 0.1.2
 2020-09-11

@@ -8,15 +8,21 @@
 			"Shuiwater",
 			"Si109",
 			"Zhang8569",
-			"坑触可"
+			"坑触可",
+			"沈澄心"
 		]
 	},
 	"prefs-wikispeech-enable": "启用Wikispeech",
 	"prefs-wikispeech-show-player": "总是显示播放器",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "偏好的改动将会在下一次加载页面后实施。为将当前页面适用于新的偏好 ，请在保存后重新加载此页面。",
 	"wikispeech-listen": "听",
+	"wikispeech-retry": "重试",
+	"wikispeech-stop": "停止",
+	"wikispeech-language": "语言",
 	"wikispeech-item-id": "ID",
 	"wikispeech-preview": "预览",
+	"wikispeech-lexicon-next": "下一步",
+	"wikispeech-lexicon-save": "保存",
 	"wikispeech-lexicon-new": "新",
 	"wikispeech-lexicon-edit-entry-success": "词条已改编",
 	"wikispeech-lexicon-copyrightnote": "在保存更改时，你同意放出你的贡献在[https://creativecommons.org/publicdomain/zero/1.0/ CC0]。"

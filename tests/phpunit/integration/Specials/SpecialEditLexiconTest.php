@@ -26,6 +26,12 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	/** @var LanguageNameUtils */
 	private $languageNameUtils;
 
+	/** @var LexiconStorage */
+	private $lexiconStorage;
+
+	/** @var SpeechoidConnector */
+	private $speechoidConnector;
+
 	/**
 	 * Returns a new instance of the special page under test.
 	 *

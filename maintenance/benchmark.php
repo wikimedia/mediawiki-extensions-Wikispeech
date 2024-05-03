@@ -323,7 +323,7 @@ class Benchmark extends Maintenance {
 				} catch ( SpeechoidConnectorException $speechoidConnectorException ) {
 					$millisecondsSpentBeforeException = ( microtime( true ) * 1000 ) - $startSynthesizing;
 					$failures .= "\nException $millisecondsSpentBeforeException milliseconds after request.\n";
-					$failures .= $speechoidConnectorException->getText() . "\n";
+					$failures .= $speechoidConnectorException->getMessage() . "\n";
 					$retriesLeft--;
 					if ( $retriesLeft == 0 ) {
 						$failures .= "Giving up after attempt #$attempt. Segment ignored.\n";

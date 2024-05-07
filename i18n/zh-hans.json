@@ -12,9 +12,13 @@
 			"沈澄心"
 		]
 	},
+	"prefs-wikispeech-voice": "语音",
+	"prefs-wikispeech-speech-rate": "语速",
+	"prefs-wikispeech-speech-rate-percent": "语速（百分比）",
 	"prefs-wikispeech-enable": "启用Wikispeech",
 	"prefs-wikispeech-show-player": "总是显示播放器",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "偏好的改动将会在下一次加载页面后实施。为将当前页面适用于新的偏好 ，请在保存后重新加载此页面。",
+	"right-wikispeech-listen": "收听页面",
 	"wikispeech-listen": "听",
 	"wikispeech-retry": "重试",
 	"wikispeech-stop": "停止",

@@ -50,7 +50,7 @@ class SpecialEditLexicon extends SpecialPage {
 	private $logger;
 
 	/** @var string */
-	private $postText;
+	private $postHtml;
 
 	/**
 	 * @since 0.1.8
@@ -71,7 +71,7 @@ class SpecialEditLexicon extends SpecialPage {
 		$this->lexiconStorage = $lexiconStorage;
 		$this->speechoidConnector = $speechoidConnector;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
-		$this->postText = '';
+		$this->postHtml = '';
 	}
 
 	/**
@@ -92,7 +92,7 @@ class SpecialEditLexicon extends SpecialPage {
 		}
 		$entry = $this->lexiconStorage->getEntry( $language, $word );
 		$copyrightNote = $this->msg( 'wikispeech-lexicon-copyrightnote' )->parse();
-		$this->postText = Html::rawElement( 'p', [], $copyrightNote );
+		$this->postHtml = Html::rawElement( 'p', [], $copyrightNote );
 		$successMessage = '';
 
 		$formId = '';
@@ -145,7 +145,7 @@ class SpecialEditLexicon extends SpecialPage {
 		$form->setFormIdentifier( $formId );
 		$form->setSubmitCallback( [ $this, 'submit' ] );
 		$form->setSubmitTextMsg( $submitMessage );
-		$form->setPostText( $this->postText );
+		$form->setPostHtml( $this->postHtml );
 		if ( $form->show() && $successMessage ) {
 			$this->success( $successMessage );
 		}
@@ -225,7 +225,7 @@ class SpecialEditLexicon extends SpecialPage {
 				// Add item id as option for selection.
 				$itemOptions[$id] = $id;
 				// Add item to info text.
-				$this->postText .= Html::element( 'pre', [], $item );
+				$this->postHtml .= Html::element( 'pre', [], $item );
 			}
 		}
 

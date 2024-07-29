@@ -30,8 +30,8 @@ class FlushUtterancesFromStoreByExpirationJobTest extends MediaWikiIntegrationTe
 	 * @since 0.1.7
 	 */
 	public function testWithEmptyUtteranceStore_runJob_returnsTrue() {
-		$this->setMwGlobals( [
-			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 60
+		$this->overrideConfigValues( [
+			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 60
 		] );
 
 		/** @var FlushUtterancesFromStoreByExpirationJob|TestingAccessWrapper $job */

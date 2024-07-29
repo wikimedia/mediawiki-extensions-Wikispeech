@@ -165,7 +165,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 	}
 
 	public function testRequest_consumerUrlGivenNotInProducerMode_throwsException() {
-		$this->setMwGlobals( 'wgWikispeechProducerMode', false );
+		$this->overrideConfigValue( 'WikispeechProducerMode', false );
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( 'Requests from remote wikis are not allowed.' );
 

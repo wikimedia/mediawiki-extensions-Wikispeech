@@ -37,10 +37,10 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		parent::setUp();
 		// Should be implementable using
 		// $wgConfigRegistry['wikispeech'] see T255497
-		$this->setMwGlobals( [
+		$this->overrideConfigValues( [
 			// Make sure we don't send requests to an actual server.
-			'wgWikispeechSpeechoidUrl' => '',
-			'wgWikispeechVoices' => [
+			'WikispeechSpeechoidUrl' => '',
+			'WikispeechVoices' => [
 				'ar' => [ 'ar-voice' ],
 				'en' => [
 					'en-voice1',
@@ -48,7 +48,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 				],
 				'sv' => [ 'sv-voice' ]
 			],
-			'wgWikispeechListenMaximumInputCharacters' => 60
+			'WikispeechListenMaximumInputCharacters' => 60,
 		] );
 	}
 
@@ -467,7 +467,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	}
 
 	public function testRequest_consumerUrlGivenNotInProducerMode_throwsException() {
-		$this->setMwGlobals( 'wgWikispeechProducerMode', false );
+		$this->overrideConfigValue( 'WikispeechProducerMode', false );
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( 'Requests from remote wikis are not allowed.' );
 

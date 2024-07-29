@@ -47,9 +47,9 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 	 * @since 0.1.7
 	 */
 	private function activateWanCache() {
-		$this->setMwGlobals( [
-			'wgMainWANCache' => 'hash',
-			'wgWANObjectCaches' => [
+		$this->overrideConfigValues( [
+			'MainWANCache' => 'hash',
+			'WANObjectCaches' => [
 				'hash' => [
 					'class'    => WANObjectCache::class,
 					'cacheId'  => 'hash',
@@ -64,8 +64,8 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 	 * @since 0.1.7
 	 */
 	public function testIsTimeToQueueJob_withoutWANCache_nothingCachedAndNeverTimeToQueue() {
-		$this->setMwGlobals( [
-			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 0
+		$this->overrideConfigValues( [
+			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 0
 		] );
 
 		$queue = new FlushUtterancesFromStoreByExpirationJobQueue();
@@ -93,8 +93,8 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 	 * @since 0.1.7
 	 */
 	public function testIsTimeToQueueJob_withWANCache_cacheValueSet() {
-		$this->setMwGlobals( [
-			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 30
+		$this->overrideConfigValues( [
+			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 30
 		] );
 
 		$this->activateWanCache();
@@ -121,8 +121,8 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 	 * @since 0.1.7
 	 */
 	public function testIsTimeToQueueJob_configFalsy_isAlwaysFalse() {
-		$this->setMwGlobals( [
-			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 0
+		$this->overrideConfigValues( [
+			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 0
 		] );
 
 		$this->activateWanCache();
@@ -139,8 +139,8 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 	 * @since 0.1.7
 	 */
 	public function testIsTimeToQueueJob_enoughTimeHasNotPassed_isFalse() {
-		$this->setMwGlobals( [
-			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 30
+		$this->overrideConfigValues( [
+			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 30
 		] );
 
 		$this->activateWanCache();
@@ -157,8 +157,8 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 	 * @since 0.1.7
 	 */
 	public function testIsTimeToQueueJob_enoughTimeHasPassed_isTrue() {
-		$this->setMwGlobals( [
-			'wgWikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 30
+		$this->overrideConfigValues( [
+			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 30
 		] );
 
 		$this->activateWanCache();

@@ -9,6 +9,7 @@ namespace MediaWiki\Wikispeech\Tests;
  */
 
 use MediaWiki\HookContainer\HookContainer;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\User\UserOptionsManager;
@@ -44,17 +45,17 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->setMwGlobals( [
-			'wgWikispeechSpeechoidUrl' => 'https://server.domain',
-			'wgWikispeechVoices' => [ 'en' => 'en-voice' ],
-			'wgWikispeechNamespaces' => [ NS_MAIN ],
-			'wgWikispeechKeyboardShortcuts' => 'shortcuts',
-			'wgWikispeechContentSelector' => 'selector',
-			'wgWikispeechSkipBackRewindsThreshold' => 'threshold',
-			'wgWikispeechHelpPage' => 'help',
-			'wgWikispeechFeedbackPage' => 'feedback',
+		$this->overrideConfigValues( [
+			'WikispeechSpeechoidUrl' => 'https://server.domain',
+			'WikispeechVoices' => [ 'en' => 'en-voice' ],
+			'WikispeechNamespaces' => [ NS_MAIN ],
+			'WikispeechKeyboardShortcuts' => 'shortcuts',
+			'WikispeechContentSelector' => 'selector',
+			'WikispeechSkipBackRewindsThreshold' => 'threshold',
+			'WikispeechHelpPage' => 'help',
+			'WikispeechFeedbackPage' => 'feedback',
 			// content language
-			'wgLanguageCode', 'en'
+			MainConfigNames::LanguageCode, 'en'
 		] );
 		$context = new RequestContext();
 		// Interface language
@@ -129,10 +130,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testOnBeforePageDisplayDontLoadModulesIfServerUrlInvalid() {
-		$this->setMwGlobals(
-			'wgWikispeechSpeechoidUrl',
-			'invalid-url'
-		);
+		$this->overrideConfigValue( 'WikispeechSpeechoidUrl', 'invalid-url' );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
 		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
@@ -149,7 +147,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testOnBeforePageDisplay_invalidPageContentLanguage_dontLoadModule() {
-		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
+		$this->overrideConfigValue( MainConfigNames::LanguageCode, 'sv' );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
 		$this->assertNotContains( 'ext.wikispeech.loader', $this->out->getModules() );
@@ -212,10 +210,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testOnSkinTemplateNavigation__Universal_serverUrlInvalid_dontAddListenTab() {
-		$this->setMwGlobals(
-			'wgWikispeechSpeechoidUrl',
-			'invalid-url'
-		);
+		$this->overrideConfigValue( 'WikispeechSpeechoidUrl', 'invalid-url' );
 		$links = [ 'actions' => [] ];
 		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
@@ -237,7 +232,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testOnSkinTemplateNavigation__Universal_invalidPageContentLanguage_dontAddListenTab() {
-		$this->setMwGlobals( 'wgLanguageCode', 'sv' );
+		$this->overrideConfigValue( MainConfigNames::LanguageCode, 'sv' );
 		$links = [ 'actions' => [] ];
 		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );

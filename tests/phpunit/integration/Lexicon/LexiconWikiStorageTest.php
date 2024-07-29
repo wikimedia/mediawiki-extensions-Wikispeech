@@ -8,7 +8,6 @@ namespace MediaWiki\Wikispeech\Tests\Itegration\Lexicon;
  * @license GPL-2.0-or-later
  */
 
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
@@ -37,7 +36,7 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 
 	protected function tearDown(): void {
 		$user = $this->getTestSysop()->getUser();
-		$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
+		$wikiPageFactory = $this->getServiceContainer()->getWikiPageFactory();
 		foreach ( $this->entriesTouched as $entry ) {
 			try {
 				$entrySubpage = Title::newFromText(

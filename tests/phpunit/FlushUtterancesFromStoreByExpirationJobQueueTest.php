@@ -9,7 +9,6 @@ namespace MediaWiki\Wikispeech\Tests;
  */
 
 use DateTime;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
 use MediaWikiIntegrationTestCase;
 use WANObjectCache;
@@ -29,7 +28,7 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$this->cache = $this->getServiceContainer()->getMainWANObjectCache();
 		$this->cacheKey = $this->cache->makeKey(
 			FlushUtterancesFromStoreByExpirationJobQueue::$cacheKeyClass,
 			FlushUtterancesFromStoreByExpirationJobQueue::$cacheKeyComponentPreviousDateTimeQueued
@@ -57,7 +56,7 @@ class FlushUtterancesFromStoreByExpirationJobQueueTest extends MediaWikiIntegrat
 				]
 			]
 		] );
-		$this->cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
+		$this->cache = $this->getServiceContainer()->getMainWANObjectCache();
 	}
 
 	/**

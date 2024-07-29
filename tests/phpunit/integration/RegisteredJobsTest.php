@@ -9,7 +9,6 @@ namespace MediaWiki\Wikispeech\Tests\Integration;
  */
 
 use MediaWiki\Config\ServiceOptions;
-use MediaWiki\MediaWikiServices;
 use MediaWikiIntegrationTestCase;
 
 /**
@@ -28,7 +27,7 @@ class RegisteredJobsTest extends MediaWikiIntegrationTestCase {
 	public function testJobClasses_iterateRegistered_areExistingSubclassesOfJob() {
 		$serviceOptions = new ServiceOptions(
 			[ 'JobClasses' ],
-			MediaWikiServices::getInstance()->getMainConfig()
+			$this->getServiceContainer()->getMainConfig()
 		);
 		foreach ( $serviceOptions->get( 'JobClasses' ) as $name => $defintion ) {
 			if ( is_array( $defintion ) ) {

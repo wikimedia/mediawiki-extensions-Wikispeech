@@ -10,7 +10,6 @@ namespace MediaWiki\Wikispeech\Tests;
 
 use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MainConfigNames;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\User\UserOptionsManager;
 use MediaWikiIntegrationTestCase;
@@ -65,14 +64,14 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 		$this->out->setTitle( $title );
 		$this->out->setRevisionId( $title->getLatestRevId() );
 
-		$this->userOptionsManager = MediaWikiServices::getInstance()
+		$this->userOptionsManager = $this->getServiceContainer()
 			->getUserOptionsManager();
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechEnable', true );
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', true );
 
-		$this->permissionsManager = MediaWikiServices::getInstance()
+		$this->permissionsManager = $this->getServiceContainer()
 			->getPermissionManager();
 		$this->permissionsManager->overrideUserRightsForTesting(
 			$this->out->getUser(),
@@ -80,7 +79,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 		);
 		$this->skin = $this->createStub( SkinTemplate::class );
 		$this->skin->method( 'getOutput' )->willReturn( $this->out );
-		$this->hookContainer = MediaWikiServices::getInstance()->getHookContainer();
+		$this->hookContainer = $this->getServiceContainer()->getHookContainer();
 	}
 
 	public function testOnBeforePageDisplayLoadModules() {

@@ -6,7 +6,8 @@
 			"Nickthijssen1994",
 			"PonkoSasuke",
 			"Romaine",
-			"Mainframe98"
+			"Mainframe98",
+			"Siebrand"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -16,7 +17,7 @@
 	"prefs-wikispeech-speech-rate": "Spreektempo",
 	"prefs-wikispeech-speech-rate-percent": "Spreeksnelheid (in procenten)",
 	"prefs-wikispeech-enable": "Schakel Wikispeech in",
-	"prefs-wikispeech-show-player": "De speler altijd tonen",
+	"prefs-wikispeech-show-player": "De speler altijd weergeven",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Wijzigingen in de voorkeuren worden de volgende keer dat een pagina wordt geladen van kracht. Als u de nieuwe voorkeuren wilt horen, slaat u op en laadt u deze pagina opnieuw.",
 	"right-wikispeech-listen": "Luister naar pagina",
 	"right-wikispeech-read-lexicon": "Het lexicon van Wikispeech uitlezen",

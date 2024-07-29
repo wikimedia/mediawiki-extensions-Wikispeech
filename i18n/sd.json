@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
+			"Charoo",
 			"Mehtab ahmed"
 		]
 	},
 	"wikispeech": "Wikispeech",
-	"wikispeech-desc": "وڪيميڊيا جي رٿائن کي انهن ماڻهن لاءِ پھچ جوڳو بڻائڻ لاءِ جن کي پڙهڻ ۾ مختلف سببن جي ڪري ڏکيائيون پيش اچن ٿيون انهن لاءِ هڪ ٽيڪسٽ-ٽو-اسپيچ اوزار.",
+	"wikispeech-desc": "وڪيميڊيا جي رٿائن کي انهن ماڻهن لاءِ پھچ جوڳو بڻائڻ لاءِ جن کي پڙهڻ ۾ مختلف سببن جي ڪري ڏکيائيون پيش اچن ٿيون انهن لاءِ هڪ اکر-ڳالھائڻ جو اوزار.",
 	"prefs-wikispeech": "Wikispeech",
 	"prefs-wikispeech-voice": "آواز",
 	"prefs-wikispeech-speech-rate": "ڳالھ جي رفتار",

@@ -474,7 +474,7 @@
 		storage.utterances[ 0 ].tokens = [ {} ];
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
 		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
-		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+		$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
 		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
 
 		this.clock.tick( 1001 );
@@ -489,7 +489,7 @@
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
 		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
 		mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
-		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+		$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
 		sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
 
 		this.clock.tick( 501 );
@@ -504,7 +504,7 @@
 		storage.utterances[ 0 ].audio.currentTime = 0.5;
 		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
 		mw.user.options.set( 'wikispeechSpeechRate', 0.5 );
-		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+		$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
 
 		this.clock.tick( 1001 );
 
@@ -553,7 +553,7 @@
 		selectionPlayer.setEndTime( storage.utterances[ 0 ], 1000 );
 		selectionPlayer.previousEndUtterance = storage.utterances[ 0 ];
 		selectionPlayer.resetPreviousEndUtterance();
-		$( storage.utterances[ 0 ].audio ).trigger( 'playing' );
+		$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
 
 		this.clock.tick( 1000 );
 

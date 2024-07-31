@@ -188,7 +188,7 @@
 		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		storage.prepareUtterance( storage.utterances[ 1 ] );
 
-		$( storage.utterances[ 1 ].audio ).trigger( 'play' );
+		$( storage.utterances[ 1 ].audio ).triggerHandler( 'play' );
 
 		sinon.assert.calledOnce( storage.prepareUtterance );
 	} );
@@ -197,7 +197,7 @@
 		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
-		$( storage.utterances[ 0 ].audio ).trigger( 'ended' );
+		$( storage.utterances[ 0 ].audio ).triggerHandler( 'ended' );
 
 		sinon.assert.called( player.skipAheadUtterance );
 	} );
@@ -209,7 +209,7 @@
 		lastUtterance = storage.utterances[ 1 ];
 		storage.prepareUtterance( lastUtterance );
 
-		$( lastUtterance.audio ).trigger( 'ended' );
+		$( lastUtterance.audio ).triggerHandler( 'ended' );
 
 		sinon.assert.called( player.stop );
 	} );

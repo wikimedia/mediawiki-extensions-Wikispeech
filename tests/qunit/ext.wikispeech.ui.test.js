@@ -94,7 +94,7 @@
 		sinon.spy( ui.selectionPlayer, 'toggle' );
 		event = $.Event( 'mouseup' );
 
-		$( document ).trigger( event );
+		$( document ).triggerHandler( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
 		sinon.assert.calledWith(
@@ -151,7 +151,7 @@
 		sinon.spy( ui.selectionPlayer, 'toggle' );
 		event = $.Event( 'mouseup' );
 
-		$( document ).trigger( event );
+		$( document ).triggerHandler( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
 		sinon.assert.calledWith(
@@ -172,7 +172,7 @@
 		sinon.spy( ui.selectionPlayer, 'toggle' );
 		event = $.Event( 'mouseup' );
 
-		$( document ).trigger( event );
+		$( document ).triggerHandler( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
@@ -191,7 +191,7 @@
 		self.stubGetSelection( notUtteranceNode, utteranceNode );
 		event = $.Event( 'mouseup' );
 
-		$( document ).trigger( event );
+		$( document ).triggerHandler( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
@@ -210,7 +210,7 @@
 		self.stubGetSelection( utteranceNode, notUtteranceNode );
 		event = $.Event( 'mouseup' );
 
-		$( document ).trigger( event );
+		$( document ).triggerHandler( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
@@ -227,7 +227,7 @@
 		self.stubGetSelection( textNode, textNode );
 		event = $.Event( 'mouseup' );
 
-		$( document ).trigger( event );
+		$( document ).triggerHandler( event );
 
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
@@ -294,7 +294,7 @@
 		);
 		ui.addKeyboardShortcuts();
 
-		$( document ).trigger( createKeydownEvent( keyCode, modifiers ) );
+		$( document ).triggerHandler( createKeydownEvent( keyCode, modifiers ) );
 
 		assert.strictEqual( player[ functionName ].called, true );
 	}

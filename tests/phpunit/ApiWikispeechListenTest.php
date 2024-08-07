@@ -386,10 +386,12 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 	public function testRequest_suppressedRevision_throwsException() {
 		// Set up a user with permission to supress revisions
-		$this->mergeMwGlobalArrayValue(
-			'wgGroupPermissions',
-			[ 'sysop' => [ 'deleterevision' => true ] ]
-		);
+		$this->setGroupPermissions( [
+			'sysop' => [
+				'deleterevision' => true,
+				'deletedtext' => false
+			],
+		] );
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );
@@ -423,13 +425,12 @@ class ApiWikispeechListenTest extends ApiTestCase {
 
 	public function testRequest_suppressedRevisionAllowedUser_throwsException() {
 		// Set up a user with permission to supress revisions and view the same
-		$this->mergeMwGlobalArrayValue(
-			'wgGroupPermissions',
-			[ 'sysop' => [
+		$this->setGroupPermissions( [
+			'sysop' => [
 				'deleterevision' => true,
 				'deletedtext' => true
-			] ]
-		);
+			],
+		] );
 		$testSysop = $this->getTestSysop()->getUser();
 
 		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );

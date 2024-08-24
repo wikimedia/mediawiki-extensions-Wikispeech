@@ -454,7 +454,7 @@ class SpecialEditLexicon extends SpecialPage {
 	private function success( $message ) {
 		$this->getOutput()->addHtml(
 			Html::successBox(
-				$this->msg( $message )->text()
+				$this->msg( $message )->parse()
 			)
 		);
 		$this->getOutput()->addHtml(

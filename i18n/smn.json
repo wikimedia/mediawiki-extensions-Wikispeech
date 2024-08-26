@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Seipinne"
+			"Seipinne",
+			"Yupik"
 		]
 	},
-	"wikispeech-language": "Kielâ"
+	"wikispeech-language": "Kielâ",
+	"wikispeech-lexicon-save": "Vuorkkii"
 }

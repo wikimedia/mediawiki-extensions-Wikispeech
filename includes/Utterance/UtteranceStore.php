@@ -301,7 +301,7 @@ class UtteranceStore {
 			'wsu_seg_hash' => $segmentHash,
 			'wsu_date_stored' => $dbw->timestamp()
 		];
-		$dbw->insert( self::UTTERANCE_TABLE, $rows );
+		$dbw->insert( self::UTTERANCE_TABLE, $rows, __METHOD__ );
 		$utterance = new Utterance(
 			intval( $dbw->insertId() ),
 			$remoteWikiHash,
@@ -381,7 +381,8 @@ class UtteranceStore {
 		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ],
-			[ 1 => 'wsu_date_stored <= ' . $expirationDate->getTimestamp( TS_MW ) ]
+			[ 1 => 'wsu_date_stored <= ' . $expirationDate->getTimestamp( TS_MW ) ],
+			__METHOD__
 		);
 		return $this->flushUtterances( $dbw, $results );
 	}
@@ -405,7 +406,8 @@ class UtteranceStore {
 			[
 				'wsu_remote_wiki_hash' => $remoteWikiHash,
 				'wsu_page_id' => $pageId
-			]
+			],
+			__METHOD__
 		);
 		return $this->flushUtterances( $dbw, $results );
 	}
@@ -428,7 +430,7 @@ class UtteranceStore {
 		}
 		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$results = $dbw->select( self::UTTERANCE_TABLE,
-			[ 'wsu_utterance_id' ], $conditions
+			[ 'wsu_utterance_id' ], $conditions, __METHOD__
 		);
 		return $this->flushUtterances( $dbw, $results );
 	}

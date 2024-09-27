@@ -51,7 +51,7 @@ class RemoteWikiPageProvider extends AbstractPageProvider {
 				'oldid' => $revisionId,
 			]
 		);
-		$responseString = $this->requestFactory->get( $request );
+		$responseString = $this->requestFactory->get( $request, [], __METHOD__ );
 		if ( $responseString === null ) {
 			throw new RemoteWikiPageProviderException( 'Failed getting response from remote wiki' );
 		}
@@ -77,7 +77,7 @@ class RemoteWikiPageProvider extends AbstractPageProvider {
 				'prop' => 'text|revid|displaytitle'
 			]
 		);
-		$responseString = $this->requestFactory->get( $request );
+		$responseString = $this->requestFactory->get( $request, [], __METHOD__ );
 		if ( $responseString === null ) {
 			throw new RemoteWikiPageProviderException(
 				"Failed to get page with title '$title' from consumer on URL $this->consumerUrl."

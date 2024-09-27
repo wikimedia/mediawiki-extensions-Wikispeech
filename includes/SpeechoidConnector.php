@@ -120,7 +120,7 @@ class SpeechoidConnector {
 			);
 		}
 		$options = [ 'postData' => $postData ];
-		$responseString = $this->requestFactory->post( $this->haproxyQueueUrl, $options );
+		$responseString = $this->requestFactory->post( $this->haproxyQueueUrl, $options, __METHOD__ );
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException(
 				'Unable to communicate with Speechoid. ' .
@@ -197,7 +197,7 @@ class SpeechoidConnector {
 		if ( !filter_var( $this->url, FILTER_VALIDATE_URL ) ) {
 			throw new SpeechoidConnectorException( 'No Speechoid URL provided.' );
 		}
-		$responseString = $this->requestFactory->get( $this->url . '/default_voices' );
+		$responseString = $this->requestFactory->get( $this->url . '/default_voices', [], __METHOD__ );
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
 		}
@@ -222,7 +222,9 @@ class SpeechoidConnector {
 	 */
 	public function requestLexicons(): array {
 		$json = $this->requestFactory->get(
-			$this->url . '/lexserver/lexicon/list'
+			$this->url . '/lexserver/lexicon/list',
+			[],
+			__METHOD__
 		);
 		if ( !$json ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
@@ -309,7 +311,9 @@ class SpeechoidConnector {
 	 */
 	public function requestTextProcessors(): array {
 		$json = $this->requestFactory->get(
-			$this->url . '/textprocessing/textprocessors'
+			$this->url . '/textprocessing/textprocessors',
+			[],
+			__METHOD__
 		);
 		if ( !$json ) {
 			throw new SpeechoidConnectorException( 'Unable to communicate with Speechoid.' );
@@ -428,7 +432,7 @@ class SpeechoidConnector {
 				'words' => implode( ',', $words )
 			]
 		);
-		$responseString = $this->requestFactory->get( $url );
+		$responseString = $this->requestFactory->get( $url, [], __METHOD__ );
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( "Unable to communicate with Speechoid.  '$url'" );
 		}
@@ -448,7 +452,9 @@ class SpeechoidConnector {
 			wfAppendQuery(
 				$this->url . '/lexserver/lexicon/updateentry',
 				[ 'entry' => $json ]
-			)
+			),
+			[],
+			__METHOD__
 		);
 		return FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
 	}
@@ -467,7 +473,9 @@ class SpeechoidConnector {
 	): Status {
 		$responseString = $this->requestFactory->get(
 			$this->url . '/lexserver/lexicon/delete_entry/' .
-		   urlencode( $lexiconName ) . '/' . $identity
+		   urlencode( $lexiconName ) . '/' . $identity,
+			[],
+			__METHOD__
 		);
 		// If successful, returns something like:
 		// deleted entry id '11' from lexicon 'sv'
@@ -519,7 +527,9 @@ class SpeechoidConnector {
 					'lexicon_name' => $lexiconName,
 					'entry' => $json
 				]
-			)
+			),
+			[],
+			__METHOD__
 		);
 		// @todo how do we know if this was successful? Always return 200
 
@@ -573,7 +583,7 @@ class SpeechoidConnector {
 		// Get the symbol set to convert to
 		$lexicon = $this->findLexiconByLanguage( $language );
 		$symbolsetRequestUrl = "$this->url/lexserver/lexicon/info/$lexicon";
-		$symbolSetResponse = $this->requestFactory->get( $symbolsetRequestUrl );
+		$symbolSetResponse = $this->requestFactory->get( $symbolsetRequestUrl, [], __METHOD__ );
 		$symbolSetStatus = FormatJson::parse(
 			$symbolSetResponse,
 			FormatJson::FORCE_ASSOC
@@ -595,7 +605,7 @@ class SpeechoidConnector {
 		}
 		$mapRequestUrl = "$this->symbolSetUrl/mapper/map/$from/$to/" .
 			rawurlencode( $string );
-		$mapResponse = $this->requestFactory->get( $mapRequestUrl );
+		$mapResponse = $this->requestFactory->get( $mapRequestUrl, [], __METHOD__ );
 		$mapStatus = FormatJson::parse( $mapResponse, FormatJson::FORCE_ASSOC );
 		if ( !$mapStatus->isOK() ) {
 			return Status::newFatal(
@@ -633,7 +643,9 @@ class SpeechoidConnector {
 	 */
 	public function isQueueOverloaded(): bool {
 		$statsResponse = $this->requestFactory->get(
-			$this->haproxyStatsUrl . '/stats;csv;norefresh'
+			$this->haproxyStatsUrl . '/stats;csv;norefresh',
+			[],
+			__METHOD__
 		);
 		$parser = new HaproxyStatusParser( $statsResponse );
 		return $parser->isQueueOverloaded(
@@ -669,7 +681,9 @@ class SpeechoidConnector {
 	 */
 	public function getAvailableNonQueuedConnectionSlots(): int {
 		$statsResponse = $this->requestFactory->get(
-			$this->haproxyStatsUrl . '/stats;csv;norefresh'
+			$this->haproxyStatsUrl . '/stats;csv;norefresh',
+			[],
+			__METHOD__
 		);
 		$parser = new HaproxyStatusParser( $statsResponse );
 		return $parser->getAvailableNonQueuedConnectionSlots(

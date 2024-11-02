@@ -206,7 +206,7 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 	private function buildWords(
 		int $inputNumber,
 		array $wordsBuilder = [],
-		array $invokingMagnitude = null
+		?array $invokingMagnitude = null
 	): ?string {
 		if ( $inputNumber === 0 ) {
 			if ( count( $wordsBuilder ) === 0 ) {

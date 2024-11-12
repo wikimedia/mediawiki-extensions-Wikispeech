@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"André Costa (WMSE)",
+			"Anna-Maria Jerdak (WMSE)",
 			"Jopparn",
 			"Sabelöga",
 			"WikiPhoenix"
@@ -17,7 +18,7 @@
 	"prefs-wikispeech-show-player": "Visa alltid spelare",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Ändringar av inställningar träder i kraft nästa gång en sida laddas. För att lyssna på den aktuella sidan med de nya inställningarna, ladda om sidan efter att du har sparat.",
 	"right-wikispeech-listen": "Lyssna på sidan",
-	"right-wikispeech-read-lexicon": "Läs Wikispeehs lexikon",
+	"right-wikispeech-read-lexicon": "Läs Wikispeechs lexikon",
 	"right-wikispeech-edit-lexicon": "Redigera Wikispeechs lexikon",
 	"action-wikispeech-listen": "lyssna på sidan",
 	"action-wikispeech-read-lexicon": "läs Wikispeechs lexikon",
@@ -34,12 +35,14 @@
 	"wikispeech-word": "Ord",
 	"wikispeech-transcription": "Transkribering",
 	"wikispeech-item-id": "ID",
-	"wikispeech-preview": "Förhandsgranska",
+	"wikispeech-preview": "Förhandsvisning",
 	"wikispeech-preferred": "Föredragen",
+	"wikispeech-lexicon-next": "Nästa",
+	"wikispeech-lexicon-save": "Spara",
 	"wikispeech-lexicon-add-entry-success": "Uppslagsord har lagts till i lexikonet.",
 	"wikispeech-lexicon-new": "Ny",
 	"wikispeech-lexicon-edit-entry-success": "Uppslagsord redigerat.",
-	"wikispeech-lexicon-copyrightnote": "Genom att spara dina ändringar godkänner du att ditt bidrag släpps under [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
-	"group-wikispeech-edit-lexicon": "Wikispeech-lexikonredigerare",
-	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech-lexikonredigerare}}"
+	"wikispeech-lexicon-copyrightnote": "Genom att spara ändringar samtycker du till att offentliggöra ditt bidrag under [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"group-wikispeech-edit-lexicon": "Wikispeech lexikon redaktörer",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech-lexikonredaktör}}"
 }

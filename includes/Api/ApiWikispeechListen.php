@@ -221,7 +221,7 @@ class ApiWikispeechListen extends ApiBase {
 		string $language,
 		int $revisionId,
 		string $segmentHash,
-		string $consumerUrl = null
+		?string $consumerUrl = null
 	): array {
 		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,

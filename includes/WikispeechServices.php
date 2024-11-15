@@ -20,7 +20,7 @@ class WikispeechServices {
 	 * @return ConfiguredLexiconStorage
 	 */
 	public static function getConfiguredLexiconStorage(
-		ContainerInterface $services = null
+		?ContainerInterface $services = null
 	): ConfiguredLexiconStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.ConfiguredLexiconStorage' );
@@ -34,7 +34,7 @@ class WikispeechServices {
 	 * @return LexiconHandler
 	 */
 	public static function getLexiconHandler(
-		ContainerInterface $services = null
+		?ContainerInterface $services = null
 	): LexiconHandler {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconHandler' );
@@ -48,7 +48,7 @@ class WikispeechServices {
 	 * @return LexiconWikiStorage
 	 */
 	public static function getLexiconWikiStorage(
-		ContainerInterface $services = null
+		?ContainerInterface $services = null
 	): LexiconWikiStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconWikiStorage' );
@@ -62,7 +62,7 @@ class WikispeechServices {
 	 * @return LexiconSpeechoidStorage
 	 */
 	public static function getLexiconSpeechoidStorage(
-		ContainerInterface $services = null
+		?ContainerInterface $services = null
 	): LexiconSpeechoidStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconSpeechoidStorage' );
@@ -76,7 +76,7 @@ class WikispeechServices {
 	 * @return LexiconWanCacheStorage
 	 */
 	public static function getLexiconWanCacheStorage(
-		ContainerInterface $services = null
+		?ContainerInterface $services = null
 	): LexiconWanCacheStorage {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.LexiconWanCacheStorage' );
@@ -90,7 +90,7 @@ class WikispeechServices {
 	 * @return SpeechoidConnector
 	 */
 	public static function getSpeechoidConnector(
-		ContainerInterface $services = null
+		?ContainerInterface $services = null
 	): SpeechoidConnector {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.SpeechoidConnector' );

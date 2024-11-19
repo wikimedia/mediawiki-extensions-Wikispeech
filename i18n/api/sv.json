@@ -3,13 +3,15 @@
 		"authors": [
 			"André Costa (WMSE)",
 			"Jopparn",
-			"Sabelöga"
+			"Sabelöga",
+			"Anna-Maria Jerdak (WMSE)"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Dela en sidas HTML-innehåll i segment.",
 	"apihelp-wikispeech-segment-param-page": "Titeln på sidan att segmentera.",
 	"apihelp-wikispeech-segment-param-removetags": "HTML-taggarna som bör tas bort helt och hållet under städningen som ett JSON-objekt med följande format:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n\ndär <code>tag1</code> alltid tas bort, <code>tag2</code> tas endast bort om den även har CSS-klassen <code>css-class</code>, samt <code>tag3</code> tas endast bort om den även har CSS-klassen <code>css-class-1</code> eller <code>css-class-2</code>. Var medveten om att wikispeech-listen använder standardkonfiguration för segmentering och kanske inte är kompatibla med segment som skapats med en ad hoc-inställning av denna parameter.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-taggar som borde bryta segment. Var medveten om att wikispeech-listen använder standardkonfiguration för segmentering och kanske inte är kompatibla med segment som skapats med en ad hoc-inställning av denna parameter.",
+	"apihelp-wikispeech-segment-param-consumer-url": "URL till wikis konsument skriptsökväg.",
 	"apihelp-wikispeech-segment-example-1": "Segmentera huvudsidan med de förvalda parametrarna från konfigureringen.",
 	"apihelp-wikispeech-segment-example-2": "Segment som använder egna parametrar. Taggen <code>sup</code> tas bort och även <code>div</code> när den har klassen <code>toc</code>. Taggarna <code>h1</code> och <code>h2</code> bryter upp segment.",
 	"apihelp-wikispeech-segment-example-3": "Segmentera huvudsidan på en annan wiki.",
@@ -22,11 +24,14 @@
 	"apihelp-wikispeech-listen-param-text": "Text att syntetisera.",
 	"apihelp-wikispeech-listen-param-ipa": "IPA-sträng att syntetisera.",
 	"apihelp-wikispeech-listen-param-voice": "Röst att använda. Om detta inte anges kommer standardrösten för språket att användas.",
+	"apihelp-wikispeech-listen-param-consumer-url": "URL till wikis konsument skriptsökväg.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Standardinställningen till falsk. Om det är sant kommer anonym data inte att lagras i journalens mätregister. Används främst vid utförande av pre-rendering för att undvika att robotförfrågningar läggs till i statistiken.",
 	"apierror-wikispeech-listen-deleted-revision": "Man kan inte lyssna på raderade sidversioner.",
 	"apierror-wikispeech-listen-notallowed": "Du har inte rättigheterna för att anropa denna API-åtgärd.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> är inte ett giltigt språk. Bör vara en av följande: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> är inte en giltig röst. Bör vara en av följande: $2.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Det gick inte att hämta sidan med revisions-id '$1' från konsumenten på URL $2.",
+	"apierror-wikispeech-consumer-not-allowed": "Förfrågningar från fjärrwikis är inte tillåtna.",
 	"apihelp-wikispeech-listen-example-1": "Syntetisera ett yttrande på engelska.",
 	"apihelp-wikispeech-listen-example-2": "Använd en röst som inte är standard.",
 	"apihelp-wikispeech-listen-example-3": "Begär ett segment från en sidversion. Kommer använda cachad syntes om det fnns.",

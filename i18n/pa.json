@@ -1,0 +1,32 @@
+{
+	"@metadata": {
+		"authors": [
+			"Cabal"
+		]
+	},
+	"prefs-wikispeech-voice": "ਆਵਾਜ਼",
+	"prefs-wikispeech-speech-rate": "ਬੋਲਣ ਦੀ ਦਰ",
+	"prefs-wikispeech-speech-rate-percent": "ਬੋਲਣ ਦੀ ਦਰ (ਪ੍ਰਤੀਸ਼ਤ ਵਿੱਚ)",
+	"prefs-wikispeech-enable": "ਵਿਕੀ-ਬੋਲ ਨੂੰ ਚਾਲੂ ਕਰੋ",
+	"right-wikispeech-listen": "ਸਫ਼ੇ ਨੂੰ ਸੁਣੋ",
+	"right-wikispeech-read-lexicon": "ਵਿਕੀ-ਬੋਲ ਦਾ ਸ਼ਬਦਕੋਸ਼ ਪਡ਼੍ਹੋ",
+	"right-wikispeech-edit-lexicon": "ਵਿਕੀ-ਬੋਲ ਦੇ ਸ਼ਬਦਕੋਸ਼ ਨੂੰ ਸੋਧੋ",
+	"action-wikispeech-listen": "ਸਫ਼ੇ ਨੂੰ ਸੁਣੋ",
+	"action-wikispeech-read-lexicon": "ਵਿਕੀ-ਬੋਲ ਦਾ ਸ਼ਬਦਕੋਸ਼ ਪਡ਼੍ਹੋ",
+	"action-wikispeech-edit-lexicon": "ਵਿਕੀ-ਬੋਲ ਦੇ ਸ਼ਬਦਕੋਸ਼ ਨੂੰ ਸੋਧੋ",
+	"wikispeech-listen": "ਸੁਣੋ",
+	"wikispeech-dont-listen": "ਨਾ ਸੁਣੋ",
+	"wikispeech-retry": "ਮੁੜ-ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+	"wikispeech-stop": "ਰੋਕੋ",
+	"editlexicon": "ਸ਼ਬਦਕੋਸ਼ ਨੂੰ ਸੋਧੋ",
+	"wikispeech-language": "ਬੋਲੀ",
+	"wikispeech-word": "ਸ਼ਬਦ",
+	"wikispeech-item-id": "ਸ਼ਿਨਾਖਤ",
+	"wikispeech-preview": "ਝਾਤ",
+	"wikispeech-preferred": "ਮਨਪਸੰਦ",
+	"wikispeech-lexicon-next": "ਅੱਗੇ",
+	"wikispeech-lexicon-save": "ਸਾਂਭੋ",
+	"wikispeech-lexicon-new": "ਨਵਾਂ",
+	"group-wikispeech-edit-lexicon": "ਵਿਕੀ-ਬੋਲ ਸ਼ਬਦਕੋਸ਼ ਸੋਧਕ",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1| ਵਿਕੀ-ਬੋਲ ਸ਼ਬਦਕੋਸ਼ ਸੋਧਕ}}"
+}

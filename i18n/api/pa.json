@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Cabal"
+		]
+	},
+	"apihelp-wikispeech-listen-param-lang": "ਭਾਸ਼ਾ ਕੋਡ",
+	"apihelp-wikispeech-listen-param-revision": "ਸਫ਼ਾ ਸੋਧ ਜਿਸ ਉੱਤੇ ਹਿੱਸਾ ਪਾਇਆ ਜਾਂਦਾ ਹੈ।"
+}

@@ -15,10 +15,10 @@ module.exports = function ( grunt ) {
 				'*.js',
 				'modules/**/*.js',
 				'tests/**/*.js',
-				'docs/**/*.js',
 				'**/*.json',
 				'!node_modules/**',
-				'!vendor/**'
+				'!vendor/**',
+				'!docs/**'
 			]
 		},
 		banana: conf.MessagesDirs,

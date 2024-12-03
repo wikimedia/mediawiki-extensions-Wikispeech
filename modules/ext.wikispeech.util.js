@@ -44,7 +44,7 @@
 		 * Get the last item in an array.
 		 *
 		 * @param {Array} array The array to look in.
-		 * @return {Mixed} The last item in the array.
+		 * @return The last item in the array.
 		 */
 
 		this.getLast = function ( array ) {

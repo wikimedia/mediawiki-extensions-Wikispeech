@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Robby"
+			"Robby",
+			"Volvox"
 		]
 	},
 	"prefs-wikispeech-voice": "Stëmm",
@@ -15,5 +16,6 @@
 	"wikispeech-language": "Sprooch",
 	"wikispeech-word": "Wuert",
 	"wikispeech-transcription": "Transkriptioun",
+	"wikispeech-lexicon-save": "Späicheren",
 	"wikispeech-lexicon-new": "Nei"
 }

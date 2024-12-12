@@ -4,12 +4,12 @@
 *.orig
 *.log
 
-composer.lock
-
-vendor
-node_modules
-php-docs
-js-docs
-coverage
+/composer.lock
 /.eslintcache
-dev/speechoid-docker-compose/volumes/
+
+/vendor/
+/node_modules/
+/php-docs/
+/docs/js/
+/coverage/
+/dev/speechoid-docker-compose/volumes/

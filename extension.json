@@ -55,7 +55,9 @@
 				"wikispeech-error-loading-audio-title",
 				"wikispeech-error-loading-audio-message",
 				"wikispeech-retry",
-				"wikispeech-stop"
+				"wikispeech-stop",
+				"wikispeech-listen",
+				"wikispeech-dont-listen"
 			],
 			"dependencies": [
 				"mediawiki.util",

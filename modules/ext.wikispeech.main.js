@@ -35,24 +35,18 @@
 			// Prepare the first utterance for playback.
 			mw.wikispeech.ui.init();
 			// Prepare action link.
-			new mw.Api().loadMessagesIfMissing( [
-				'wikispeech-listen',
-				'wikispeech-dont-listen'
-			] )
-				.done( function () {
-					// eslint-disable-next-line no-jquery/no-global-selector
-					$toggleVisibility = $( '.ext-wikispeech-listen a' );
-					// Set label to hide message since the player is
-					// visible when loaded.
-					$toggleVisibility.text(
-						mw.msg( 'wikispeech-dont-listen' )
-					);
-					$toggleVisibility.on(
-						'click',
-						$toggleVisibility,
-						self.toggleVisibility
-					);
-				} );
+			// eslint-disable-next-line no-jquery/no-global-selector
+			$toggleVisibility = $( '.ext-wikispeech-listen a' );
+			// Set label to hide message since the player is
+			// visible when loaded.
+			$toggleVisibility.text(
+				mw.msg( 'wikispeech-dont-listen' )
+			);
+			$toggleVisibility.on(
+				'click',
+				$toggleVisibility,
+				self.toggleVisibility
+			);
 		};
 
 		/**

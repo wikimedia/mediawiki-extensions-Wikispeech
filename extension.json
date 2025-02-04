@@ -5,7 +5,8 @@
 		"Sebastian Berlin",
 		"André Costa",
 		"Igor Leturia",
-		"Karl Wettin"
+		"Karl Wettin",
+		"Viktoria Hillerud"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:Wikispeech",
 	"namemsg": "wikispeech",
@@ -106,7 +107,7 @@
 				},
 				{
 					"name": "default-user-options.json",
-					"callback": "MediaWiki\\Wikispeech\\Hooks\\ApiHooks::getDefaultUserOptions"
+					"callback": "MediaWiki\\Wikispeech\\DefaultUserOptions::getDefaultUserOptions"
 				}
 			],
 			"messages": [
@@ -162,6 +163,14 @@
 			"class": "MediaWiki\\Wikispeech\\Hooks\\ApiHooks",
 			"services": [
 				"ConfigFactory",
+				"PermissionManager",
+				"HttpRequestFactory"
+			]
+		},
+		"PlayerHooks": {
+			"class": "MediaWiki\\Wikispeech\\Hooks\\PlayerHooks",
+			"services": [
+				"ConfigFactory",
 				"UserOptionsLookup",
 				"MainWANObjectCache",
 				"LanguageFactory",
@@ -179,11 +188,11 @@
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": "DatabaseHooks",
 		"ApiBeforeMain": "ApiHooks",
-		"BeforePageDisplay": "ApiHooks",
-		"ResourceLoaderGetConfigVars": "ApiHooks",
-		"GetPreferences": "ApiHooks",
+		"BeforePageDisplay": "PlayerHooks",
+		"ResourceLoaderGetConfigVars": "PlayerHooks",
+		"GetPreferences": "PlayerHooks",
 		"ApiCheckCanExecute": "ApiHooks",
-		"SkinTemplateNavigation::Universal": "ApiHooks",
+		"SkinTemplateNavigation::Universal": "PlayerHooks",
 		"CustomEditor": "LexiconHooks"
 	},
 	"ConfigRegistry": {

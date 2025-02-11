@@ -8,8 +8,6 @@ namespace MediaWiki\Wikispeech\Specials;
  * @license GPL-2.0-or-later
  */
 
-use Config;
-use ConfigFactory;
 use Html;
 use HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
@@ -31,9 +29,6 @@ use SpecialPage;
 
 class SpecialEditLexicon extends SpecialPage {
 
-	/** @var Config */
-	private $config;
-
 	/** @var LanguageNameUtils */
 	private $languageNameUtils;
 
@@ -53,20 +48,18 @@ class SpecialEditLexicon extends SpecialPage {
 	private $postHtml;
 
 	/**
+	 * @since 0.1.11 Removed ConfigFactory
 	 * @since 0.1.8
-	 * @param ConfigFactory $configFactory
 	 * @param LanguageNameUtils $languageNameUtils
 	 * @param LexiconStorage $lexiconStorage
 	 * @param SpeechoidConnector $speechoidConnector
 	 */
 	public function __construct(
-		$configFactory,
 		$languageNameUtils,
 		$lexiconStorage,
 		$speechoidConnector
 	) {
 		parent::__construct( 'EditLexicon', 'wikispeech-edit-lexicon' );
-		$this->config = $configFactory->makeConfig( 'wikispeech' );
 		$this->languageNameUtils = $languageNameUtils;
 		$this->lexiconStorage = $lexiconStorage;
 		$this->speechoidConnector = $speechoidConnector;
@@ -432,7 +425,7 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @return array Keys are labels and values are language codes.
 	 */
 	private function getLanguageOptions(): array {
-		$voices = $this->config->get( 'WikispeechVoices' );
+		$voices = $this->getConfig()->get( 'WikispeechVoices' );
 		$languages = array_keys( $voices );
 		sort( $languages );
 		$options = [];

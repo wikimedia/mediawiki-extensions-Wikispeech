@@ -129,7 +129,6 @@
 		"EditLexicon": {
 			"class": "MediaWiki\\Wikispeech\\Specials\\SpecialEditLexicon",
 			"services": [
-				"ConfigFactory",
 				"LanguageNameUtils",
 				"Wikispeech.ConfiguredLexiconStorage",
 				"Wikispeech.SpeechoidConnector"

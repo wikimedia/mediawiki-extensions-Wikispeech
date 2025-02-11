@@ -2,8 +2,6 @@
 
 namespace MediaWiki\Wikispeech\Tests\Integration\Special;
 
-use ConfigFactory;
-use HashConfig;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
@@ -20,9 +18,6 @@ use Wikimedia\TestingAccessWrapper;
  */
 class SpecialEditLexiconTest extends SpecialPageTestBase {
 
-	/** @var HashConfig */
-	private $config;
-
 	/** @var LanguageNameUtils */
 	private $languageNameUtils;
 
@@ -38,19 +33,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	 * @return SpecialPage
 	 */
 	protected function newSpecialPage() {
-		$configFactory = new ConfigFactory();
-		$this->config = new HashConfig();
-		$configFactory->register(
-			'wikispeech',
-			function () {
-				return $this->config;
-			}
-		);
 		$this->languageNameUtils = $this->createStub( LanguageNameUtils::class );
 		$this->lexiconStorage = $this->createMock( LexiconStorage::class );
 		$this->speechoidConnector = $this->createStub( SpeechoidConnector::class );
 		return new SpecialEditLexicon(
-			$configFactory,
 			$this->languageNameUtils,
 			$this->lexiconStorage,
 			$this->speechoidConnector
@@ -59,7 +45,7 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 
 	public function testGetLanguageOptions_configHasVoices_giveLanguageOptions() {
 		$page = $this->newSpecialPage();
-		$this->config->set(
+		$this->overrideConfigValue(
 			'WikispeechVoices',
 			[
 				'ar' => [],

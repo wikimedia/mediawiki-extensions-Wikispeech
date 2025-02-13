@@ -78,7 +78,7 @@ class SpecialEditLexicon extends SpecialPage {
 		}
 
 		$this->checkPermissions();
-
+		$this->addHelpLink( 'Help:Extension:Wikispeech/Lexicon editor' );
 		$request = $this->getRequest();
 		$language = $request->getText( 'language' );
 		$word = $request->getText( 'word' );

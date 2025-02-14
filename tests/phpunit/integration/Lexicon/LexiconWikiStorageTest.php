@@ -8,6 +8,7 @@ namespace MediaWiki\Wikispeech\Tests\Itegration\Lexicon;
  * @license GPL-2.0-or-later
  */
 
+use JsonContent;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
@@ -73,8 +74,9 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 			"strn" => $key,
 			"language" => "sv-se",
 		];
+
 		$entryItem = new LexiconEntryItem();
-		$entryItem->setProperties( $properties );
+		$entryItem->setProperties( (object)$properties );
 		$entry = new LexiconEntry();
 		$entry->setKey( $key );
 		$entry->setLanguage( $language );
@@ -170,6 +172,23 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 		$this->storage->deleteEntryItem( 'sv', 'd', $item2 );
 		$entry = $this->storage->getEntry( 'sv', 'd' );
 		$this->assertCount( 0, $entry->getItems() );
+	}
+
+	public function testDeserializeEntryContent_emptyArrayAndObject_returnsLexiconEntry() {
+		$language = "sv";
+		$key = "testord";
+
+		$content = new JsonContent( '[{"lemma": {}, "transcriptions": []}]' );
+
+		$result = LexiconWikiStorage::deserializeEntryContent( $content, $language, $key );
+
+		$this->assertInstanceOf( LexiconEntry::class, $result );
+
+		$this->assertIsObject( $result->getItems()[0]->getProperties()->lemma,
+			"Expect lemma to be an object" );
+
+		$this->assertIsArray( $result->getItems()[0]->getProperties()->transcriptions,
+			"Expect transcriptions to be an array" );
 	}
 
 }

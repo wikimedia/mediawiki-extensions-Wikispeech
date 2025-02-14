@@ -369,4 +369,24 @@ stats,FRONTEND,,,2,2,2000,7,8606,79568,0,0,0,,,,,OPEN,,,,,,,,,1,3,0,,,,0,1,0,2,,
 		$this->assertSame( 'http://speechoid.url:10002', $speechoidConnector->haproxyStatsUrl );
 	}
 
+	public function testLookupLexiconEntries_lemmaIsEmptyObjectInJson_lemmaReturnsObject() {
+		$expectedUrl = 'speechoid.url/lexserver/lexicon/lookup?lexicons=lexicon&words=word';
+		$responseString = '[
+    {
+    "id": 132,
+    "strn": "tomten",
+    "lemma": {}
+  }
+]';
+		$this->requestFactory
+			->method( 'get' )
+			->with( $expectedUrl )
+			->willReturnCallback( static function ( $url ) use ( $responseString, $expectedUrl ) {
+				return $url === $expectedUrl ? $responseString : null;
+			} );
+		$status = $this->speechoidConnector->lookupLexiconEntries( 'lexicon', [ 'word' ] );
+		$this->assertStatusGood( $status );
+		$entry = $status->getValue();
+		$this->assertEquals( (object)[], $entry[0]->lemma );
+	}
 }

@@ -107,7 +107,6 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 		if ( !$language || !$key ) {
 			return null;
 		}
-
 		$wikiPage = $this->lexiconEntryWikiPageFactory( $language, $key );
 		if ( !$wikiPage->exists() ) {
 			return null;
@@ -142,9 +141,8 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 		$entry = new LexiconEntry();
 		$entry->setLanguage( $language );
 		$entry->setKey( $key );
-		// $content->getData() does not force associative array.
-		$status = FormatJson::parse( $content->getText(), FormatJson::FORCE_ASSOC );
-		if ( !$status->isOK() ) {
+		$status = $content->getData();
+		if ( !$status->isGood() ) {
 			throw new ExternalStoreException( 'Failed to decode revision content as JSON' );
 		}
 		$deserialized = $status->getValue();

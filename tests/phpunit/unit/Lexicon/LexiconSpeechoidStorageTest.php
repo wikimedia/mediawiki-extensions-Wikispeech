@@ -105,7 +105,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$status = FormatJson::parse( $this->mockedLexiconEntryJson, FormatJson::FORCE_ASSOC );
+		$status = FormatJson::parse( $this->mockedLexiconEntryJson );
 		if ( !$status->isOK() ) {
 			throw new MWException( 'Failed to parse mocked JSON' );
 		}
@@ -128,8 +128,8 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 'sv', $lexiconEntry->getLanguage() );
 		$this->assertSame( 'tomten', $lexiconEntry->getKey() );
 		$this->assertCount( 2, $lexiconEntry->getItems() );
-		$this->assertSame( 808498, $lexiconEntry->getItems()[0]->getProperties()['id'] );
-		$this->assertSame( 808499, $lexiconEntry->getItems()[1]->getProperties()['id'] );
+		$this->assertSame( 808498, $lexiconEntry->getItems()[0]->getProperties()->id );
+		$this->assertSame( 808499, $lexiconEntry->getItems()[1]->getProperties()->id );
 	}
 
 	public function testCreateEntry() {
@@ -147,10 +147,10 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 			->willReturn( Status::newGood( 808499 ) );
 
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'whatever' => 'mock overrides this' ] );
+		$item->setProperties( (object)[ 'whatever' => 'mock overrides this' ] );
 		$speechoidStorage = new LexiconSpeechoidStorage( $connectorMock, $this->cache );
 		$speechoidStorage->createEntryItem( 'sv', 'tomten', $item );
-		$this->assertSame( 808499, $item->getProperties()['id'] );
+		$this->assertSame( 808499, $item->getProperties()->id );
 	}
 
 	public function testUpdateEntry_identityGiven_receivedUpdatedItem() {
@@ -169,14 +169,14 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 
 		$item = new LexiconEntryItem();
 		$item->setProperties(
-			[
+			(object)[
 				'id' => 808499,
 				'whatever' => 'mock overrides this'
 			]
 		);
 		$speechoidStorage = new LexiconSpeechoidStorage( $connectorMock, $this->cache );
 		$speechoidStorage->updateEntryItem( 'sv', 'tomten', $item );
-		$this->assertSame( 808499, $item->getProperties()['id'] );
+		$this->assertSame( 808499, $item->getProperties()->id );
 	}
 
 	public function testUpdateEntry_identityNotGive_throwsException() {
@@ -189,7 +189,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 			->method( 'updateLexiconEntry' );
 
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'whatever' => 'mock overrides this' ] );
+		$item->setProperties( (object)[ 'whatever' => 'mock overrides this' ] );
 		$speechoidStorage = new LexiconSpeechoidStorage( $connectorMock, $this->cache );
 		$this->expectExceptionMessage( 'Speechoid identity not set.' );
 		$speechoidStorage->updateEntryItem( 'sv', 'tomten', $item );

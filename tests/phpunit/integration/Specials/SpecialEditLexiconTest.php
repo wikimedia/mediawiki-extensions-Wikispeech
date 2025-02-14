@@ -107,12 +107,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 			->with( 'ipa transcription' )
 			->willReturn( Status::newGood( 'transcription' ) );
 		$item = new LexiconEntryItem();
-		$item->setProperties( [
+		$item->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
-			'status' => [
-				'name' => 'ok'
-			]
+			'transcriptions' => [ (object)[ 'strn' => 'transcription' ] ],
+			'status' => (object)[ 'name' => 'ok' ]
 		] );
 		$this->lexiconStorage->expects( $this->once() )
 			->method( 'createEntryItem' )
@@ -134,10 +132,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	public function testSubmit_existingIdGiven_updateEntry() {
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
-		$item->setProperties( [
+		$item->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'old transcription' ] ],
-			'status' => [
+			'transcriptions' => [ (object)[ 'strn' => 'old transcription' ] ],
+			'status' => (object)[
 				'name' => 'ok'
 			],
 			'id' => 123
@@ -147,10 +145,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->method( 'getEntry' )
 			->willReturn( $entry );
 		$updatedItem = new LexiconEntryItem();
-		$updatedItem->setProperties( [
+		$updatedItem->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'new transcription' ] ],
-			'status' => [
+			'transcriptions' => [ (object)[ 'strn' => 'new transcription' ] ],
+			'status' => (object)[
 				'name' => 'ok'
 			],
 			'id' => 123,
@@ -180,10 +178,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	public function testSubmit_entryExistsAndNewSelected_createNewItem() {
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
-		$item->setProperties( [
+		$item->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
-			'status' => [
+			'transcriptions' => [ (object)[ 'strn' => 'transcription' ] ],
+			'status' => (object)[
 				'name' => 'ok'
 			]
 		] );
@@ -214,10 +212,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	public function testSubmit_newSelectedAndPreferredIsTrue_createNewItemWithPreferredTrue() {
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
-		$item->setProperties( [
+		$item->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
-			'status' => [
+			'transcriptions' => [ (object)[ 'strn' => 'transcription' ] ],
+			'status' => (object)[
 				'name' => 'ok'
 			],
 			'preferred' => true
@@ -250,10 +248,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	public function testSubmit_preferredFieldIsFalse_preferredRemovedFromProperties() {
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
-		$item->setProperties( [
+		$item->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
-			'status' => [
+			'transcriptions' => [ (object)[ 'strn' => 'transcription' ] ],
+			'status' => (object)[
 				'name' => 'ok'
 			],
 			'id' => 123,
@@ -264,10 +262,10 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->lexiconStorage->method( 'getEntry' )
 			->willReturn( $entry );
 		$updatedItem = new LexiconEntryItem();
-		$updatedItem->setProperties( [
+		$updatedItem->setProperties( (object)[
 			'strn' => 'monkey',
-			'transcriptions' => [ [ 'strn' => 'transcription' ] ],
-			'status' => [
+			'transcriptions' => [ (object)[ 'strn' => 'transcription' ] ],
+			'status' => (object)[
 				'name' => 'ok'
 			],
 			'id' => 123

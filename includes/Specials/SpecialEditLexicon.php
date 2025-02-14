@@ -252,13 +252,13 @@ class SpecialEditLexicon extends SpecialPage {
 		if ( $entry ) {
 			foreach ( $entry->getItems() as $item ) {
 				$properties = $item->getProperties();
-				if ( !isset( $properties['id'] ) ) {
+				if ( !isset( $properties->id ) ) {
 					$this->logger->warning(
 						__METHOD__ . ': Skipping item with no id.'
 					);
 					continue;
 				}
-				$id = $properties['id'];
+				$id = $properties->id;
 				// Add item id as option for selection.
 				$itemOptions[$id] = $id;
 				// Add item to info text.
@@ -396,16 +396,16 @@ class SpecialEditLexicon extends SpecialPage {
 			$item = new LexiconEntryItem();
 			$properties = [
 				'strn' => $word,
-				'transcriptions' => [ [ 'strn' => $sampa ] ],
+				'transcriptions' => [ (object)[ 'strn' => $sampa ] ],
 				// Status is required by Speechoid.
-				'status' => [
+				'status' => (object)[
 					'name' => 'ok'
 				]
 			];
 			if ( $preferred ) {
 				$properties['preferred'] = true;
 			}
-			$item->setProperties( $properties );
+			$item->setProperties( (object)$properties );
 			$this->lexiconStorage->createEntryItem(
 				$language,
 				$word,
@@ -419,12 +419,13 @@ class SpecialEditLexicon extends SpecialPage {
 				throw new MWException( "No item with id '$id' found." );
 			}
 			$properties = $item->getProperties();
-			$properties['transcriptions'] = [ [ 'strn' => $sampa ] ];
+			$properties->transcriptions = [ (object)[ 'strn' => $sampa ] ];
 			if ( $preferred ) {
-				$properties['preferred'] = true;
+				$properties->preferred = true;
 			} else {
-				unset( $properties['preferred'] );
+				unset( $properties->preferred );
 			}
+
 			$item->setProperties( $properties );
 			$this->lexiconStorage->updateEntryItem(
 				$language,

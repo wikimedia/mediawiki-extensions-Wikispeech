@@ -40,7 +40,6 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			'WikispeechUtteranceFileBackendContainerName' => 'foo_container',
 			'WikispeechUtteranceFileBackendName' => '',
 		] );
-		$this->tablesUsed[] = UtteranceStore::UTTERANCE_TABLE;
 		$this->utteranceStore = TestingAccessWrapper::newFromObject( new UtteranceStore() );
 		// use new empty transient file backend
 		// @todo Investigate mocking of file backend. See https://phabricator.wikimedia.org/T255126

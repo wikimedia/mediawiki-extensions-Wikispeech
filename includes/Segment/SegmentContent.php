@@ -9,8 +9,23 @@ namespace MediaWiki\Wikispeech\Segment;
  */
 
 /**
+ * @since 0.1.13 Change to abstract class
  * @since 0.1.10
  */
-interface SegmentContent {
+abstract class SegmentContent {
+	/**
+	 * @since 0.1.13
+	 * @return string
+	 */
+	public function getString() {
+		return '';
+	}
 
+	/**
+	 * @since 0.1.13
+	 * @return ?string
+	 */
+	public function getPath() {
+		return null;
+	}
 }

@@ -545,7 +545,8 @@
 		"wikispeechVoiceAr": "",
 		"wikispeechVoiceEn": "",
 		"wikispeechVoiceSv": "",
-		"wikispeechSpeechRate": 1.0
+		"wikispeechSpeechRate": 1.0,
+		"wikispeechPartOfContent": false
 	},
 	"APIModules": {
 		"wikispeech-segment": {

@@ -10,14 +10,17 @@ namespace MediaWiki\Wikispeech\Segment;
 
 use DOMComment;
 use DOMDocument;
+use DOMElement;
 use DOMNode;
 use DOMXPath;
 use LogicException;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
 
 /**
  * Used for cleaning text with HTML markup. The cleaned text is used
  * as input for `Segmenter`.
  *
+ * @since 0.1.13 Add `$partOfContent`
  * @since 0.0.1
  */
 class Cleaner {
@@ -36,6 +39,13 @@ class Cleaner {
 	private $segmentBreakingTags;
 
 	/**
+	 * If true certain tags add extra content that is read before any text.
+	 *
+	 * @var bool
+	 */
+	private $partOfContent;
+
+	/**
 	 * An array of `CleanedText`s and `SegmentBreak`s.
 	 *
 	 * @var SegmentContent[]
@@ -43,14 +53,21 @@ class Cleaner {
 	private $cleanedContent;
 
 	/**
+	 * @since 0.1.13 Add `$partOfContent`
 	 * @param array $removeTags An array of tags that should be
 	 *  removed completely during cleaning.
 	 * @param array $segmentBreakingTags An array of `CleanedText`s
 	 *  and `SegmentBreak`s.
+	 * @param bool $partOfContent If true certain tags add extra content that is read before any text.
 	 */
-	public function __construct( $removeTags, $segmentBreakingTags ) {
+	public function __construct(
+		$removeTags,
+		$segmentBreakingTags,
+		bool $partOfContent
+	) {
 		$this->removeTags = $removeTags;
 		$this->segmentBreakingTags = $segmentBreakingTags;
+		$this->partOfContent = $partOfContent;
 	}
 
 	/**
@@ -61,8 +78,7 @@ class Cleaner {
 	 * @since 0.0.1
 	 * @param string $markedUpText Input text that may contain HTML
 	 *  tags.
-	 * @return SegmentContent[] An array of `CleanedText`s and `SegmentBreak`s
-	 *  representing text nodes.
+	 * @return SegmentContent[] Represents the DOM nodes.
 	 */
 	public function cleanHtml( $markedUpText ): array {
 		$dom = self::createDomDocument( $markedUpText );
@@ -120,44 +136,54 @@ class Cleaner {
 	 * @param DOMNode $node The top node to add from.
 	 */
 	private function addContent( $node ): void {
-		if ( !$node instanceof DOMComment && !$this->matchesRemove( $node ) ) {
-			foreach ( $node->childNodes as $child ) {
-				if (
-					!self::lastElement( $this->cleanedContent )
-						instanceof SegmentBreak &&
-					in_array(
-						$child->nodeName,
-						$this->segmentBreakingTags
-					)
-				) {
-					// Add segment breaks for start tags specified in
-					// the config, unless the previous item is a break
-					// or this is the first item.
-					$this->cleanedContent[] = new SegmentBreak();
+		if ( $node instanceof DOMComment ) {
+			return;
+		}
+
+		if ( $this->matchesRemove( $node ) ) {
+			return;
+		}
+
+		foreach ( $node->childNodes as $child ) {
+			if (
+				!self::lastElement( $this->cleanedContent )
+					instanceof SegmentBreak &&
+				in_array(
+					$child->nodeName,
+					$this->segmentBreakingTags
+				)
+			) {
+				// Add segment breaks for start tags specified in
+				// the config, unless the previous item is a break
+				// or this is the first item.
+				$this->cleanedContent[] = new SegmentBreak();
+			}
+
+			if ( $child->nodeType == XML_TEXT_NODE ) {
+				// Remove the path to the dummy node and instead
+				// add "." to match when used with context.
+				$path = preg_replace(
+					'!^/meta/dummy' . '!',
+					'.',
+					$child->getNodePath()
+				);
+				$this->cleanedContent[] = new CleanedText( $child->textContent, $path );
+			} else {
+				if ( $this->partOfContent && $child instanceof DOMElement ) {
+					$this->addPartOfContent( $child );
 				}
-				if ( $child->nodeType == XML_TEXT_NODE ) {
-					// Remove the path to the dummy node and instead
-					// add "." to match when used with context.
-					$path = preg_replace(
-						'!^/meta/dummy' . '!',
-						'.',
-						$child->getNodePath()
-					);
-					$this->cleanedContent[] = new CleanedText( $child->textContent, $path );
-				} else {
-					$this->addContent( $child );
-				}
-				if (
-					!self::lastElement( $this->cleanedContent ) instanceof SegmentBreak &&
-					in_array(
-						$child->nodeName,
-						$this->segmentBreakingTags
-					)
-				) {
-					// Add segment breaks for end tags specified in
-					// the config.
-					$this->cleanedContent[] = new SegmentBreak();
-				}
+				$this->addContent( $child );
+			}
+			if (
+				!self::lastElement( $this->cleanedContent ) instanceof SegmentBreak &&
+				in_array(
+					$child->nodeName,
+					$this->segmentBreakingTags
+				)
+			) {
+				// Add segment breaks for end tags specified in
+				// the config.
+				$this->cleanedContent[] = new SegmentBreak();
 			}
 		}
 	}
@@ -218,6 +244,19 @@ class Cleaner {
 		$classString = $classNode->nodeValue;
 		$nodeClasses = explode( ' ', $classString );
 		return in_array( $className, $nodeClasses );
+	}
+
+	/**
+	 * Add an object to `$cleanedContent` if `$element` is of a certain type.
+	 *
+	 * @since 0.1.13
+	 * @param DOMElement $element
+	 */
+	private function addPartOfContent( $element ) {
+		// TODO: It may make more sense to have the logic live in the respective classes.
+		if ( $element->nodeName === 'a' ) {
+			$this->cleanedContent[] = new Link();
+		}
 	}
 
 	/**

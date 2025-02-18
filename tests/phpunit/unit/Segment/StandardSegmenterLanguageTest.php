@@ -28,7 +28,7 @@ class StandardSegmenterLanguageTest extends MediaWikiUnitTestCase {
 		string $plainText,
 		array $expectedSegmentsText
 	) {
-		$cleaner = new Cleaner( [], [] );
+		$cleaner = new Cleaner( [], [], false );
 		$segmenter = new StandardSegmenter();
 		$segments = $segmenter->segmentSentences( $cleaner->cleanHtml( $plainText ) );
 		foreach ( $expectedSegmentsText as $i => $expectedSegmentText ) {

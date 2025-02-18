@@ -19,6 +19,7 @@ QUnit.module( 'ext.wikispeech.highlighter', {
 		];
 		highlighter = new mw.wikispeech.Highlighter();
 		this.clock = sinon.useFakeTimers();
+		mw.user.options.set( 'wikispeechPartOfContent', false );
 	},
 	afterEach: function () {
 		this.clock.restore();
@@ -383,6 +384,26 @@ QUnit.test( 'highlightToken(): utterance highlighting starts in a new text node'
 	);
 } );
 
+QUnit.test( 'highlightToken(): no highlighting when reading part of content', ( assert ) => {
+	storage.getNodeForItem.returns(
+		$( contentSelector ).contents().get( 0 )
+	);
+	const highlightedToken = {
+		utterance: storage.utterances[ 0 ],
+		startOffset: 0,
+		endOffset: 8,
+		items: [ storage.utterances[ 0 ].content[ 0 ] ]
+	};
+	mw.user.options.set( 'wikispeechPartOfContent', true );
+
+	highlighter.highlightToken( highlightedToken );
+
+	assert.strictEqual(
+		$( contentSelector ).html(),
+		'Utterance zero.'
+	);
+} );
+
 QUnit.test( 'setHighlightTokenTimer()', function () {
 	const highlightedToken = {
 		utterance: storage.utterances[ 0 ],
@@ -440,4 +461,13 @@ QUnit.test( 'setHighlightTokenTimer(): slower speech rate', function () {
 	this.clock.tick( 1001 );
 
 	sinon.assert.neverCalledWith( highlighter.highlightToken, nextToken );
+} );
+
+QUnit.test( 'startTokenHighlighting(): do not highlight token if parts of content is enabled', () => {
+	mw.user.options.set( 'wikispeechPartOfContent', true );
+	sinon.spy( highlighter, 'highlightToken' );
+
+	highlighter.startTokenHighlighting( { utterance: 'token' } );
+
+	sinon.assert.notCalled( highlighter.highlightToken );
 } );

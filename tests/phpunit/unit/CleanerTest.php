@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Tests;
 
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\SegmentContent;
 use MediaWikiUnitTestCase;
@@ -24,6 +25,15 @@ class CleanerTest extends MediaWikiUnitTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
+		$this->createCleaner( false );
+	}
+
+	/**
+	 * Add or replace the `Cleaner` instance used in the tests.
+	 *
+	 * @param bool $partOfContent
+	 */
+	private function createCleaner( $partOfContent ) {
 		$removeTags = [
 			'sup' => 'reference',
 			'h2' => false,
@@ -32,11 +42,12 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		];
 		$segmentBreakingTags = [
 			'hr',
-			'a'
+			'q'
 		];
 		$this->cleaner = new Cleaner(
 			$removeTags,
-			$segmentBreakingTags
+			$segmentBreakingTags,
+			$partOfContent
 		);
 	}
 
@@ -120,6 +131,8 @@ class CleanerTest extends MediaWikiUnitTestCase {
 			}
 		} elseif ( $expected instanceof SegmentBreak ) {
 			$this->assertTrue( $value instanceof SegmentBreak );
+		} elseif ( $expected instanceof Link ) {
+			$this->assertTrue( $value instanceof Link );
 		} else {
 			$this->fail( 'Unexpected instance of class ' . get_class( $value ) );
 		}
@@ -278,11 +291,11 @@ class CleanerTest extends MediaWikiUnitTestCase {
 
 	public function testCleanHtml_segmentBreakingTags_addSegmentBreaks() {
 		$markedUpText =
-			'prefix<a>content</a>suffix';
+			'prefix<q>content</q>suffix';
 		$expectedCleanedContents = [
 			new CleanedText( 'prefix', './text()[1]' ),
 			new SegmentBreak(),
-			new CleanedText( 'content', './a/text()' ),
+			new CleanedText( 'content', './q/text()' ),
 			new SegmentBreak(),
 			new CleanedText( 'suffix', './text()[2]' )
 		];
@@ -308,11 +321,11 @@ class CleanerTest extends MediaWikiUnitTestCase {
 
 	public function testCleanHtml_nestedSegmentTags_addSegmentBreaksBefore() {
 		$markedUpText =
-			'<a>before<hr />after</a>';
+			'<q>before<hr />after</q>';
 		$expectedCleanedContents = [
-			new CleanedText( 'before', './a/text()[1]' ),
+			new CleanedText( 'before', './q/text()[1]' ),
 			new SegmentBreak(),
-			new CleanedText( 'after', './a/text()[2]' )
+			new CleanedText( 'after', './q/text()[2]' )
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
@@ -322,9 +335,9 @@ class CleanerTest extends MediaWikiUnitTestCase {
 
 	public function testCleanHtml_nestedSegmentBrakingTags_addSegmentBreaksAfter() {
 		$markedUpText =
-			'<a><hr />inside</a>after';
+			'<q><hr />inside</q>after';
 		$expectedCleanedContents = [
-			new CleanedText( 'inside', './a/text()' ),
+			new CleanedText( 'inside', './q/text()' ),
 			new SegmentBreak(),
 			new CleanedText( 'after', './text()' )
 		];
@@ -350,9 +363,9 @@ class CleanerTest extends MediaWikiUnitTestCase {
 
 	public function testCleanHtml_onlySegmentBreakingTag_dontAddSegmentBreaksAtStartOrEnd() {
 		$markedUpText =
-			'<a>content</a>';
+			'<q>content</q>';
 		$expectedCleanedContents = [
-			new CleanedText( 'content', './a/text()' ),
+			new CleanedText( 'content', './q/text()' ),
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
@@ -452,4 +465,80 @@ class CleanerTest extends MediaWikiUnitTestCase {
 			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
+
+	/**
+	 * @dataProvider partOfContentProvider
+	 */
+	public function testCleanHtml_includePartsOfContent( string $html, array $cleaned ) {
+		$this->createCleaner( true );
+		$this->assertTextCleaned(
+			$cleaned,
+			$html
+		);
+	}
+
+	public static function partOfContentProvider(): array {
+		return [
+			'Link' => [
+				'text with <a>a link</a> in it',
+				[
+					new CleanedText( 'text with ', './text()[1]' ),
+					new Link(),
+					new CleanedText( 'a link', './a/text()' ),
+					new CleanedText( ' in it', './text()[2]' )
+				]
+			],
+			'Link with nested elements' => [
+				'text with <a>a <b>link</b></a> in it',
+				[
+					new CleanedText( 'text with ', './text()[1]' ),
+					new Link(),
+					new CleanedText( 'a ', './a/text()' ),
+					new CleanedText( 'link', './a/b/text()' ),
+					new CleanedText( ' in it', './text()[2]' )
+				]
+			],
+			'Link at the start of segment' => [
+				'<a>a link</a> at the start',
+				[
+					new Link(),
+					new CleanedText( 'a link', './a/text()' ),
+					new CleanedText( ' at the start', './text()' )
+				]
+			]
+		];
+	}
+
+	/**
+	 * @dataProvider noPartOfContentProvider
+	 */
+	public function testCleanHtml_dontIncludePartOfContent_noExtraContent( string $html, array $cleaned ) {
+		$this->assertTextCleaned(
+			$cleaned,
+			$html
+		);
+	}
+
+	public static function noPartOfContentProvider(): array {
+		return [
+			'Link' => [
+				'text with <a>a link</a> in it',
+				[
+					new CleanedText( 'text with ', './text()[1]' ),
+					new CleanedText( 'a link', './a/text()' ),
+					new CleanedText( ' in it', './text()[2]' )
+				]
+			],
+			'Link with nested elements' => [
+				'text with <a>a <b>link</b></a> in it',
+				[
+					new CleanedText( 'text with ', './text()[1]' ),
+					new CleanedText( 'a ', './a/text()' ),
+					new CleanedText( 'link', './a/b/text()' ),
+					new CleanedText( ' in it', './text()[2]' )
+				]
+			]
+		];
+	}
+
 }

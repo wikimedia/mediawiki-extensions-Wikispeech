@@ -106,6 +106,7 @@ class ApiWikispeechSegment extends ApiBase {
 		$segmentPageResponse = $segmentPageFactory
 			->setSegmentBreakingTags( $parameters['segmentbreakingtags'] )
 			->setRemoveTags( $rawRemoveTags )
+			->setPartOfContent( $parameters['part-of-content'] )
 			->setUseRevisionPropertiesCache( true )
 			->setRequirePageRevisionProperties( false )
 			->setUseSegmentsCache( true )
@@ -189,6 +190,10 @@ class ApiWikispeechSegment extends ApiBase {
 						'|',
 						$this->getConfig()->get( 'WikispeechSegmentBreakingTags' )
 					)
+				],
+				'part-of-content' => [
+					ParamValidator::PARAM_TYPE => 'boolean',
+					ParamValidator::PARAM_DEFAULT => false
 				],
 				'consumer-url' => [
 					ParamValidator::PARAM_TYPE => 'string'

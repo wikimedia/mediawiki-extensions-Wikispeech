@@ -240,6 +240,12 @@ class PlayerHooks implements
 			'label-message' => 'prefs-wikispeech-show-player',
 			'section' => 'wikispeech'
 		];
+		$preferences['wikispeechPartOfContent'] = [
+			'section' => 'wikispeech',
+			'type' => 'toggle',
+			'label-message' => 'prefs-wikispeech-part-of-content',
+			'help-message' => 'prefs-help-wikispeech-part-of-content'
+		];
 		$this->addVoicePreferences( $preferences, $voiceHandler );
 		$this->addSpeechRatePreferences( $preferences );
 	}

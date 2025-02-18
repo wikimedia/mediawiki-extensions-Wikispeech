@@ -32,7 +32,8 @@ function Storage() {
 		const page = mw.config.get( 'wgPageName' );
 		const options = {
 			action: 'wikispeech-segment',
-			page: page
+			page: page,
+			'part-of-content': mw.user.options.get( 'wikispeechPartOfContent' )
 		};
 		if ( mw.wikispeech.consumerMode ) {
 			options[ 'consumer-url' ] = window.location.origin +
@@ -917,6 +918,10 @@ function Storage() {
 	 */
 
 	this.getNodeForItem = function ( item ) {
+		if ( item.path === null ) {
+			return null;
+		}
+
 		// The path should be unambiguous, so just get the first
 		// matching node.
 		const contentSelector = mw.config.get( 'wgWikispeechContentSelector' );

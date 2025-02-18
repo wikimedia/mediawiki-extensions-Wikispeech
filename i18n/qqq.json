@@ -21,6 +21,8 @@
 	"prefs-wikispeech-speech-rate-percent": "Label for speech rate in the preferences dialog.",
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
 	"prefs-wikispeech-show-player": "Used in user preferences to always show the player where available",
+	"prefs-wikispeech-part-of-content": "Used in user preferences to enable extra information when reading certain elements.",
+	"prefs-help-wikispeech-part-of-content": "Used in user preferences to further explain enabling extra information when reading certain elements.\n\nSee also: {{msg-mw|prefs-wikispeech-part-of-content}}",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Notice in the preferences popup dialog. Tells the user that they need to reload the page for changes to take effect.",
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",
 	"right-wikispeech-read-lexicon": "{{doc-right|wikispeech-read-lexicon}}",
@@ -70,5 +72,6 @@
 	"wikispeech-edit-lexicon-speechoid-down": "Error message when the Speechoid service is down.",
 	"wikispeech-lexicon-sync-error": "Error message to ask the user if they want to overwrite local entry with speechoid entry since there is sync problems between the lexicons, such as different properties.",
 	"wikispeech-lexicon-sync-error-button": "Button for overwriting stuff",
-	"wikispeech-lexicon-sync-error-unidentified": "Throws an error if there is an unidentified error syncing the lexicon entries."
+	"wikispeech-lexicon-sync-error-unidentified": "Throws an error if there is an unidentified error syncing the lexicon entries.",
+	"wikispeech-poc-link": "The message to read before a link. Only used if the user has enabled extra information when reading certain elements."
 }

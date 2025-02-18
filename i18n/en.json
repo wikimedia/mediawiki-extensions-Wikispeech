@@ -15,6 +15,8 @@
 	"prefs-wikispeech-speech-rate-percent": "Speech rate (in percent)",
 	"prefs-wikispeech-enable": "Enable Wikispeech",
 	"prefs-wikispeech-show-player": "Always show player",
+	"prefs-wikispeech-part-of-content": "Read extra information for certain elements",
+	"prefs-help-wikispeech-part-of-content": "If enabled extra infromation will be read for elements like links. When this is enabled word highlighting is disabled.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Changes to preferences will take effect next time a page is loaded. To listen to the current page with the new preferences, reload the page after saving.",
 	"right-wikispeech-listen": "Listen to page",
 	"right-wikispeech-read-lexicon": "Read Wikispeech's lexicon",
@@ -64,5 +66,6 @@
 	"wikispeech-edit-lexicon-speechoid-down": "The pronunciation service is temporarily unavailable. Please try again later.",
 	"wikispeech-lexicon-sync-error": "The lexicons are out of sync. Either they contain different properties, or some entry may only exist in one of the lexicons. Would you like to overwrite the local entry to match Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Overwrite",
-	"wikispeech-lexicon-sync-error-unidentified": "An unidentified error occured when trying to sync lexicon entries."
+	"wikispeech-lexicon-sync-error-unidentified": "An unidentified error occured when trying to sync lexicon entries.",
+	"wikispeech-poc-link": "link:"
 }

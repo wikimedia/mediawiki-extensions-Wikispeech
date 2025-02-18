@@ -27,7 +27,10 @@ function Highlighter() {
 	 */
 
 	this.highlightUtterance = function ( utterance ) {
-		const textNodes = utterance.content.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) );
+		const textNodes = utterance.content
+			.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) )
+			// Remove nulls that were added for items without nodes.
+			.filter( ( item ) => item );
 		// Class name is documented above
 		// eslint-disable-next-line mediawiki/class-doc
 		const span = $( '<span>' )
@@ -109,6 +112,10 @@ function Highlighter() {
 	 */
 
 	this.startTokenHighlighting = function ( token ) {
+		if ( mw.user.options.get( 'wikispeechPartOfContent' ) ) {
+			return;
+		}
+
 		self.removeWrappers( '.ext-wikispeech-highlight-word' );
 		self.clearHighlightTokenTimer();
 		self.highlightToken( token );
@@ -125,6 +132,10 @@ function Highlighter() {
 	 */
 
 	this.highlightToken = function ( token ) {
+		if ( mw.user.options.get( 'wikispeechPartOfContent' ) ) {
+			return;
+		}
+
 		const span = $( '<span>' )
 			.addClass( 'ext-wikispeech-highlight-word' )
 			.get( 0 );

@@ -16,6 +16,7 @@
 	"apihelp-wikispeech-segment-param-page": "{{doc-apihelp-param|wikispeech-segment|page}}",
 	"apihelp-wikispeech-segment-param-removetags": "{{doc-apihelp-param|wikispeech-segment|removetags}}",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "{{doc-apihelp-param|wikispeech-segment|segmentbreakingtags}}",
+	"apihelp-wikispeech-segment-param-part-of-content": "{{doc-apihelp-param|wikispeech-segment|part-of-content}}",
 	"apihelp-wikispeech-segment-param-consumer-url": "{{doc-apihelp-param|wikispeech-segment|consumer-url}}",
 	"apihelp-wikispeech-segment-example-1": "{{doc-apihelp-example|wikispeech-segment}}",
 	"apihelp-wikispeech-segment-example-2": "{{doc-apihelp-example|wikispeech-segment}}",

@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Tests\Unit\Segment;
 
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\StandardSegmenter;
@@ -307,6 +308,48 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 		);
 	}
 
+	public function testSegmentSentences_cleanedContentHasLink_segmentsHaveLink() {
+		// Mocking of Link is required to not cause error:
+		// LogicException: Premature access to service container
+		$link = $this->createMock( Link::class );
+		$link->method( 'getString' )
+			->willReturn( ' link: ' );
+		$cleanedContent = [
+			new CleanedText( 'This has ' ),
+			$link,
+			new CleanedText( 'a link in it.' )
+		];
+
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
+
+		$this->assertSame(
+			'This has ',
+			$segments[0]->getContent()[0]->getString()
+		);
+		$this->assertInstanceOf( Link::class, $segments[0]->getContent()[1] );
+		$this->assertSame(
+			'a link in it.',
+			$segments[0]->getContent()[2]->getString()
+		);
+	}
+
+	public function testSegmentSentences_cleanedContentHasLinkAtStart_correctStartOffset() {
+		// Mocking of Link is required to not cause error:
+		// LogicException: Premature access to service container
+		$link = $this->createMock( Link::class );
+		$link->method( 'getString' )
+			->willReturn( ' link: ' );
+		$cleanedContent = [
+			$link,
+			new CleanedText( 'A link', './a/text()' ),
+			new CleanedText( ' at the start.', './text()' )
+		];
+
+		$segments = $this->segmenter->segmentSentences( $cleanedContent );
+
+		$this->assertSame( 0, $segments[0]->getStartOffset() );
+	}
+
 	public function testEvaluateHash_singleSentence_giveHash() {
 		// SHA256 of "Word 1 Word 2 Word 3."
 		$expectedHash = '4466ca9fbdfc6c9cf9c53de4e5e373d6b60d023338e9a9f9ff8e6ddaef36a3e4';
@@ -317,11 +360,12 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 		$this->assertSame( $expectedHash, $hash );
 	}
 
+	# TODO: These tests test the Cleaner and should be moved to CleanerTest.
 	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
 		$title = '<span>Page<span>';
 		$content = '<p>Content</p>';
 
-		$cleaner = new Cleaner( [], [] );
+		$cleaner = new Cleaner( [], [], false );
 		$cleanedText = $cleaner->cleanHtmlDom( $title, $content );
 
 		$this->assertEquals(
@@ -337,7 +381,7 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 	public function testCleanPage_titleContainsElements_giveTitleXpath() {
 		$title = '<i>Page</i>';
 
-		$cleaner = new Cleaner( [], [] );
+		$cleaner = new Cleaner( [], [], false );
 		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
 
 		$this->assertEquals(
@@ -349,7 +393,7 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 	public function testCleanPage_titleContainsNamespace_giveCleanedTextArray() {
 		$title = '<span>Namespace</span><span>:</span><span>Page</span>';
 
-		$cleaner = new Cleaner( [], [] );
+		$cleaner = new Cleaner( [], [], false );
 		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
 
 		$this->assertEquals(

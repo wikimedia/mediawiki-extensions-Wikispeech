@@ -43,6 +43,7 @@ QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 
 		contentSelector = '#mw-content-text';
 		mw.config.set( 'wgWikispeechContentSelector', contentSelector );
+		mw.user.options.set( 'wikispeechPartOfContent', false );
 
 		this.clock = sinon.useFakeTimers();
 	},
@@ -661,4 +662,24 @@ QUnit.test( 'getLastNodeInSelection(): end offset is zero, no sibling', function
 	const actualNode = selectionPlayer.getLastNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
+} );
+
+QUnit.test( 'isSelectionValid(): valid', function ( assert ) {
+	sinon.stub( selectionPlayer, 'isTextSelected' ).returns( true );
+	mw.wikispeech.test.util.setContentHtml(
+		'Utterance with selected text.'
+		//              [-----------]
+	);
+	const textNode = $( contentSelector ).contents().get( 0 );
+	const firstNode = $( contentSelector + ' selected' ).contents().get( 0 );
+	storage.getFirstTextNode.returns( firstNode );
+	const lastNode = $( contentSelector + ' selected' ).contents().get( 0 );
+	storage.getFirstTextNode.returns( lastNode );
+	storage.isNodeInUtterance.returns( true );
+	const selection = createMockedSelection( 15, textNode, 27 );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
+
+	const selectionValid = selectionPlayer.isSelectionValid();
+
+	assert.strictEqual( selectionValid, true );
 } );

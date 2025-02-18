@@ -9,11 +9,12 @@ namespace MediaWiki\Wikispeech\Segment;
  */
 
 /**
+ * @since 0.1.13 Change `$content` to array of `SegmentContent`
  * @since 0.1.10
  */
 class Segment {
 
-	/** @var CleanedText[] */
+	/** @var SegmentContent[] */
 	private $content;
 
 	/**
@@ -34,8 +35,9 @@ class Segment {
 	private $hash;
 
 	/**
+	 * @since 0.1.13 Change `$content` to array of `SegmentContent`
 	 * @since 0.1.10
-	 * @param CleanedText[] $content
+	 * @param SegmentContent[] $content
 	 * @param int|null $startOffset
 	 * @param int|null $endOffset
 	 * @param string|null $hash
@@ -53,26 +55,29 @@ class Segment {
 	}
 
 	/**
+	 * @since 0.1.13 Change return value to array of `SegmentContent`
 	 * @since 0.1.10
-	 * @return CleanedText[]
+	 * @return SegmentContent[]
 	 */
 	public function getContent(): array {
 		return $this->content;
 	}
 
 	/**
+	 * @since 0.1.13 Change `$content` to array of `SegmentContent`
 	 * @since 0.1.10
-	 * @param CleanedText[] $content
+	 * @param SegmentContent[] $content
 	 */
 	public function setContent( array $content ): void {
 		$this->content = $content;
 	}
 
 	/**
+	 * @since 0.1.13 Change `$content` to `SegmentContent`
 	 * @since 0.1.10
-	 * @param CleanedText $content
+	 * @param SegmentContent $content
 	 */
-	public function addContent( CleanedText $content ): void {
+	public function addContent( SegmentContent $content ): void {
 		$this->content[] = $content;
 	}
 

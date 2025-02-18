@@ -14,6 +14,6 @@ namespace MediaWiki\Wikispeech\Segment;
  *
  * @since 0.0.1
  */
-class SegmentBreak implements SegmentContent {
+class SegmentBreak extends SegmentContent {
 
 }

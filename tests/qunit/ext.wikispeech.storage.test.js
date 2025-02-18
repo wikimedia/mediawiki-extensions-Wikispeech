@@ -14,6 +14,7 @@ QUnit.module( 'ext.wikispeech.storage', QUnit.newMwEnvironment( {
 			$( '<div>' ).attr( 'id', 'content' )
 		);
 		mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
+		mw.user.options.set( 'wikispeechPartOfContent', false );
 		contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
 		storage.utterances = [
 			{
@@ -60,7 +61,8 @@ QUnit.test( 'loadUtterances()', ( assert ) => {
 		storage.api.get.firstCall.args[ 0 ],
 		{
 			action: 'wikispeech-segment',
-			page: 'Page'
+			page: 'Page',
+			'part-of-content': false
 		}
 	);
 	const expectedUtterances = [ {
@@ -103,7 +105,35 @@ QUnit.test( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
 		{
 			action: 'wikispeech-segment',
 			page: 'Page',
+			'part-of-content': false,
 			'consumer-url': 'https://consumer.url/w'
+		}
+	);
+} );
+
+QUnit.test( 'loadUtterances(): part of content enabled', ( assert ) => {
+	sinon.stub( storage, 'prepareUtterance' );
+	// eslint-disable-next-line no-jquery/no-parse-html-literal
+	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
+	mw.config.set( 'wgPageName', 'Page' );
+	mw.user.options.set( 'wikispeechPartOfContent', true );
+	const response = {
+		'wikispeech-segment': {
+			segments: [ {
+				content: []
+			} ]
+		}
+	};
+	storage.api.get.returns( $.Deferred().resolve( response ) );
+
+	storage.loadUtterances();
+
+	assert.deepEqual(
+		storage.api.get.firstCall.args[ 0 ],
+		{
+			action: 'wikispeech-segment',
+			page: 'Page',
+			'part-of-content': true
 		}
 	);
 } );
@@ -1404,4 +1434,12 @@ QUnit.test( 'getNodeForItem()', ( assert ) => {
 		textNode,
 		$( contentSelector ).contents().get( 0 )
 	);
+} );
+
+QUnit.test( 'getNodeForItem(): path is null', ( assert ) => {
+	const item = { path: null };
+
+	const textNode = storage.getNodeForItem( item );
+
+	assert.strictEqual( textNode, null );
 } );

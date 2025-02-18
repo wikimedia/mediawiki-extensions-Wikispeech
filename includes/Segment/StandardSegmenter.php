@@ -44,10 +44,10 @@ class StandardSegmenter extends Segmenter {
 		$this->segments = [];
 		$this->currentSegment = new Segment();
 		foreach ( $cleanedContent as $item ) {
-			if ( $item instanceof CleanedText ) {
-				$this->addContentsToCurrentSegment( $item );
-			} elseif ( $item instanceof SegmentBreak ) {
+			if ( $item instanceof SegmentBreak ) {
 				$this->finishSegment();
+			} elseif ( $item instanceof SegmentContent ) {
+				$this->addContentsToCurrentSegment( $item );
 			} else {
 				throw new RuntimeException( 'Unsupported instance of SegmentContent' );
 			}
@@ -66,17 +66,18 @@ class StandardSegmenter extends Segmenter {
 	 * with). When a sentence final string is found, it's sentence is
 	 * added to the $currentSegment.
 	 *
+	 * @since 0.1.13 `$content` replaces `$text`
 	 * @since 0.1.10
-	 * @param CleanedText $text The text to segment.
+	 * @param SegmentContent $content Has the text to segment.
 	 */
-	private function addContentsToCurrentSegment( CleanedText $text ) {
+	private function addContentsToCurrentSegment( SegmentContent $content ) {
 		$nextStartOffset = 0;
 		do {
-			$endOffset = $this->addContentToCurrentSegment( $text, $nextStartOffset );
+			$endOffset = $this->addContentToCurrentSegment( $content, $nextStartOffset );
 			// The earliest the next segments can start is one after
 			// the end of the current one.
 			$nextStartOffset = $endOffset + 1;
-		} while ( $nextStartOffset < mb_strlen( $text->getString() ) - 1 );
+		} while ( $nextStartOffset < mb_strlen( $content->getString() ) - 1 );
 	}
 
 	/**
@@ -88,53 +89,54 @@ class StandardSegmenter extends Segmenter {
 	 * start offset when the first text of a segment is added and end
 	 * offset when the last is.
 	 *
+	 * @since 0.1.13 `$content` replaces `$text`
 	 * @since 0.1.10
-	 * @param CleanedText $text The text to segment.
+	 * @param SegmentContent $content Has the text to segment.
 	 * @param int $startOffset The offset where the next sentence can
 	 *  start, at the earliest. If the sentence has leading
 	 *  whitespaces, this will be moved forward.
 	 * @return int The offset of the last character in the
 	 *   sentence. If the sentence didn't end yet, this is the last
-	 *   character of $text.
+	 *   character of $content.
 	 */
 	private function addContentToCurrentSegment(
-		CleanedText $text,
+		SegmentContent $content,
 		int $startOffset = 0
 	): int {
-		if ( $this->currentSegment->getStartOffset() === null ) {
+		if ( $this->currentSegment->getStartOffset() === null && $content instanceof CleanedText ) {
 			// Move the start offset ahead by the number of leading
 			// whitespaces. This means that whitespaces before or
 			// between segments aren't included.
 			$leadingWhitespacesLength = $this->getLeadingWhitespacesLength(
-				mb_substr( $text->getString(), $startOffset )
+				mb_substr( $content->getString(), $startOffset )
 			);
 			$startOffset += $leadingWhitespacesLength;
 		}
 		// Get the offset for the next sentence final character.
 		$endOffset = $this->getSentenceFinalOffset(
-			$text->getString(),
+			$content->getString(),
 			$startOffset
 		);
 		// If no sentence final character is found, add the rest of
 		// the text and remember that this segment isn't ended.
 		$ended = true;
 		if ( $endOffset === null ) {
-			$endOffset = mb_strlen( $text->getString() ) - 1;
+			$endOffset = mb_strlen( $content->getString() ) - 1;
 			$ended = false;
 		}
 		$sentence = mb_substr(
-			$text->getString(),
+			$content->getString(),
 			$startOffset,
 			$endOffset - $startOffset + 1
 		);
 		if ( $sentence !== '' && $sentence !== "\n" ) {
 			// Don't add `CleanedText`s with the empty string or only
 			// newline.
-			$sentenceText = new CleanedText(
-				$sentence,
-				$text->getPath()
-			);
-			$this->currentSegment->addContent( $sentenceText );
+			$sentenceContent = clone $content;
+			if ( $sentenceContent instanceof CleanedText ) {
+				$sentenceContent->setString( $sentence );
+			}
+			$this->currentSegment->addContent( $sentenceContent );
 			if ( $this->currentSegment->getStartOffset() === null ) {
 				// Record the start offset if this is the first text
 				// added to the segment.

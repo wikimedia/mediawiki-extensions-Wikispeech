@@ -19,6 +19,7 @@ use RuntimeException;
 use WANObjectCache;
 
 /**
+ * @since 0.1.13 Add `$partOfContent`
  * @since 0.1.10
  */
 class SegmentPageFactory {
@@ -65,6 +66,12 @@ class SegmentPageFactory {
 	 * @var string[]|null
 	 */
 	private $segmentBreakingTags = null;
+
+	/**
+	 * If true certain tags add extra content that is read before any text.
+	 * @var bool
+	 */
+	private $partOfContent = false;
 
 	/**
 	 * Required only when providing page content from a local wiki.
@@ -173,6 +180,17 @@ class SegmentPageFactory {
 		?array $removeTags
 	): SegmentPageFactory {
 		$this->removeTags = $removeTags;
+		return $this;
+	}
+
+	/**
+	 * @see SegmentPageFactory::$partOfContent
+	 * @since 0.1.13
+	 * @param bool $partOfContent
+	 * @return SegmentPageFactory $this
+	 */
+	public function setPartOfContent( bool $partOfContent ): SegmentPageFactory {
+		$this->partOfContent = $partOfContent;
 		return $this;
 	}
 
@@ -499,7 +517,7 @@ class SegmentPageFactory {
 		array $removeTags,
 		array $segmentBreakingTags
 	): array {
-		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags );
+		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags, $this->partOfContent );
 		return $cleaner->cleanHtmlDom( $displayTitle, $pageContent );
 	}
 }

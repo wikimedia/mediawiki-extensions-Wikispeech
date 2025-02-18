@@ -15,7 +15,7 @@ namespace MediaWiki\Wikispeech\Segment;
  * @since 0.0.1
  */
 
-class CleanedText implements SegmentContent {
+class CleanedText extends SegmentContent {
 	/**
 	 * The text content from the text node this was created from.
 	 *

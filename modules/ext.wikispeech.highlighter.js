@@ -29,12 +29,10 @@
 		 */
 
 		this.highlightUtterance = function ( utterance ) {
-			let textNodes, span;
-
-			textNodes = utterance.content.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) );
+			const textNodes = utterance.content.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) );
 			// Class name is documented above
 			// eslint-disable-next-line mediawiki/class-doc
-			span = $( '<span>' )
+			const span = $( '<span>' )
 				.addClass( self.utteranceHighlightingClass )
 				.get( 0 );
 			self.wrapTextNodes(
@@ -75,10 +73,8 @@
 			startOffset,
 			endOffset
 		) {
-			let $nodesToWrap, firstNode, i, lastNode, node;
-
-			$nodesToWrap = $();
-			firstNode = textNodes[ 0 ];
+			let $nodesToWrap = $();
+			const firstNode = textNodes[ 0 ];
 			if ( textNodes.length === 1 ) {
 				// If there is only one node that should be wrapped,
 				// split it twice; once for the start and once for the
@@ -92,13 +88,13 @@
 				// original node. Since we want the second half, we add
 				// the following node.
 				$nodesToWrap = $nodesToWrap.add( firstNode.nextSibling );
-				for ( i = 1; i < textNodes.length - 1; i++ ) {
-					node = textNodes[ i ];
+				for ( let i = 1; i < textNodes.length - 1; i++ ) {
+					const node = textNodes[ i ];
 					// Wrap all the nodes between first and last
 					// completely.
 					$nodesToWrap = $nodesToWrap.add( node );
 				}
-				lastNode = textNodes[ textNodes.length - 1 ];
+				const lastNode = textNodes[ textNodes.length - 1 ];
 				lastNode.splitText( endOffset + 1 );
 				$nodesToWrap = $nodesToWrap.add( lastNode );
 			}
@@ -131,12 +127,10 @@
 		 */
 
 		this.highlightToken = function ( token ) {
-			let span, textNodes, startOffset, endOffset;
-
-			span = $( '<span>' )
+			const span = $( '<span>' )
 				.addClass( 'ext-wikispeech-highlight-word' )
 				.get( 0 );
-			textNodes = token.items.map( ( item ) => {
+			const textNodes = token.items.map( ( item ) => {
 				let textNode;
 
 				if ( $( self.utteranceHighlightingSelector ).length ) {
@@ -150,8 +144,8 @@
 				}
 				return textNode;
 			} );
-			startOffset = token.startOffset;
-			endOffset = token.endOffset;
+			let startOffset = token.startOffset;
+			let endOffset = token.endOffset;
 			if (
 				$( self.utteranceHighlightingSelector ).length &&
 					token.items[ 0 ] === token.utterance.content[ 0 ]
@@ -198,13 +192,11 @@
 		 */
 
 		this.setHighlightTokenTimer = function ( token ) {
-			let currentTime, duration, nextToken;
-
-			currentTime = token.utterance.audio.currentTime * 1000;
+			const currentTime = token.utterance.audio.currentTime * 1000;
 			// The duration of the timer is the duration of the
 			// current token.
-			duration = token.endTime - currentTime;
-			nextToken = mw.wikispeech.storage.getNextToken( token );
+			const duration = token.endTime - currentTime;
+			const nextToken = mw.wikispeech.storage.getNextToken( token );
 			if ( nextToken ) {
 				self.highlightTokenTimer = window.setTimeout(
 					() => {
@@ -232,10 +224,8 @@
 		 */
 
 		this.removeWrappers = function ( wrapperSelector ) {
-			let parents, $span;
-
-			parents = [];
-			$span = $( wrapperSelector );
+			const parents = [];
+			const $span = $( wrapperSelector );
 			$span.each( function () {
 				parents.push( this.parentNode );
 			} );

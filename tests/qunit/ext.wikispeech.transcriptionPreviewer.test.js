@@ -56,18 +56,17 @@ QUnit.test( 'fetchAudio(): fetch audio from API', function ( assert ) {
 } );
 
 QUnit.test( 'play(): fetch new audio when not played before', function ( assert ) {
-	let promise, self;
 	this.transcriptionPreviewer.lastTranscription = null;
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'new transcription'
 	);
-	promise = $.Deferred().resolve().promise();
+	const promise = $.Deferred().resolve().promise();
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' ).returns( promise );
 
 	const done = this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
-	self = this;
+	const self = this;
 	promise.then( () => {
 		sinon.assert.calledOnce(
 			self.transcriptionPreviewer.$player.get( 0 ).play
@@ -81,19 +80,18 @@ QUnit.test( 'play(): fetch new audio when not played before', function ( assert 
 } );
 
 QUnit.test( 'play(): fetch new audio when no audio data', function ( assert ) {
-	let promise, self;
 	this.transcriptionPreviewer.lastTranscription = 'same transcription';
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'same transcription'
 	);
 	this.transcriptionPreviewer.$player.attr.returns( '' );
-	promise = $.Deferred().resolve().promise();
+	const promise = $.Deferred().resolve().promise();
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' ).returns( promise );
 
 	const done = this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
-	self = this;
+	const self = this;
 	promise.then( () => {
 		sinon.assert.calledOnce(
 			self.transcriptionPreviewer.$player.get( 0 ).play

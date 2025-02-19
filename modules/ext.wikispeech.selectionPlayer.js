@@ -11,9 +11,7 @@
 	 */
 
 	function SelectionPlayer() {
-		let self;
-
-		self = this;
+		const self = this;
 		self.previousEndUtterance = null;
 
 		/**
@@ -43,16 +41,14 @@
 		 */
 
 		this.isSelectionValid = function () {
-			let firstNode, firstTextNode, lastNode, lastTextNode;
-
 			if ( !self.isTextSelected() ) {
 				return false;
 			}
-			firstNode = self.getFirstNodeInSelection();
-			firstTextNode =
+			const firstNode = self.getFirstNodeInSelection();
+			const firstTextNode =
 				mw.wikispeech.storage.getFirstTextNode( firstNode, true );
-			lastNode = self.getLastNodeInSelection();
-			lastTextNode =
+			const lastNode = self.getLastNodeInSelection();
+			const lastTextNode =
 				mw.wikispeech.storage.getLastTextNode( lastNode, true );
 			if (
 				mw.wikispeech.storage.isNodeInUtterance( firstTextNode ) &&
@@ -84,11 +80,9 @@
 		 */
 
 		this.getFirstNodeInSelection = function () {
-			let selection, startRange, startNode, nodeBeforeActualNode;
-
-			selection = window.getSelection();
-			startRange = selection.getRangeAt( 0 );
-			startNode = startRange.startContainer;
+			const selection = window.getSelection();
+			const startRange = selection.getRangeAt( 0 );
+			const startNode = startRange.startContainer;
 			if (
 				startNode.nodeType === 3 &&
 					startRange.startOffset === startNode.textContent.length
@@ -98,7 +92,7 @@
 				// causes incorrect selections, when double clicking
 				// selects the start or end of a text node. See:
 				// https://bugzilla.mozilla.org/show_bug.cgi?id=1298845
-				nodeBeforeActualNode = startNode;
+				let nodeBeforeActualNode = startNode;
 				while ( !nodeBeforeActualNode.nextSibling ) {
 					nodeBeforeActualNode = nodeBeforeActualNode.parentNode;
 				}
@@ -118,14 +112,11 @@
 		 */
 
 		this.playSelection = function () {
-			let startRange, startNode, startOffset, startUtterance,
-				endRange, endNode, endOffset, endUtterance, selection,
-				firstSelectionNode, lastSelectionNode;
-
 			mw.wikispeech.player.playingSelection = true;
-			selection = window.getSelection();
-			startRange = selection.getRangeAt( 0 );
-			firstSelectionNode = self.getFirstNodeInSelection();
+			const selection = window.getSelection();
+			const startRange = selection.getRangeAt( 0 );
+			const firstSelectionNode = self.getFirstNodeInSelection();
+			let startOffset;
 			if (
 				firstSelectionNode !== startRange.startContainer ||
 					firstSelectionNode.nodeType === 1
@@ -141,12 +132,12 @@
 			} else {
 				startOffset = startRange.startOffset;
 			}
-			startNode =
+			const startNode =
 				mw.wikispeech.storage.getFirstTextNode(
 					firstSelectionNode,
 					true
 				);
-			startUtterance =
+			const startUtterance =
 				mw.wikispeech.storage.getStartUtterance(
 					startNode,
 					startOffset
@@ -168,9 +159,9 @@
 				startUtterance.audio
 			);
 
-			endRange = startRange;
-			endRange = selection.getRangeAt( selection.rangeCount - 1 );
-			lastSelectionNode = self.getLastNodeInSelection();
+			const endRange = selection.getRangeAt( selection.rangeCount - 1 );
+			const lastSelectionNode = self.getLastNodeInSelection();
+			let endOffset;
 			if (
 				lastSelectionNode !== endRange.endContainer ||
 					lastSelectionNode.nodeType === 1
@@ -179,12 +170,12 @@
 			} else {
 				endOffset = endRange.endOffset - 1;
 			}
-			endNode =
+			const endNode =
 				mw.wikispeech.storage.getLastTextNode(
 					lastSelectionNode,
 					true
 				);
-			endUtterance =
+			const endUtterance =
 				mw.wikispeech.storage.getEndUtterance( endNode, endOffset );
 			self.previousEndUtterance = endUtterance;
 			mw.wikispeech.storage.prepareUtterance(
@@ -225,11 +216,9 @@
 		 */
 
 		this.getLastNodeInSelection = function () {
-			let selection, endRange, endNode, nodeAfterActualNode;
-
-			selection = window.getSelection();
-			endRange = selection.getRangeAt( selection.rangeCount - 1 );
-			endNode = endRange.endContainer;
+			const selection = window.getSelection();
+			const endRange = selection.getRangeAt( selection.rangeCount - 1 );
+			const endNode = endRange.endContainer;
 			if (
 				endNode.nodeType === 3 &&
 					endRange.endOffset === 0
@@ -239,7 +228,7 @@
 				// selections, when double clicking selects the start
 				// or end of a text node. See:
 				// https://bugzilla.mozilla.org/show_bug.cgi?id=1298845
-				nodeAfterActualNode = endNode;
+				let nodeAfterActualNode = endNode;
 				while ( !nodeAfterActualNode.previousSibling ) {
 					nodeAfterActualNode = nodeAfterActualNode.parentNode;
 				}

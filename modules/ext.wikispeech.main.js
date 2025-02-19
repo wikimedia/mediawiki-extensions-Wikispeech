@@ -10,13 +10,9 @@
 	 */
 
 	function Main() {
-		let self;
-
-		self = this;
+		const self = this;
 
 		this.init = function () {
-			let $toggleVisibility;
-
 			if ( !self.enabledForNamespace() ) {
 				// TODO: This is only required for tests to run
 				// properly since namespace is checked at an earlier
@@ -36,7 +32,7 @@
 			mw.wikispeech.ui.init();
 			// Prepare action link.
 			// eslint-disable-next-line no-jquery/no-global-selector
-			$toggleVisibility = $( '.ext-wikispeech-listen a' );
+			const $toggleVisibility = $( '.ext-wikispeech-listen a' );
 			// Set label to hide message since the player is
 			// visible when loaded.
 			$toggleVisibility.text(
@@ -56,15 +52,15 @@
 		 */
 
 		this.toggleVisibility = function ( event ) {
-			let $toggleVisibility, toggleVisibilityMessage;
-
 			mw.wikispeech.ui.toggleVisibility();
+
+			let toggleVisibilityMessage;
 			if ( mw.wikispeech.ui.isShown() ) {
 				toggleVisibilityMessage = 'wikispeech-dont-listen';
 			} else {
 				toggleVisibilityMessage = 'wikispeech-listen';
 			}
-			$toggleVisibility = event.data;
+			const $toggleVisibility = event.data;
 			// Messages that can be used here:
 			// * wikispeech-listen
 			// * wikispeech-dont-listen
@@ -79,10 +75,8 @@
 		 */
 
 		this.enabledForNamespace = function () {
-			let validNamespaces, namespace;
-
-			validNamespaces = mw.config.get( 'wgWikispeechNamespaces' );
-			namespace = mw.config.get( 'wgNamespaceNumber' );
+			const validNamespaces = mw.config.get( 'wgWikispeechNamespaces' );
+			const namespace = mw.config.get( 'wgNamespaceNumber' );
 			return validNamespaces.indexOf( namespace ) >= 0;
 		};
 

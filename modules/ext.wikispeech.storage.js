@@ -11,14 +11,12 @@
 	 */
 
 	function Storage() {
-		let self, producerApiUrl;
-
-		self = this;
+		const self = this;
 		self.utterances = [];
 		self.utterancesLoaded = $.Deferred();
 
 		if ( mw.wikispeech.consumerMode ) {
-			producerApiUrl = mw.wikispeech.producerUrl + '/api.php';
+			const producerApiUrl = mw.wikispeech.producerUrl + '/api.php';
 			self.api = new mw.ForeignApi( producerApiUrl );
 		} else {
 			self.api = new mw.Api();
@@ -33,10 +31,8 @@
 		 */
 
 		this.loadUtterances = function ( window ) {
-			let page, options;
-
-			page = mw.config.get( 'wgPageName' );
-			options = {
+			const page = mw.config.get( 'wgPageName' );
+			const options = {
 				action: 'wikispeech-segment',
 				page: page
 			};
@@ -54,9 +50,6 @@
 					}
 				}
 			).done( ( data ) => {
-				let utterance, i, titleUtterance, firstNode,
-					leadingWhitespaces, offset;
-
 				mw.log( 'Segments received:', data );
 				self.utterances = data[ 'wikispeech-segment' ].segments;
 
@@ -65,17 +58,17 @@
 				// whitespaces around the title that do not appear in
 				// the display title. This leads to highlighting being
 				// wrong.
-				titleUtterance = self.utterances[ 0 ];
-				firstNode = self.getNodeForItem( titleUtterance.content[ 0 ] );
-				leadingWhitespaces = firstNode.textContent.match( /^\s+/ );
+				const titleUtterance = self.utterances[ 0 ];
+				const firstNode = self.getNodeForItem( titleUtterance.content[ 0 ] );
+				const leadingWhitespaces = firstNode.textContent.match( /^\s+/ );
 				if ( leadingWhitespaces ) {
-					offset = leadingWhitespaces[ 0 ].length;
+					const offset = leadingWhitespaces[ 0 ].length;
 					titleUtterance.startOffset += offset;
 					titleUtterance.endOffset += offset;
 				}
 
-				for ( i = 0; i < self.utterances.length; i++ ) {
-					utterance = self.utterances[ i ];
+				for ( let i = 0; i < self.utterances.length; i++ ) {
+					const utterance = self.utterances[ i ];
 					utterance.audio = $( '<audio>' ).get( 0 );
 				}
 				self.utterancesLoaded.resolve();
@@ -98,9 +91,7 @@
 		 */
 
 		this.prepareUtterance = function ( utterance ) {
-			let $audio, nextUtterance;
-
-			$audio = $( utterance.audio );
+			const $audio = $( utterance.audio );
 			if ( !utterance.request ) {
 				// Add event listener only once.
 				$audio.on( 'playing', () => {
@@ -119,7 +110,7 @@
 						);
 					}
 				} );
-				nextUtterance = self.getNextUtterance( utterance );
+				const nextUtterance = self.getNextUtterance( utterance );
 				if ( nextUtterance ) {
 					$audio.on( {
 						play: function () {
@@ -156,16 +147,14 @@
 		 */
 
 		this.loadAudio = function ( utterance ) {
-			let audioUrl, utteranceIndex;
-
-			utteranceIndex = self.utterances.indexOf( utterance );
+			const utteranceIndex = self.utterances.indexOf( utterance );
 			mw.log(
 				'Loading audio for utterance #' + utteranceIndex + ':',
 				utterance
 			);
 			return self.requestTts( utterance.hash, window )
 				.done( ( response ) => {
-					audioUrl = 'data:audio/ogg;base64,' +
+					const audioUrl = 'data:audio/ogg;base64,' +
 						response[ 'wikispeech-listen' ].audio;
 					mw.log(
 						'Setting audio url for: [' + utteranceIndex + ']',
@@ -191,11 +180,9 @@
 		 */
 
 		this.requestTts = function ( segmentHash, window ) {
-			let request, language, voice, options;
-
-			language = mw.config.get( 'wgPageContentLanguage' );
-			voice = mw.wikispeech.util.getUserVoice( language );
-			options = {
+			const language = mw.config.get( 'wgPageContentLanguage' );
+			const voice = mw.wikispeech.util.getUserVoice( language );
+			const options = {
 				action: 'wikispeech-listen',
 				lang: language,
 				revision: mw.config.get( 'wgRevisionId' ),
@@ -209,7 +196,7 @@
 				options[ 'consumer-url' ] = window.location.origin +
 					mw.config.get( 'wgScriptPath' );
 			}
-			request = self.api.get(
+			const request = self.api.get(
 				options,
 				{
 					beforeSend: function ( jqXHR, settings ) {
@@ -236,12 +223,11 @@
 		 */
 
 		this.addTokens = function ( utterance, responseTokens ) {
-			let i, token, startTime, searchOffset, responseToken;
-
 			utterance.tokens = [];
-			searchOffset = 0;
-			for ( i = 0; i < responseTokens.length; i++ ) {
-				responseToken = responseTokens[ i ];
+			let searchOffset = 0;
+			for ( let i = 0; i < responseTokens.length; i++ ) {
+				const responseToken = responseTokens[ i ];
+				let startTime;
 				if ( i === 0 ) {
 					// The first token in an utterance always start on
 					// time zero.
@@ -252,7 +238,7 @@
 					// end time of the previous one.
 					startTime = responseTokens[ i - 1 ].endtime;
 				}
-				token = {
+				const token = {
 					string: responseToken.orth,
 					startTime: startTime,
 					endTime: responseToken.endtime,
@@ -292,22 +278,16 @@
 			token,
 			searchOffset
 		) {
-			let startOffsetInUtteranceString,
-				endOffsetInUtteranceString, endOffsetForItem,
-				firstItemIndex, itemsBeforeStart, lastItemIndex,
-				itemsBeforeEnd, items, itemsBeforeStartLength,
-				itemsBeforeEndLength, utterance;
-
-			utterance = token.utterance;
-			items = [];
-			startOffsetInUtteranceString =
+			const utterance = token.utterance;
+			let items = [];
+			const startOffsetInUtteranceString =
 				self.getStartOffsetInUtteranceString(
 					token.string,
 					utterance.content,
 					items,
 					searchOffset
 				);
-			endOffsetInUtteranceString =
+			const endOffsetInUtteranceString =
 				startOffsetInUtteranceString +
 				token.string.length - 1;
 
@@ -316,7 +296,7 @@
 			// part of the token. To get only the ones that contain
 			// part of the token, the items that appear before the
 			// token are removed.
-			endOffsetForItem = 0;
+			let endOffsetForItem = 0;
 			items =
 				items.filter( ( item ) => {
 					endOffsetForItem += item.string.length;
@@ -328,11 +308,11 @@
 			// Calculate start and end offset for the token, in the
 			// text nodes it appears in, and add them to the
 			// token.
-			firstItemIndex =
+			const firstItemIndex =
 				utterance.content.indexOf( items[ 0 ] );
-			itemsBeforeStart =
+			const itemsBeforeStart =
 				utterance.content.slice( 0, firstItemIndex );
-			itemsBeforeStartLength = 0;
+			let itemsBeforeStartLength = 0;
 			itemsBeforeStart.forEach( ( item ) => {
 				itemsBeforeStartLength += item.string.length;
 			} );
@@ -342,12 +322,12 @@
 			if ( token.items[ 0 ] === utterance.content[ 0 ] ) {
 				token.startOffset += utterance.startOffset;
 			}
-			lastItemIndex =
+			const lastItemIndex =
 				utterance.content.indexOf(
 					mw.wikispeech.util.getLast( items )
 				);
-			itemsBeforeEnd = utterance.content.slice( 0, lastItemIndex );
-			itemsBeforeEndLength = 0;
+			const itemsBeforeEnd = utterance.content.slice( 0, lastItemIndex );
+			let itemsBeforeEndLength = 0;
 			itemsBeforeEnd.forEach( ( item ) => {
 				itemsBeforeEndLength += item.string.length;
 			} );
@@ -386,12 +366,11 @@
 			items,
 			searchOffset
 		) {
-			let concatenatedText, startOffsetInUtteranceString,
-				stringBeforeReplace;
+			let startOffsetInUtteranceString, stringBeforeReplace;
 
 			// The concatenation of the strings from items. Used to
 			// find tokens that span multiple text nodes.
-			concatenatedText = '';
+			let concatenatedText = '';
 			content.every( ( item ) => {
 				// Look through the items until we find a substring
 				// matching the token.
@@ -451,12 +430,10 @@
 		 */
 
 		this.getUtteranceByOffset = function ( utterance, offset ) {
-			let index;
-
 			if ( utterance === null ) {
 				return null;
 			}
-			index = self.utterances.indexOf( utterance );
+			const index = self.utterances.indexOf( utterance );
 			return self.utterances[ index + offset ];
 		};
 
@@ -485,10 +462,8 @@
 		 */
 
 		this.getNextToken = function ( originalToken ) {
-			let index, succeedingTokens;
-
-			index = originalToken.utterance.tokens.indexOf( originalToken );
-			succeedingTokens =
+			const index = originalToken.utterance.tokens.indexOf( originalToken );
+			const succeedingTokens =
 				originalToken.utterance.tokens.slice( index + 1 ).filter(
 					( token ) => !self.isSilent( token ) );
 			if ( succeedingTokens.length === 0 ) {
@@ -525,16 +500,14 @@
 		 */
 
 		this.getPreviousToken = function ( originalToken ) {
-			let index, precedingTokens, previousToken;
-
-			index = originalToken.utterance.tokens.indexOf( originalToken );
-			precedingTokens =
+			const index = originalToken.utterance.tokens.indexOf( originalToken );
+			const precedingTokens =
 				originalToken.utterance.tokens.slice( 0, index ).filter(
 					( token ) => !self.isSilent( token ) );
 			if ( precedingTokens.length === 0 ) {
 				return null;
 			} else {
-				previousToken = mw.wikispeech.util.getLast( precedingTokens );
+				const previousToken = mw.wikispeech.util.getLast( precedingTokens );
 				return previousToken;
 			}
 		};
@@ -548,10 +521,8 @@
 		 */
 
 		this.getLastToken = function ( utterance ) {
-			let nonSilentTokens, lastToken;
-
-			nonSilentTokens = utterance.tokens.filter( ( token ) => !self.isSilent( token ) );
-			lastToken = mw.wikispeech.util.getLast( nonSilentTokens );
+			const nonSilentTokens = utterance.tokens.filter( ( token ) => !self.isSilent( token ) );
+			const lastToken = mw.wikispeech.util.getLast( nonSilentTokens );
 			return lastToken;
 		};
 
@@ -572,8 +543,6 @@
 		 */
 
 		this.getFirstTextNode = function ( node, inUtterance ) {
-			let textNode, child, i;
-
 			if ( node.nodeType === 3 ) {
 				if ( !inUtterance || self.isNodeInUtterance( node ) ) {
 					// The given node is a text node. Check whether
@@ -582,10 +551,10 @@
 					return node;
 				}
 			} else {
-				for ( i = 0; i < node.childNodes.length; i++ ) {
+				for ( let i = 0; i < node.childNodes.length; i++ ) {
 					// Check children if the given node is an element.
-					child = node.childNodes[ i ];
-					textNode = self.getFirstTextNode( child, inUtterance );
+					const child = node.childNodes[ i ];
+					const textNode = self.getFirstTextNode( child, inUtterance );
 					if ( textNode ) {
 						return textNode;
 					}
@@ -605,16 +574,10 @@
 		 */
 
 		this.isNodeInUtterance = function ( node ) {
-			let utterance, item, i, j;
-
-			for (
-				i = 0;
-				i < self.utterances.length;
-				i++
-			) {
-				utterance = self.utterances[ i ];
-				for ( j = 0; j < utterance.content.length; j++ ) {
-					item = utterance.content[ j ];
+			for ( let i = 0; i < self.utterances.length; i++ ) {
+				const utterance = self.utterances[ i ];
+				for ( let j = 0; j < utterance.content.length; j++ ) {
+					const item = utterance.content[ j ];
 					if ( self.getNodeForItem( item ) === node ) {
 						return true;
 					}
@@ -641,15 +604,9 @@
 		 */
 
 		this.getStartUtterance = function ( node, offset ) {
-			let utterance, i, nextTextNode;
-
 			for ( ; offset < node.textContent.length; offset++ ) {
-				for (
-					i = 0;
-					i < self.utterances.length;
-					i++
-				) {
-					utterance = self.utterances[ i ];
+				for ( let i = 0; i < self.utterances.length; i++ ) {
+					const utterance = self.utterances[ i ];
 					if (
 						self.isPointInItems(
 							node,
@@ -664,7 +621,7 @@
 				}
 			}
 			// No match found in the given node, check the next one.
-			nextTextNode = self.getNextTextNode( node );
+			const nextTextNode = self.getNextTextNode( node );
 			return self.getStartUtterance( nextTextNode, 0 );
 		};
 
@@ -692,10 +649,8 @@
 			minOffset,
 			maxOffset
 		) {
-			let item, i, index;
-
 			if ( items.length === 1 ) {
-				item = items[ 0 ];
+				const item = items[ 0 ];
 				if (
 					self.getNodeForItem( item ) === node &&
 						offset >= minOffset &&
@@ -706,14 +661,14 @@
 					return true;
 				}
 			} else {
-				for ( i = 0; i < items.length; i++ ) {
-					item = items[ i ];
+				for ( let i = 0; i < items.length; i++ ) {
+					const item = items[ i ];
 					if ( self.getNodeForItem( item ) !== node ) {
 						// Skip items that don't match the node we're
 						// looking for.
 						continue;
 					}
-					index = items.indexOf( item );
+					const index = items.indexOf( item );
 					if ( index === 0 ) {
 						if ( offset >= minOffset ) {
 							// For the first node, check if position is
@@ -745,9 +700,7 @@
 		 */
 
 		this.getNextTextNode = function ( node ) {
-			let nextNode, textNode, child, i;
-
-			nextNode = node.nextSibling;
+			const nextNode = node.nextSibling;
 			if ( nextNode === null ) {
 				// No more text nodes, start traversing the DOM
 				// upward, checking sibling of ancestors.
@@ -755,9 +708,9 @@
 			} else if ( nextNode.nodeType === 1 ) {
 				// Node is an element, find the first text node in
 				// it's children.
-				for ( i = 0; i < nextNode.childNodes.length; i++ ) {
-					child = nextNode.childNodes[ i ];
-					textNode = self.getFirstTextNode( child );
+				for ( let i = 0; i < nextNode.childNodes.length; i++ ) {
+					const child = nextNode.childNodes[ i ];
+					const textNode = self.getFirstTextNode( child );
 					if ( textNode ) {
 						return textNode;
 					}
@@ -787,11 +740,9 @@
 		 */
 
 		this.getStartToken = function ( utterance, node, offset ) {
-			let token, i, nextTextNode;
-
 			for ( ; offset < node.textContent.length; offset++ ) {
-				for ( i = 0; i < utterance.tokens.length; i++ ) {
-					token = utterance.tokens[ i ];
+				for ( let i = 0; i < utterance.tokens.length; i++ ) {
+					const token = utterance.tokens[ i ];
 					if (
 						self.isPointInItems(
 							node,
@@ -807,7 +758,7 @@
 			}
 			// If token wasn't found in the given node, check the next
 			// one.
-			nextTextNode = self.getNextTextNode( node );
+			const nextTextNode = self.getNextTextNode( node );
 			return self.getStartToken( utterance, nextTextNode, 0 );
 		};
 
@@ -828,8 +779,6 @@
 		 */
 
 		this.getLastTextNode = function ( node, inUtterance ) {
-			let i, child, textNode;
-
 			if ( node.nodeType === 3 ) {
 				if ( !inUtterance || self.isNodeInUtterance( node ) ) {
 					// The given node is a text node. Check whether
@@ -838,10 +787,10 @@
 					return node;
 				}
 			} else {
-				for ( i = node.childNodes.length - 1; i >= 0; i-- ) {
+				for ( let i = node.childNodes.length - 1; i >= 0; i-- ) {
 					// Check children if the given node is an element.
-					child = node.childNodes[ i ];
-					textNode = self.getLastTextNode( child, inUtterance );
+					const child = node.childNodes[ i ];
+					const textNode = self.getLastTextNode( child, inUtterance );
 					if ( textNode ) {
 						return textNode;
 					}
@@ -867,15 +816,9 @@
 		 */
 
 		this.getEndUtterance = function ( node, offset ) {
-			let utterance, i, previousTextNode;
-
 			for ( ; offset >= 0; offset-- ) {
-				for (
-					i = 0;
-					i < self.utterances.length;
-					i++
-				) {
-					utterance = self.utterances[ i ];
+				for ( let i = 0; i < self.utterances.length; i++ ) {
+					const utterance = self.utterances[ i ];
 					if (
 						self.isPointInItems(
 							node,
@@ -889,7 +832,7 @@
 					}
 				}
 			}
-			previousTextNode = self.getPreviousTextNode( node );
+			const previousTextNode = self.getPreviousTextNode( node );
 			return self.getEndUtterance(
 				previousTextNode,
 				previousTextNode.textContent.length
@@ -905,19 +848,13 @@
 		 */
 
 		this.getPreviousTextNode = function ( node ) {
-			let previousNode, i, child, textNode;
-
-			previousNode = node.previousSibling;
+			const previousNode = node.previousSibling;
 			if ( previousNode === null ) {
 				return self.getPreviousTextNode( node.parentNode );
 			} else if ( previousNode.nodeType === 1 ) {
-				for (
-					i = previousNode.childNodes.length - 1;
-					i >= 0;
-					i--
-				) {
-					child = previousNode.childNodes[ i ];
-					textNode = self.getLastTextNode( child );
+				for ( let i = previousNode.childNodes.length - 1; i >= 0; i-- ) {
+					const child = previousNode.childNodes[ i ];
+					const textNode = self.getLastTextNode( child );
 					if ( textNode ) {
 						return textNode;
 					}
@@ -947,11 +884,9 @@
 		 */
 
 		this.getEndToken = function ( utterance, node, offset ) {
-			let token, i, previousTextNode;
-
 			for ( ; offset >= 0; offset-- ) {
-				for ( i = 0; i < utterance.tokens.length; i++ ) {
-					token = utterance.tokens[ i ];
+				for ( let i = 0; i < utterance.tokens.length; i++ ) {
+					const token = utterance.tokens[ i ];
 					if (
 						self.isPointInItems(
 							node,
@@ -965,7 +900,7 @@
 					}
 				}
 			}
-			previousTextNode = self.getPreviousTextNode( node );
+			const previousTextNode = self.getPreviousTextNode( node );
 			return self.getEndToken(
 				utterance,
 				previousTextNode,
@@ -984,19 +919,17 @@
 		 */
 
 		this.getNodeForItem = function ( item ) {
-			let node, result, contentSelector;
-
 			// The path should be unambiguous, so just get the first
 			// matching node.
-			contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
-			result = document.evaluate(
+			const contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
+			const result = document.evaluate(
 				item.path,
 				$( contentSelector ).get( 0 ),
 				null,
 				XPathResult.FIRST_ORDERED_NODE_TYPE,
 				null
 			);
-			node = result.singleNodeValue;
+			const node = result.singleNodeValue;
 			return node;
 		};
 	}

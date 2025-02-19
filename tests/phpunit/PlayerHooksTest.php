@@ -82,7 +82,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->hookContainer = $this->getServiceContainer()->getHookContainer();
 	}
 
-	public function testOnBeforePageDisplayLoadModules() {
+	public function testOnBeforePageDisplay_loadModulesAndConfig() {
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertContains( 'ext.wikispeech', $this->out->getModules() );
 		$this->assertTrue( $this->configLoaded() );
@@ -102,7 +102,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 			$config['wgWikispeechFeedbackPage'] == 'feedback';
 	}
 
-	public function testOnBeforePageDisplayDontLoadModulesIfWrongNamespace() {
+	public function testOnBeforePageDisplay_wrongNamespace_dontLoadModulesOrConfig() {
 		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
@@ -110,7 +110,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->configLoaded() );
 	}
 
-	public function testOnBeforePageDisplayDontLoadModulesIfWikispeechDisabled() {
+	public function testOnBeforePageDisplay_wikispeechDisabled_dontLoadModulesOrConfig() {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechEnable', false );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
@@ -119,7 +119,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->configLoaded() );
 	}
 
-	public function testOnBeforePageDisplayDontLoadModulesIfLackingRights() {
+	public function testOnBeforePageDisplay_userLacksRights_dontLoadModulesOrConfig() {
 		$this->permissionsManager
 			->overrideUserRightsForTesting( $this->out->getUser(), [] );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
@@ -128,7 +128,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->configLoaded() );
 	}
 
-	public function testOnBeforePageDisplayDontLoadModulesIfServerUrlInvalid() {
+	public function testOnBeforePageDisplay_serverUrlInvalid_dontLoadModulesOrConfig() {
 		$this->overrideConfigValue( 'WikispeechSpeechoidUrl', 'invalid-url' );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );
 		$this->assertNotContains( 'ext.wikispeech', $this->out->getModules() );
@@ -136,7 +136,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $this->configLoaded() );
 	}
 
-	public function testOnBeforePageDisplayDontLoadModulesIfRevisionNotAccessible() {
+	public function testOnBeforePageDisplay_revisionNotAccessible_dontLoadModulesOrConfig() {
 		$inaccessibleRevisionId = $this->out->getTitle()->getLatestRevId() - 1;
 		$this->out->setRevisionId( $inaccessibleRevisionId );
 		$this->hookContainer->run( 'BeforePageDisplay', [ &$this->out, $this->skin ] );

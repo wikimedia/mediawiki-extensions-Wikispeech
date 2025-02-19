@@ -33,7 +33,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		parent::setUp();
 	}
 
-	public function testSegmentText() {
+	public function testApiRequest_segmentText_returnSegments() {
 		$res = $this->doApiRequest( [
 			'action' => 'wikispeech-segment',
 			'page' => 'Talk:' . TITLE
@@ -102,7 +102,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		);
 	}
 
-	public function testRemoveTagsInvalidJsonThrowsException() {
+	public function testApiRequest_removeTagsInvalidJson_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not a valid JSON string.' );
 		$this->doApiRequest( [
@@ -112,7 +112,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRemoveTagsNotAnObjectThrowsException() {
+	public function testApiRequest_removeTagsNotAnObject_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
@@ -122,7 +122,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRemoveTagsInvalidValueThrowsException() {
+	public function testApiRequest_removeTagsInvalidValue_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
@@ -132,7 +132,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRemoveTagsJsonArrayThrowsException() {
+	public function testApiRequest_removeTagsJsonArray_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
@@ -142,7 +142,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRemoveTagsInvalidRuleThrowsException() {
+	public function testApiRequest_removeTagsInvalidRule_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( '"removetags" is not of a valid format.' );
 		$this->doApiRequest( [
@@ -152,7 +152,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
-	public function testInvalidPageThrowsException() {
+	public function testApiRequest_invalidPage_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
 			"The page you specified doesn't exist."
@@ -164,7 +164,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRequest_consumerUrlGivenNotInProducerMode_throwsException() {
+	public function testApiRequest_consumerUrlGivenNotInProducerMode_throwException() {
 		$this->overrideConfigValue( 'WikispeechProducerMode', false );
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( 'Requests from remote wikis are not allowed.' );

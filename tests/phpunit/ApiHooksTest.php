@@ -53,7 +53,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	 * If user lacks permissions, then return false
 	 * @return void
 	 */
-	public function testOnApiCheckCanExecute_UserLacksPermission() {
+	public function testOnApiCheckCanExecute_UserLacksPermission_returnFalse() {
 		$mockMessage = null;
 
 		$this->permissionsManager->overrideUserRightsForTesting( $this->user, [] );
@@ -66,7 +66,7 @@ class ApiHooksTest extends MediaWikiIntegrationTestCase {
 	 * If user has permissions, then return true
 	 * @return void
 	 */
-	public function testOnApiCheckCanExecute_UserHasPermission() {
+	public function testOnApiCheckCanExecute_UserHasPermission_returnTrue() {
 		$mockMessage = null;
 
 		$this->permissionsManager->overrideUserRightsForTesting( $this->user, [ 'wikispeech-listen' ] );

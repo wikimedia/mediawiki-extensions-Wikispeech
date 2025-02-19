@@ -40,7 +40,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testCleanTags() {
+	public function testCleanHtml_tags_cleanTags() {
 		$markedUpText = '<i>Element content</i>';
 		$expectedCleanedContent = [
 			new CleanedText( 'Element content', './i/text()' )
@@ -209,7 +209,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testDontAlterStringsWithoutMarkup() {
+	public function testCleanHtml_stringsWithoutMarkup_dontChange() {
 		$markedUpText = 'A string without any fancy markup.';
 		$expectedCleanedContent = [
 			new CleanedText( 'A string without any fancy markup.', './text()' )
@@ -220,7 +220,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testCleanNestedTags() {
+	public function testCleanHtml_nestedTags_remove() {
 		$markedUpText = '<i><b>Nested content</b></i>';
 		$expectedCleanedContent = [
 			new CleanedText( 'Nested content', './i/b/text()' )
@@ -228,37 +228,37 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testCleanEmptyElementTags() {
+	public function testCleanHtml_emptyElementTags_remove() {
 		$markedUpText = '<br />';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testRemoveTags() {
+	public function testCleanHtml_tagToRemove_remove() {
 		$markedUpText = '<del>removed tag </del>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testRemoveNestedTags() {
+	public function testCleanHtml_tagToRemoveWithChild_remove() {
 		$markedUpText = '<del><i>nested removed tag</i></del>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testRemoveDoubleNestedTags() {
+	public function testCleanHtml_tagToRemoveWithNestedChildren_remove() {
 		$markedUpText = '<del><i><b>double nested removed tag</b></i></del>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testRemoveTagsWithCertainClass() {
+	public function testCleanHtml_tagsToRemoveWithCertainClass_remove() {
 		$markedUpText = '<sup class="reference">Remove this.</sup>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testRemoveTagsWithOneOfClasses() {
+	public function testCleanHtml_tagsWithOneOfClasses_remove() {
 		$markedUpText = '<div class="toc">Remove this.</div><div class="thumb">Also this.</div>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testDontRemoveTagsWithoutCertainClass() {
+	public function testCleanHtml_tagsWithoutCertainClass_dontRemove() {
 		$markedUpText =
 			'<sup>I am not a reference.</sup><sup class="not-a-reference">Neither am I.</sup>';
 		$expectedCleanedContent = [
@@ -268,7 +268,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testDontRemoveTagsWhoseCriteriaAreFalse() {
+	public function testCleanHtml_tagsWhoseCriteriaAreFalse_dontRemove() {
 		$markedUpText = '<h2>Contents</h2>';
 		$expectedCleanedContent = [
 			new CleanedText( 'Contents', './h2/text()' )
@@ -276,7 +276,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testAddSegmentBreaksForTags() {
+	public function testCleanHtml_segmentBreakingTags_addSegmentBreaks() {
 		$markedUpText =
 			'prefix<a>content</a>suffix';
 		$expectedCleanedContents = [
@@ -292,7 +292,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testAddSegmentBreaksForEmptyTags() {
+	public function testCleanHtml_emptySegmentTags_addSegmentBreaks() {
 		$markedUpText =
 			'before<hr />after';
 		$expectedCleanedContents = [
@@ -306,7 +306,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testAddSegmentBreaksForNestedTags() {
+	public function testCleanHtml_nestedSegmentTags_addSegmentBreaksBefore() {
 		$markedUpText =
 			'<a>before<hr />after</a>';
 		$expectedCleanedContents = [
@@ -320,7 +320,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testAddSegmentBreaksAfterNestedTags() {
+	public function testCleanHtml_nestedSegmentBrakingTags_addSegmentBreaksAfter() {
 		$markedUpText =
 			'<a><hr />inside</a>after';
 		$expectedCleanedContents = [
@@ -334,7 +334,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testDontAddMultipleConsecutiveSegmentBreaks() {
+	public function testCleanHtml_consecutiveSegmentBreakingTags_dontAddMultipleConsecutiveSegmentBreaks() {
 		$markedUpText =
 			'before<hr /><hr />after';
 		$expectedCleanedContents = [
@@ -348,7 +348,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testDontAddSegmentBreaksAtStartOrEnd() {
+	public function testCleanHtml_onlySegmentBreakingTag_dontAddSegmentBreaksAtStartOrEnd() {
 		$markedUpText =
 			'<a>content</a>';
 		$expectedCleanedContents = [
@@ -360,13 +360,13 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testHandleMultipleClasses() {
+	public function testCleanHtml_tagsToRemoveWithMultipleClasses_remove() {
 		$markedUpText =
 			'<sup class="reference another-class">Remove this.</sup>';
 		$this->assertTextCleaned( [], $markedUpText );
 	}
 
-	public function testCleanNestedTagsWhereSomeAreRemovedAndSomeAreKept() {
+	public function testCleanHtml_nestedTagsWithSomeToRemove_onlyRemoveTagsToRemove() {
 		$markedUpText = '<i><b>not removed</b><del>removed</del></i>';
 		$expectedCleanedContent = [
 			new CleanedText( 'not removed', './i/b/text()' )
@@ -374,19 +374,19 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testHandleUtf8Characters() {
+	public function testCleanHtml_utf8Characters_keep() {
 		$markedUpText = '—';
 		$expectedCleanedContent = [ new CleanedText( '—', './text()' ) ];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testHandleHtmlEntities() {
+	public function testCleanHtml_htmlEntities_decode() {
 		$markedUpText = '6&#160;p.m';
 		$expectedCleanedContent = [ new CleanedText( '6 p.m', './text()' ) ];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testHandleNewlines() {
+	public function testCleanHtml_newlines_keep() {
 		$markedUpText = "<i>Keep this newline\n</i>";
 		$expectedCleanedContent = [
 			new CleanedText( "Keep this newline\n", './i/text()' )
@@ -394,7 +394,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testHandleEndTagFollowedByEmptyElementTag() {
+	public function testCleanHtml_emptyElementAfterEndTag_remove() {
 		$markedUpText = '<i>content</i><br />';
 		$expectedCleanedContent = [
 			new CleanedText( 'content', './i/text()' )
@@ -402,7 +402,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testHandleEmptyElementTagInsideElement() {
+	public function testCleanHtml_emptyElementTagInsideElement_remove() {
 		$markedUpText = '<i>content<br /></i>';
 		$expectedCleanedContent = [
 			new CleanedText( 'content', './i/text()' )
@@ -410,13 +410,13 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testIgnoreComments() {
+	public function testCleanHtml_comments_ignore() {
 		$markedUpText = '<!-- A comment. -->';
 		$expectedCleanedContent = [];
 		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
-	public function testGeneratePaths() {
+	public function testCleanHtml_tags_generatePaths() {
 		$markedUpText = '<i>level one<br /><b>level two</b></i>level zero';
 		$expectedCleanedContent = [
 			new CleanedText( 'level one', './i/text()' ),
@@ -429,7 +429,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testGeneratePathsNestedOfSameType() {
+	public function testCleanHtml_nestedTagsOfSameType_generatePaths() {
 		$markedUpText = '<i id="1">one<i id="2">two</i></i>';
 		$expectedCleanedContent = [
 			new CleanedText( 'one', './i/text()' ),
@@ -441,7 +441,7 @@ class CleanerTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function testGeneratePathsNodesOnSameLevel() {
+	public function testCleanHtml_nodesOnSameLevel_generatePaths() {
 		$markedUpText = 'level zero<br />also level zero';
 		$expectedCleanedContent = [
 			new CleanedText( 'level zero', './text()[1]' ),

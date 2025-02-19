@@ -116,7 +116,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		$this->cache->set( $cacheKey, 'sv_se_nst_lex:sv-se.nst' );
 	}
 
-	public function testGetEntry() {
+	public function testGetEntry_validLanguageAndWord_returnLexiconEntry() {
 		$connectorMock = $this->createMock( SpeechoidConnector::class );
 		$connectorMock
 			->expects( $this->once() )
@@ -132,7 +132,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 808499, $lexiconEntry->getItems()[1]->getProperties()['id'] );
 	}
 
-	public function testCreateEntry() {
+	public function testCreateEntry_validData_idAdded() {
 		$connectorMock = $this->createPartialMock(
 			SpeechoidConnector::class,
 			[ 'lookupLexiconEntries', 'addLexiconEntry' ]
@@ -179,7 +179,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		$this->assertSame( 808499, $item->getProperties()['id'] );
 	}
 
-	public function testUpdateEntry_identityNotGive_throwsException() {
+	public function testUpdateEntry_identityNotGive_throwException() {
 		$connectorMock = $this->createPartialMock(
 			SpeechoidConnector::class,
 			[ 'lookupLexiconEntries', 'updateLexiconEntry' ]

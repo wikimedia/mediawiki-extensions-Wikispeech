@@ -42,35 +42,35 @@ class ConfigurationValidatorTest extends MediaWikiIntegrationTestCase {
 		$this->validator = new ConfigurationValidator( $this->config, $this->logger );
 	}
 
-	public function testValidateConfigurationDontLoadModulesIfServerUrlInvalid() {
+	public function testValidateConfiguration_invalidServerUrl_returnFalse() {
 		$this->config->set( 'WikispeechSpeechoidUrl', 'invalid-url' );
 
 		$isValid = $this->validator->validateConfiguration();
 		$this->assertFalse( $isValid );
 	}
 
-	public function testValidateConfigurationFailsForNonIntegerTimeout() {
+	public function testValidateConfiguration_nonIntegerTimeout_returnFalse() {
 		$this->config->set( 'WikispeechSpeechoidResponseTimeoutSeconds', 'not-integer' );
 
 		$isValid = $this->validator->validateConfiguration();
 		$this->assertFalse( $isValid );
 	}
 
-	public function testValidateConfigurationFailsForNegativeUtteranceTimeToLiveDays(): void {
+	public function testValidateConfiguration_negativeUtteranceTimeToLiveDays_returnFalse(): void {
 		$this->config->set( 'WikispeechUtteranceTimeToLiveDays', -1 );
 
 		$isValid = $this->validator->validateConfiguration();
 		$this->assertFalse( $isValid );
 	}
 
-	public function testValidateConfigurationFailsForNullMinutesBetweenFlushJobs(): void {
+	public function testValidateConfiguration_nullMinutesBetweenFlushJobs_returnFalse(): void {
 		$this->config->set( 'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs', null );
 
 		$isValid = $this->validator->validateConfiguration();
 		$this->assertFalse( $isValid );
 	}
 
-	public function testValidateConfiguration_LogsWarningForNullFileBackendName(): void {
+	public function testValidateConfiguration_nullFileBackendName_logWarning(): void {
 		$this->config->set( 'WikispeechUtteranceFileBackendName', null );
 
 		$this->logger->expects( $this->once() )
@@ -81,14 +81,14 @@ class ConfigurationValidatorTest extends MediaWikiIntegrationTestCase {
 		$this->assertTrue( $isValid );
 	}
 
-	public function testValidateConfigurationFailsForForWrongUnitFileBackendContainerName(): void {
+	public function testValidateConfiguration_wrongUnitFileBackendContainerName_returnFalse(): void {
 		$this->config->set( 'WikispeechUtteranceFileBackendContainerName', null );
 
 		$isValid = $this->validator->validateConfiguration();
 		$this->assertFalse( $isValid );
 	}
 
-	public function testValidateConfiguration_ShouldAssertTrue() {
+	public function testValidateConfiguration_validConfiguration_returnTrue() {
 		$this->assertTrue( $this->validator->validateConfiguration() );
 	}
 

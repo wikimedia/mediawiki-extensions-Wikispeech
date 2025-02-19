@@ -57,7 +57,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		parent::tearDown();
 	}
 
-	public function testInvalidLanguage() {
+	public function testApiRequest_invalidLanguage_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
 			'"xx" is not a valid language. Should be one of: "ar", "en", "sv".'
@@ -69,7 +69,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 	}
 
-	public function testInvalidVoice() {
+	public function testApiRequest_invalidVoice_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
 			'"invalid-voice" is not a valid voice. Should be one of: "en-voice1", "en-voice2".'
@@ -85,7 +85,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	/**
 	 * @since 0.1.5
 	 */
-	public function testValidInputLength() {
+	public function testValidateParameters_validInputLength_noException() {
 		$api = $this->mockApi();
 		$api->validateParameters( [
 			'action' => 'wikispeech-listen',
@@ -121,7 +121,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 	/**
 	 * @since 0.1.5
 	 */
-	public function testInvalidInputLength() {
+	public function testValidateParameters_invalidInputLength_throwException() {
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage(
 			'Input text must not exceed 60 characters, but contained '
@@ -360,7 +360,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRequest_deletedRevision_throwsException() {
+	public function testRequest_deletedRevision_throwException() {
 		$testUser = self::getTestUser()->getUser();
 		$page = WikiPageTestUtil::addPage( 'Page', 'Old' );
 		$oldId = $page->getLatest();
@@ -384,7 +384,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRequest_suppressedRevision_throwsException() {
+	public function testRequest_suppressedRevision_throwException() {
 		// Set up a user with permission to supress revisions
 		$this->setGroupPermissions( [
 			'sysop' => [
@@ -423,7 +423,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		] );
 	}
 
-	public function testRequest_suppressedRevisionAllowedUser_throwsException() {
+	public function testRequest_suppressedRevisionAllowedUser_throwException() {
 		// Set up a user with permission to supress revisions and view the same
 		$this->setGroupPermissions( [
 			'sysop' => [
@@ -467,7 +467,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		);
 	}
 
-	public function testRequest_consumerUrlGivenNotInProducerMode_throwsException() {
+	public function testRequest_consumerUrlGivenNotInProducerMode_throwException() {
 		$this->overrideConfigValue( 'WikispeechProducerMode', false );
 		$this->expectException( ApiUsageException::class );
 		$this->expectExceptionMessage( 'Requests from remote wikis are not allowed.' );

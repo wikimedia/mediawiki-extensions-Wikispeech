@@ -26,7 +26,7 @@
 	 */
 
 	function getUserVoice( language ) {
-		var voiceKey, voice;
+		let voiceKey, voice;
 		voiceKey = getVoiceConfigVariable( language );
 		voice = mw.user.options.get( voiceKey );
 		return voice;

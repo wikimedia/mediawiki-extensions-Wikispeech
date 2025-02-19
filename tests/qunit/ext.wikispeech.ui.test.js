@@ -1,5 +1,5 @@
 ( function () {
-	var sandbox, contentSelector, selectionPlayer, player, ui;
+	let sandbox, contentSelector, selectionPlayer, player, ui;
 
 	QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 		beforeEach: function () {
@@ -27,7 +27,7 @@
 		}
 	} ) );
 
-	QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
+	QUnit.test( 'addControlPanel(): add help button if page is set', ( assert ) => {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechHelpPage', 'Help' );
 
@@ -41,7 +41,7 @@
 		);
 	} );
 
-	QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
+	QUnit.test( 'addControlPanel(): add feedback button', ( assert ) => {
 		mw.config.set( 'wgArticlePath', '/wiki/$1' );
 		mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
 
@@ -56,7 +56,7 @@
 	} );
 
 	QUnit.test( 'addEditButton(): add edit button with link to local URL', function () {
-		var addButton;
+		let addButton;
 
 		mw.config.set( 'wgPageContentLanguage', 'en' );
 		mw.config.set( 'wgArticleId', 1 );
@@ -79,7 +79,7 @@
 	} );
 
 	QUnit.test( 'addEditButton(): add edit button with link to given script URL', function () {
-		var addButton;
+		let addButton;
 
 		mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
 		mw.config.set( 'wgPageContentLanguage', 'en' );
@@ -101,8 +101,8 @@
 		);
 	} );
 
-	QUnit.test( 'showBufferingIconIfAudioIsLoading()', function () {
-		var mockAudio;
+	QUnit.test( 'showBufferingIconIfAudioIsLoading()', () => {
+		let mockAudio;
 
 		ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
 		mockAudio = { readyState: 0 };
@@ -112,8 +112,8 @@
 		sinon.assert.called( ui.$bufferingIcons.show );
 	} );
 
-	QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function () {
-		var mockAudio;
+	QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', () => {
+		let mockAudio;
 
 		ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
 		mockAudio = { readyState: 2 };
@@ -123,8 +123,8 @@
 		sinon.assert.notCalled( ui.$bufferingIcons.show );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function () {
-		var textNode, event;
+	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', () => {
+		let textNode, event;
 
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -179,8 +179,8 @@
 		} );
 	};
 
-	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function () {
-		var textNode, event;
+	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', () => {
+		let textNode, event;
 
 		mw.wikispeech.test.util.setContentHtml(
 			'<b style="direction: rtl">RTL text.</b>'
@@ -206,8 +206,8 @@
 		);
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function () {
-		var event;
+	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', () => {
+		let event;
 
 		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
@@ -220,8 +220,8 @@
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function () {
-		var notUtteranceNode, utteranceNode, event;
+	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', () => {
+		let notUtteranceNode, utteranceNode, event;
 
 		mw.wikispeech.test.util.setContentHtml(
 			'<del>Not an utterance.</del> An utterance.'
@@ -239,8 +239,8 @@
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function () {
-		var notUtteranceNode, utteranceNode, event;
+	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', () => {
+		let notUtteranceNode, utteranceNode, event;
 
 		mw.wikispeech.test.util.setContentHtml(
 			'An utterance. <del>Not an utterance.</del>'
@@ -258,8 +258,8 @@
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
-		var textNode, event;
+	QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', () => {
+		let textNode, event;
 
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -275,7 +275,7 @@
 		sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
 	} );
 
-	QUnit.test( 'addSelectionPlayer(): hide selection player initially', function ( assert ) {
+	QUnit.test( 'addSelectionPlayer(): hide selection player initially', ( assert ) => {
 		ui.addSelectionPlayer();
 
 		assert.false( ui.selectionPlayer.isVisible() );
@@ -291,7 +291,7 @@
 	 * @return {jQuery} The created keydown event.
 	 */
 	function createKeydownEvent( keyCode, modifiers ) {
-		var event = $.Event( 'keydown' );
+		const event = $.Event( 'keydown' );
 		event.which = keyCode;
 		event.ctrlKey = modifiers.indexOf( 'c' ) >= 0;
 		event.altKey = modifiers.indexOf( 'a' ) >= 0;
@@ -342,27 +342,27 @@
 		assert.strictEqual( player[ functionName ].called, true );
 	}
 
-	QUnit.test( 'Pressing keyboard shortcut for play/stop', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for play/stop', ( assert ) => {
 		testKeyboardShortcut( assert, 'playOrStop', 32, 'c' );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', ( assert ) => {
 		testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', ( assert ) => {
 		testKeyboardShortcut( assert, 'skipBackUtterance', 37, 'c' );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for skipping ahead word', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping ahead word', ( assert ) => {
 		testKeyboardShortcut( assert, 'skipAheadToken', 40, 'c' );
 	} );
 
-	QUnit.test( 'Pressing keyboard shortcut for skipping back word', function ( assert ) {
+	QUnit.test( 'Pressing keyboard shortcut for skipping back word', ( assert ) => {
 		testKeyboardShortcut( assert, 'skipBackToken', 38, 'c' );
 	} );
 
-	QUnit.test( 'toggleVisibility(): hide', function () {
+	QUnit.test( 'toggleVisibility(): hide', () => {
 		ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
 		ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
 		ui.$playerFooter = sinon.stub( $( '<div>' ) );
@@ -375,7 +375,7 @@
 		sinon.assert.called( ui.$playerFooter.hide );
 	} );
 
-	QUnit.test( 'toggleVisibility(): show', function () {
+	QUnit.test( 'toggleVisibility(): show', () => {
 		ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
 		ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
 		ui.$playerFooter = sinon.stub( $( '<div>' ) );

@@ -4,7 +4,7 @@
 	 * Loads wikispeech modules from producer
 	 */
 
-	var moduleUrl, api, optionsPage;
+	let moduleUrl, api, optionsPage;
 
 	/**
 	 * Add config variables from the producer's config.
@@ -14,9 +14,9 @@
 	 */
 
 	function addConfig() {
-		var config = require( './config.json' );
-		Object.keys( config ).forEach( function ( key ) {
-			var value = config[ key ];
+		const config = require( './config.json' );
+		Object.keys( config ).forEach( ( key ) => {
+			const value = config[ key ];
 			mw.config.set( 'wg' + key, value );
 		} );
 	}
@@ -33,7 +33,7 @@
 	 */
 
 	function getUserOptionsOnConsumer() {
-		var done;
+		let done;
 
 		done = $.Deferred();
 		if ( mw.user.isAnon() ) {
@@ -46,8 +46,8 @@
 				prop: 'wikitext',
 				formatversion: 2
 			} )
-				.done( function ( response ) {
-					var content, options;
+				.done( ( response ) => {
+					let content, options;
 
 					content = response.parse.wikitext;
 					try {
@@ -61,7 +61,7 @@
 					}
 					done.resolve( options );
 				} )
-				.fail( function ( error ) {
+				.fail( ( error ) => {
 					mw.log.warn(
 						'[Wikispeech] Failed to load user preferences page, ' +
 							'using defaults: ' + error
@@ -84,13 +84,13 @@
 	 */
 
 	function addUserOptions() {
-		var defaultOptions, done;
+		let defaultOptions, done;
 
 		done = $.Deferred();
 		defaultOptions = require( './default-user-options.json' );
-		getUserOptionsOnConsumer().done( function ( options ) {
-			Object.keys( defaultOptions ).forEach( function ( key ) {
-				var value;
+		getUserOptionsOnConsumer().done( ( options ) => {
+			Object.keys( defaultOptions ).forEach( ( key ) => {
+				let value;
 
 				// Take the option value from user page if it is set,
 				// otherwise use default.
@@ -116,7 +116,7 @@
 	 */
 
 	function writeUserOptionsToWikiPage( dialog ) {
-		var voice, optionsJson, options;
+		let voice, optionsJson, options;
 
 		options = require( './default-user-options.json' );
 		voice = dialog.getVoice();
@@ -129,10 +129,10 @@
 			text: optionsJson,
 			formatversion: 2
 		} )
-			.done( function () {
+			.done( () => {
 				mw.log( '[Wikispeech] Wrote user preferences to "' + optionsPage + '".' );
 			} )
-			.fail( function ( error ) {
+			.fail( ( error ) => {
 				mw.log.warn(
 					'[Wikispeech] Failed to write user preferences to "' +
 						optionsPage + '": ' + error
@@ -148,15 +148,15 @@
 	 */
 
 	function extendUi() {
-		var UserOptionsDialog, dialog, gadgetGroup;
+		let UserOptionsDialog, dialog, gadgetGroup;
 
 		UserOptionsDialog = require( './ext.wikispeech.userOptionsDialog.js' );
 		dialog = new UserOptionsDialog();
 		mw.wikispeech.ui.addWindow( dialog );
 		gadgetGroup = mw.wikispeech.ui.addToolbarGroup();
-		mw.wikispeech.ui.addButton( gadgetGroup, 'settings', function () {
+		mw.wikispeech.ui.addButton( gadgetGroup, 'settings', () => {
 			mw.wikispeech.ui.openWindow( dialog ).done(
-				function ( data ) {
+				( data ) => {
 					if ( data && data.action === 'save' ) {
 						writeUserOptionsToWikiPage( dialog );
 					}
@@ -164,7 +164,7 @@
 			);
 		} );
 		if ( mw.config.get( 'wgWikispeechAllowConsumerEdits' ) ) {
-			var producerApi = new mw.ForeignApi(
+			const producerApi = new mw.ForeignApi(
 				mw.wikispeech.producerUrl +
 					'/api.php'
 			);
@@ -174,8 +174,8 @@
 				meta: 'siteinfo',
 				siprop: 'general'
 			} )
-				.done( function ( response ) {
-					var producerInfo = response.query.general,
+				.done( ( response ) => {
+					const producerInfo = response.query.general,
 						scriptPath = producerInfo.server + producerInfo.script;
 					mw.wikispeech.ui.addEditButton( scriptPath );
 				} );
@@ -197,8 +197,8 @@
 		'oojs-ui.styles.icons-movement',
 		'oojs-ui.styles.icons-interactions',
 		'oojs-ui.styles.icons-editing-core'
-	] ).done( function () {
-		var namespace, userPage;
+	] ).done( () => {
+		let namespace, userPage;
 
 		addConfig();
 		namespace = mw.config.get( 'wgNamespaceIds' ).user;
@@ -206,8 +206,8 @@
 			.getPrefixedText();
 		optionsPage = userPage + '/Wikispeech_preferences';
 		api = new mw.Api();
-		addUserOptions().done( function () {
-			var parametersString = $.param( {
+		addUserOptions().done( () => {
+			const parametersString = $.param( {
 				lang: mw.config.get( 'wgUserLanguage' ),
 				skin: mw.config.get( 'skin' ),
 				raw: 1,
@@ -218,18 +218,18 @@
 				parametersString;
 			mw.log( '[Wikispeech] Loading wikispeech module from ' + moduleUrl );
 			mw.loader.getScript( moduleUrl )
-				.done( function () {
+				.done( () => {
 					mw.loader.using( 'ext.wikispeech' )
-						.done( function () {
-							mw.wikispeech.ui.ready.done( function () {
+						.done( () => {
+							mw.wikispeech.ui.ready.done( () => {
 								extendUi();
 							} );
 						} )
-						.fail( function ( error ) {
+						.fail( ( error ) => {
 							mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
 						} );
 				} )
-				.fail( function ( error ) {
+				.fail( ( error ) => {
 					mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
 				} );
 		} );

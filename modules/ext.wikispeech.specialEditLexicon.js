@@ -1,4 +1,4 @@
-var Previewer, $content, $transcription, $language, api, $previewPlayer,
+let Previewer, $content, $transcription, $language, api, $previewPlayer,
 	previewer, previewButton;
 
 Previewer = require( './ext.wikispeech.transcriptionPreviewer.js' );
@@ -13,12 +13,12 @@ previewer = new Previewer( $language, $transcription, api, $previewPlayer );
 previewButton = OO.ui.infuse( $content.find( '#ext-wikispeech-preview-button' ) );
 previewButton.on(
 	'click',
-	function () {
+	() => {
 		previewButton.setDisabled( true );
-		previewer.play().then( function () {
+		previewer.play().then( () => {
 			previewButton.setDisabled( false );
 		},
-		function () {
+		() => {
 			previewButton.setDisabled( false );
 		} );
 	}

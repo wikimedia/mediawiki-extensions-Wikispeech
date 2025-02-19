@@ -9,7 +9,7 @@
 		 */
 
 		this.setContentHtml = function ( html ) {
-			var contentSelector =
+			const contentSelector =
 				mw.config.get( 'wgWikispeechContentSelector' );
 			if ( $( '#qunit-fixture ' + contentSelector ).length ) {
 				$( '#qunit-fixture ' + contentSelector ).html( html );

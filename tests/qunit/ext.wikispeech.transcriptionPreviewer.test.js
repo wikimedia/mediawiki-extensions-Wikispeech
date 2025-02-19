@@ -1,12 +1,12 @@
 QUnit.module( 'ext.wikispeech.transcriptionPreviewer', QUnit.newMwEnvironment( {
 	beforeEach: function () {
-		var TranscriptionPreviewer = require(
+		const TranscriptionPreviewer = require(
 			'../../modules/ext.wikispeech.transcriptionPreviewer.js'
 		);
-		var $language = sinon.stub( $( '<select>' ) );
-		var $transcription = sinon.stub( $( '<input>' ) );
-		var api = sinon.stub( new mw.Api() );
-		var $player = sinon.stub( $( '<audio>' ) );
+		const $language = sinon.stub( $( '<select>' ) );
+		const $transcription = sinon.stub( $( '<input>' ) );
+		const api = sinon.stub( new mw.Api() );
+		const $player = sinon.stub( $( '<audio>' ) );
 		$player.get.returns( sinon.stub( $( '<audio>' ).get( 0 ) ) );
 		this.transcriptionPreviewer = new TranscriptionPreviewer(
 			$language,
@@ -18,20 +18,20 @@ QUnit.module( 'ext.wikispeech.transcriptionPreviewer', QUnit.newMwEnvironment( {
 } ) );
 
 QUnit.test( 'fetchAudio(): fetch audio from API', function ( assert ) {
-	var originalVoice = mw.user.options.get( 'wikispeechVoiceEn' );
+	const originalVoice = mw.user.options.get( 'wikispeechVoiceEn' );
 	mw.user.options.set( 'wikispeechVoiceEn', 'en-voice' );
 	this.transcriptionPreviewer.$language.val.returns( 'en' );
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'transcription'
 	);
-	var response = $.Deferred().resolve( {
+	const response = $.Deferred().resolve( {
 		'wikispeech-listen': {
 			audio: 'audio data'
 		}
 	} );
 	this.transcriptionPreviewer.api.get.returns( response );
 
-	var done = this.transcriptionPreviewer.fetchAudio();
+	const done = this.transcriptionPreviewer.fetchAudio();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.api.get );
 	sinon.assert.calledWithExactly(
@@ -56,7 +56,7 @@ QUnit.test( 'fetchAudio(): fetch audio from API', function ( assert ) {
 } );
 
 QUnit.test( 'play(): fetch new audio when not played before', function ( assert ) {
-	var promise, self;
+	let promise, self;
 	this.transcriptionPreviewer.lastTranscription = null;
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'new transcription'
@@ -64,11 +64,11 @@ QUnit.test( 'play(): fetch new audio when not played before', function ( assert 
 	promise = $.Deferred().resolve().promise();
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' ).returns( promise );
 
-	var done = this.transcriptionPreviewer.play();
+	const done = this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
 	self = this;
-	promise.then( function () {
+	promise.then( () => {
 		sinon.assert.calledOnce(
 			self.transcriptionPreviewer.$player.get( 0 ).play
 		);
@@ -81,7 +81,7 @@ QUnit.test( 'play(): fetch new audio when not played before', function ( assert 
 } );
 
 QUnit.test( 'play(): fetch new audio when no audio data', function ( assert ) {
-	var promise, self;
+	let promise, self;
 	this.transcriptionPreviewer.lastTranscription = 'same transcription';
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'same transcription'
@@ -90,11 +90,11 @@ QUnit.test( 'play(): fetch new audio when no audio data', function ( assert ) {
 	promise = $.Deferred().resolve().promise();
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' ).returns( promise );
 
-	var done = this.transcriptionPreviewer.play();
+	const done = this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
 	self = this;
-	promise.then( function () {
+	promise.then( () => {
 		sinon.assert.calledOnce(
 			self.transcriptionPreviewer.$player.get( 0 ).play
 		);
@@ -110,7 +110,7 @@ QUnit.test( 'play(): play same audio if transcription has not changed', function
 	this.transcriptionPreviewer.$player.attr.returns( 'not empty' );
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' );
 
-	var done = this.transcriptionPreviewer.play();
+	const done = this.transcriptionPreviewer.play();
 
 	sinon.assert.notCalled( this.transcriptionPreviewer.fetchAudio );
 	sinon.assert.calledOnce(
@@ -123,7 +123,7 @@ QUnit.test( 'play(): rewind before playing', function ( assert ) {
 	this.transcriptionPreviewer.$player.currentTime = 1.0;
 	this.transcriptionPreviewer.$player.attr.returns( 'not empty' );
 
-	var done = this.transcriptionPreviewer.play();
+	const done = this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.$player.prop );
 	sinon.assert.calledWithExactly(

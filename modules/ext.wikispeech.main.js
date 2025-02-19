@@ -10,12 +10,12 @@
 	 */
 
 	function Main() {
-		var self;
+		let self;
 
 		self = this;
 
 		this.init = function () {
-			var $toggleVisibility;
+			let $toggleVisibility;
 
 			if ( !self.enabledForNamespace() ) {
 				// TODO: This is only required for tests to run
@@ -56,7 +56,7 @@
 		 */
 
 		this.toggleVisibility = function ( event ) {
-			var $toggleVisibility, toggleVisibilityMessage;
+			let $toggleVisibility, toggleVisibilityMessage;
 
 			mw.wikispeech.ui.toggleVisibility();
 			if ( mw.wikispeech.ui.isShown() ) {
@@ -79,7 +79,7 @@
 		 */
 
 		this.enabledForNamespace = function () {
-			var validNamespaces, namespace;
+			let validNamespaces, namespace;
 
 			validNamespaces = mw.config.get( 'wgWikispeechNamespaces' );
 			namespace = mw.config.get( 'wgNamespaceNumber' );
@@ -89,8 +89,8 @@
 	}
 
 	mw.loader.using( [ 'mediawiki.api', 'ext.wikispeech' ] ).done(
-		function () {
-			var main = new Main();
+		() => {
+			const main = new Main();
 			main.init();
 		}
 	);

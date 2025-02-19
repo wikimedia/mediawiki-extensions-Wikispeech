@@ -8,7 +8,7 @@
 	 */
 
 	function Player() {
-		var self;
+		let self;
 
 		self = this;
 		self.currentUtterance = null;
@@ -55,7 +55,7 @@
 		 */
 
 		this.play = function () {
-			mw.wikispeech.storage.utterancesLoaded.done( function () {
+			mw.wikispeech.storage.utterancesLoaded.done( () => {
 				if ( !mw.wikispeech.selectionPlayer.playSelectionIfValid() ) {
 					self.playUtterance( mw.wikispeech.storage.utterances[ 0 ] );
 				}
@@ -101,12 +101,12 @@
 
 		this.prepareAndPlayUtterance = function ( utterance ) {
 			mw.wikispeech.storage.prepareUtterance( utterance )
-				.done( function () {
+				.done( () => {
 					if ( utterance === self.currentUtterance ) {
 						utterance.audio.play();
 					}
 				} )
-				.fail( function () {
+				.fail( () => {
 					if ( utterance !== self.currentUtterance ) {
 						// Only show dialog if the current utterance
 						// fails to load, to avoid multiple and less
@@ -114,7 +114,7 @@
 						return;
 					}
 					mw.wikispeech.ui.showLoadAudioError()
-						.done( function ( data ) {
+						.done( ( data ) => {
 							if ( !data || data.action === 'stop' ) {
 								// Stop both when "Stop" is clicked
 								// and when escape is pressed.
@@ -148,7 +148,7 @@
 		 */
 
 		this.skipAheadUtterance = function () {
-			var nextUtterance =
+			const nextUtterance =
 				mw.wikispeech.storage.getNextUtterance( self.currentUtterance );
 			if ( nextUtterance ) {
 				self.playUtterance( nextUtterance );
@@ -165,7 +165,7 @@
 		 */
 
 		this.skipBackUtterance = function () {
-			var previousUtterance, rewindThreshold, time;
+			let previousUtterance, rewindThreshold, time;
 
 			rewindThreshold = mw.config.get(
 				'wgWikispeechSkipBackRewindsThreshold'
@@ -197,13 +197,13 @@
 		 */
 
 		this.getCurrentToken = function () {
-			var tokens, currentTime, currentToken, tokensWithDuration,
+			let tokens, currentTime, currentToken, tokensWithDuration,
 				duration, lastTokenWithDuration;
 
 			currentToken = null;
 			tokens = self.currentUtterance.tokens;
 			currentTime = self.currentUtterance.audio.currentTime * 1000;
-			tokensWithDuration = tokens.filter( function ( token ) {
+			tokensWithDuration = tokens.filter( ( token ) => {
 				duration = token.endTime - token.startTime;
 				return duration > 0;
 			} );
@@ -214,10 +214,8 @@
 				// last token, the last token is the current.
 				currentToken = lastTokenWithDuration;
 			} else {
-				currentToken = tokensWithDuration.find( function ( token ) {
-					return token.startTime <= currentTime &&
-						token.endTime > currentTime;
-				} );
+				currentToken = tokensWithDuration.find( ( token ) => token.startTime <= currentTime &&
+						token.endTime > currentTime );
 			}
 			return currentToken;
 		};
@@ -230,7 +228,7 @@
 		 */
 
 		this.skipAheadToken = function () {
-			var nextToken;
+			let nextToken;
 
 			if ( self.isPlaying() ) {
 				nextToken =
@@ -254,7 +252,7 @@
 		 */
 
 		this.skipBackToken = function () {
-			var previousToken;
+			let previousToken;
 
 			if ( self.isPlaying() ) {
 				previousToken =

@@ -55,5 +55,8 @@
 	"wikispeech-skip-ahead": "Skip ahead",
 	"wikispeech-help": "Help",
 	"wikispeech-feedback": "Send feedback",
-	"wikispeech-edit-lexicon-btn": "Edit lexicon"
+	"wikispeech-edit-lexicon-btn": "Edit lexicon",
+	"wikispeech-edit-lexicon-no-item-found": "No lexicon entry found with ID '$1'. Please check the ID and try again.",
+	"wikispeech-edit-lexicon-transcription-unretrievable": "Could not get pronounciation from the pronounciation service",
+	"wikispeech-edit-lexicon-speechoid-down": "The pronunciation service is temporarily unavailable. Please try again later."
 }

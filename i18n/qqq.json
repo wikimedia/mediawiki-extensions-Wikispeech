@@ -59,5 +59,8 @@
 	"wikispeech-skip-ahead": "Wikispeech player button to skip ahead",
 	"wikispeech-help": "Wikispeech player button to get help",
 	"wikispeech-feedback": "Wikispeech player button to send feedback",
-	"wikispeech-edit-lexicon-btn": "Wikispeech player button to edit lexicon"
+	"wikispeech-edit-lexicon-btn": "Wikispeech player button to edit lexicon",
+	"wikispeech-edit-lexicon-no-item-found": "Error message when no lexicon item is found.",
+	"wikispeech-edit-lexicon-transcription-unretrievable": "Error message when a transcription could not be retrieved from speechoid service",
+	"wikispeech-edit-lexicon-speechoid-down": "Error message when the Speechoid service is down."
 }

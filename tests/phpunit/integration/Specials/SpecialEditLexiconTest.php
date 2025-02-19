@@ -2,6 +2,7 @@
 
 namespace MediaWiki\Wikispeech\Tests\Integration\Special;
 
+use Exception;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Request\FauxRequest;
@@ -11,6 +12,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use OutputPage;
 use PermissionsError;
 use SpecialPageTestBase;
 use User;
@@ -319,4 +321,23 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 
 		$this->executeSpecialPage();
 	}
+
+	public function testExecute_speechoidConnectorConnectionFails_showErrorPage() {
+		$this->setGroupPermissions( '*', 'wikispeech-edit-lexicon', true );
+
+		$outputPage = $this->createMock( OutputPage::class );
+		$outputPage->expects( $this->once() )
+			->method( 'showErrorPage' )
+			->with( 'error', 'wikispeech-edit-lexicon-speechoid-down' );
+
+		$page = $this->newSpecialPage();
+
+		$page->getContext()->setOutput( $outputPage );
+
+		$this->speechoidConnector->method( 'requestLexicons' )
+			->willThrowException( new Exception() );
+
+		$page->execute( '' );
+	}
+
 }

@@ -1,8 +1,8 @@
 # If you want to use non-default values in your config it's best to use an
 # override file rather than to edit this one. See
-# https://docs.docker.com/compose/multiple-compose-files/merge/ for details. 
+# https://docs.docker.com/compose/multiple-compose-files/merge/ for details.
 
-version: '3.8'
+version: "3.8"
 name: speechoid
 services:
   mariadb:
@@ -22,7 +22,7 @@ services:
   mishkal:
     image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-mishkal:2022-06-08-131001-production
     expose:
-     - "8080"
+      - "8080"
     entrypoint: ./interfaces/web/mishkal-webserver.py
 
   mary-tts:
@@ -47,18 +47,18 @@ services:
   symbolset:
     image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-symbolset:2024-02-28-153900-production
     expose:
-     - "8771"
+      - "8771"
     ports:
-     - 8771:8771
+      - 8771:8771
 
   pronlex:
     image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-pronlex:2024-02-28-153924-production
     expose:
       - "8787"
     # environment:
-      # If this is set, Pronlex will connect to this MariaDB database.
-      # If this NOT is set, Pronlex will use built in SQLite database.
-      # - PRONLEX_MARIADB_URI=speechoid:password@tcp(wikispeech-tts-pronlex:3306)
+    # If this is set, Pronlex will connect to this MariaDB database.
+    # If this NOT is set, Pronlex will use built in SQLite database.
+    # - PRONLEX_MARIADB_URI=speechoid:password@tcp(wikispeech-tts-pronlex:3306)
     volumes:
       - ./compose-files/wait-for-it.sh:/srv/compose/wait-for-it.sh
       - ./compose-files/pronlex-entrypoint.sh:/srv/compose/entrypoint.sh

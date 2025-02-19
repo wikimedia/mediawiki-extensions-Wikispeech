@@ -1,9 +1,11 @@
 {
+	"root": true,
 	"extends": [
+		"../../modules/.eslintrc.json",
 		"wikimedia/qunit"
 	],
 	"globals": {
-		"sinon": false
+		"sinon": "readonly"
 	},
 	"rules": {
 		"no-jquery/no-global-selector": "off"

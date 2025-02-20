@@ -9,7 +9,6 @@
 		"commonjs": true
 	},
 	"rules": {
-		"compat/compat": "warn",
-		"prefer-const": "warn"
+		"compat/compat": "warn"
 	}
 }

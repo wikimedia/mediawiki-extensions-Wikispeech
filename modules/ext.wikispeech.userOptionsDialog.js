@@ -32,13 +32,10 @@
 	];
 
 	UserOptionsDialog.prototype.initialize = function () {
-		let panel, content, voiceFieldset, speechRateFieldset,
-			speechRateField, notice, noticeFieldset;
-
 		UserOptionsDialog.super.prototype.initialize.apply( self );
-		panel = new OO.ui.PanelLayout( { padded: true, expanded: false } );
-		content = new OO.ui.FieldsetLayout();
-		voiceFieldset = self.addVoiceFieldset();
+		const panel = new OO.ui.PanelLayout( { padded: true, expanded: false } );
+		const content = new OO.ui.FieldsetLayout();
+		const voiceFieldset = self.addVoiceFieldset();
 
 		// Add input field for speech rate, shown in percent.
 		self.speechRateInput = new OO.ui.NumberInputWidget( {
@@ -46,19 +43,19 @@
 			step: 25,
 			value: mw.user.options.get( 'wikispeechSpeechRate' ) * 100
 		} );
-		speechRateFieldset = new OO.ui.FieldsetLayout( {
+		const speechRateFieldset = new OO.ui.FieldsetLayout( {
 			label: mw.msg( 'prefs-wikispeech-speech-rate-percent' )
 		} );
-		speechRateField = new OO.ui.FieldLayout( self.speechRateInput );
+		const speechRateField = new OO.ui.FieldLayout( self.speechRateInput );
 		speechRateFieldset.addItems( [ speechRateField ] );
 
 		// Add a notice about needing to reload the page before
 		// preferences kick in.
-		notice = new OO.ui.MessageWidget( {
+		const notice = new OO.ui.MessageWidget( {
 			type: 'notice',
 			label: mw.msg( 'wikispeech-notice-prefs-apply-on-next-page-load' )
 		} );
-		noticeFieldset = new OO.ui.FieldsetLayout();
+		const noticeFieldset = new OO.ui.FieldsetLayout();
 		noticeFieldset.addItems( [ new OO.ui.FieldLayout( notice ) ] );
 
 		content.addItems( [
@@ -82,12 +79,9 @@
 	 */
 
 	UserOptionsDialog.prototype.addVoiceFieldset = function () {
-		let voices, languageItems, languageCodes, voiceItems,
-			fieldset, voiceField, languageField;
-
-		voices = mw.config.get( 'wgWikispeechVoices' );
-		languageItems = [];
-		languageCodes = Object.keys( voices );
+		const voices = mw.config.get( 'wgWikispeechVoices' );
+		const languageItems = [];
+		const languageCodes = Object.keys( voices );
 		languageCodes.sort();
 		languageCodes.forEach( ( language ) => {
 			languageItems.push(
@@ -130,14 +124,13 @@
 		self.voiceSelect = new OO.ui.DropdownWidget();
 		// Update the voice items when language is selected.
 		self.languageSelect.getMenu().on( 'select', ( item ) => {
-			let language, currentVoice;
-			voiceItems = [
+			const voiceItems = [
 				new OO.ui.MenuOptionWidget( {
 					data: '',
 					label: mw.msg( 'default' )
 				} )
 			];
-			language = item.data;
+			const language = item.data;
 			voices[ language ].forEach( ( voice ) => {
 				voiceItems.push(
 					new OO.ui.MenuOptionWidget( {
@@ -148,7 +141,7 @@
 			} );
 			self.voiceSelect.getMenu().clearItems();
 			self.voiceSelect.getMenu().addItems( voiceItems );
-			currentVoice = util.getUserVoice( language );
+			const currentVoice = util.getUserVoice( language );
 			self.voiceSelect.getMenu().selectItemByData( currentVoice );
 		} );
 		// Select the language for the current page, since that is
@@ -157,14 +150,14 @@
 			mw.config.get( 'wgPageContentLanguage' )
 		);
 
-		fieldset = new OO.ui.FieldsetLayout(
+		const fieldset = new OO.ui.FieldsetLayout(
 			{ label: mw.msg( 'prefs-wikispeech-voice' ) }
 		);
-		languageField = new OO.ui.FieldLayout(
+		const languageField = new OO.ui.FieldLayout(
 			self.languageSelect,
 			{ label: mw.msg( 'wikispeech-language' ) }
 		);
-		voiceField = new OO.ui.FieldLayout(
+		const voiceField = new OO.ui.FieldLayout(
 			self.voiceSelect,
 			{ label: mw.msg( 'prefs-wikispeech-voice' ) }
 		);
@@ -199,11 +192,9 @@
 	 */
 
 	UserOptionsDialog.prototype.getVoice = function () {
-		let language, voiceVariable, voice;
-
-		language = self.languageSelect.getMenu().findSelectedItem().data;
-		voiceVariable = util.getVoiceConfigVariable( language );
-		voice = self.voiceSelect.getMenu().findSelectedItem().data;
+		const language = self.languageSelect.getMenu().findSelectedItem().data;
+		const voiceVariable = util.getVoiceConfigVariable( language );
+		const voice = self.voiceSelect.getMenu().findSelectedItem().data;
 		return { variable: voiceVariable, voice: voice };
 	};
 

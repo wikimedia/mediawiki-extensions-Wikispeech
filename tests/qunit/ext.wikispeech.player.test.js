@@ -254,8 +254,6 @@
 	} );
 
 	QUnit.test( 'getCurrentToken()', ( assert ) => {
-		let token;
-
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -275,14 +273,12 @@
 		storage.utterancesLoaded.resolve();
 		player.currentUtterance = storage.utterances[ 0 ];
 
-		token = player.getCurrentToken();
+		const token = player.getCurrentToken();
 
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): get first token', ( assert ) => {
-		let token;
-
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -301,14 +297,12 @@
 		storage.utterances[ 0 ].audio.currentTime = 0.1;
 		player.currentUtterance = storage.utterances[ 0 ];
 
-		token = player.getCurrentToken();
+		const token = player.getCurrentToken();
 
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): get the last token', ( assert ) => {
-		let token;
-
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -327,14 +321,12 @@
 		storage.utterances[ 0 ].audio.currentTime = 2.1;
 		player.currentUtterance = storage.utterances[ 0 ];
 
-		token = player.getCurrentToken();
+		const token = player.getCurrentToken();
 
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 2 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): get the last token when current time is equal to last tokens end time', ( assert ) => {
-		let token;
-
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -349,14 +341,12 @@
 		storage.utterances[ 0 ].audio.currentTime = 2.0;
 		player.currentUtterance = storage.utterances[ 0 ];
 
-		token = player.getCurrentToken();
+		const token = player.getCurrentToken();
 
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
 	QUnit.test( 'getCurrentToken(): ignore tokens with no duration', ( assert ) => {
-		let token;
-
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -375,7 +365,7 @@
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		player.currentUtterance = storage.utterances[ 0 ];
 
-		token = player.getCurrentToken();
+		const token = player.getCurrentToken();
 
 		assert.strictEqual(
 			token,
@@ -384,8 +374,6 @@
 	} );
 
 	QUnit.test( 'getCurrentToken(): give correct token if there are tokens with no duration', ( assert ) => {
-		let token;
-
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -404,7 +392,7 @@
 		storage.utterances[ 0 ].audio.currentTime = 1.1;
 		player.currentUtterance = storage.utterances[ 0 ];
 
-		token = player.getCurrentToken();
+		const token = player.getCurrentToken();
 
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 2 ] );
 	} );
@@ -481,9 +469,7 @@
 	} );
 
 	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', ( assert ) => {
-		let currentUtterance, previousUtterance;
-
-		previousUtterance = storage.utterances[ 0 ];
+		const previousUtterance = storage.utterances[ 0 ];
 		previousUtterance.tokens = [
 			{
 				startTime: 0,
@@ -494,7 +480,7 @@
 				endTime: 2000
 			}
 		];
-		currentUtterance = storage.utterances[ 1 ];
+		const currentUtterance = storage.utterances[ 1 ];
 		currentUtterance.tokens = [
 			{
 				startTime: 0,

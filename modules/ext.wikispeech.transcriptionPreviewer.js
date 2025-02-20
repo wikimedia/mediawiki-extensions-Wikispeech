@@ -31,11 +31,11 @@ function TranscriptionPreviewer(
  *  audio was not present.
  */
 TranscriptionPreviewer.prototype.play = function () {
-	let transcription, self, promise;
-	transcription = this.$transcription.val();
+	const transcription = this.$transcription.val();
 	// Rewind in case it is already playing. Just calling play() is not enought to play from start.
 	this.$player.prop( 'currentTime', 0 );
-	self = this;
+	const self = this;
+	let promise;
 	if ( transcription !== this.lastTranscription || !this.$player.attr( 'src' ) ) {
 		promise = this.fetchAudio().then( () => {
 			self.$player.get( 0 ).play();
@@ -56,13 +56,12 @@ TranscriptionPreviewer.prototype.play = function () {
  *  if there was an error.
  */
 TranscriptionPreviewer.prototype.fetchAudio = function () {
-	let language, voice, transcription, self, message, title, request;
-	language = this.$language.val();
-	voice = util.getUserVoice( language );
-	transcription = this.$transcription.val();
+	const language = this.$language.val();
+	const voice = util.getUserVoice( language );
+	const transcription = this.$transcription.val();
 	mw.log( 'Fetching transcription preview for (' + language + '): ' + transcription );
-	self = this;
-	request = this.api.get( {
+	const self = this;
+	const request = this.api.get( {
 		action: 'wikispeech-listen',
 		lang: language,
 		ipa: transcription,
@@ -73,8 +72,8 @@ TranscriptionPreviewer.prototype.fetchAudio = function () {
 	} ).fail( ( code, result ) => {
 		self.$player.attr( 'src', '' );
 		mw.log.error( 'Failed to synthesize:', code, result );
-		message = result.error.info;
-		title = mw.msg( 'wikispeech-error-generate-preview-title' );
+		const message = result.error.info;
+		const title = mw.msg( 'wikispeech-error-generate-preview-title' );
 		OO.ui.alert( message, { title: title, size: 'medium' } );
 	} );
 

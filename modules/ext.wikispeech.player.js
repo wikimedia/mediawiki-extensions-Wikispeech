@@ -8,9 +8,7 @@
 	 */
 
 	function Player() {
-		let self;
-
-		self = this;
+		const self = this;
 		self.currentUtterance = null;
 
 		/**
@@ -165,12 +163,10 @@
 		 */
 
 		this.skipBackUtterance = function () {
-			let previousUtterance, rewindThreshold, time;
-
-			rewindThreshold = mw.config.get(
+			const rewindThreshold = mw.config.get(
 				'wgWikispeechSkipBackRewindsThreshold'
 			);
-			time = self.currentUtterance.audio.currentTime;
+			const time = self.currentUtterance.audio.currentTime;
 			if (
 				time > rewindThreshold ||
 					self.currentUtterance === mw.wikispeech.storage.utterances[ 0 ]
@@ -182,7 +178,7 @@
 				// scales with speech rate.
 				self.currentUtterance.audio.currentTime = 0;
 			} else {
-				previousUtterance =
+				const previousUtterance =
 					mw.wikispeech.storage.getPreviousUtterance(
 						self.currentUtterance
 					);
@@ -197,17 +193,14 @@
 		 */
 
 		this.getCurrentToken = function () {
-			let tokens, currentTime, currentToken, tokensWithDuration,
-				duration, lastTokenWithDuration;
-
-			currentToken = null;
-			tokens = self.currentUtterance.tokens;
-			currentTime = self.currentUtterance.audio.currentTime * 1000;
-			tokensWithDuration = tokens.filter( ( token ) => {
-				duration = token.endTime - token.startTime;
+			let currentToken = null;
+			const tokens = self.currentUtterance.tokens;
+			const currentTime = self.currentUtterance.audio.currentTime * 1000;
+			const tokensWithDuration = tokens.filter( ( token ) => {
+				const duration = token.endTime - token.startTime;
 				return duration > 0;
 			} );
-			lastTokenWithDuration =
+			const lastTokenWithDuration =
 				mw.wikispeech.util.getLast( tokensWithDuration );
 			if ( currentTime === lastTokenWithDuration.endTime ) {
 				// If the current time is equal to the end time of the
@@ -228,10 +221,8 @@
 		 */
 
 		this.skipAheadToken = function () {
-			let nextToken;
-
 			if ( self.isPlaying() ) {
-				nextToken =
+				const nextToken =
 					mw.wikispeech.storage.getNextToken( self.getCurrentToken() );
 				if ( !nextToken ) {
 					self.skipAheadUtterance();
@@ -252,10 +243,8 @@
 		 */
 
 		this.skipBackToken = function () {
-			let previousToken;
-
 			if ( self.isPlaying() ) {
-				previousToken =
+				let previousToken =
 					mw.wikispeech.storage.getPreviousToken( self.getCurrentToken() );
 				if ( !previousToken ) {
 					self.skipBackUtterance();

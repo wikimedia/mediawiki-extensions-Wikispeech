@@ -56,13 +56,11 @@
 	} );
 
 	QUnit.test( 'addEditButton(): add edit button with link to local URL', function () {
-		let addButton;
-
 		mw.config.set( 'wgPageContentLanguage', 'en' );
 		mw.config.set( 'wgArticleId', 1 );
 		mw.config.set( 'wgScript', '/wiki/index.php' );
 		ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
-		addButton = this.sandbox.stub( ui, 'addButton' );
+		const addButton = this.sandbox.stub( ui, 'addButton' );
 
 		ui.addEditButton();
 
@@ -79,13 +77,11 @@
 	} );
 
 	QUnit.test( 'addEditButton(): add edit button with link to given script URL', function () {
-		let addButton;
-
 		mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
 		mw.config.set( 'wgPageContentLanguage', 'en' );
 		mw.config.set( 'wgArticleId', 1 );
 		ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
-		addButton = this.sandbox.stub( ui, 'addButton' );
+		const addButton = this.sandbox.stub( ui, 'addButton' );
 
 		ui.addEditButton( 'http://producer.url/w/index.php' );
 
@@ -102,10 +98,8 @@
 	} );
 
 	QUnit.test( 'showBufferingIconIfAudioIsLoading()', () => {
-		let mockAudio;
-
 		ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
-		mockAudio = { readyState: 0 };
+		const mockAudio = { readyState: 0 };
 
 		ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
@@ -113,10 +107,8 @@
 	} );
 
 	QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', () => {
-		let mockAudio;
-
 		ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
-		mockAudio = { readyState: 2 };
+		const mockAudio = { readyState: 2 };
 
 		ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
@@ -124,10 +116,8 @@
 	} );
 
 	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', () => {
-		let textNode, event;
-
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
-		textNode = $( contentSelector ).contents().get( 0 );
+		const textNode = $( contentSelector ).contents().get( 0 );
 		selectionPlayer.isSelectionValid.returns( true );
 		self.stubGetSelection( textNode, textNode, { right: 50, bottom: 10 } );
 		sinon.stub( ui, 'isShown' ).returns( true );
@@ -135,7 +125,7 @@
 		ui.selectionPlayer.$element.width( 30 );
 		sinon.spy( ui.selectionPlayer.$element, 'css' );
 		sinon.spy( ui.selectionPlayer, 'toggle' );
-		event = $.Event( 'mouseup' );
+		const event = $.Event( 'mouseup' );
 
 		$( document ).triggerHandler( event );
 
@@ -180,19 +170,17 @@
 	};
 
 	QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', () => {
-		let textNode, event;
-
 		mw.wikispeech.test.util.setContentHtml(
 			'<b style="direction: rtl">RTL text.</b>'
 		);
-		textNode = $( contentSelector + ' b' ).contents().get( 0 );
+		const textNode = $( contentSelector + ' b' ).contents().get( 0 );
 		selectionPlayer.isSelectionValid.returns( true );
 		self.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
 		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
 		sinon.spy( ui.selectionPlayer.$element, 'css' );
 		sinon.spy( ui.selectionPlayer, 'toggle' );
-		event = $.Event( 'mouseup' );
+		const event = $.Event( 'mouseup' );
 
 		$( document ).triggerHandler( event );
 
@@ -207,13 +195,11 @@
 	} );
 
 	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', () => {
-		let event;
-
 		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( false );
 		sinon.spy( ui.selectionPlayer, 'toggle' );
-		event = $.Event( 'mouseup' );
+		const event = $.Event( 'mouseup' );
 
 		$( document ).triggerHandler( event );
 
@@ -221,18 +207,16 @@
 	} );
 
 	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', () => {
-		let notUtteranceNode, utteranceNode, event;
-
 		mw.wikispeech.test.util.setContentHtml(
 			'<del>Not an utterance.</del> An utterance.'
 		);
-		notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
-		utteranceNode = $( contentSelector ).contents().get( 1 );
+		const notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
+		const utteranceNode = $( contentSelector ).contents().get( 1 );
 		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
 		sinon.spy( ui.selectionPlayer, 'toggle' );
 		self.stubGetSelection( notUtteranceNode, utteranceNode );
-		event = $.Event( 'mouseup' );
+		const event = $.Event( 'mouseup' );
 
 		$( document ).triggerHandler( event );
 
@@ -240,18 +224,16 @@
 	} );
 
 	QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', () => {
-		let notUtteranceNode, utteranceNode, event;
-
 		mw.wikispeech.test.util.setContentHtml(
 			'An utterance. <del>Not an utterance.</del>'
 		);
-		notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
-		utteranceNode = $( contentSelector ).contents().get( 0 );
+		const notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
+		const utteranceNode = $( contentSelector ).contents().get( 0 );
 		sinon.stub( ui, 'isShown' ).returns( true );
 		ui.addSelectionPlayer();
 		sinon.spy( ui.selectionPlayer, 'toggle' );
 		self.stubGetSelection( utteranceNode, notUtteranceNode );
-		event = $.Event( 'mouseup' );
+		const event = $.Event( 'mouseup' );
 
 		$( document ).triggerHandler( event );
 
@@ -259,16 +241,14 @@
 	} );
 
 	QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', () => {
-		let textNode, event;
-
 		mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
-		textNode = $( contentSelector ).contents().get( 0 );
+		const textNode = $( contentSelector ).contents().get( 0 );
 		sinon.stub( ui, 'isShown' ).returns( false );
 		ui.addSelectionPlayer();
 		selectionPlayer.isSelectionValid.returns( true );
 		sinon.spy( ui.selectionPlayer, 'toggle' );
 		self.stubGetSelection( textNode, textNode );
-		event = $.Event( 'mouseup' );
+		const event = $.Event( 'mouseup' );
 
 		$( document ).triggerHandler( event );
 

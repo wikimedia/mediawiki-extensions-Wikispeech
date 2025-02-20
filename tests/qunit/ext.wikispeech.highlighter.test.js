@@ -175,13 +175,11 @@
 	} );
 
 	QUnit.test( 'highlightToken()', ( assert ) => {
-		let highlightedToken;
-
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 0 )
 		);
 
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 8,
@@ -197,8 +195,6 @@
 	} );
 
 	QUnit.test( 'highlightToken(): multiple utterances', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( 'Utterance zero. Utterance one.' );
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 0 )
@@ -207,7 +203,7 @@
 			startOffset: 16,
 			content: [ { path: './text()' } ]
 		};
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 1 ],
 			startOffset: 16,
 			endOffset: 24,
@@ -224,12 +220,10 @@
 	} );
 
 	QUnit.test( 'highlightToken(): with utterance highlighting', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Utterance with token.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()' );
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 19,
@@ -246,8 +240,6 @@
 	} );
 
 	QUnit.test( 'highlightToken(): with utterance highlighting and multiple utterances', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml(
 			'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>'
 		);
@@ -257,7 +249,7 @@
 			startOffset: 16,
 			content: [ { path: './text()' } ]
 		};
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 1 ],
 			startOffset: 16,
 			endOffset: 24,
@@ -274,13 +266,11 @@
 	} );
 
 	QUnit.test( 'highlightToken(): with utterance highlighting and other spans', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( '<span><span class="ext-wikispeech-highlight-sentence">Utterance with token.</span></span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './span/text()' );
 		storage.utterances[ 0 ].content[ 0 ] = { path: './span/text()' };
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 19,
@@ -297,14 +287,12 @@
 	} );
 
 	QUnit.test( 'highlightToken(): with tags', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( 'Utterance with <br />token.' );
 		storage.getNodeForItem.returns(
 			$( contentSelector ).contents().get( 2 )
 		);
 		storage.utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 4,
@@ -321,13 +309,11 @@
 	} );
 
 	QUnit.test( 'highlightToken(): with multiple utterance highlightings', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Phrase </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">, phrase two.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.get( 2 ).textPath = './text()[2]';
 		storage.utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			startOffset: 2,
 			endOffset: 7,
@@ -344,8 +330,6 @@
 	} );
 
 	QUnit.test( 'highlightToken(): with multiple utterance highlightings and text nodes', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( 'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' )
 			.prop( 'textPath', './text()[2]' );
@@ -353,7 +337,7 @@
 			startOffset: 2,
 			content: [ { path: './text()[2]' } ]
 		};
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 1 ],
 			startOffset: 2,
 			endOffset: 10,
@@ -370,8 +354,6 @@
 	} );
 
 	QUnit.test( 'highlightToken(): utterance highlighting starts in a new text node', ( assert ) => {
-		let highlightedToken;
-
 		util.setContentHtml( 'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">.</span>' );
 		$( '.ext-wikispeech-highlight-sentence' ).get( 1 ).textPath =
 			'./b/text()';
@@ -383,7 +365,7 @@
 				{ path: './text()[2]' }
 			]
 		};
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 1 ],
 			startOffset: 0,
 			endOffset: 2,
@@ -403,13 +385,11 @@
 	} );
 
 	QUnit.test( 'setHighlightTokenTimer()', function () {
-		let highlightedToken, nextToken;
-
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			endTime: 1000
 		};
-		nextToken = { utterance: storage.utterances[ 0 ] };
+		const nextToken = { utterance: storage.utterances[ 0 ] };
 		storage.utterances[ 0 ].tokens = [
 			highlightedToken,
 			nextToken
@@ -424,13 +404,11 @@
 	} );
 
 	QUnit.test( 'setHighlightTokenTimer(): faster speech rate', function () {
-		let highlightedToken, nextToken;
-
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			endTime: 1000
 		};
-		nextToken = { utterance: storage.utterances[ 0 ] };
+		const nextToken = { utterance: storage.utterances[ 0 ] };
 		storage.utterances[ 0 ].tokens = [
 			highlightedToken,
 			nextToken
@@ -446,13 +424,11 @@
 	} );
 
 	QUnit.test( 'setHighlightTokenTimer(): slower speech rate', function () {
-		let highlightedToken, nextToken;
-
-		highlightedToken = {
+		const highlightedToken = {
 			utterance: storage.utterances[ 0 ],
 			endTime: 1000
 		};
-		nextToken = { utterance: storage.utterances[ 0 ] };
+		const nextToken = { utterance: storage.utterances[ 0 ] };
 		storage.utterances[ 0 ].tokens = [
 			highlightedToken,
 			nextToken

@@ -1,16 +1,13 @@
-let Previewer, $content, $transcription, $language, api, $previewPlayer,
-	previewer, previewButton;
-
-Previewer = require( './ext.wikispeech.transcriptionPreviewer.js' );
+const Previewer = require( './ext.wikispeech.transcriptionPreviewer.js' );
 // eslint-disable-next-line no-jquery/no-global-selector
-$content = $( '#mw-content-text' );
-$language = $content.find( '#ext-wikispeech-language' ).find( 'select, input' );
-$transcription = $content.find( '#ext-wikispeech-transcription input' );
-api = new mw.Api();
-$previewPlayer = $( '<audio>' ).insertAfter( $transcription );
-previewer = new Previewer( $language, $transcription, api, $previewPlayer );
+const $content = $( '#mw-content-text' );
+const $language = $content.find( '#ext-wikispeech-language' ).find( 'select, input' );
+const $transcription = $content.find( '#ext-wikispeech-transcription input' );
+const api = new mw.Api();
+const $previewPlayer = $( '<audio>' ).insertAfter( $transcription );
+const previewer = new Previewer( $language, $transcription, api, $previewPlayer );
 
-previewButton = OO.ui.infuse( $content.find( '#ext-wikispeech-preview-button' ) );
+const previewButton = OO.ui.infuse( $content.find( '#ext-wikispeech-preview-button' ) );
 previewButton.on(
 	'click',
 	() => {

@@ -33,10 +33,8 @@
 		 */
 
 		this.addControlPanel = function () {
-			let toolFactory, toolGroupFactory, playerGroup, height;
-
-			toolFactory = new OO.ui.ToolFactory();
-			toolGroupFactory = new OO.ui.ToolGroupFactory();
+			const toolFactory = new OO.ui.ToolFactory();
+			const toolGroupFactory = new OO.ui.ToolGroupFactory();
 			self.toolbar = new OO.ui.Toolbar(
 				toolFactory,
 				toolGroupFactory,
@@ -47,7 +45,7 @@
 				}
 			);
 
-			playerGroup = self.addToolbarGroup();
+			const playerGroup = self.addToolbarGroup();
 			self.addButton(
 				playerGroup,
 				'first',
@@ -102,7 +100,7 @@
 
 			// Add extra padding at the bottom of the page to not have
 			// the player cover anything.
-			height = self.toolbar.$element.height();
+			const height = self.toolbar.$element.height();
 			self.$playerFooter = $( '<div>' )
 				.height( height )
 				// A bit of CSS is needed to make it interact properly
@@ -193,14 +191,12 @@
 		 */
 
 		this.addBufferingIcon = function () {
-			let $playStopButtons, $containers;
-
-			$playStopButtons = $(
+			const $playStopButtons = $(
 				self.toolbar.$element
 					.find( '.ext-wikispeech-play-stop' )
 			)
 				.add( self.selectionPlayer.$element );
-			$containers = $( '<span>' )
+			const $containers = $( '<span>' )
 				.addClass( 'ext-wikispeech-buffering-icon-container' )
 				.appendTo( ( $playStopButtons ).find( '.oo-ui-iconElement-icon' ) );
 			self.$bufferingIcons = $( '<span>' )
@@ -289,9 +285,7 @@
 		 */
 
 		this.addLinkConfigButton = function ( group, icon, configVariable ) {
-			let url;
-
-			url = mw.config.get( configVariable );
+			const url = mw.config.get( configVariable );
 			if ( url ) {
 				self.addButton( group, icon, url );
 			}
@@ -347,14 +341,14 @@
 		 */
 
 		this.showSelectionPlayer = function () {
-			let selection, lastRange, lastRect, left, top;
 
 			self.selectionPlayer.toggle( true );
-			selection = window.getSelection();
-			lastRange = selection.getRangeAt( selection.rangeCount - 1 );
-			lastRect =
+			const selection = window.getSelection();
+			const lastRange = selection.getRangeAt( selection.rangeCount - 1 );
+			const lastRect =
 				mw.wikispeech.util.getLast( lastRange.getClientRects() );
 			// Place the player under the end of the selected text.
+			let left;
 			if ( self.getTextDirection( lastRange.endContainer ) === 'rtl' ) {
 				// For RTL languages, the end of the text is the far left.
 				left = lastRect.left + $( document ).scrollLeft();
@@ -367,7 +361,7 @@
 					$( document ).scrollLeft() -
 					self.selectionPlayer.$element.width();
 			}
-			top = lastRect.bottom + $( document ).scrollTop();
+			const top = lastRect.bottom + $( document ).scrollTop();
 			self.selectionPlayer.$element.css( {
 				left: left + 'px',
 				top: top + 'px'
@@ -395,9 +389,7 @@
 		 */
 
 		this.addKeyboardShortcuts = function () {
-			let shortcuts, name, shortcut;
-
-			shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
+			const shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
 			$( document ).on( 'keydown', ( event ) => {
 				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					mw.wikispeech.player.playOrStop();
@@ -435,8 +427,8 @@
 			// buttons in focus to trigger if a shortcut had space as
 			// key.
 			$( document ).on( 'keyup', ( event ) => {
-				for ( name in shortcuts ) {
-					shortcut = shortcuts[ name ];
+				for ( const name in shortcuts ) {
+					const shortcut = shortcuts[ name ];
 					if ( self.eventMatchShortcut( event, shortcut ) ) {
 						event.preventDefault();
 					}

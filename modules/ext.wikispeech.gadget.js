@@ -33,9 +33,7 @@
 	 */
 
 	function getUserOptionsOnConsumer() {
-		let done;
-
-		done = $.Deferred();
+		const done = $.Deferred();
 		if ( mw.user.isAnon() ) {
 			// No user options set if not logged in.
 			done.resolve( {} );
@@ -47,9 +45,8 @@
 				formatversion: 2
 			} )
 				.done( ( response ) => {
-					let content, options;
-
-					content = response.parse.wikitext;
+					const content = response.parse.wikitext;
+					let options;
 					try {
 						options = JSON.parse( content );
 					} catch ( error ) {
@@ -84,10 +81,8 @@
 	 */
 
 	function addUserOptions() {
-		let defaultOptions, done;
-
-		done = $.Deferred();
-		defaultOptions = require( './default-user-options.json' );
+		const done = $.Deferred();
+		const defaultOptions = require( './default-user-options.json' );
 		getUserOptionsOnConsumer().done( ( options ) => {
 			Object.keys( defaultOptions ).forEach( ( key ) => {
 				let value;
@@ -116,13 +111,11 @@
 	 */
 
 	function writeUserOptionsToWikiPage( dialog ) {
-		let voice, optionsJson, options;
-
-		options = require( './default-user-options.json' );
-		voice = dialog.getVoice();
+		const options = require( './default-user-options.json' );
+		const voice = dialog.getVoice();
 		options[ voice.variable ] = voice.voice;
 		options.wikispeechSpeechRate = dialog.getSpeechRate();
-		optionsJson = JSON.stringify( options, null, 4 );
+		const optionsJson = JSON.stringify( options, null, 4 );
 		api.postWithEditToken( {
 			action: 'edit',
 			title: optionsPage,
@@ -148,12 +141,10 @@
 	 */
 
 	function extendUi() {
-		let UserOptionsDialog, dialog, gadgetGroup;
-
-		UserOptionsDialog = require( './ext.wikispeech.userOptionsDialog.js' );
-		dialog = new UserOptionsDialog();
+		const UserOptionsDialog = require( './ext.wikispeech.userOptionsDialog.js' );
+		const dialog = new UserOptionsDialog();
 		mw.wikispeech.ui.addWindow( dialog );
-		gadgetGroup = mw.wikispeech.ui.addToolbarGroup();
+		const gadgetGroup = mw.wikispeech.ui.addToolbarGroup();
 		mw.wikispeech.ui.addButton( gadgetGroup, 'settings', () => {
 			mw.wikispeech.ui.openWindow( dialog ).done(
 				( data ) => {
@@ -198,11 +189,9 @@
 		'oojs-ui.styles.icons-interactions',
 		'oojs-ui.styles.icons-editing-core'
 	] ).done( () => {
-		let namespace, userPage;
-
 		addConfig();
-		namespace = mw.config.get( 'wgNamespaceIds' ).user;
-		userPage = mw.Title.makeTitle( namespace, mw.user.getName() )
+		const namespace = mw.config.get( 'wgNamespaceIds' ).user;
+		const userPage = mw.Title.makeTitle( namespace, mw.user.getName() )
 			.getPrefixedText();
 		optionsPage = userPage + '/Wikispeech_preferences';
 		api = new mw.Api();

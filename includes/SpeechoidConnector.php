@@ -12,7 +12,7 @@ use Config;
 use FormatJson;
 use InvalidArgumentException;
 use MediaWiki\Http\HttpRequestFactory;
-use Status;
+use MediaWiki\Status\Status;
 
 /**
  * Provide Speechoid access.

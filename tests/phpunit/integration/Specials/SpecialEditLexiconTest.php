@@ -5,6 +5,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Special;
 use FauxRequest;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Status\Status;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
@@ -12,7 +13,6 @@ use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use PermissionsError;
 use SpecialPageTestBase;
-use Status;
 use User;
 use Wikimedia\TestingAccessWrapper;
 
@@ -101,8 +101,6 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_formFilled_addEntryToLexicon() {
-		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
-
 		$page = $this->newSpecialPage();
 		$this->speechoidConnector
 			->method( 'fromIpa' )
@@ -134,8 +132,6 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_existingIdGiven_updateEntry() {
-		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
-
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -182,8 +178,6 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_entryExistsAndNewSelected_createNewItem() {
-		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
-
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -218,8 +212,6 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_newSelectedAndPreferredIsTrue_createNewItemWithPreferredTrue() {
-		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
-
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [
@@ -256,8 +248,6 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	}
 
 	public function testSubmit_preferredFieldIsFalse_preferredRemovedFromProperties() {
-		$this->markTestSkipped( 'Re-enable when T347949 is done.' );
-
 		$page = $this->newSpecialPage();
 		$item = new LexiconEntryItem();
 		$item->setProperties( [

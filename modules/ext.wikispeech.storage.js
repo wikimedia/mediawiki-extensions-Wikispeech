@@ -11,7 +11,7 @@
 	 */
 
 	function Storage() {
-		var self, producerApiUrl;
+		let self, producerApiUrl;
 
 		self = this;
 		self.utterances = [];
@@ -33,7 +33,7 @@
 		 */
 
 		this.loadUtterances = function ( window ) {
-			var page, options;
+			let page, options;
 
 			page = mw.config.get( 'wgPageName' );
 			options = {
@@ -53,8 +53,8 @@
 						);
 					}
 				}
-			).done( function ( data ) {
-				var utterance, i, titleUtterance, firstNode,
+			).done( ( data ) => {
+				let utterance, i, titleUtterance, firstNode,
 					leadingWhitespaces, offset;
 
 				mw.log( 'Segments received:', data );
@@ -98,13 +98,13 @@
 		 */
 
 		this.prepareUtterance = function ( utterance ) {
-			var $audio, nextUtterance;
+			let $audio, nextUtterance;
 
 			$audio = $( utterance.audio );
 			if ( !utterance.request ) {
 				// Add event listener only once.
-				$audio.on( 'playing', function () {
-					var firstToken;
+				$audio.on( 'playing', () => {
+					let firstToken;
 
 					// Highlight token only when the audio starts
 					// playing, since we need the token info from the
@@ -132,7 +132,7 @@
 				} else {
 					// For last utterance, just stop the playback when
 					// done.
-					$audio.on( 'ended', function () {
+					$audio.on( 'ended', () => {
 						mw.wikispeech.player.stop();
 					} );
 				}
@@ -156,7 +156,7 @@
 		 */
 
 		this.loadAudio = function ( utterance ) {
-			var audioUrl, utteranceIndex;
+			let audioUrl, utteranceIndex;
 
 			utteranceIndex = self.utterances.indexOf( utterance );
 			mw.log(
@@ -164,7 +164,7 @@
 				utterance
 			);
 			return self.requestTts( utterance.hash, window )
-				.done( function ( response ) {
+				.done( ( response ) => {
 					audioUrl = 'data:audio/ogg;base64,' +
 						response[ 'wikispeech-listen' ].audio;
 					mw.log(
@@ -191,7 +191,7 @@
 		 */
 
 		this.requestTts = function ( segmentHash, window ) {
-			var request, language, voice, options;
+			let request, language, voice, options;
 
 			language = mw.config.get( 'wgPageContentLanguage' );
 			voice = mw.wikispeech.util.getUserVoice( language );
@@ -219,7 +219,7 @@
 					}
 				}
 			)
-				.done( function ( data ) {
+				.done( ( data ) => {
 					mw.log( 'Response received:', data );
 				} );
 			return request;
@@ -236,7 +236,7 @@
 		 */
 
 		this.addTokens = function ( utterance, responseTokens ) {
-			var i, token, startTime, searchOffset, responseToken;
+			let i, token, startTime, searchOffset, responseToken;
 
 			utterance.tokens = [];
 			searchOffset = 0;
@@ -292,7 +292,7 @@
 			token,
 			searchOffset
 		) {
-			var startOffsetInUtteranceString,
+			let startOffsetInUtteranceString,
 				endOffsetInUtteranceString, endOffsetForItem,
 				firstItemIndex, itemsBeforeStart, lastItemIndex,
 				itemsBeforeEnd, items, itemsBeforeStartLength,
@@ -318,7 +318,7 @@
 			// token are removed.
 			endOffsetForItem = 0;
 			items =
-				items.filter( function ( item ) {
+				items.filter( ( item ) => {
 					endOffsetForItem += item.string.length;
 					return endOffsetForItem >
 						startOffsetInUtteranceString;
@@ -333,7 +333,7 @@
 			itemsBeforeStart =
 				utterance.content.slice( 0, firstItemIndex );
 			itemsBeforeStartLength = 0;
-			itemsBeforeStart.forEach( function ( item ) {
+			itemsBeforeStart.forEach( ( item ) => {
 				itemsBeforeStartLength += item.string.length;
 			} );
 			token.startOffset =
@@ -348,7 +348,7 @@
 				);
 			itemsBeforeEnd = utterance.content.slice( 0, lastItemIndex );
 			itemsBeforeEndLength = 0;
-			itemsBeforeEnd.forEach( function ( item ) {
+			itemsBeforeEnd.forEach( ( item ) => {
 				itemsBeforeEndLength += item.string.length;
 			} );
 			token.endOffset =
@@ -386,13 +386,13 @@
 			items,
 			searchOffset
 		) {
-			var concatenatedText, startOffsetInUtteranceString,
+			let concatenatedText, startOffsetInUtteranceString,
 				stringBeforeReplace;
 
 			// The concatenation of the strings from items. Used to
 			// find tokens that span multiple text nodes.
 			concatenatedText = '';
-			content.every( function ( item ) {
+			content.every( ( item ) => {
 				// Look through the items until we find a substring
 				// matching the token.
 				// The `replaceAll` replaces non-breaking space with a
@@ -451,7 +451,7 @@
 		 */
 
 		this.getUtteranceByOffset = function ( utterance, offset ) {
-			var index;
+			let index;
 
 			if ( utterance === null ) {
 				return null;
@@ -485,14 +485,12 @@
 		 */
 
 		this.getNextToken = function ( originalToken ) {
-			var index, succeedingTokens;
+			let index, succeedingTokens;
 
 			index = originalToken.utterance.tokens.indexOf( originalToken );
 			succeedingTokens =
 				originalToken.utterance.tokens.slice( index + 1 ).filter(
-					function ( token ) {
-						return !self.isSilent( token );
-					} );
+					( token ) => !self.isSilent( token ) );
 			if ( succeedingTokens.length === 0 ) {
 				return null;
 			} else {
@@ -527,14 +525,12 @@
 		 */
 
 		this.getPreviousToken = function ( originalToken ) {
-			var index, precedingTokens, previousToken;
+			let index, precedingTokens, previousToken;
 
 			index = originalToken.utterance.tokens.indexOf( originalToken );
 			precedingTokens =
 				originalToken.utterance.tokens.slice( 0, index ).filter(
-					function ( token ) {
-						return !self.isSilent( token );
-					} );
+					( token ) => !self.isSilent( token ) );
 			if ( precedingTokens.length === 0 ) {
 				return null;
 			} else {
@@ -552,11 +548,9 @@
 		 */
 
 		this.getLastToken = function ( utterance ) {
-			var nonSilentTokens, lastToken;
+			let nonSilentTokens, lastToken;
 
-			nonSilentTokens = utterance.tokens.filter( function ( token ) {
-				return !self.isSilent( token );
-			} );
+			nonSilentTokens = utterance.tokens.filter( ( token ) => !self.isSilent( token ) );
 			lastToken = mw.wikispeech.util.getLast( nonSilentTokens );
 			return lastToken;
 		};
@@ -578,7 +572,7 @@
 		 */
 
 		this.getFirstTextNode = function ( node, inUtterance ) {
-			var textNode, child, i;
+			let textNode, child, i;
 
 			if ( node.nodeType === 3 ) {
 				if ( !inUtterance || self.isNodeInUtterance( node ) ) {
@@ -611,7 +605,7 @@
 		 */
 
 		this.isNodeInUtterance = function ( node ) {
-			var utterance, item, i, j;
+			let utterance, item, i, j;
 
 			for (
 				i = 0;
@@ -647,7 +641,7 @@
 		 */
 
 		this.getStartUtterance = function ( node, offset ) {
-			var utterance, i, nextTextNode;
+			let utterance, i, nextTextNode;
 
 			for ( ; offset < node.textContent.length; offset++ ) {
 				for (
@@ -698,7 +692,7 @@
 			minOffset,
 			maxOffset
 		) {
-			var item, i, index;
+			let item, i, index;
 
 			if ( items.length === 1 ) {
 				item = items[ 0 ];
@@ -751,7 +745,7 @@
 		 */
 
 		this.getNextTextNode = function ( node ) {
-			var nextNode, textNode, child, i;
+			let nextNode, textNode, child, i;
 
 			nextNode = node.nextSibling;
 			if ( nextNode === null ) {
@@ -793,7 +787,7 @@
 		 */
 
 		this.getStartToken = function ( utterance, node, offset ) {
-			var token, i, nextTextNode;
+			let token, i, nextTextNode;
 
 			for ( ; offset < node.textContent.length; offset++ ) {
 				for ( i = 0; i < utterance.tokens.length; i++ ) {
@@ -834,7 +828,7 @@
 		 */
 
 		this.getLastTextNode = function ( node, inUtterance ) {
-			var i, child, textNode;
+			let i, child, textNode;
 
 			if ( node.nodeType === 3 ) {
 				if ( !inUtterance || self.isNodeInUtterance( node ) ) {
@@ -873,7 +867,7 @@
 		 */
 
 		this.getEndUtterance = function ( node, offset ) {
-			var utterance, i, previousTextNode;
+			let utterance, i, previousTextNode;
 
 			for ( ; offset >= 0; offset-- ) {
 				for (
@@ -911,7 +905,7 @@
 		 */
 
 		this.getPreviousTextNode = function ( node ) {
-			var previousNode, i, child, textNode;
+			let previousNode, i, child, textNode;
 
 			previousNode = node.previousSibling;
 			if ( previousNode === null ) {
@@ -953,7 +947,7 @@
 		 */
 
 		this.getEndToken = function ( utterance, node, offset ) {
-			var token, i, previousTextNode;
+			let token, i, previousTextNode;
 
 			for ( ; offset >= 0; offset-- ) {
 				for ( i = 0; i < utterance.tokens.length; i++ ) {
@@ -990,7 +984,7 @@
 		 */
 
 		this.getNodeForItem = function ( item ) {
-			var node, result, contentSelector;
+			let node, result, contentSelector;
 
 			// The path should be unambiguous, so just get the first
 			// matching node.

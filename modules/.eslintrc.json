@@ -1,7 +1,7 @@
 {
 	"root": true,
 	"extends": [
-		"wikimedia/client-es5",
+		"wikimedia/client",
 		"wikimedia/jquery",
 		"wikimedia/mediawiki"
 	],
@@ -9,6 +9,7 @@
 		"commonjs": true
 	},
 	"rules": {
-		"compat/compat": "warn"
+		"compat/compat": "warn",
+		"prefer-const": "warn"
 	}
 }

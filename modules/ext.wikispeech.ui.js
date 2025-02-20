@@ -8,7 +8,7 @@
 	 */
 
 	function Ui() {
-		var self = this;
+		const self = this;
 		// Resolves the UI is ready to be extended by consumer.
 		self.ready = $.Deferred();
 
@@ -33,7 +33,7 @@
 		 */
 
 		this.addControlPanel = function () {
-			var toolFactory, toolGroupFactory, playerGroup, height;
+			let toolFactory, toolGroupFactory, playerGroup, height;
 
 			toolFactory = new OO.ui.ToolFactory();
 			toolGroupFactory = new OO.ui.ToolGroupFactory();
@@ -86,10 +86,10 @@
 				'feedback',
 				'wgWikispeechFeedbackPage'
 			);
-			var api = new mw.Api();
+			const api = new mw.Api();
 			api.getUserInfo()
-				.done( function ( info ) {
-					var canEditLexicon = info.rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
+				.done( ( info ) => {
+					const canEditLexicon = info.rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
 					if ( !canEditLexicon ) {
 						return;
 					}
@@ -125,7 +125,7 @@
 		 */
 
 		this.addEditButton = function ( scriptUrl ) {
-			var editUrl;
+			let editUrl;
 			if ( scriptUrl ) {
 				editUrl = scriptUrl;
 			} else {
@@ -152,7 +152,7 @@
 		 */
 
 		this.addToolbarGroup = function () {
-			var group = new OO.ui.ButtonGroupWidget();
+			const group = new OO.ui.ButtonGroupWidget();
 			self.toolbar.$actions.append( group.$element );
 			return group;
 		};
@@ -170,7 +170,7 @@
 
 		this.addButton = function ( group, icon, onClick, classes, id ) {
 			// eslint-disable-next-line mediawiki/class-doc
-			var button = new OO.ui.ButtonWidget( {
+			const button = new OO.ui.ButtonWidget( {
 				icon: icon,
 				classes: classes,
 				id: id
@@ -193,7 +193,7 @@
 		 */
 
 		this.addBufferingIcon = function () {
-			var $playStopButtons, $containers;
+			let $playStopButtons, $containers;
 
 			$playStopButtons = $(
 				self.toolbar.$element
@@ -225,7 +225,7 @@
 			if ( self.audioIsReady( audio ) ) {
 				self.hideBufferingIcon();
 			} else {
-				$( audio ).on( 'canplay', function () {
+				$( audio ).on( 'canplay', () => {
 					self.hideBufferingIcon();
 				} );
 				self.$bufferingIcons.show();
@@ -289,7 +289,7 @@
 		 */
 
 		this.addLinkConfigButton = function ( group, icon, configVariable ) {
-			var url;
+			let url;
 
 			url = mw.config.get( configVariable );
 			if ( url ) {
@@ -312,7 +312,7 @@
 				.on( 'click', mw.wikispeech.player.playOrStop );
 			self.selectionPlayer.toggle( false );
 			$( document.body ).append( self.selectionPlayer.$element );
-			$( document ).on( 'mouseup', function () {
+			$( document ).on( 'mouseup', () => {
 				if (
 					self.isShown() &&
 					mw.wikispeech.selectionPlayer.isSelectionValid()
@@ -322,7 +322,7 @@
 					self.selectionPlayer.toggle( false );
 				}
 			} );
-			$( document ).on( 'click', function () {
+			$( document ).on( 'click', () => {
 				// A click listener is also needed because of the
 				// order of events when text is deselected by clicking
 				// it.
@@ -347,7 +347,7 @@
 		 */
 
 		this.showSelectionPlayer = function () {
-			var selection, lastRange, lastRect, left, top;
+			let selection, lastRange, lastRect, left, top;
 
 			self.selectionPlayer.toggle( true );
 			selection = window.getSelection();
@@ -395,10 +395,10 @@
 		 */
 
 		this.addKeyboardShortcuts = function () {
-			var shortcuts, name, shortcut;
+			let shortcuts, name, shortcut;
 
 			shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
-			$( document ).on( 'keydown', function ( event ) {
+			$( document ).on( 'keydown', ( event ) => {
 				if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
 					mw.wikispeech.player.playOrStop();
 					return false;
@@ -434,7 +434,7 @@
 			// keydown event for the same key combination. This caused
 			// buttons in focus to trigger if a shortcut had space as
 			// key.
-			$( document ).on( 'keyup', function ( event ) {
+			$( document ).on( 'keyup', ( event ) => {
 				for ( name in shortcuts ) {
 					shortcut = shortcuts[ name ];
 					if ( self.eventMatchShortcut( event, shortcut ) ) {

@@ -1,5 +1,5 @@
 ( function () {
-	var player, storage, selectionPlayer, highlighter, ui;
+	let player, storage, selectionPlayer, highlighter, ui;
 
 	QUnit.module( 'ext.wikispeech.player', {
 		beforeEach: function () {
@@ -42,7 +42,7 @@
 		}
 	} );
 
-	QUnit.test( 'playOrStop(): play', function ( assert ) {
+	QUnit.test( 'playOrStop(): play', ( assert ) => {
 		sinon.stub( player, 'play' );
 
 		player.playOrStop();
@@ -50,7 +50,7 @@
 		assert.strictEqual( player.play.called, true );
 	} );
 
-	QUnit.test( 'playOrStop(): stop', function ( assert ) {
+	QUnit.test( 'playOrStop(): stop', ( assert ) => {
 		player.currentUtterance = storage.utterances[ 0 ];
 		sinon.stub( player, 'stop' );
 
@@ -59,7 +59,7 @@
 		assert.strictEqual( player.stop.called, true );
 	} );
 
-	QUnit.test( 'stop()', function () {
+	QUnit.test( 'stop()', () => {
 		player.currentUtterance = storage.utterances[ 0 ];
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.stub( player, 'stopUtterance' );
@@ -73,7 +73,7 @@
 		sinon.assert.called( ui.hideBufferingIcon );
 	} );
 
-	QUnit.test( 'play()', function () {
+	QUnit.test( 'play()', () => {
 		sinon.stub( player, 'playUtterance' );
 
 		player.play();
@@ -81,7 +81,7 @@
 		sinon.assert.called( player.playUtterance );
 	} );
 
-	QUnit.test( 'play(): delay until utterances has been loaded', function () {
+	QUnit.test( 'play(): delay until utterances has been loaded', () => {
 		sinon.stub( player, 'playUtterance' );
 		// We want an unresolved promise for this test.
 		storage.utterancesLoaded = $.Deferred();
@@ -91,7 +91,7 @@
 		sinon.assert.notCalled( player.playUtterance );
 	} );
 
-	QUnit.test( 'play(): do not play utterance when selection is valid', function () {
+	QUnit.test( 'play(): do not play utterance when selection is valid', () => {
 		sinon.stub( player, 'playUtterance' );
 		selectionPlayer.playSelectionIfValid.returns( true );
 
@@ -100,7 +100,7 @@
 		sinon.assert.notCalled( player.playUtterance );
 	} );
 
-	QUnit.test( 'play(): play from beginning when selection is invalid', function () {
+	QUnit.test( 'play(): play from beginning when selection is invalid', () => {
 		sinon.stub( player, 'playUtterance' );
 		selectionPlayer.playSelectionIfValid.returns( false );
 
@@ -112,8 +112,8 @@
 		);
 	} );
 
-	QUnit.test( 'playUtterance()', function () {
-		var utterance = storage.utterances[ 0 ];
+	QUnit.test( 'playUtterance()', () => {
+		const utterance = storage.utterances[ 0 ];
 		sinon.stub( utterance.audio, 'play' );
 		storage.prepareUtterance.returns( $.Deferred().resolve() );
 
@@ -127,7 +127,7 @@
 		);
 	} );
 
-	QUnit.test( 'playUtterance(): stop playing utterance', function () {
+	QUnit.test( 'playUtterance(): stop playing utterance', () => {
 		storage.prepareUtterance.returns( $.Deferred().resolve() );
 		player.currentUtterance = storage.utterances[ 0 ];
 		sinon.stub( player, 'stopUtterance' );
@@ -140,8 +140,8 @@
 		);
 	} );
 
-	QUnit.test( 'playUtterance(): show load error dialog', function () {
-		var utterance = storage.utterances[ 0 ];
+	QUnit.test( 'playUtterance(): show load error dialog', () => {
+		const utterance = storage.utterances[ 0 ];
 		storage.prepareUtterance.returns( $.Deferred().reject() );
 		ui.showLoadAudioError.returns( $.Deferred() );
 
@@ -150,8 +150,8 @@
 		sinon.assert.called( ui.showLoadAudioError );
 	} );
 
-	QUnit.test( 'playUtterance(): show load error dialog again', function () {
-		var utterance = storage.utterances[ 0 ];
+	QUnit.test( 'playUtterance(): show load error dialog again', () => {
+		const utterance = storage.utterances[ 0 ];
 		storage.prepareUtterance.returns( $.Deferred().reject() );
 		ui.showLoadAudioError.onFirstCall().returns( $.Deferred().resolveWith( null, [ { action: 'retry' } ] ) );
 		ui.showLoadAudioError.returns( $.Deferred() );
@@ -161,8 +161,8 @@
 		sinon.assert.calledTwice( ui.showLoadAudioError );
 	} );
 
-	QUnit.test( 'playUtterance(): retry preparing utterance', function ( assert ) {
-		var utterance = storage.utterances[ 0 ];
+	QUnit.test( 'playUtterance(): retry preparing utterance', ( assert ) => {
+		const utterance = storage.utterances[ 0 ];
 		storage.prepareUtterance.returns( $.Deferred().reject() );
 		ui.showLoadAudioError.onFirstCall().returns( $.Deferred().resolveWith( null, [ { action: 'retry' } ] ) );
 		ui.showLoadAudioError.returns( $.Deferred().resolve() );
@@ -173,7 +173,7 @@
 		assert.true( storage.prepareUtterance.secondCall.calledWithExactly( utterance ) );
 	} );
 
-	QUnit.test( 'stopUtterance()', function ( assert ) {
+	QUnit.test( 'stopUtterance()', ( assert ) => {
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.stub( storage.utterances[ 0 ].audio, 'pause' );
 
@@ -188,7 +188,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadUtterance()', function () {
+	QUnit.test( 'skipAheadUtterance()', () => {
 		sinon.stub( player, 'playUtterance' );
 		storage.getNextUtterance.returns( storage.utterances[ 1 ] );
 
@@ -200,7 +200,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadUtterance(): stop if no next utterance', function () {
+	QUnit.test( 'skipAheadUtterance(): stop if no next utterance', () => {
 		sinon.stub( player, 'stop' );
 		storage.getNextUtterance.returns( null );
 
@@ -209,7 +209,7 @@
 		sinon.assert.called( player.stop );
 	} );
 
-	QUnit.test( 'skipBackUtterance()', function () {
+	QUnit.test( 'skipBackUtterance()', () => {
 		sinon.stub( player, 'playUtterance' );
 		player.currentUtterance = storage.utterances[ 1 ];
 		storage.getPreviousUtterance.returns( storage.utterances[ 0 ] );
@@ -222,7 +222,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipBackUtterance(): restart if first utterance', function ( assert ) {
+	QUnit.test( 'skipBackUtterance(): restart if first utterance', ( assert ) => {
 		player.currentUtterance = storage.utterances[ 0 ];
 		storage.utterances[ 0 ].audio.currentTime = 1.0;
 		sinon.stub( storage.utterances[ 0 ].audio, 'pause' );
@@ -236,7 +236,7 @@
 		sinon.assert.notCalled( storage.utterances[ 0 ].audio.pause );
 	} );
 
-	QUnit.test( 'skipBackUtterance(): restart if played long enough', function ( assert ) {
+	QUnit.test( 'skipBackUtterance(): restart if played long enough', ( assert ) => {
 		player.currentUtterance = storage.utterances[ 1 ];
 		storage.utterances[ 1 ].audio.currentTime = 3.1;
 		sinon.stub( player, 'playUtterance' );
@@ -253,8 +253,8 @@
 		);
 	} );
 
-	QUnit.test( 'getCurrentToken()', function ( assert ) {
-		var token;
+	QUnit.test( 'getCurrentToken()', ( assert ) => {
+		let token;
 
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
@@ -280,8 +280,8 @@
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getCurrentToken(): get first token', function ( assert ) {
-		var token;
+	QUnit.test( 'getCurrentToken(): get first token', ( assert ) => {
+		let token;
 
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
@@ -306,8 +306,8 @@
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
-	QUnit.test( 'getCurrentToken(): get the last token', function ( assert ) {
-		var token;
+	QUnit.test( 'getCurrentToken(): get the last token', ( assert ) => {
+		let token;
 
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
@@ -332,8 +332,8 @@
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 2 ] );
 	} );
 
-	QUnit.test( 'getCurrentToken(): get the last token when current time is equal to last tokens end time', function ( assert ) {
-		var token;
+	QUnit.test( 'getCurrentToken(): get the last token when current time is equal to last tokens end time', ( assert ) => {
+		let token;
 
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
@@ -354,8 +354,8 @@
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getCurrentToken(): ignore tokens with no duration', function ( assert ) {
-		var token;
+	QUnit.test( 'getCurrentToken(): ignore tokens with no duration', ( assert ) => {
+		let token;
 
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
@@ -383,8 +383,8 @@
 		);
 	} );
 
-	QUnit.test( 'getCurrentToken(): give correct token if there are tokens with no duration', function ( assert ) {
-		var token;
+	QUnit.test( 'getCurrentToken(): give correct token if there are tokens with no duration', ( assert ) => {
+		let token;
 
 		storage.utterances[ 0 ].audio.src = 'loaded';
 		storage.utterances[ 0 ].tokens = [
@@ -409,7 +409,7 @@
 		assert.strictEqual( token, storage.utterances[ 0 ].tokens[ 2 ] );
 	} );
 
-	QUnit.test( 'skipAheadToken()', function ( assert ) {
+	QUnit.test( 'skipAheadToken()', ( assert ) => {
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -435,7 +435,7 @@
 		);
 	} );
 
-	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', function () {
+	QUnit.test( 'skipAheadToken(): skip ahead utterance when last token', () => {
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -451,7 +451,7 @@
 		sinon.assert.called( player.skipAheadUtterance );
 	} );
 
-	QUnit.test( 'skipBackToken()', function ( assert ) {
+	QUnit.test( 'skipBackToken()', ( assert ) => {
 		storage.utterances[ 0 ].tokens = [
 			{
 				startTime: 0,
@@ -480,8 +480,8 @@
 		);
 	} );
 
-	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', function ( assert ) {
-		var currentUtterance, previousUtterance;
+	QUnit.test( 'skipBackToken(): skip to last token in previous utterance if first token', ( assert ) => {
+		let currentUtterance, previousUtterance;
 
 		previousUtterance = storage.utterances[ 0 ];
 		previousUtterance.tokens = [

@@ -1,5 +1,5 @@
 ( function () {
-	var storage, player, util, contentSelector;
+	let storage, player, util, contentSelector;
 
 	QUnit.module( 'ext.wikispeech.storage', {
 		beforeEach: function () {
@@ -35,8 +35,8 @@
 		}
 	} );
 
-	QUnit.test( 'loadUtterances()', function ( assert ) {
-		var response, expectedUtterances;
+	QUnit.test( 'loadUtterances()', ( assert ) => {
+		let response, expectedUtterances;
 
 		sinon.stub( storage, 'prepareUtterance' );
 		// eslint-disable-next-line no-jquery/no-parse-html-literal
@@ -82,8 +82,8 @@
 		);
 	} );
 
-	QUnit.skip( 'loadUtterances(): pass URL in consumer mode', function ( assert ) {
-		var mockWindow, response;
+	QUnit.skip( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
+		let mockWindow, response;
 
 		mockWindow = { location: { origin: 'https://consumer.url' } };
 		mw.wikispeech.consumerMode = true;
@@ -113,8 +113,8 @@
 		);
 	} );
 
-	QUnit.test( 'loadUtterances(): offset leading whitespaces in title', function ( assert ) {
-		var response;
+	QUnit.test( 'loadUtterances(): offset leading whitespaces in title', ( assert ) => {
+		let response;
 
 		mw.config.set( 'wgPageName', 'Page' );
 		sinon.stub( storage, 'prepareUtterance' );
@@ -140,7 +140,7 @@
 		assert.strictEqual( storage.utterances[ 0 ].endOffset, 6 );
 	} );
 
-	QUnit.test( 'prepareUtterance()', function () {
+	QUnit.test( 'prepareUtterance()', () => {
 		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 
 		storage.prepareUtterance( storage.utterances[ 0 ] );
@@ -150,7 +150,7 @@
 		);
 	} );
 
-	QUnit.test( 'prepareUtterance(): do not request if waiting for response', function () {
+	QUnit.test( 'prepareUtterance(): do not request if waiting for response', () => {
 		sinon.spy( storage, 'loadAudio' );
 		storage.utterances[ 0 ].request = $.Deferred();
 
@@ -160,7 +160,7 @@
 
 	} );
 
-	QUnit.test( 'prepareUtterance(): do not load audio if already loaded', function () {
+	QUnit.test( 'prepareUtterance(): do not load audio if already loaded', () => {
 		storage.utterances[ 0 ].request = $.Deferred().resolve();
 		sinon.spy( storage, 'loadAudio' );
 
@@ -169,8 +169,8 @@
 		sinon.assert.notCalled( storage.loadAudio );
 	} );
 
-	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', function () {
-		var utterance, nextUtterance;
+	QUnit.test( 'prepareUtterance(): prepare next utterance when playing', () => {
+		let utterance, nextUtterance;
 
 		utterance = storage.utterances[ 0 ];
 		nextUtterance = storage.utterances[ 1 ];
@@ -183,7 +183,7 @@
 		sinon.assert.calledWith( storage.prepareUtterance, nextUtterance );
 	} );
 
-	QUnit.test( 'prepareUtterance(): do not prepare next audio if it does not exist', function () {
+	QUnit.test( 'prepareUtterance(): do not prepare next audio if it does not exist', () => {
 		sinon.spy( storage, 'prepareUtterance' );
 		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		storage.prepareUtterance( storage.utterances[ 1 ] );
@@ -193,7 +193,7 @@
 		sinon.assert.calledOnce( storage.prepareUtterance );
 	} );
 
-	QUnit.test( 'prepareUtterance(): skip to next utterance when ended', function () {
+	QUnit.test( 'prepareUtterance(): skip to next utterance when ended', () => {
 		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		storage.prepareUtterance( storage.utterances[ 0 ] );
 
@@ -202,8 +202,8 @@
 		sinon.assert.called( player.skipAheadUtterance );
 	} );
 
-	QUnit.test( 'prepareUtterance(): stop when end of text is reached', function () {
-		var lastUtterance;
+	QUnit.test( 'prepareUtterance(): stop when end of text is reached', () => {
+		let lastUtterance;
 
 		sinon.stub( storage, 'loadAudio' ).returns( $.Deferred().resolve() );
 		lastUtterance = storage.utterances[ 1 ];
@@ -215,7 +215,7 @@
 	} );
 
 	// T322405
-	QUnit.skip( 'loadAudio()', function ( assert ) {
+	QUnit.skip( 'loadAudio()', ( assert ) => {
 		mw.config.set( 'wgRevisionId', 1 );
 		storage.utterances[ 0 ].hash = 'hash1234';
 		storage.api.get.returns( $.Deferred() );
@@ -234,8 +234,8 @@
 	} );
 
 	// T322405
-	QUnit.skip( 'loadAudio(): request successful', function ( assert ) {
-		var response = {
+	QUnit.skip( 'loadAudio(): request successful', ( assert ) => {
+		const response = {
 			'wikispeech-listen': {
 				audio: 'DummyBase64Audio=',
 				tokens: [
@@ -264,7 +264,7 @@
 	} );
 
 	// T322405
-	QUnit.skip( 'loadAudio(): request failed', function ( assert ) {
+	QUnit.skip( 'loadAudio(): request failed', ( assert ) => {
 		storage.api.get.returns( $.Deferred().reject() );
 		sinon.spy( storage, 'addTokens' );
 
@@ -274,7 +274,7 @@
 		assert.strictEqual( storage.utterances[ 0 ].audio.src, '' );
 	} );
 
-	QUnit.test( 'loadAudio(): non-default voice', function ( assert ) {
+	QUnit.test( 'loadAudio(): non-default voice', ( assert ) => {
 		mw.user.options.set( 'wikispeechVoiceEn', 'en-voice' );
 		mw.config.set( 'wgPageContentLanguage', 'en' );
 		mw.config.set( 'wgRevisionId', 1 );
@@ -295,8 +295,8 @@
 		);
 	} );
 
-	QUnit.skip( 'requestTts(): pass URL in consumer mode', function ( assert ) {
-		var mockWindow = { location: { origin: 'https://consumer.url' } };
+	QUnit.skip( 'requestTts(): pass URL in consumer mode', ( assert ) => {
+		const mockWindow = { location: { origin: 'https://consumer.url' } };
 		mw.wikispeech.consumerMode = true;
 		mw.config.set( 'wgRevisionId', 1 );
 		mw.config.get( 'wgPageContentLanguage', 'en' );
@@ -317,8 +317,8 @@
 		);
 	} );
 
-	QUnit.test( 'getUtteranceByOffset(): after', function ( assert ) {
-		var actualUtterance;
+	QUnit.test( 'getUtteranceByOffset(): after', ( assert ) => {
+		let actualUtterance;
 
 		actualUtterance =
 			storage.getUtteranceByOffset( storage.utterances[ 0 ], 1 );
@@ -326,8 +326,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getUtteranceByOffset(): before', function ( assert ) {
-		var actualUtterance;
+	QUnit.test( 'getUtteranceByOffset(): before', ( assert ) => {
+		let actualUtterance;
 
 		actualUtterance =
 			storage.getUtteranceByOffset( storage.utterances[ 1 ], -1 );
@@ -335,16 +335,16 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 0 ] );
 	} );
 
-	QUnit.test( 'getUtteranceByOffset(): original utterance is null', function ( assert ) {
-		var actualUtterance;
+	QUnit.test( 'getUtteranceByOffset(): original utterance is null', ( assert ) => {
+		let actualUtterance;
 
 		actualUtterance = storage.getUtteranceByOffset( null, 1 );
 
 		assert.strictEqual( actualUtterance, null );
 	} );
 
-	QUnit.test( 'addTokens()', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens()', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml( 'Utterance zero.' );
 		tokens = [
@@ -398,8 +398,8 @@
 		);
 	} );
 
-	QUnit.test( 'addTokens(): handle tag', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): handle tag', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml( 'Utterance with <b>tag</b>.' );
 		storage.utterances[ 0 ].content[ 0 ].string = 'Utterance with ';
@@ -452,8 +452,8 @@
 		assert.strictEqual( storage.utterances[ 0 ].tokens[ 3 ].endOffset, 0 );
 	} );
 
-	QUnit.test( 'addTokens(): handle removed element', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): handle removed element', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml(
 			'Utterance with <del>removed tag</del>.'
@@ -485,8 +485,8 @@
 		assert.strictEqual( storage.utterances[ 0 ].tokens[ 2 ].endOffset, 0 );
 	} );
 
-	QUnit.test( 'addTokens(): divided tokens', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): divided tokens', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml(
 			'Utterance with divided to<b>k</b>en.'
@@ -516,8 +516,8 @@
 		assert.strictEqual( storage.utterances[ 0 ].tokens[ 3 ].endOffset, 1 );
 	} );
 
-	QUnit.test( 'addTokens(): ambiguous tokens', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): ambiguous tokens', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml( 'A word and the same word.' );
 		storage.utterances[ 0 ].content[ 0 ].string = 'A word and the same word.';
@@ -539,8 +539,8 @@
 		assert.deepEqual( storage.utterances[ 0 ].tokens[ 5 ].endOffset, 23 );
 	} );
 
-	QUnit.test( 'addTokens(): ambiguous tokens in tag', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): ambiguous tokens in tag', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml(
 			'Utterance with <b>word and word</b>.'
@@ -563,8 +563,8 @@
 		assert.deepEqual( storage.utterances[ 0 ].tokens[ 4 ].endOffset, 12 );
 	} );
 
-	QUnit.test( 'addTokens(): multiple utterances', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): multiple utterances', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml(
 			'An utterance. Another utterance.'
@@ -588,8 +588,8 @@
 		assert.deepEqual( storage.utterances[ 1 ].tokens[ 2 ].endOffset, 31 );
 	} );
 
-	QUnit.test( 'addTokens(): multiple utterances and nodes', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): multiple utterances and nodes', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml(
 			'An utterance. Another <b>utterance</b>.'
@@ -616,8 +616,8 @@
 		assert.deepEqual( storage.utterances[ 1 ].tokens[ 2 ].endOffset, 0 );
 	} );
 
-	QUnit.test( 'addTokens(): ambiguous, one character long tokens', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): ambiguous, one character long tokens', ( assert ) => {
+		let tokens;
 
 		util.setContentHtml( 'a a a.' );
 		storage.utterances[ 0 ].content[ 0 ].string = 'a a a.';
@@ -634,8 +634,8 @@
 		assert.strictEqual( storage.utterances[ 0 ].tokens[ 2 ].endOffset, 4 );
 	} );
 
-	QUnit.test( 'addTokens(): non-breaking space', function ( assert ) {
-		var tokens;
+	QUnit.test( 'addTokens(): non-breaking space', ( assert ) => {
+		let tokens;
 
 		// The spaces in the two following expressions are non-breaking.
 		util.setContentHtml( '1 234 456' );
@@ -650,8 +650,8 @@
 		assert.strictEqual( storage.utterances[ 0 ].tokens[ 0 ].endOffset, 8 );
 	} );
 
-	QUnit.test( 'isSilent(): no duration', function ( assert ) {
-		var actual, token;
+	QUnit.test( 'isSilent(): no duration', ( assert ) => {
+		let actual, token;
 
 		token = {
 			string: 'no duration',
@@ -663,8 +663,8 @@
 		assert.strictEqual( actual, true );
 	} );
 
-	QUnit.test( 'isSilent(): no transcription', function ( assert ) {
-		var actual, token;
+	QUnit.test( 'isSilent(): no transcription', ( assert ) => {
+		let actual, token;
 
 		token = {
 			string: '',
@@ -676,8 +676,8 @@
 		assert.strictEqual( actual, true );
 	} );
 
-	QUnit.test( 'isSilent(): non-silent', function ( assert ) {
-		var actual, token;
+	QUnit.test( 'isSilent(): non-silent', ( assert ) => {
+		let actual, token;
 
 		token = {
 			string: 'token',
@@ -689,8 +689,8 @@
 		assert.strictEqual( actual, false );
 	} );
 
-	QUnit.test( 'getNextToken()', function ( assert ) {
-		var actualToken;
+	QUnit.test( 'getNextToken()', ( assert ) => {
+		let actualToken;
 
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -713,8 +713,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getNextToken(): ignore silent tokens', function ( assert ) {
-		var actualToken;
+	QUnit.test( 'getNextToken(): ignore silent tokens', ( assert ) => {
+		let actualToken;
 
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -749,8 +749,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 3 ] );
 	} );
 
-	QUnit.test( 'getPreviousToken()', function ( assert ) {
-		var actualToken;
+	QUnit.test( 'getPreviousToken()', ( assert ) => {
+		let actualToken;
 
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -773,8 +773,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
-	QUnit.test( 'getPreviousToken(): ignore silent tokens', function ( assert ) {
-		var actualToken;
+	QUnit.test( 'getPreviousToken(): ignore silent tokens', ( assert ) => {
+		let actualToken;
 
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -810,8 +810,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
-	QUnit.test( 'getLastToken()', function ( assert ) {
-		var actualToken;
+	QUnit.test( 'getLastToken()', ( assert ) => {
+		let actualToken;
 
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -834,8 +834,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getLastToken(): ignore silent tokens', function ( assert ) {
-		var actualToken;
+	QUnit.test( 'getLastToken(): ignore silent tokens', ( assert ) => {
+		let actualToken;
 
 		storage.utterances[ 0 ].tokens = [
 			{
@@ -869,8 +869,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getFirstTextNode()', function ( assert ) {
-		var parentNode, expectedNode, actualNode;
+	QUnit.test( 'getFirstTextNode()', ( assert ) => {
+		let parentNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'<a>first text node<br />other text node</a>'
@@ -883,8 +883,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getFirstTextNode(): deeper than other text node', function ( assert ) {
-		var parentNode, expectedNode, actualNode;
+	QUnit.test( 'getFirstTextNode(): deeper than other text node', ( assert ) => {
+		let parentNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'<a><b>first text node</b>other text node</a>'
@@ -897,8 +897,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getFirstTextNode(): given node is a text node', function ( assert ) {
-		var expectedNode, actualNode;
+	QUnit.test( 'getFirstTextNode(): given node is a text node', ( assert ) => {
+		let expectedNode, actualNode;
 
 		util.setContentHtml(
 			'first text node<br />other text node'
@@ -910,8 +910,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getLastTextNode()', function ( assert ) {
-		var parentNode, expectedNode, actualNode;
+	QUnit.test( 'getLastTextNode()', ( assert ) => {
+		let parentNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'<a>other text node<br />last text node</a>'
@@ -924,8 +924,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getLastTextNode(): deeper than other text node', function ( assert ) {
-		var parentNode, expectedNode, actualNode;
+	QUnit.test( 'getLastTextNode(): deeper than other text node', ( assert ) => {
+		let parentNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'<a>other text node<b>other text node</b></a>'
@@ -938,8 +938,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getLastTextNode(): given node is a text node', function ( assert ) {
-		var expectedNode, actualNode;
+	QUnit.test( 'getLastTextNode(): given node is a text node', ( assert ) => {
+		let expectedNode, actualNode;
 
 		util.setContentHtml(
 			'other text node<br />last text node'
@@ -951,8 +951,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getStartUtterance()', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getStartUtterance()', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()';
 		storage.utterances[ 0 ].endOffset = 14;
@@ -979,8 +979,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getStartUtterance(): offset between utterances', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getStartUtterance(): offset between utterances', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()';
 		storage.utterances[ 1 ].content[ 0 ].path = './text()';
@@ -1006,8 +1006,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getStartUtterance(): offset between utterances and next utterance in different node', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getStartUtterance(): offset between utterances and next utterance in different node', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()[1]';
 		storage.utterances[ 1 ].content[ 0 ].path = './a/text()';
@@ -1033,8 +1033,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getEndUtterance()', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getEndUtterance()', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()';
 		storage.utterances[ 1 ].content[ 0 ].path = './text()';
@@ -1060,8 +1060,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getEndUtterance(): offset between utterances', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getEndUtterance(): offset between utterances', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()';
 		storage.utterances[ 1 ].content[ 0 ].path = './text()';
@@ -1087,8 +1087,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getEndUtterance(): offset between utterances and previous utterance in different node', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getEndUtterance(): offset between utterances and previous utterance in different node', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()[1]';
 		storage.utterances[ 1 ].content[ 0 ].path = './a/text()';
@@ -1114,8 +1114,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getEndUtterance(): offset between utterances and previous utterance in different node with other utterance', function ( assert ) {
-		var textNode, offset, actualUtterance;
+	QUnit.test( 'getEndUtterance(): offset between utterances and previous utterance in different node with other utterance', ( assert ) => {
+		let textNode, offset, actualUtterance;
 
 		storage.utterances[ 0 ].content[ 0 ].path = './text()[1]';
 		storage.utterances[ 1 ].content[ 0 ].path = './text()[1]';
@@ -1141,8 +1141,8 @@
 		assert.strictEqual( actualUtterance, storage.utterances[ 1 ] );
 	} );
 
-	QUnit.test( 'getNextTextNode()', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getNextTextNode()', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 		util.setContentHtml(
 			'original node<br />next node'
 		);
@@ -1155,8 +1155,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getNextTextNode(): node is one level down', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getNextTextNode(): node is one level down', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 		util.setContentHtml(
 			'original node<a>next node</a>'
 		);
@@ -1169,8 +1169,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getNextTextNode(): node is one level up', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getNextTextNode(): node is one level up', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 		util.setContentHtml(
 			'<a>original node</a>next node'
 		);
@@ -1183,8 +1183,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getNextTextNode(): node contains non-text nodes', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getNextTextNode(): node contains non-text nodes', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'original node<a><!--comment--></a>next node'
@@ -1198,8 +1198,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getPreviousTextNode()', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getPreviousTextNode()', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'previous node<br />original node'
@@ -1213,8 +1213,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getPreviousTextNode(): node is one level down', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getPreviousTextNode(): node is one level down', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'<a>previous node</a>original node'
@@ -1228,8 +1228,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getPreviousTextNode(): node is one level up', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getPreviousTextNode(): node is one level up', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'previous node<a>original node</a>'
@@ -1243,8 +1243,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getPreviousTextNode(): node contains non-text nodes', function ( assert ) {
-		var originalNode, expectedNode, actualNode;
+	QUnit.test( 'getPreviousTextNode(): node contains non-text nodes', ( assert ) => {
+		let originalNode, expectedNode, actualNode;
 
 		util.setContentHtml(
 			'previous node<a><!--comment--></a>original node'
@@ -1258,8 +1258,8 @@
 		assert.strictEqual( actualNode, expectedNode );
 	} );
 
-	QUnit.test( 'getStartToken()', function ( assert ) {
-		var textNode, actualToken;
+	QUnit.test( 'getStartToken()', ( assert ) => {
+		let textNode, actualToken;
 
 		util.setContentHtml( 'Utterance zero.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -1298,8 +1298,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
-	QUnit.test( 'getStartToken(): between tokens', function ( assert ) {
-		var textNode, actualToken;
+	QUnit.test( 'getStartToken(): between tokens', ( assert ) => {
+		let textNode, actualToken;
 
 		util.setContentHtml( 'Utterance zero.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -1338,8 +1338,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getStartToken(): in different node', function ( assert ) {
-		var textNode, actualToken;
+	QUnit.test( 'getStartToken(): in different node', ( assert ) => {
+		let textNode, actualToken;
 
 		util.setContentHtml( 'Utterance <br />zero.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -1379,8 +1379,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getEndToken()', function ( assert ) {
-		var textNode, actualToken;
+	QUnit.test( 'getEndToken()', ( assert ) => {
+		let textNode, actualToken;
 
 		util.setContentHtml( 'Utterance zero.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -1419,8 +1419,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 1 ] );
 	} );
 
-	QUnit.test( 'getEndToken(): between tokens', function ( assert ) {
-		var textNode, actualToken;
+	QUnit.test( 'getEndToken(): between tokens', ( assert ) => {
+		let textNode, actualToken;
 
 		util.setContentHtml( 'Utterance zero.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -1459,8 +1459,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
-	QUnit.test( 'getEndToken(): in different node', function ( assert ) {
-		var textNode, actualToken;
+	QUnit.test( 'getEndToken(): in different node', ( assert ) => {
+		let textNode, actualToken;
 
 		util.setContentHtml( 'Utterance<br /> zero.' );
 		textNode = $( contentSelector ).contents().get( 0 );
@@ -1500,8 +1500,8 @@
 		assert.strictEqual( actualToken, storage.utterances[ 0 ].tokens[ 0 ] );
 	} );
 
-	QUnit.test( 'getNodeForItem()', function ( assert ) {
-		var item, textNode;
+	QUnit.test( 'getNodeForItem()', ( assert ) => {
+		let item, textNode;
 
 		mw.wikispeech.test.util.setContentHtml( 'Text node.' );
 		item = { path: './text()' };

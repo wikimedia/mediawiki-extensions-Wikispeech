@@ -9,8 +9,8 @@
 	 * @class ext.wikispeech.UserOptionsDialog
 	 */
 
-	var self;
-	var util = require( './ext.wikispeech.util.js' );
+	let self;
+	const util = require( './ext.wikispeech.util.js' );
 
 	function UserOptionsDialog( config ) {
 		UserOptionsDialog.super.call( this, config );
@@ -32,7 +32,7 @@
 	];
 
 	UserOptionsDialog.prototype.initialize = function () {
-		var panel, content, voiceFieldset, speechRateFieldset,
+		let panel, content, voiceFieldset, speechRateFieldset,
 			speechRateField, notice, noticeFieldset;
 
 		UserOptionsDialog.super.prototype.initialize.apply( self );
@@ -82,14 +82,14 @@
 	 */
 
 	UserOptionsDialog.prototype.addVoiceFieldset = function () {
-		var voices, languageItems, languageCodes, voiceItems,
+		let voices, languageItems, languageCodes, voiceItems,
 			fieldset, voiceField, languageField;
 
 		voices = mw.config.get( 'wgWikispeechVoices' );
 		languageItems = [];
 		languageCodes = Object.keys( voices );
 		languageCodes.sort();
-		languageCodes.forEach( function ( language ) {
+		languageCodes.forEach( ( language ) => {
 			languageItems.push(
 				new OO.ui.MenuOptionWidget( {
 					data: language,
@@ -107,10 +107,10 @@
 			meta: 'languageinfo',
 			liprop: 'autonym',
 			licode: languageCodes
-		} ).done( function ( response ) {
-			var info = response.query.languageinfo;
-			Object.keys( info ).forEach( function ( code ) {
-				languageItems.forEach( function ( item ) {
+		} ).done( ( response ) => {
+			const info = response.query.languageinfo;
+			Object.keys( info ).forEach( ( code ) => {
+				languageItems.forEach( ( item ) => {
 					if ( item.label === code ) {
 						item.setLabel( code + ' - ' + info[ code ].autonym );
 					}
@@ -129,8 +129,8 @@
 
 		self.voiceSelect = new OO.ui.DropdownWidget();
 		// Update the voice items when language is selected.
-		self.languageSelect.getMenu().on( 'select', function ( item ) {
-			var language, currentVoice;
+		self.languageSelect.getMenu().on( 'select', ( item ) => {
+			let language, currentVoice;
 			voiceItems = [
 				new OO.ui.MenuOptionWidget( {
 					data: '',
@@ -138,7 +138,7 @@
 				} )
 			];
 			language = item.data;
-			voices[ language ].forEach( function ( voice ) {
+			voices[ language ].forEach( ( voice ) => {
 				voiceItems.push(
 					new OO.ui.MenuOptionWidget( {
 						data: voice,
@@ -183,7 +183,7 @@
 
 	UserOptionsDialog.prototype.getActionProcess = function ( action ) {
 		if ( action ) {
-			return new OO.ui.Process( function () {
+			return new OO.ui.Process( () => {
 				self.close( { action: action } );
 			} );
 		}
@@ -199,7 +199,7 @@
 	 */
 
 	UserOptionsDialog.prototype.getVoice = function () {
-		var language, voiceVariable, voice;
+		let language, voiceVariable, voice;
 
 		language = self.languageSelect.getMenu().findSelectedItem().data;
 		voiceVariable = util.getVoiceConfigVariable( language );

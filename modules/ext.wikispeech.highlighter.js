@@ -8,7 +8,7 @@
 	 */
 
 	function Highlighter() {
-		var self = this;
+		const self = this;
 		self.highlightTokenTimer = null;
 		self.utteranceHighlightingClass =
 			'ext-wikispeech-highlight-sentence';
@@ -29,11 +29,9 @@
 		 */
 
 		this.highlightUtterance = function ( utterance ) {
-			var textNodes, span;
+			let textNodes, span;
 
-			textNodes = utterance.content.map( function ( item ) {
-				return mw.wikispeech.storage.getNodeForItem( item );
-			} );
+			textNodes = utterance.content.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) );
 			// Class name is documented above
 			// eslint-disable-next-line mediawiki/class-doc
 			span = $( '<span>' )
@@ -77,7 +75,7 @@
 			startOffset,
 			endOffset
 		) {
-			var $nodesToWrap, firstNode, i, lastNode, node;
+			let $nodesToWrap, firstNode, i, lastNode, node;
 
 			$nodesToWrap = $();
 			firstNode = textNodes[ 0 ];
@@ -133,13 +131,13 @@
 		 */
 
 		this.highlightToken = function ( token ) {
-			var span, textNodes, startOffset, endOffset;
+			let span, textNodes, startOffset, endOffset;
 
 			span = $( '<span>' )
 				.addClass( 'ext-wikispeech-highlight-word' )
 				.get( 0 );
-			textNodes = token.items.map( function ( item ) {
-				var textNode;
+			textNodes = token.items.map( ( item ) => {
+				let textNode;
 
 				if ( $( self.utteranceHighlightingSelector ).length ) {
 					// Add the token highlighting within the
@@ -182,7 +180,7 @@
 		this.getNodeInUtteranceHighlighting = function ( item ) {
 			// Get the text node from the utterance highlighting that
 			// wrapped the node for `textElement`.
-			var textNode = $( self.utteranceHighlightingSelector )
+			const textNode = $( self.utteranceHighlightingSelector )
 				.filter( function () {
 					return this.textPath ===
 						item.path;
@@ -200,7 +198,7 @@
 		 */
 
 		this.setHighlightTokenTimer = function ( token ) {
-			var currentTime, duration, nextToken;
+			let currentTime, duration, nextToken;
 
 			currentTime = token.utterance.audio.currentTime * 1000;
 			// The duration of the timer is the duration of the
@@ -209,7 +207,7 @@
 			nextToken = mw.wikispeech.storage.getNextToken( token );
 			if ( nextToken ) {
 				self.highlightTokenTimer = window.setTimeout(
-					function () {
+					() => {
 						self.removeWrappers(
 							'.ext-wikispeech-highlight-word'
 						);
@@ -234,7 +232,7 @@
 		 */
 
 		this.removeWrappers = function ( wrapperSelector ) {
-			var parents, $span;
+			let parents, $span;
 
 			parents = [];
 			$span = $( wrapperSelector );
@@ -245,10 +243,7 @@
 			if ( parents.length > 0 ) {
 				// Merge first and last text nodes, if the original was
 				// divided by adding the <span>.
-				// ESLint thinks this is String.normalize, not Text.normalize
-				// eslint-disable-next-line es-x/no-string-prototype-normalize
 				parents[ 0 ].normalize();
-				// eslint-disable-next-line es-x/no-string-prototype-normalize
 				parents[ parents.length - 1 ].normalize();
 			}
 		};

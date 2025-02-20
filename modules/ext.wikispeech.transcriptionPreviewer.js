@@ -1,4 +1,4 @@
-var util = require( './ext.wikispeech.util.js' );
+const util = require( './ext.wikispeech.util.js' );
 
 /**
  * Generates audio preview for the transcription in SpecialEditLexicon.
@@ -31,13 +31,13 @@ function TranscriptionPreviewer(
  *  audio was not present.
  */
 TranscriptionPreviewer.prototype.play = function () {
-	var transcription, self, promise;
+	let transcription, self, promise;
 	transcription = this.$transcription.val();
 	// Rewind in case it is already playing. Just calling play() is not enought to play from start.
 	this.$player.prop( 'currentTime', 0 );
 	self = this;
 	if ( transcription !== this.lastTranscription || !this.$player.attr( 'src' ) ) {
-		promise = this.fetchAudio().then( function () {
+		promise = this.fetchAudio().then( () => {
 			self.$player.get( 0 ).play();
 		} );
 		this.lastTranscription = transcription;
@@ -56,7 +56,7 @@ TranscriptionPreviewer.prototype.play = function () {
  *  if there was an error.
  */
 TranscriptionPreviewer.prototype.fetchAudio = function () {
-	var language, voice, transcription, self, message, title, request;
+	let language, voice, transcription, self, message, title, request;
 	language = this.$language.val();
 	voice = util.getUserVoice( language );
 	transcription = this.$transcription.val();
@@ -67,10 +67,10 @@ TranscriptionPreviewer.prototype.fetchAudio = function () {
 		lang: language,
 		ipa: transcription,
 		voice: voice
-	} ).done( function ( response ) {
-		var audioData = response[ 'wikispeech-listen' ].audio;
+	} ).done( ( response ) => {
+		const audioData = response[ 'wikispeech-listen' ].audio;
 		self.$player.attr( 'src', 'data:audio/ogg;base64,' + audioData );
-	} ).fail( function ( code, result ) {
+	} ).fail( ( code, result ) => {
 		self.$player.attr( 'src', '' );
 		mw.log.error( 'Failed to synthesize:', code, result );
 		message = result.error.info;

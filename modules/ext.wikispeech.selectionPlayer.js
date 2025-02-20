@@ -11,7 +11,7 @@
 	 */
 
 	function SelectionPlayer() {
-		var self;
+		let self;
 
 		self = this;
 		self.previousEndUtterance = null;
@@ -43,7 +43,7 @@
 		 */
 
 		this.isSelectionValid = function () {
-			var firstNode, firstTextNode, lastNode, lastTextNode;
+			let firstNode, firstTextNode, lastNode, lastTextNode;
 
 			if ( !self.isTextSelected() ) {
 				return false;
@@ -71,7 +71,7 @@
 		 */
 
 		this.isTextSelected = function () {
-			var selection = window.getSelection();
+			const selection = window.getSelection();
 			return !selection.isCollapsed;
 		};
 
@@ -84,7 +84,7 @@
 		 */
 
 		this.getFirstNodeInSelection = function () {
-			var selection, startRange, startNode, nodeBeforeActualNode;
+			let selection, startRange, startNode, nodeBeforeActualNode;
 
 			selection = window.getSelection();
 			startRange = selection.getRangeAt( 0 );
@@ -118,7 +118,7 @@
 		 */
 
 		this.playSelection = function () {
-			var startRange, startNode, startOffset, startUtterance,
+			let startRange, startNode, startOffset, startUtterance,
 				endRange, endNode, endOffset, endUtterance, selection,
 				firstSelectionNode, lastSelectionNode;
 
@@ -155,8 +155,8 @@
 			mw.wikispeech.storage.prepareUtterance(
 				startUtterance
 			)
-				.done( function () {
-					var startToken = mw.wikispeech.storage.getStartToken(
+				.done( () => {
+					const startToken = mw.wikispeech.storage.getStartToken(
 						startUtterance,
 						startNode,
 						startOffset
@@ -190,10 +190,10 @@
 			mw.wikispeech.storage.prepareUtterance(
 				endUtterance
 			)
-				.done( function () {
+				.done( () => {
 					// Prepare the end utterance, since token information
 					// is needed to calculate the correct end token.
-					var endToken = mw.wikispeech.storage.getEndToken(
+					const endToken = mw.wikispeech.storage.getEndToken(
 						endUtterance,
 						endNode,
 						endOffset
@@ -225,7 +225,7 @@
 		 */
 
 		this.getLastNodeInSelection = function () {
-			var selection, endRange, endNode, nodeAfterActualNode;
+			let selection, endRange, endNode, nodeAfterActualNode;
 
 			selection = window.getSelection();
 			endRange = selection.getRangeAt( selection.rangeCount - 1 );
@@ -262,11 +262,11 @@
 		 */
 
 		this.setEndTime = function ( utterance, endTime ) {
-			$( utterance.audio ).one( 'playing.end', function () {
-				var timeLeft = endTime - utterance.audio.currentTime * 1000;
+			$( utterance.audio ).one( 'playing.end', () => {
+				const timeLeft = endTime - utterance.audio.currentTime * 1000;
 				utterance.stopTimeout =
 					window.setTimeout(
-						function () {
+						() => {
 							mw.wikispeech.player.stop();
 							self.resetPreviousEndUtterance();
 						},

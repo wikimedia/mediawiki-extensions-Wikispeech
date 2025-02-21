@@ -8,6 +8,7 @@ namespace MediaWiki\Wikispeech\Specials;
  * @license GPL-2.0-or-later
  */
 
+use Exception;
 use Html;
 use HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
@@ -79,6 +80,16 @@ class SpecialEditLexicon extends SpecialPage {
 
 		$this->checkPermissions();
 
+		try {
+			$this->speechoidConnector->requestLexicons();
+		} catch ( Exception $e ) {
+			$this->logger->error( 'Speechoid is down:' . $e );
+			$this->getOutput()->showErrorPage(
+				'error',
+				'wikispeech-edit-lexicon-speechoid-down'
+			);
+			return;
+		}
 		$request = $this->getRequest();
 		$language = $request->getText( 'language' );
 		$word = $request->getText( 'word' );
@@ -91,7 +102,6 @@ class SpecialEditLexicon extends SpecialPage {
 		$copyrightNote = $this->msg( 'wikispeech-lexicon-copyrightnote' )->parse();
 		$this->postHtml = Html::rawElement( 'p', [], $copyrightNote );
 		$successMessage = '';
-
 		$formId = '';
 		$submitMessage = 'wikispeech-lexicon-next';
 		if ( !$language || !$word ) {
@@ -329,8 +339,10 @@ class SpecialEditLexicon extends SpecialPage {
 		$entry = $this->lexiconStorage->getEntry( $language, $word );
 		$item = $entry->findItemBySpeechoidIdentity( $id );
 		if ( $item === null ) {
-			throw new MWException( "No item with id '$id' found." );
-			// TODO: Show error message (T308562).
+			$this->getOutput()->addHTML( Html::errorBox(
+				$this->getOutput()->msg( 'wikispeech-edit-lexicon-no-item-found' )->params( $id )->parse()
+			) );
+			return $this->getSelectFields( $language, $word, $entry );
 		}
 		$transcriptionStatus = $this->speechoidConnector->toIpa(
 			$item->getTranscription(),
@@ -338,9 +350,12 @@ class SpecialEditLexicon extends SpecialPage {
 		);
 		if ( $transcriptionStatus->isOk() ) {
 			$transcription = $transcriptionStatus->getValue();
+
 		} else {
 			$transcription = '';
-			// TODO: Show error message (T308562).
+			$this->getOutput()->addHTML( Html::errorBox(
+				$this->getOutput()->msg( 'wikispeech-edit-lexicon-transcription-empty' )->params( $id )->parse()
+			) );
 		}
 
 		$fields['transcription']['default'] = $transcription;
@@ -383,7 +398,12 @@ class SpecialEditLexicon extends SpecialPage {
 			$language
 		);
 		if ( !$sampaStatus->isOk() ) {
-			// TODO: Show error message (T308562).
+			$this->getOutput()->addHTML( Html::errorBox(
+				$this->getOutput()
+						->msg( 'wikispeech-edit-lexicon-transcription-failed' )
+						->params( $data['word'], $data['language'] )
+						->parse()
+			) );
 			return false;
 		}
 

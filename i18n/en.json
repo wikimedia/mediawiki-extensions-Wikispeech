@@ -44,5 +44,9 @@
 	"wikispeech-lexicon-copyrightnote": "By saving changes, you agree to release your contribution under the [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Wikispeech lexicon editors",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech lexicon editor}}",
-	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech lexicon editors"
+	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech lexicon editors",
+	"wikispeech-edit-lexicon-no-item-found": "No item with ID '$1' found.",
+	"wikispeech-edit-lexicon-transcription-failed": "Failed to generate transcription for '$1' in language '$2'.",
+	"wikispeech-edit-lexicon-transcription-empty": "Transcription can't be empty.",
+	"wikispeech-edit-lexicon-speechoid-down": "Speechoid is currently not available."
 }

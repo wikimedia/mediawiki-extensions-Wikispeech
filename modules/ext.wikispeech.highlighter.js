@@ -1,265 +1,262 @@
-( function () {
+/**
+ * Handles highlighting parts of the page when reciting.
+ *
+ * @class ext.wikispeech.Highlighter
+ * @constructor
+ */
+
+function Highlighter() {
+	const self = this;
+	self.highlightTokenTimer = null;
+	self.utteranceHighlightingClass =
+		'ext-wikispeech-highlight-sentence';
+	self.utteranceHighlightingSelector =
+		'.' + self.utteranceHighlightingClass;
 
 	/**
-	 * Handles highlighting parts of the page when reciting.
+	 * Highlight text associated with an utterance.
 	 *
-	 * @class ext.wikispeech.Highlighter
-	 * @constructor
+	 * Adds highlight spans to the text nodes from which the
+	 * tokens of the utterance were created. For first and last node,
+	 * it's possible that only part of the text is highlighted,
+	 * since they may contain start/end of next/previous
+	 * utterance.
+	 *
+	 * @param {Object} utterance The utterance to add
+	 *  highlighting to.
 	 */
 
-	function Highlighter() {
-		const self = this;
-		self.highlightTokenTimer = null;
-		self.utteranceHighlightingClass =
-			'ext-wikispeech-highlight-sentence';
-		self.utteranceHighlightingSelector =
-			'.' + self.utteranceHighlightingClass;
+	this.highlightUtterance = function ( utterance ) {
+		const textNodes = utterance.content.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) );
+		// Class name is documented above
+		// eslint-disable-next-line mediawiki/class-doc
+		const span = $( '<span>' )
+			.addClass( self.utteranceHighlightingClass )
+			.get( 0 );
+		self.wrapTextNodes(
+			span,
+			textNodes,
+			utterance.startOffset,
+			utterance.endOffset
+		);
+		$( self.utteranceHighlightingSelector ).each( function ( i ) {
+			// Save the path to the text node, as it was before
+			// adding the span. This will no longer be the correct
+			// path, once the span is added. This enables adding
+			// token highlighting within the utterance
+			// highlighting.
+			this.textPath = utterance.content[ i ].path;
+		} );
+	};
 
-		/**
-		 * Highlight text associated with an utterance.
-		 *
-		 * Adds highlight spans to the text nodes from which the
-		 * tokens of the utterance were created. For first and last node,
-		 * it's possible that only part of the text is highlighted,
-		 * since they may contain start/end of next/previous
-		 * utterance.
-		 *
-		 * @param {Object} utterance The utterance to add
-		 *  highlighting to.
-		 */
+	/**
+	 * Wrap text nodes in an element.
+	 *
+	 * Each text node is wrapped in an individual copy of the
+	 * wrapper element. The first and last node will be partially
+	 * wrapped, based on the offset values.
+	 *
+	 * @param {HTMLElement} wrapper The element used to wrap the
+	 *  text nodes.
+	 * @param {Text[]} textNodes The text nodes to wrap.
+	 * @param {number} startOffset The start offset in the first
+	 *  text node.
+	 * @param {number} endOffset The end offset in the last text
+	 *  node.
+	 */
 
-		this.highlightUtterance = function ( utterance ) {
-			const textNodes = utterance.content.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) );
-			// Class name is documented above
-			// eslint-disable-next-line mediawiki/class-doc
-			const span = $( '<span>' )
-				.addClass( self.utteranceHighlightingClass )
-				.get( 0 );
-			self.wrapTextNodes(
-				span,
-				textNodes,
-				utterance.startOffset,
-				utterance.endOffset
-			);
-			$( self.utteranceHighlightingSelector ).each( function ( i ) {
-				// Save the path to the text node, as it was before
-				// adding the span. This will no longer be the correct
-				// path, once the span is added. This enables adding
-				// token highlighting within the utterance
-				// highlighting.
-				this.textPath = utterance.content[ i ].path;
-			} );
-		};
+	this.wrapTextNodes = function (
+		wrapper,
+		textNodes,
+		startOffset,
+		endOffset
+	) {
+		let $nodesToWrap = $();
+		const firstNode = textNodes[ 0 ];
+		if ( textNodes.length === 1 ) {
+			// If there is only one node that should be wrapped,
+			// split it twice; once for the start and once for the
+			// end offset.
+			firstNode.splitText( startOffset );
+			firstNode.nextSibling.splitText( endOffset + 1 - startOffset );
+			$nodesToWrap = $nodesToWrap.add( firstNode.nextSibling );
+		} else {
+			firstNode.splitText( startOffset );
+			// The first half of a split node remains as the
+			// original node. Since we want the second half, we add
+			// the following node.
+			$nodesToWrap = $nodesToWrap.add( firstNode.nextSibling );
+			for ( let i = 1; i < textNodes.length - 1; i++ ) {
+				const node = textNodes[ i ];
+				// Wrap all the nodes between first and last
+				// completely.
+				$nodesToWrap = $nodesToWrap.add( node );
+			}
+			const lastNode = textNodes[ textNodes.length - 1 ];
+			lastNode.splitText( endOffset + 1 );
+			$nodesToWrap = $nodesToWrap.add( lastNode );
+		}
+		$nodesToWrap.wrap( wrapper );
+	};
 
-		/**
-		 * Wrap text nodes in an element.
-		 *
-		 * Each text node is wrapped in an individual copy of the
-		 * wrapper element. The first and last node will be partially
-		 * wrapped, based on the offset values.
-		 *
-		 * @param {HTMLElement} wrapper The element used to wrap the
-		 *  text nodes.
-		 * @param {Text[]} textNodes The text nodes to wrap.
-		 * @param {number} startOffset The start offset in the first
-		 *  text node.
-		 * @param {number} endOffset The end offset in the last text
-		 *  node.
-		 */
+	/**
+	 * Highlight a token in the original HTML.
+	 *
+	 * What part of the HTML to wrap is calculated from a token.
+	 *
+	 * @param {Object} token The token used to calculate what part
+	 *  to highlight.
+	 */
 
-		this.wrapTextNodes = function (
-			wrapper,
+	this.startTokenHighlighting = function ( token ) {
+		self.removeWrappers( '.ext-wikispeech-highlight-word' );
+		self.clearHighlightTokenTimer();
+		self.highlightToken( token );
+		self.setHighlightTokenTimer( token );
+	};
+
+	/**
+	 * Highlight a token in the original HTML.
+	 *
+	 * What part of the HTML to wrap is calculated from a token.
+	 *
+	 * @param {Object} token The token used to calculate what part
+	 *  to highlight.
+	 */
+
+	this.highlightToken = function ( token ) {
+		const span = $( '<span>' )
+			.addClass( 'ext-wikispeech-highlight-word' )
+			.get( 0 );
+		const textNodes = token.items.map( ( item ) => {
+			let textNode;
+
+			if ( $( self.utteranceHighlightingSelector ).length ) {
+				// Add the token highlighting within the
+				// utterance highlightings, if there are any.
+				textNode = self.getNodeInUtteranceHighlighting(
+					item
+				);
+			} else {
+				textNode = mw.wikispeech.storage.getNodeForItem( item );
+			}
+			return textNode;
+		} );
+		let startOffset = token.startOffset;
+		let endOffset = token.endOffset;
+		if (
+			$( self.utteranceHighlightingSelector ).length &&
+				token.items[ 0 ] === token.utterance.content[ 0 ]
+		) {
+			// Modify the offset if the token is the first in the
+			// utterance and there is an utterance
+			// highlighting. The text node may have been split
+			// when the utterance highlighting was applied.
+			startOffset -= token.utterance.startOffset;
+			endOffset -= token.utterance.startOffset;
+		}
+		self.wrapTextNodes(
+			span,
 			textNodes,
 			startOffset,
 			endOffset
-		) {
-			let $nodesToWrap = $();
-			const firstNode = textNodes[ 0 ];
-			if ( textNodes.length === 1 ) {
-				// If there is only one node that should be wrapped,
-				// split it twice; once for the start and once for the
-				// end offset.
-				firstNode.splitText( startOffset );
-				firstNode.nextSibling.splitText( endOffset + 1 - startOffset );
-				$nodesToWrap = $nodesToWrap.add( firstNode.nextSibling );
-			} else {
-				firstNode.splitText( startOffset );
-				// The first half of a split node remains as the
-				// original node. Since we want the second half, we add
-				// the following node.
-				$nodesToWrap = $nodesToWrap.add( firstNode.nextSibling );
-				for ( let i = 1; i < textNodes.length - 1; i++ ) {
-					const node = textNodes[ i ];
-					// Wrap all the nodes between first and last
-					// completely.
-					$nodesToWrap = $nodesToWrap.add( node );
-				}
-				const lastNode = textNodes[ textNodes.length - 1 ];
-				lastNode.splitText( endOffset + 1 );
-				$nodesToWrap = $nodesToWrap.add( lastNode );
-			}
-			$nodesToWrap.wrap( wrapper );
-		};
+		);
+	};
 
-		/**
-		 * Highlight a token in the original HTML.
-		 *
-		 * What part of the HTML to wrap is calculated from a token.
-		 *
-		 * @param {Object} token The token used to calculate what part
-		 *  to highlight.
-		 */
+	/**
+	 * Get text node, within utterance highlighting, for an item.
+	 *
+	 * @param {Object} item The item to get text node for.
+	 */
 
-		this.startTokenHighlighting = function ( token ) {
-			self.removeWrappers( '.ext-wikispeech-highlight-word' );
-			self.clearHighlightTokenTimer();
-			self.highlightToken( token );
-			self.setHighlightTokenTimer( token );
-		};
+	this.getNodeInUtteranceHighlighting = function ( item ) {
+		// Get the text node from the utterance highlighting that
+		// wrapped the node for `textElement`.
+		const textNode = $( self.utteranceHighlightingSelector )
+			.filter( function () {
+				return this.textPath ===
+					item.path;
+			} )
+			.contents()
+			.get( 0 );
+		return textNode;
+	};
 
-		/**
-		 * Highlight a token in the original HTML.
-		 *
-		 * What part of the HTML to wrap is calculated from a token.
-		 *
-		 * @param {Object} token The token used to calculate what part
-		 *  to highlight.
-		 */
+	/**
+	 * Set a timer for when the next token should be highlighted.
+	 *
+	 * @param {Object} token The original token. The timer is set
+	 *  for the token following this one.
+	 */
 
-		this.highlightToken = function ( token ) {
-			const span = $( '<span>' )
-				.addClass( 'ext-wikispeech-highlight-word' )
-				.get( 0 );
-			const textNodes = token.items.map( ( item ) => {
-				let textNode;
-
-				if ( $( self.utteranceHighlightingSelector ).length ) {
-					// Add the token highlighting within the
-					// utterance highlightings, if there are any.
-					textNode = self.getNodeInUtteranceHighlighting(
-						item
+	this.setHighlightTokenTimer = function ( token ) {
+		const currentTime = token.utterance.audio.currentTime * 1000;
+		// The duration of the timer is the duration of the
+		// current token.
+		const duration = token.endTime - currentTime;
+		const nextToken = mw.wikispeech.storage.getNextToken( token );
+		if ( nextToken ) {
+			self.highlightTokenTimer = window.setTimeout(
+				() => {
+					self.removeWrappers(
+						'.ext-wikispeech-highlight-word'
 					);
-				} else {
-					textNode = mw.wikispeech.storage.getNodeForItem( item );
-				}
-				return textNode;
-			} );
-			let startOffset = token.startOffset;
-			let endOffset = token.endOffset;
-			if (
-				$( self.utteranceHighlightingSelector ).length &&
-					token.items[ 0 ] === token.utterance.content[ 0 ]
-			) {
-				// Modify the offset if the token is the first in the
-				// utterance and there is an utterance
-				// highlighting. The text node may have been split
-				// when the utterance highlighting was applied.
-				startOffset -= token.utterance.startOffset;
-				endOffset -= token.utterance.startOffset;
-			}
-			self.wrapTextNodes(
-				span,
-				textNodes,
-				startOffset,
-				endOffset
+					self.highlightToken( nextToken );
+					// Add a new timer for the next token, when it
+					// starts playing.
+					self.setHighlightTokenTimer( nextToken );
+				},
+				duration / mw.user.options.get( 'wikispeechSpeechRate' )
 			);
-		};
+		}
+	};
 
-		/**
-		 * Get text node, within utterance highlighting, for an item.
-		 *
-		 * @param {Object} item The item to get text node for.
-		 */
+	/**
+	 * Remove elements wrapping text nodes.
+	 *
+	 * Restores the text nodes to the way they were before they
+	 * were wrapped.
+	 *
+	 * @param {string} wrapperSelector The selector for the
+	 *  elements to remove
+	 */
 
-		this.getNodeInUtteranceHighlighting = function ( item ) {
-			// Get the text node from the utterance highlighting that
-			// wrapped the node for `textElement`.
-			const textNode = $( self.utteranceHighlightingSelector )
-				.filter( function () {
-					return this.textPath ===
-						item.path;
-				} )
-				.contents()
-				.get( 0 );
-			return textNode;
-		};
+	this.removeWrappers = function ( wrapperSelector ) {
+		const parents = [];
+		const $span = $( wrapperSelector );
+		$span.each( function () {
+			parents.push( this.parentNode );
+		} );
+		$span.contents().unwrap();
+		if ( parents.length > 0 ) {
+			// Merge first and last text nodes, if the original was
+			// divided by adding the <span>.
+			parents[ 0 ].normalize();
+			parents[ parents.length - 1 ].normalize();
+		}
+	};
 
-		/**
-		 * Set a timer for when the next token should be highlighted.
-		 *
-		 * @param {Object} token The original token. The timer is set
-		 *  for the token following this one.
-		 */
+	/**
+	 * Remove any sentence and word highlighting.
+	 */
 
-		this.setHighlightTokenTimer = function ( token ) {
-			const currentTime = token.utterance.audio.currentTime * 1000;
-			// The duration of the timer is the duration of the
-			// current token.
-			const duration = token.endTime - currentTime;
-			const nextToken = mw.wikispeech.storage.getNextToken( token );
-			if ( nextToken ) {
-				self.highlightTokenTimer = window.setTimeout(
-					() => {
-						self.removeWrappers(
-							'.ext-wikispeech-highlight-word'
-						);
-						self.highlightToken( nextToken );
-						// Add a new timer for the next token, when it
-						// starts playing.
-						self.setHighlightTokenTimer( nextToken );
-					},
-					duration / mw.user.options.get( 'wikispeechSpeechRate' )
-				);
-			}
-		};
+	this.clearHighlighting = function () {
+		// Remove sentence highlighting.
+		self.removeWrappers( '.ext-wikispeech-highlight-sentence' );
+		// Remove word highlighting.
+		self.removeWrappers( '.ext-wikispeech-highlight-word' );
+		self.clearHighlightTokenTimer();
+	};
 
-		/**
-		 * Remove elements wrapping text nodes.
-		 *
-		 * Restores the text nodes to the way they were before they
-		 * were wrapped.
-		 *
-		 * @param {string} wrapperSelector The selector for the
-		 *  elements to remove
-		 */
+	/**
+	 * Clear the timer for highlighting tokens.
+	 */
 
-		this.removeWrappers = function ( wrapperSelector ) {
-			const parents = [];
-			const $span = $( wrapperSelector );
-			$span.each( function () {
-				parents.push( this.parentNode );
-			} );
-			$span.contents().unwrap();
-			if ( parents.length > 0 ) {
-				// Merge first and last text nodes, if the original was
-				// divided by adding the <span>.
-				parents[ 0 ].normalize();
-				parents[ parents.length - 1 ].normalize();
-			}
-		};
+	this.clearHighlightTokenTimer = function () {
+		clearTimeout( self.highlightTokenTimer );
+	};
+}
 
-		/**
-		 * Remove any sentence and word highlighting.
-		 */
-
-		this.clearHighlighting = function () {
-			// Remove sentence highlighting.
-			self.removeWrappers( '.ext-wikispeech-highlight-sentence' );
-			// Remove word highlighting.
-			self.removeWrappers( '.ext-wikispeech-highlight-word' );
-			self.clearHighlightTokenTimer();
-		};
-
-		/**
-		 * Clear the timer for highlighting tokens.
-		 */
-
-		this.clearHighlightTokenTimer = function () {
-			clearTimeout( self.highlightTokenTimer );
-		};
-	}
-
-	mw.wikispeech = mw.wikispeech || {};
-	mw.wikispeech.highlighter = new Highlighter();
-	mw.wikispeech.Highlighter = Highlighter;
-}() );
+mw.wikispeech = mw.wikispeech || {};
+mw.wikispeech.highlighter = new Highlighter();
+mw.wikispeech.Highlighter = Highlighter;

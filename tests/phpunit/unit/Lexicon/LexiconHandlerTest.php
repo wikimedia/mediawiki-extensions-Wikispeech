@@ -40,11 +40,11 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$this->mockedLexiconEntry->setKey( 'tomten' );
 
 		$mockedEntryItem0 = new LexiconEntryItem();
-		$mockedEntryItem0->setProperties( [ 'id' => 0 ] );
+		$mockedEntryItem0->setProperties( (object)[ 'id' => 0 ] );
 		$this->mockedLexiconEntry->addItem( $mockedEntryItem0 );
 
 		$mockedEntryItem1 = new LexiconEntryItem();
-		$mockedEntryItem1->setProperties( [ 'id' => 1 ] );
+		$mockedEntryItem1->setProperties( (object)[ 'id' => 1 ] );
 		$this->mockedLexiconEntry->addItem( $mockedEntryItem1 );
 	}
 
@@ -96,13 +96,13 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	 */
 	public function testGetEntry_localOnlyAndIntersecting_fails() {
 		$intersectingItem = new LexiconEntryItem();
-		$intersectingItem->setProperties( [
+		$intersectingItem->setProperties( (object)[
 			'id' => 0,
 			'foo' => 'bar'
 		] );
 
 		$localOnlyItem = new LexiconEntryItem();
-		$localOnlyItem->setProperties( [
+		$localOnlyItem->setProperties( (object)[
 			'id' => 0,
 			'foo' => 'bass'
 		] );
@@ -147,13 +147,13 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	 */
 	public function testGetEntry_speechoidOnlyAndIntersecting_mergedAll() {
 		$intersectingItem = new LexiconEntryItem();
-		$intersectingItem->setProperties( [
+		$intersectingItem->setProperties( (object)[
 			'id' => 0,
 			'foo' => 'bar'
 		] );
 
 		$speechoidOnlyItem = new LexiconEntryItem();
-		$speechoidOnlyItem->setProperties( [
+		$speechoidOnlyItem->setProperties( (object)[
 			'id' => 1,
 			'foo' => 'bar'
 		] );
@@ -203,7 +203,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	 */
 	public function testGetEntry_reinstalledSpeechoidLexicon_fails() {
 		$localItem = new LexiconEntryItem();
-		$localItem->setProperties( [
+		$localItem->setProperties( (object)[
 			'id' => 123,
 			'foo' => 'locally changed before reinstall of Speechoid',
 			'status' => [
@@ -213,7 +213,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		] );
 
 		$speechoidItem = new LexiconEntryItem();
-		$speechoidItem->setProperties( [
+		$speechoidItem->setProperties( (object)[
 			'id' => 123,
 			'foo' => 'reinstalled',
 			'status' => [
@@ -261,7 +261,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 
 	public function testCreateEntryItem_nonExisting_createdInLocalAndSpeechoid() {
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'no identity' => 'none set' ] );
+		$item->setProperties( (object)[ 'no identity' => 'none set' ] );
 
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
@@ -296,7 +296,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 
 	public function testUpdateEntryItem_existingInBoth_updatedInBoth() {
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'id' => 0 ] );
+		$item->setProperties( (object)[ 'id' => 0 ] );
 
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
@@ -343,12 +343,12 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
 
 		$item1 = new LexiconEntryItem();
-		$item1->setProperties( [
+		$item1->setProperties( (object)[
 			'id' => 0,
 			'preferred' => true
 		] );
 		$item2 = new LexiconEntryItem();
-		$item2->setProperties( [ 'id' => 1 ] );
+		$item2->setProperties( (object)[ 'id' => 1 ] );
 		$localEntry = new LexiconEntry();
 		$localEntry->setKey( 'tomten' );
 		$localEntry->setLanguage( 'sv' );
@@ -362,9 +362,9 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			->willReturn( true );
 
 		$newItem1 = new LexiconEntryItem();
-		$newItem1->setProperties( [ 'id' => 0 ] );
+		$newItem1->setProperties( (object)[ 'id' => 0 ] );
 		$newItem2 = new LexiconEntryItem();
-		$newItem2->setProperties( [
+		$newItem2->setProperties( (object)[
 			'id' => 1,
 			'preferred' => true
 		] );
@@ -392,13 +392,13 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
 
 		$item1 = new LexiconEntryItem();
-		$item1->setProperties( [
+		$item1->setProperties( (object)[
 			'id' => 0,
 			'preferred' => true,
 			'parameter' => 'old'
 		] );
 		$item2 = new LexiconEntryItem();
-		$item2->setProperties( [ 'id' => 1 ] );
+		$item2->setProperties( (object)[ 'id' => 1 ] );
 		$localEntry = new LexiconEntry();
 		$localEntry->setKey( 'tomten' );
 		$localEntry->setLanguage( 'sv' );
@@ -412,7 +412,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			->willReturn( true );
 
 		$newItem1 = new LexiconEntryItem();
-		$newItem1->setProperties( [
+		$newItem1->setProperties( (object)[
 			'id' => 0,
 			'preferred' => true,
 			'parameter' => 'new'
@@ -436,7 +436,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
 
 		$item1 = new LexiconEntryItem();
-		$item1->setProperties( [
+		$item1->setProperties( (object)[
 			'id' => 0,
 			'preferred' => true
 		] );
@@ -454,13 +454,13 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			->willReturn( true );
 
 		$newItem1 = new LexiconEntryItem();
-		$newItem1->setProperties( [ 'id' => 0 ] );
+		$newItem1->setProperties( (object)[ 'id' => 0 ] );
 		$newItem2 = new LexiconEntryItem();
-		$newItem2->setProperties( [
+		$newItem2->setProperties( (object)[
 			'preferred' => true
 		] );
 		$newItem2WithId = new LexiconEntryItem();
-		$newItem2WithId->setProperties( [
+		$newItem2WithId->setProperties( (object)[
 			'id' => 1,
 			'preferred' => true
 		] );
@@ -488,11 +488,11 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$entryCurrent->setKey( 'tomten' );
 		$entryCurrent->setLanguage( 'sv' );
 		$itemCurrent = new LexiconEntryItem();
-		$itemCurrent->setProperties( [ 'id' => 0, 'value' => 'initial' ] );
+		$itemCurrent->setProperties( (object)[ 'id' => 0, 'value' => 'initial' ] );
 		$entryCurrent->setItems( [ $itemCurrent ] );
 
 		$item = new LexiconEntryItem();
-		$item->setProperties( [ 'id' => 0, 'value' => 'updated' ] );
+		$item->setProperties( (object)[ 'id' => 0, 'value' => 'updated' ] );
 
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock

@@ -436,7 +436,7 @@ class SpeechoidConnector {
 		if ( !$responseString ) {
 			throw new SpeechoidConnectorException( "Unable to communicate with Speechoid.  '$url'" );
 		}
-		return FormatJson::parse( $responseString, FormatJson::FORCE_ASSOC );
+		return FormatJson::parse( $responseString );
 	}
 
 	/**

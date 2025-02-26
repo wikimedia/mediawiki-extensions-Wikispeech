@@ -22,7 +22,7 @@ use FormatJson;
  * @since 0.1.8
  */
 class LexiconEntryItem {
-	/** @var array|null Associative array. Deserialized Speechoid JSON entry */
+	/** @var \stdClass|null stdClass - object. Deserialized Speechoid JSON entry */
 	private $properties;
 
 	/**
@@ -35,17 +35,17 @@ class LexiconEntryItem {
 
 	/**
 	 * @since 0.1.8
-	 * @return array|null
+	 * @return \stdClass|null
 	 */
-	public function getProperties(): ?array {
+	public function getProperties(): ?\stdClass {
 		return $this->properties;
 	}
 
 	/**
 	 * @since 0.1.8
-	 * @param array|null $properties
+	 * @param \stdClass|null $properties
 	 */
-	public function setProperties( ?array $properties ): void {
+	public function setProperties( ?\stdClass $properties ): void {
 		$this->properties = $properties;
 	}
 
@@ -64,7 +64,7 @@ class LexiconEntryItem {
 			return '';
 		}
 
-		return $this->properties['transcriptions'][0]['strn'];
+		return $this->properties->transcriptions[0]->strn;
 	}
 
 	/**
@@ -76,12 +76,11 @@ class LexiconEntryItem {
 	public function getPreferred(): bool {
 		if (
 			$this->properties === null ||
-			!array_key_exists( 'preferred', $this->properties )
+			!property_exists( $this->properties, 'preferred' )
 		) {
 			return false;
 		}
-
-		return $this->properties['preferred'];
+		return $this->properties->preferred;
 	}
 
 	/**
@@ -94,7 +93,7 @@ class LexiconEntryItem {
 			return;
 		}
 
-		unset( $this->properties['preferred'] );
+		unset( $this->properties->preferred );
 	}
 
 	// access helpers.
@@ -117,8 +116,8 @@ class LexiconEntryItem {
 	 */
 	public function getSpeechoidIdentity(): ?int {
 		$properties = $this->getProperties();
-		return $properties !== null && array_key_exists( 'id', $properties )
-			? $properties['id'] : null;
+		return $properties !== null && property_exists( $properties, 'id' )
+			? $properties->id : null;
 	}
 
 	/**
@@ -126,10 +125,6 @@ class LexiconEntryItem {
 	 * @return string Empty if JSON encoding failed.
 	 */
 	public function toJson(): string {
-		// @todo Handle empty objects properly TT279916
-		if ( isset( $this->properties['lemma'] ) ) {
-			$this->properties['lemma'] = (object)$this->properties['lemma'];
-		}
 		$json = FormatJson::encode( $this->properties, true );
 		return $json ?: '';
 	}

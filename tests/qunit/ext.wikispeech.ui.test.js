@@ -70,6 +70,7 @@ QUnit.test( 'addEditButton(): add edit button with link to local URL', function 
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
 		'/wiki/index.php?title=Special%3AEditLexicon&language=en&page=1',
+		mw.msg( 'wikispeech-edit-lexicon-btn' ),
 		null,
 		'wikispeech-edit'
 	);
@@ -91,6 +92,7 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL', fu
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
 		'http://producer.url/w/index.php?title=Special%3AEditLexicon&language=en&page=1',
+		mw.msg( 'wikispeech-edit-lexicon-btn' ),
 		null,
 		'wikispeech-edit'
 	);

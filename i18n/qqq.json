@@ -48,5 +48,13 @@
 	"wikispeech-lexicon-copyrightnote": "Displayed on Special:EditLexicon under the submit button.",
 	"group-wikispeech-edit-lexicon": "{{doc-group|wikispeech-edit-lexicon}}",
 	"group-wikispeech-edit-lexicon-member": "{{doc-group|wikispeech-edit-lexicon|member}}",
-	"grouppage-wikispeech-edit-lexicon": "{{notranslate}}\n{{doc-group|wikispeech-edit-lexicon|page}}"
+	"grouppage-wikispeech-edit-lexicon": "{{notranslate}}\n{{doc-group|wikispeech-edit-lexicon|page}}",
+	"wikispeech-skip-back": "Wikispeech player button to skip back",
+	"wikispeech-previous": "Wikispeech player button to go previous",
+	"wikispeech-play": "Wikispeech player button to play",
+	"wikispeech-next": "Wikispeech player button to go next",
+	"wikispeech-skip-ahead": "Wikispeech player button to skip ahead",
+	"wikispeech-help": "Wikispeech player button to get help",
+	"wikispeech-feedback": "Wikispeech player button to send feedback",
+	"wikispeech-edit-lexicon-btn": "Wikispeech player button to edit lexicon"
 }

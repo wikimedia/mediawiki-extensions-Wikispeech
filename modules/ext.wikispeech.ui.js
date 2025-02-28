@@ -47,40 +47,48 @@ function Ui() {
 		self.addButton(
 			playerGroup,
 			'first',
-			mw.wikispeech.player.skipBackUtterance
+			mw.wikispeech.player.skipBackUtterance,
+			mw.msg( 'wikispeech-skip-back' )
 		);
 		self.addButton(
 			playerGroup,
 			'previous',
-			mw.wikispeech.player.skipBackToken
+			mw.wikispeech.player.skipBackToken,
+			mw.msg( 'wikispeech-previous' )
 		);
 		self.playStopButton = self.addButton(
 			playerGroup,
 			'play',
 			mw.wikispeech.player.playOrStop,
+			mw.msg( 'wikispeech-play' ),
 			[ 'ext-wikispeech-play-stop' ]
 		);
 		self.addButton(
 			playerGroup,
 			'next',
-			mw.wikispeech.player.skipAheadToken
+			mw.wikispeech.player.skipAheadToken,
+			mw.msg( 'wikispeech-next' )
 		);
 		self.addButton(
 			playerGroup,
 			'last',
-			mw.wikispeech.player.skipAheadUtterance
+			mw.wikispeech.player.skipAheadUtterance,
+			mw.msg( 'wikispeech-skip-ahead' )
 		);
 
 		self.linkGroup = self.addToolbarGroup();
 		self.addLinkConfigButton(
 			self.linkGroup,
 			'help',
-			'wgWikispeechHelpPage'
+			'wgWikispeechHelpPage',
+			mw.msg( 'wikispeech-help' )
 		);
 		self.addLinkConfigButton(
 			self.linkGroup,
 			'feedback',
-			'wgWikispeechFeedbackPage'
+			'wgWikispeechFeedbackPage',
+			mw.msg( 'wikispeech-feedback' )
+
 		);
 		const api = new mw.Api();
 		api.getUserInfo()
@@ -136,6 +144,7 @@ function Ui() {
 			self.linkGroup,
 			'edit',
 			editUrl,
+			mw.msg( 'wikispeech-edit-lexicon-btn' ),
 			null,
 			'wikispeech-edit'
 		);
@@ -164,7 +173,7 @@ function Ui() {
 	 * @return {OO.ui.ButtonWidget}
 	 */
 
-	this.addButton = function ( group, icon, onClick, classes, id ) {
+	this.addButton = function ( group, icon, onClick, ariaLabel, classes, id ) {
 		// eslint-disable-next-line mediawiki/class-doc
 		const button = new OO.ui.ButtonWidget( {
 			icon: icon,
@@ -177,6 +186,9 @@ function Ui() {
 			button.setHref( onClick );
 			// Open link in new tab or window.
 			button.setTarget( '_blank' );
+		}
+		if ( ariaLabel ) {
+			button.$element.find( 'a' ).attr( 'aria-label', ariaLabel );
 		}
 		group.addItems( [ button ] );
 		return button;
@@ -282,10 +294,10 @@ function Ui() {
 	 *  link destination from.
 	 */
 
-	this.addLinkConfigButton = function ( group, icon, configVariable ) {
+	this.addLinkConfigButton = function ( group, icon, configVariable, ariaLabel ) {
 		const url = mw.config.get( configVariable );
 		if ( url ) {
-			self.addButton( group, icon, url );
+			self.addButton( group, icon, url, ariaLabel );
 		}
 	};
 

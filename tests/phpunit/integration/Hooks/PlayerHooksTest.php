@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Wikispeech\Tests;
+namespace MediaWiki\Wikispeech\Tests\Integration\Hooks;
 
 /**
  * @file

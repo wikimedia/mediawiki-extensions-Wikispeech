@@ -50,6 +50,7 @@
 	"wikispeech-lexicon-new": "Label for creating new entry in Special:EditLexicon.\nSee also:\n{{identical|New}}",
 	"wikispeech-lexicon-edit-entry-success": "Displayed on the success page after editing a lexicon entry with Special:EditLexicon.",
 	"wikispeech-lexicon-copyrightnote": "Displayed on Special:EditLexicon under the submit button.",
+	"wikispeech-lexicon-null-edit": "Warning for when a user haven't made any changes to a lexicon post they submitted for editing.",
 	"group-wikispeech-edit-lexicon": "{{doc-group|wikispeech-edit-lexicon}}",
 	"group-wikispeech-edit-lexicon-member": "{{doc-group|wikispeech-edit-lexicon|member}}",
 	"grouppage-wikispeech-edit-lexicon": "{{notranslate}}\n{{doc-group|wikispeech-edit-lexicon|page}}",

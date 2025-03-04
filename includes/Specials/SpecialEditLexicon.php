@@ -16,6 +16,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
+use MediaWiki\Wikispeech\Lexicon\NullEditLexiconException;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MWException;
@@ -433,8 +434,9 @@ class SpecialEditLexicon extends SpecialPage {
 			if ( $item === null ) {
 				throw new MWException( "No item with id '$id' found." );
 			}
+
 			$properties = $item->getProperties();
-			$properties->transcriptions = [ (object)[ 'strn' => $sampa ] ];
+			$properties->transcriptions[0]->strn = $sampa;
 			if ( $preferred ) {
 				$properties->preferred = true;
 			} else {
@@ -442,11 +444,21 @@ class SpecialEditLexicon extends SpecialPage {
 			}
 
 			$item->setProperties( $properties );
-			$this->lexiconStorage->updateEntryItem(
-				$language,
-				$word,
-				$item
-			);
+			try {
+				$this->lexiconStorage->updateEntryItem(
+					$language,
+					$word,
+					$item
+				);
+			} catch ( NullEditLexiconException $e ) {
+				$this->getOutput()->addHtml(
+					Html::warningBox(
+						$this->msg( 'wikispeech-lexicon-null-edit' )->parse()
+				   )
+				);
+				return false;
+			}
+
 		}
 		// Item is updated by createEntryItem(), so we just need to
 		// store it.

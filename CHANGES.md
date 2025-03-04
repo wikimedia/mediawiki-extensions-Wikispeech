@@ -36,6 +36,7 @@ Speechoid: 0.1.2
 
 * [T311047](https://phabricator.wikimedia.org/T311047) Add a view link to edit lexicon entries as raw text
 * [T308562](https://phabricator.wikimedia.org/T308562) Shows error messages on Special:EditLexicon
+* [T315565](https://phabricator.wikimedia.org/T315565) Avoid null edits to Lexicon, shows warning box
 * [T245052](https://phabricator.wikimedia.org/T245052) Add Aria-labels to player buttons to work with screenreaders
 * [T279916](https://phabricator.wikimedia.org/T279916) Fix empty objects being turned into empty arrays when handling entries
 * [T279412](https://phabricator.wikimedia.org/T279412) Add link to help page for Special:EditLexicon

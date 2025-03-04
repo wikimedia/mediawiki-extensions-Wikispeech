@@ -301,9 +301,6 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
 			->expects( $this->never() )
-			->method( 'getEntry' );
-		$speechoidMock
-			->expects( $this->never() )
 			->method( 'createEntryItem' );
 		$speechoidMock
 			->expects( $this->once() )
@@ -496,7 +493,6 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
-			->expects( $this->once() )
 			->method( 'getEntry' )
 			->with( 'sv', 'tomten' )
 			->willReturn( $entryCurrent );

@@ -203,6 +203,20 @@ class LexiconHandler implements LexiconStorage {
 		}
 		$itemSpeechoidIdentity = $item->getSpeechoidIdentity();
 		$wasPreferred = false;
+
+		// will check if the entry already exists in speechoid storage and has the same properties
+		// if the item exists with the same ID, then compare to decide if it should be updated or not
+		if ( $itemSpeechoidIdentity !== null ) {
+			$currentEntry = $this->speechoidStorage->getEntry( $language, $key );
+			if ( $currentEntry !== null ) {
+				$currentItem = $currentEntry->findItemBySpeechoidIdentity( $itemSpeechoidIdentity );
+				if ( $currentItem !== null && $currentItem->getProperties() == $item->getProperties() ) {
+					throw new NullEditLexiconException();
+				}
+				$wasPreferred = $currentItem ? $currentItem->getPreferred() : false;
+			}
+		}
+
 		if ( $itemSpeechoidIdentity === null ) {
 			$this->speechoidStorage->createEntryItem( $language, $key, $item );
 			$this->localStorage->createEntryItem( $language, $key, $item );

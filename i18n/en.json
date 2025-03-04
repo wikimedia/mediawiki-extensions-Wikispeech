@@ -48,6 +48,7 @@
 	"group-wikispeech-edit-lexicon": "Wikispeech lexicon editors",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech lexicon editor}}",
 	"grouppage-wikispeech-edit-lexicon": "{{ns:project}}:Wikispeech lexicon editors",
+	"wikispeech-lexicon-null-edit": "No relevant changes detected in transcription or preferred status.",
 	"wikispeech-skip-back": "Skip back",
 	"wikispeech-previous": "Previous",
 	"wikispeech-play": "Play",

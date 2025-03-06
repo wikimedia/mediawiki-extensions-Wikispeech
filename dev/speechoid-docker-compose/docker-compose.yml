@@ -20,7 +20,7 @@ services:
       - "1200"
 
   mishkal:
-    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-mishkal:2022-06-08-131001-production
+    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-mishkal:2025-01-21-125334-production
     expose:
       - "8080"
     entrypoint: ./interfaces/web/mishkal-webserver.py

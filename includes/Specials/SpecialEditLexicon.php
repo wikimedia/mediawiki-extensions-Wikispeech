@@ -10,9 +10,11 @@ namespace MediaWiki\Wikispeech\Specials;
 
 use Exception;
 use HTMLForm;
+use InvalidArgumentException;
 use MediaWiki\Html\Html;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Wikispeech\Lexicon\ConfiguredLexiconStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
@@ -20,6 +22,7 @@ use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MWException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use SpecialPage;
 
 /**
@@ -90,21 +93,76 @@ class SpecialEditLexicon extends SpecialPage {
 			);
 			return;
 		}
+
 		$request = $this->getRequest();
 		$language = $request->getText( 'language' );
 		$word = $request->getText( 'word' );
+
+		try {
+			$this->lexiconStorage->getEntry( $language, $word );
+			$formData = $this->formSteps( $language, $word );
+		} catch ( RuntimeException $e ) {
+			$this->getOutput()->addHtml( Html::errorBox(
+				$this->msg( 'wikispeech-lexicon-sync-error' )->parse()
+			) );
+
+			$formData = $this->getSyncFields( $language, $word );
+		}
+
+		$fields = $formData['fields'];
+		$formId = $formData['formId'];
+		$submitMessage = $formData['submitMessage'];
+		$submitCb = $formData['submitCb'];
+
+		$copyrightNote = $this->msg( 'wikispeech-lexicon-copyrightnote' )->parse();
+		$this->postHtml .= Html::rawElement( 'p', [], $copyrightNote );
+
+		$form = HTMLForm::factory(
+			'ooui',
+			$fields,
+			$this->getContext()
+		);
+
+		$form->setFormIdentifier( $formId );
+		$form->setSubmitCallback( [ $this, $submitCb ] );
+		$form->setSubmitTextMsg( $submitMessage );
+		$form->setPostHtml( $this->postHtml );
+
+		if ( $form->show() ) {
+			if ( $formId === 'editItem' ) {
+				$this->success( 'wikispeech-lexicon-edit-entry-success' );
+			} else {
+				$this->success( 'wikispeech-lexicon-add-entry-success' );
+			}
+		}
+
+		$this->getOutput()->addModules( [
+			'ext.wikispeech.specialEditLexicon'
+		] );
+	}
+
+	/**
+	 * @since 0.1.11
+	 * @return array
+	 */
+	private function formSteps( string $language, string $word ) {
+		$request = $this->getRequest();
+		$formId = '';
+		$submitMessage = 'wikispeech-lexicon-next';
+		$submitCb = 'submit';
+
 		if ( $request->getText( 'id' ) === '' ) {
 			$id = '';
 		} else {
 			$id = $request->getIntOrNull( 'id' );
 		}
-		$entry = $this->lexiconStorage->getEntry( $language, $word );
-		$copyrightNote = $this->msg( 'wikispeech-lexicon-copyrightnote' )->parse();
-		$this->postHtml = Html::rawElement( 'p', [], $copyrightNote );
-		$successMessage = '';
 
-		$formId = '';
-		$submitMessage = 'wikispeech-lexicon-next';
+		try {
+			$entry = $this->lexiconStorage->getEntry( $language, $word );
+		} catch ( RuntimeException $e ) {
+			$entry = null;
+		}
+
 		if ( !$language || !$word ) {
 			$formId = 'lookup';
 			$fields = $this->getLookupFields();
@@ -112,7 +170,6 @@ class SpecialEditLexicon extends SpecialPage {
 			$formId = 'newEntry';
 			$fields = $this->getAddFields( $language, $word );
 			$submitMessage = 'wikispeech-lexicon-save';
-			$successMessage = 'wikispeech-lexicon-add-entry-success';
 		} elseif ( !in_array( 'id', $request->getValueNames() ) ) {
 			$formId = 'selectItem';
 			$fields = $this->getSelectFields( $language, $word, $entry );
@@ -120,15 +177,12 @@ class SpecialEditLexicon extends SpecialPage {
 			$formId = 'editItem';
 			$fields = $this->getEditFields( $language, $word, $id );
 			$submitMessage = 'wikispeech-lexicon-save';
-			$successMessage = 'wikispeech-lexicon-edit-entry-success';
 		} elseif ( $id === '' ) {
 			$formId = 'newItem';
 			$fields = $this->getAddFields( $language, $word );
 			$submitMessage = 'wikispeech-lexicon-save';
-			$successMessage = 'wikispeech-lexicon-add-entry-success';
 		} else {
-			// We have a set of parameters that we can't do anything
-			// with. Show the first page.
+			// We have a set of parameters that we can't do anything with. Show the first page.
 			$formId = 'lookup';
 			$fields = $this->getLookupFields();
 		}
@@ -145,22 +199,56 @@ class SpecialEditLexicon extends SpecialPage {
 				$fields[$name]['default'] = $value;
 			}
 		}
-		$form = HTMLForm::factory(
-			'ooui',
-			$fields,
-			$this->getContext()
-		);
-		$form->setFormIdentifier( $formId );
-		$form->setSubmitCallback( [ $this, 'submit' ] );
-		$form->setSubmitTextMsg( $submitMessage );
-		$form->setPostHtml( $this->postHtml );
-		if ( $form->show() && $successMessage ) {
-			$this->success( $successMessage );
-		}
 
-		$this->getOutput()->addModules( [
-			'ext.wikispeech.specialEditLexicon'
-		] );
+		return [
+			'fields' => $fields,
+			'formId' => $formId,
+			'submitMessage' => $submitMessage,
+			'submitCb' => $submitCb
+		];
+	}
+
+	/**
+	 * Overwrite the local entry with speechoid entry
+	 *
+	 * @since 0.1.11
+	 */
+	public function syncSubmit() {
+		if ( !$this->lexiconStorage instanceof ConfiguredLexiconStorage ) {
+			return;
+		}
+		$request = $this->getRequest();
+		$language = $request->getText( 'language' );
+		$word = $request->getText( 'word' );
+
+		try {
+
+			$localEntry = $this->lexiconStorage->getLocalEntry( $language, $word );
+
+			if ( $localEntry === null ) {
+				throw new RuntimeException( "Local entry is missing." );
+			}
+
+			foreach ( $localEntry->getItems() as $localEntryItem ) {
+				$speechoidId = $localEntryItem->getSpeechoidIdentity();
+				if ( !$speechoidId ) {
+					throw new InvalidArgumentException( "Cannot sync item without Speechoid identity" );
+				}
+				$this->lexiconStorage->syncEntryItem( $language, $word, $speechoidId );
+			}
+
+			$this->getOutput()->redirect(
+				$this->getPageTitle()->getFullURL( [
+					'language' => $language,
+					'word' => $word
+				] )
+			);
+
+		} catch ( InvalidArgumentException $e ) {
+			$this->getOutput()->addHtml( Html::errorBox(
+				$this->msg( 'wikispeech-lexicon-sync-error-unidentified' )
+			) );
+		}
 	}
 
 	/**
@@ -201,6 +289,35 @@ class SpecialEditLexicon extends SpecialPage {
 		$this->getOutput()->redirect( $loginUrl );
 
 		return true;
+	}
+
+	/**
+	 * Create a field descriptor for sync form data fields
+	 *
+	 * @param string $language
+	 * @param string $word
+	 * @since 0.1.11
+	 * @return array
+	 */
+	private function getSyncFields( $language, $word ): array {
+		$formData = [
+			'fields' => [
+				'language' => [
+					'type' => 'hidden',
+					'name' => 'language',
+					'default' => $language
+				],
+				'word' => [
+					'type' => 'hidden',
+					'name' => 'word',
+					'default' => $word
+				]
+			],
+			'formId' => 'syncForm',
+			'submitMessage' => $this->msg( 'wikispeech-lexicon-sync-error-button' ),
+			'submitCb' => "syncSubmit"
+		];
+		return $formData;
 	}
 
 	/**

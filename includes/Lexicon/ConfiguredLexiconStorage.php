@@ -8,6 +8,7 @@ namespace MediaWiki\Wikispeech\Lexicon;
  * @license GPL-2.0-or-later
  */
 
+use InvalidArgumentException;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\WikispeechServices;
 use MWException;
@@ -65,6 +66,22 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 	}
 
 	/**
+	 * Returns the local lexicon entry without considering any fallbacks.
+	 *
+	 * @since 0.1.11
+	 *
+	 * @param string $language
+	 * @param string $key
+	 * @return LexiconEntry|null
+	 */
+	public function getLocalEntry(
+		string $language,
+		string $key
+	): ?LexiconEntry {
+		return $this->decorated->getLocalEntry( $language, $key );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function createEntryItem(
@@ -95,5 +112,35 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 		LexiconEntryItem $item
 	): void {
 		$this->decorated->deleteEntryItem( $language, $key, $item );
+	}
+
+	/**
+	 * Synchronizes an entry item to both storages if applicable.
+	 * Only works if the decorated storage is a LexiconHandler.
+	 *
+	 * @since 0.1.11
+	 *
+	 * @param string $language
+	 * @param string $key
+	 * @param int $speechoidId
+	 * @throws InvalidArgumentException
+	 */
+	public function syncEntryItem(
+		string $language,
+		string $key,
+		int $speechoidId
+	): void {
+		if ( $this->decorated instanceof LexiconHandler ) {
+			if ( !$speechoidId ) {
+				throw new InvalidArgumentException(
+					"Cannot sync item without Speechoid identity"
+				);
+			}
+			$this->decorated->syncEntryItem( $language, $key, $speechoidId );
+		} else {
+			throw new InvalidArgumentException(
+				"Decorated lexicon storage is not of type LexiconHandler."
+			);
+		}
 	}
 }

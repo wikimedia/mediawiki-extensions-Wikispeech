@@ -8,8 +8,8 @@ namespace MediaWiki\Wikispeech\Specials;
  * @license GPL-2.0-or-later
  */
 
-use Html;
 use HTMLForm;
+use MediaWiki\Html\Html;
 use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;

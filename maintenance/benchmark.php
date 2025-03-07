@@ -12,11 +12,11 @@ use EmptyBagOStuff;
 use Maintenance;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\SegmentList;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MWException;
 use RequestContext;
-use Title;
 use WANObjectCache;
 
 /** @var string MediaWiki installation path */

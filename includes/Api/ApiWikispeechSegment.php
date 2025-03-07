@@ -15,8 +15,8 @@ use ConfigFactory;
 use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
+use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
-use Title;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 

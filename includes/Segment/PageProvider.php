@@ -8,7 +8,7 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
-use Title;
+use Mediawiki\Title\Title;
 
 /**
  * Handler for loading page content and properties.

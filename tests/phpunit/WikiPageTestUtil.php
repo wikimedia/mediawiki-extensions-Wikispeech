@@ -8,14 +8,14 @@ namespace MediaWiki\Wikispeech\Tests;
  * @license GPL-2.0-or-later
  */
 
-use CommentStoreComment;
 use FatalError;
+use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\RevisionSlotsUpdate;
+use Mediawiki\Title\Title;
 use MWException;
 use TestUserRegistry;
-use Title;
 use WikiPage;
 use WikitextContent;
 

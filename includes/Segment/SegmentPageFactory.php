@@ -14,8 +14,8 @@ use InvalidArgumentException;
 use LogicException;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
+use Mediawiki\Title\Title;
 use MWException;
-use Title;
 use WANObjectCache;
 
 /**

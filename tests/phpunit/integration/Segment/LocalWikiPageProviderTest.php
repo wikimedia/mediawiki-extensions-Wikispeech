@@ -11,13 +11,13 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
 use ConfigFactory;
 use HashBagOStuff;
 use MediaWiki\Revision\RevisionStore;
+use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\Tests\WikiPageTestUtil;
 use MediaWikiIntegrationTestCase;
 use RequestContext;
-use Title;
 use WANObjectCache;
 
 /**

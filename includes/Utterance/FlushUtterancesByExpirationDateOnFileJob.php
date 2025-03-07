@@ -9,7 +9,7 @@ namespace MediaWiki\Wikispeech\Utterance;
  */
 
 use Job;
-use Title;
+use Mediawiki\Title\Title;
 
 /**
  * @since 0.1.7

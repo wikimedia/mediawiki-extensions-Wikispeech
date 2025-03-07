@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech\Segment;
 
 use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
-use Title;
+use Mediawiki\Title\Title;
 
 /**
  * @since 0.1.10

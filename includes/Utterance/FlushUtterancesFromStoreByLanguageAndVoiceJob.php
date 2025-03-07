@@ -10,8 +10,8 @@ namespace MediaWiki\Wikispeech\Utterance;
 
 use Job;
 use MediaWiki\Logger\LoggerFactory;
+use Mediawiki\Title\Title;
 use Psr\Log\LoggerInterface;
-use Title;
 
 /**
  * @see UtteranceStore::flushUtterancesByLanguageAndVoice()

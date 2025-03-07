@@ -9,7 +9,7 @@ namespace MediaWiki\Wikispeech\Utterance;
  */
 
 use MediaWiki\MediaWikiServices;
-use Title;
+use Mediawiki\Title\Title;
 
 /**
  * This used to be a single static method located in

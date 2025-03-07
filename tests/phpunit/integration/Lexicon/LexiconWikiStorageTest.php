@@ -9,12 +9,12 @@ namespace MediaWiki\Wikispeech\Tests\Itegration\Lexicon;
  */
 
 use JsonContent;
+use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
 use MediaWikiIntegrationTestCase;
 use MWException;
-use Title;
 
 /**
  * @since 0.1.9

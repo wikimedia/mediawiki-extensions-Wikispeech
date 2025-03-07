@@ -8,17 +8,17 @@ namespace MediaWiki\Wikispeech\Lexicon;
  * @license GPL-2.0-or-later
  */
 
-use CommentStoreComment;
 use Content;
 use ExternalStoreException;
 use FormatJson;
 use InvalidArgumentException;
 use JsonContent;
+use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
+use Mediawiki\Title\Title;
 use MWException;
-use Title;
 use User;
 use WikiPage;
 

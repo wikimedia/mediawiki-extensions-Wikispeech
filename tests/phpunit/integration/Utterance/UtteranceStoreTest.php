@@ -9,13 +9,13 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Utterance;
  */
 
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\WikiMap\WikiMap;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiIntegrationTestCase;
 use MemoryFileBackend;
 use MWException;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
-use WikiMap;
 use Wikimedia\TestingAccessWrapper;
 
 /**

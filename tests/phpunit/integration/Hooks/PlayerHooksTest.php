@@ -11,6 +11,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Hooks;
 use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\PermissionManager;
+use Mediawiki\Title\Title;
 use MediaWiki\User\UserOptionsManager;
 use MediaWikiIntegrationTestCase;
 use Message;
@@ -18,7 +19,6 @@ use OutputPage;
 use PHPUnit\Framework\MockObject\Stub;
 use RequestContext;
 use SkinTemplate;
-use Title;
 
 /**
  * @group Database

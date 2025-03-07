@@ -12,7 +12,7 @@ use IContextSource;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
-use Title;
+use Mediawiki\Title\Title;
 
 /**
  * @since 0.1.10

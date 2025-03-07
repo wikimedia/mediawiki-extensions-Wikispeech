@@ -8,7 +8,7 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
-use Title;
+use Mediawiki\Title\Title;
 
 /**
  * Information required to load data in a {@link PageProvider} given just a revision id.

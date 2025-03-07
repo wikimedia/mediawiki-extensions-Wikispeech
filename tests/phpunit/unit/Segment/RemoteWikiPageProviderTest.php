@@ -12,12 +12,12 @@ use ConfigFactory;
 use HashBagOStuff;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
+use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWikiUnitTestCase;
 use RequestContext;
-use Title;
 use WANObjectCache;
 
 /**

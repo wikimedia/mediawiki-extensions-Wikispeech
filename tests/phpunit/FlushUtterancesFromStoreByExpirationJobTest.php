@@ -8,10 +8,10 @@ namespace MediaWiki\Wikispeech\Tests;
  * @license GPL-2.0-or-later
  */
 
+use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJob;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiIntegrationTestCase;
-use Title;
 use Wikimedia\TestingAccessWrapper;
 
 /**

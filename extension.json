@@ -286,7 +286,8 @@
 				"sup": "reference",
 				"div": [
 					"thumb",
-					"toc"
+					"toc",
+					"shortdescription"
 				]
 			}
 		},

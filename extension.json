@@ -58,7 +58,16 @@
 				"wikispeech-retry",
 				"wikispeech-stop",
 				"wikispeech-listen",
-				"wikispeech-dont-listen"
+				"wikispeech-dont-listen",
+				"wikispeech-skip-back",
+				"wikispeech-previous",
+				"wikispeech-play",
+				"wikispeech-next",
+				"wikispeech-skip-ahead",
+				"wikispeech-help",
+				"wikispeech-feedback",
+				"wikispeech-edit-lexicon-btn"
+
 			],
 			"dependencies": [
 				"mediawiki.util",

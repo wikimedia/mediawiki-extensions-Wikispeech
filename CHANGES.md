@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T245052](https://phabricator.wikimedia.org/T245052) Add Aria-labels to player buttons to work with screenreaders
 * [T279916](https://phabricator.wikimedia.org/T279916) Fix empty objects being turned into empty arrays when handling entries
 * [T279412](https://phabricator.wikimedia.org/T279412) Add link to help page for Special:EditLexicon
 * [T339840](https://phabricator.wikimedia.org/T339840) Enable edit button on consumer wiki

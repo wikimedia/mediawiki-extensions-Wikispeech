@@ -17,5 +17,11 @@
 	"wikispeech-word": "Wuert",
 	"wikispeech-transcription": "Transkriptioun",
 	"wikispeech-lexicon-save": "Späicheren",
-	"wikispeech-lexicon-new": "Nei"
+	"wikispeech-lexicon-new": "Nei",
+	"wikispeech-previous": "Vireg",
+	"wikispeech-play": "Ofspillen",
+	"wikispeech-next": "Nächst",
+	"wikispeech-help": "Hëllef",
+	"wikispeech-feedback": "Feedback schécken",
+	"wikispeech-edit-lexicon-btn": "Lexikon änneren"
 }

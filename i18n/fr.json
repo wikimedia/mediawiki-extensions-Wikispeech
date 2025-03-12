@@ -4,6 +4,7 @@
 			"Golmore",
 			"Gomoko",
 			"Pamputt",
+			"Rileyblondin",
 			"Scratcheur-2020Send",
 			"SleaY",
 			"Thibaut120094",
@@ -47,5 +48,8 @@
 	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",
 	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de publier votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Modificateurs du lexique Wikispeech",
-	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech"
+	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech",
+	"wikispeech-skip-back": "Revenir en arrière",
+	"wikispeech-previous": "Précédent",
+	"wikispeech-play": "Lecture"
 }

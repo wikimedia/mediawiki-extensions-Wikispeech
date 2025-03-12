@@ -2,10 +2,44 @@
 	"@metadata": {
 		"authors": [
 			"Joquliina",
-			"Pyscowicz"
+			"Pyscowicz",
+			"Samoasambia"
 		]
 	},
+	"prefs-wikispeech-voice": "Ääni",
+	"prefs-wikispeech-speech-rate": "Puheen nopeus",
+	"prefs-wikispeech-speech-rate-percent": "Puheen nopeus (prosentteina)",
+	"prefs-wikispeech-enable": "Ota Wikispeech käyttöön",
+	"prefs-wikispeech-show-player": "Näytä aina soitin",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Asetuksiin tehdyt muutokset tulevat voimaan seuraavan kerran, kun sivu ladataan. Kuunnellaksesi nykyistä sivua uusilla asetuksilla lataa sivu uudelleen tallennuksen jälkeen.",
+	"right-wikispeech-listen": "Kuunnella sivua",
+	"right-wikispeech-read-lexicon": "Tarkastella Wikispeechin sanastoa",
+	"right-wikispeech-edit-lexicon": "Muokata Wikispeechin sanastoa",
+	"action-wikispeech-listen": "kuunnella sivua",
+	"action-wikispeech-read-lexicon": "tarkastella Wikispeechin sanastoa",
+	"action-wikispeech-edit-lexicon": "muokata Wikispeechin sanastoa",
+	"wikispeech-listen": "Kuuntele",
+	"wikispeech-dont-listen": "Älä kuuntele",
+	"wikispeech-error-loading-audio-title": "Ääntä ei voitu ladata",
+	"wikispeech-error-generate-preview-title": "Esikatselua ei voitu luoda",
+	"wikispeech-retry": "Yritä uudelleen",
+	"wikispeech-stop": "Pysäytä",
+	"editlexicon": "Muokkaa sanastoa",
 	"wikispeech-language": "Kieli",
+	"wikispeech-word": "Sana",
+	"wikispeech-transcription": "Transkriptio",
+	"wikispeech-item-id": "Tunniste",
 	"wikispeech-preview": "Esikatselu",
-	"wikispeech-lexicon-save": "Tallenna"
+	"wikispeech-preferred": "Ensisijainen",
+	"wikispeech-lexicon-next": "Seuraava",
+	"wikispeech-lexicon-save": "Tallenna",
+	"wikispeech-lexicon-new": "Uusi",
+	"wikispeech-skip-back": "Hyppää takaisin",
+	"wikispeech-previous": "Edellinen",
+	"wikispeech-play": "Toista",
+	"wikispeech-next": "Seuraava",
+	"wikispeech-skip-ahead": "Hyppää eteenpäin",
+	"wikispeech-help": "Ohje",
+	"wikispeech-feedback": "Lähetä palautetta",
+	"wikispeech-edit-lexicon-btn": "Muokkaa sanastoa"
 }

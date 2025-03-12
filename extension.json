@@ -338,8 +338,15 @@
 				"and any modifier keys (ctrl, alt or shift)."
 			],
 			"value": {
-				"playStop": {
+				"playPause": {
 					"key": 13,
+					"modifiers": [
+						"alt",
+						"shift"
+					]
+				},
+				"stop": {
+					"key": 8,
 					"modifiers": [
 						"alt",
 						"shift"

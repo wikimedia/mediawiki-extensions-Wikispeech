@@ -152,6 +152,7 @@ function SelectionPlayer() {
 				);
 				self.setStartTime( startUtterance, startToken.startTime );
 				mw.wikispeech.player.playUtterance( startUtterance, false );
+				mw.wikispeech.ui.setSelectionPlayerIconToStop();
 			} );
 		mw.wikispeech.ui.showBufferingIconIfAudioIsLoading(
 			startUtterance.audio

@@ -13,6 +13,7 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\PermissionManager;
 use Mediawiki\Title\Title;
 use MediaWiki\User\UserOptionsManager;
+use MediaWiki\Wikispeech\Hooks\PlayerHooks;
 use MediaWikiIntegrationTestCase;
 use Message;
 use OutputPage;
@@ -40,6 +41,9 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 
 	/** @var PermissionManager */
 	private $permissionsManager;
+
+	/** @var PlayerHooks */
+	private $hooks;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -80,6 +84,14 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->skin = $this->createStub( SkinTemplate::class );
 		$this->skin->method( 'getOutput' )->willReturn( $this->out );
 		$this->hookContainer = $this->getServiceContainer()->getHookContainer();
+		$this->hooks = new PlayerHooks(
+			$this->getServiceContainer()->getConfigFactory(),
+			$this->getServiceContainer()->getUserOptionsLookup(),
+			$this->getServiceContainer()->getMainWANObjectCache(),
+			$this->getServiceContainer()->getLanguageFactory(),
+			$this->getServiceContainer()->getPermissionManager(),
+			$this->getServiceContainer()->getHttpRequestFactory()
+		);
 	}
 
 	public function testOnBeforePageDisplay_loadModulesAndConfig() {
@@ -188,7 +200,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechShowPlayer', false );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayHasKey( 'listen', $links['actions'] );
 	}
 
@@ -196,7 +208,7 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->userOptionsManager
 			->setOption( $this->out->getUser(), 'wikispeechEnable', false );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
@@ -204,21 +216,21 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->permissionsManager
 			->overrideUserRightsForTesting( $this->out->getUser(), [] );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation__Universal_serverUrlInvalid_dontAddListenTab() {
 		$this->overrideConfigValue( 'WikispeechSpeechoidUrl', 'invalid-url' );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation__Universal_wrongNamespace_dontAddListenTab() {
 		$this->out->setTitle( Title::newFromText( 'Page', NS_TALK ) );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
@@ -226,14 +238,14 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$inaccessibleRevisionId = $this->out->getTitle()->getLatestRevId() - 1;
 		$this->out->setRevisionId( $inaccessibleRevisionId );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 
 	public function testOnSkinTemplateNavigation__Universal_invalidPageContentLanguage_dontAddListenTab() {
 		$this->overrideConfigValue( MainConfigNames::LanguageCode, 'sv' );
 		$links = [ 'actions' => [] ];
-		$this->hookContainer->run( 'SkinTemplateNavigation::Universal', [ $this->skin, &$links ] );
+		$this->hooks->onSkinTemplateNavigation__Universal( $this->skin, $links );
 		$this->assertArrayNotHasKey( 'listen', $links['actions'] );
 	}
 }

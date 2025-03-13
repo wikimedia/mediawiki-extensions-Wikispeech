@@ -191,7 +191,7 @@
 			"class": "MediaWiki\\Wikispeech\\Hooks\\DatabaseHooks"
 		},
 		"LexiconHooks": {
-			"class": "MediaWiki\\Wikispeech\\Hooks\\LexiconArticleEditHook"
+			"class": "MediaWiki\\Wikispeech\\Hooks\\LexiconArticleEditHooks"
 		}
 	},
 	"Hooks": {
@@ -201,7 +201,10 @@
 		"ResourceLoaderGetConfigVars": "PlayerHooks",
 		"GetPreferences": "PlayerHooks",
 		"ApiCheckCanExecute": "ApiHooks",
-		"SkinTemplateNavigation::Universal": "PlayerHooks",
+		"SkinTemplateNavigation::Universal": [
+			"PlayerHooks",
+			"LexiconHooks"
+		],
 		"CustomEditor": "LexiconHooks"
 	},
 	"ConfigRegistry": {
@@ -550,7 +553,8 @@
 	"AvailableRights": [
 		"wikispeech-listen",
 		"wikispeech-read-lexicon",
-		"wikispeech-edit-lexicon"
+		"wikispeech-edit-lexicon",
+		"wikispeech-edit-lexicon-raw"
 	],
 	"GroupPermissions": {
 		"*": {

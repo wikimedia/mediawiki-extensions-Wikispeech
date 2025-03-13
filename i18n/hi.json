@@ -8,5 +8,10 @@
 	"wikispeech-stop": "रोकें",
 	"wikispeech-preview": "पूर्वावलोकन",
 	"wikispeech-lexicon-next": "अगला",
-	"wikispeech-lexicon-new": "नया"
+	"wikispeech-lexicon-new": "नया",
+	"wikispeech-previous": "पिछला",
+	"wikispeech-play": "चलायें",
+	"wikispeech-next": "अगला",
+	"wikispeech-skip-ahead": "आगे बढ़ें",
+	"wikispeech-help": "सहायता"
 }

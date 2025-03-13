@@ -41,5 +41,13 @@
 	"wikispeech-lexicon-edit-entry-success": "הרשומה נערכה.",
 	"wikispeech-lexicon-copyrightnote": "שמירת השינויים מהווה את הסכמתך לשחרור התרומה שלך לפי תנאי [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "עורכי מילון ויקידיבור",
-	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|עורך מילון ויקידיבור|עורכת מילון ויקידיבור}}"
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|עורך מילון ויקידיבור|עורכת מילון ויקידיבור}}",
+	"wikispeech-skip-back": "לדלג אחורה",
+	"wikispeech-previous": "הקודם",
+	"wikispeech-play": "לנגן",
+	"wikispeech-next": "הבא",
+	"wikispeech-skip-ahead": "לדלג קדימה",
+	"wikispeech-help": "עזרה",
+	"wikispeech-feedback": "שליחת משוב",
+	"wikispeech-edit-lexicon-btn": "עריכת המילון"
 }

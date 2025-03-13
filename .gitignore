@@ -12,3 +12,4 @@ php-docs
 js-docs
 coverage
 /.eslintcache
+/.stylelintcache

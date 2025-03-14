@@ -16,11 +16,14 @@
 	"right-wikispeech-listen": "Einer Seite zuhören",
 	"right-wikispeech-read-lexicon": "Lesen im Wikispeech-Lexikon",
 	"right-wikispeech-edit-lexicon": "Wikispeech-Lexikon bearbeiten",
+	"right-wikispeech-edit-lexicon-raw": "Wikispeechs Lexikon als Rohtext bearbeiten",
 	"action-wikispeech-listen": "der Seite zuzuhören",
 	"action-wikispeech-read-lexicon": "Wikispeech-Lexikon lesen",
 	"action-wikispeech-edit-lexicon": "Wikispeech-Lexikon bearbeiten",
+	"action-wikispeech-edit-lexicon-raw": "Wikispeechs Lexikon als Rohtext zu bearbeiten",
 	"wikispeech-listen": "Anhören",
 	"wikispeech-dont-listen": "Nicht anhören",
+	"wikispeech-edit-lexicon-raw": "Rohdaten bearbeiten",
 	"wikispeech-error-loading-audio-title": "Konnte kein Audio laden",
 	"wikispeech-error-loading-audio-message": "Dies kann durch eine schlechte Internetverbindung oder einen Fehler auf dem Server verursacht werden. Möchtest du es erneut versuchen oder die Wiedergabe beenden?",
 	"wikispeech-error-generate-preview-title": "Vorschau konnte nicht erstellt werden",
@@ -48,5 +51,8 @@
 	"wikispeech-skip-ahead": "Weiter springen",
 	"wikispeech-help": "Hilfe",
 	"wikispeech-feedback": "Rückmeldung senden",
-	"wikispeech-edit-lexicon-btn": "Lexikon bearbeiten"
+	"wikispeech-edit-lexicon-btn": "Lexikon bearbeiten",
+	"wikispeech-edit-lexicon-no-item-found": "Kein Lexikoneintrag mit der ID „$1“ gefunden. Bitte überprüfe die ID und versuche es erneut.",
+	"wikispeech-edit-lexicon-transcription-unretrievable": "Aussprache konnte nicht vom Aussprachedienst abgerufen werden",
+	"wikispeech-edit-lexicon-speechoid-down": "Der Aussprachedienst ist vorübergehend nicht verfügbar. Bitte versuche es später erneut."
 }

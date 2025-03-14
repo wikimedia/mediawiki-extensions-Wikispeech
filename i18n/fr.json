@@ -3,6 +3,7 @@
 		"authors": [
 			"Golmore",
 			"Gomoko",
+			"JLTRY",
 			"Pamputt",
 			"Rileyblondin",
 			"Scratcheur-2020Send",
@@ -24,11 +25,14 @@
 	"right-wikispeech-listen": "Écouter la page",
 	"right-wikispeech-read-lexicon": "Lire le lexique de Wikispeech",
 	"right-wikispeech-edit-lexicon": "Modifier le lexique de Wikispeech",
+	"right-wikispeech-edit-lexicon-raw": "Modifier le lexique de Wikispeech en texte brut",
 	"action-wikispeech-listen": "écouter la page",
 	"action-wikispeech-read-lexicon": "lire le lexique de Wikispeech",
 	"action-wikispeech-edit-lexicon": "modifier le lexique de Wikispeech",
+	"action-wikispeech-edit-lexicon-raw": "modifier le lexique de Wikispeech en texte brut",
 	"wikispeech-listen": "Écouter",
 	"wikispeech-dont-listen": "Ne pas écouter",
+	"wikispeech-edit-lexicon-raw": "Modifier le brut",
 	"wikispeech-error-loading-audio-title": "Impossible de charger l’audio",
 	"wikispeech-error-loading-audio-message": "Cela peut être dû à une mauvaise connexion internet ou à une erreur sur le serveur. Voulez-vous réessayer ou arrêter la lecture ?",
 	"wikispeech-error-generate-preview-title": "Impossible de générer l’aperçu",
@@ -51,5 +55,13 @@
 	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech",
 	"wikispeech-skip-back": "Revenir en arrière",
 	"wikispeech-previous": "Précédent",
-	"wikispeech-play": "Lecture"
+	"wikispeech-play": "Lecture",
+	"wikispeech-next": "Suivant",
+	"wikispeech-skip-ahead": "Passer à l'étape suivante",
+	"wikispeech-help": "Aide",
+	"wikispeech-feedback": "Envoyer un avis",
+	"wikispeech-edit-lexicon-btn": "Modifier le lexique",
+	"wikispeech-edit-lexicon-no-item-found": "Aucune entrée de lexique n'a été trouvée avec l'ID « '$1'. Veuillez vérifier l'ID et réessayer.",
+	"wikispeech-edit-lexicon-transcription-unretrievable": "Impossible d'obtenir la prononciation à partir du service de prononciation",
+	"wikispeech-edit-lexicon-speechoid-down": "Le service de prononciation est temporairement indisponible. Veuillez réessayer ultérieurement."
 }

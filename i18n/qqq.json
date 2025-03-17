@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Amire80",
 			"André Costa",
 			"FF11",
 			"Igor Leturia",
@@ -30,7 +31,7 @@
 	"action-wikispeech-edit-lexicon-raw": "{{doc-action|wikispeech-edit-lexicon-raw}}",
 	"wikispeech-listen": "The text of the tab that shows the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-dont-listen}}",
 	"wikispeech-dont-listen": "The text of the tab that hides the player. Should be in the infinitive mood.\nSee also:\n{{msg-mw|wikispeech-listen}}",
-	"wikispeech-edit-lexicon-raw": "The text of the tab going to the edit form for editing lexicon entry as raw text. Should be in the infinitive mood.",
+	"wikispeech-edit-lexicon-raw": "The text of the tab going to the edit form for editing lexicon entry as raw text.",
 	"wikispeech-error-loading-audio-title": "Title for error dialog when audio could not load",
 	"wikispeech-error-loading-audio-message": "Message for error dialog when audio could not load.",
 	"wikispeech-error-generate-preview-title": "Title for error dialog when transcription preview fails to generate",

@@ -23,5 +23,8 @@
 	"wikispeech-preview": "미리 보기",
 	"wikispeech-lexicon-next": "다음",
 	"wikispeech-lexicon-save": "저장",
-	"wikispeech-lexicon-new": "새 항목"
+	"wikispeech-lexicon-new": "새 항목",
+	"wikispeech-previous": "이전",
+	"wikispeech-next": "다음",
+	"wikispeech-help": "도움말"
 }

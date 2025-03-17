@@ -17,11 +17,14 @@
 	"right-wikispeech-listen": "האזנה לדף",
 	"right-wikispeech-read-lexicon": "קריאת המילון של ויקידיבור",
 	"right-wikispeech-edit-lexicon": "עריכת המילון של ויקידיבור",
+	"right-wikispeech-edit-lexicon-raw": "עריכת המילון של ויקידיבור כטקסט גולמי",
 	"action-wikispeech-listen": "להאזין לדף",
 	"action-wikispeech-read-lexicon": "לקרוא את המילון של ויקידיבור",
 	"action-wikispeech-edit-lexicon": "לערוך את המילון של ויקידיבור",
+	"action-wikispeech-edit-lexicon-raw": "לערוך את המילון של ויקידיבור כטקסט גולמי",
 	"wikispeech-listen": "להאזין",
 	"wikispeech-dont-listen": "לא להאזין",
+	"wikispeech-edit-lexicon-raw": "עריכה במצב גולמי",
 	"wikispeech-error-loading-audio-title": "לא היה אפשר לטעון את האודיו",
 	"wikispeech-error-loading-audio-message": "זה יכול להיגרם על־ידי חיבור אינטרנט גרוע או על־ידי שגיאה בשרת. רוצה לנסות שוב או לעצור את ההשמעה?",
 	"wikispeech-error-generate-preview-title": "לא ניתן ליצור תצוגה מקדימה",
@@ -49,5 +52,8 @@
 	"wikispeech-skip-ahead": "לדלג קדימה",
 	"wikispeech-help": "עזרה",
 	"wikispeech-feedback": "שליחת משוב",
-	"wikispeech-edit-lexicon-btn": "עריכת המילון"
+	"wikispeech-edit-lexicon-btn": "עריכת המילון",
+	"wikispeech-edit-lexicon-no-item-found": "לא נמצאה רשומת מילון עם מזהה \"$1\". נא לבדוק את המזהה ולנסות שוב.",
+	"wikispeech-edit-lexicon-transcription-unretrievable": "לא היה אפשר לקבל הגייה משירות ההגייה",
+	"wikispeech-edit-lexicon-speechoid-down": "שירות ההגייה אינו זמין באופן זמני. נא לנסות שוב מאוחר יותר."
 }

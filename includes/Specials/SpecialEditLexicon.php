@@ -32,9 +32,7 @@ use SpecialPage;
  */
 
 class SpecialEditLexicon extends SpecialPage {
-
-	/** @var LanguageNameUtils */
-	private $languageNameUtils;
+	use LanguageOptionsTrait;
 
 	/** @var LexiconStorage */
 	private $lexiconStorage;
@@ -597,30 +595,6 @@ class SpecialEditLexicon extends SpecialPage {
 	 */
 	private function purgeOriginPageUtterances( int $pageId, ?string $consumerUrl ) {
 		$this->utteranceStore->flushUtterancesByPage( $consumerUrl, $pageId );
-	}
-
-	/**
-	 * Make options to be used by in a select field
-	 *
-	 * Each language that is specified in the config variable
-	 * "WikispeechVoices" is included in the options. The labels are
-	 * of the format "code - autonym".
-	 *
-	 * @since 0.1.8
-	 * @return array Keys are labels and values are language codes.
-	 */
-	private function getLanguageOptions(): array {
-		$voices = $this->getConfig()->get( 'WikispeechVoices' );
-		$languages = array_keys( $voices );
-		sort( $languages );
-		$options = [];
-		foreach ( $languages as $code ) {
-			$name = $this->languageNameUtils->getLanguageName( $code );
-			$label = "$code - $name";
-			$options[$label] = $code;
-		}
-		ksort( $options );
-		return $options;
 	}
 
 	/**

@@ -147,6 +147,14 @@
 				"Wikispeech.SpeechoidConnector",
 				"Wikispeech.UtteranceStore"
 			]
+		},
+		"TestListen": {
+			"class": "MediaWiki\\Wikispeech\\Specials\\SpecialTestListen",
+			"services": [
+				"LanguageNameUtils",
+				"Wikispeech.SpeechoidConnector"
+			]
+
 		}
 	},
 	"ExtensionMessagesFiles": {

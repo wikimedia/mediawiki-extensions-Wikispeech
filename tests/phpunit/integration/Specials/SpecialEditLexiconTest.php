@@ -17,7 +17,6 @@ use OutputPage;
 use PermissionsError;
 use SpecialPageTestBase;
 use User;
-use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group Database
@@ -70,35 +69,6 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		}
 
 		return $this->page;
-	}
-
-	public function testGetLanguageOptions_configHasVoices_giveLanguageOptions() {
-		$page = $this->newSpecialPage();
-		$this->overrideConfigValue(
-			'WikispeechVoices',
-			[
-				'ar' => [],
-				'en' => []
-			]
-		);
-		$wrappedPage = TestingAccessWrapper::newFromObject( $page );
-		$map = [
-			[ 'en', LanguageNameUtils::AUTONYMS, LanguageNameUtils::ALL, 'English' ],
-			[ 'ar', LanguageNameUtils::AUTONYMS, LanguageNameUtils::ALL, 'العربية' ]
-		];
-		$this->languageNameUtils
-			->method( 'getLanguageName' )
-			->willReturnMap( $map );
-
-		$languageOptions = $wrappedPage->getLanguageOptions();
-
-		$this->assertSame(
-			[
-				'ar - العربية' => 'ar',
-				'en - English' => 'en'
-			],
-			$languageOptions
-		);
 	}
 
 	public function testSubmit_formNotFilled_dontAddEntryToLexicon() {

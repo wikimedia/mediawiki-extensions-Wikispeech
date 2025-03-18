@@ -12,4 +12,5 @@ $specialPageAliases = [];
 /** English (English) */
 $specialPageAliases['en'] = [
 	'EditLexicon' => [ 'EditLexicon' ],
+	'TestListen' => [ 'TestListen' ],
 ];

@@ -20,19 +20,27 @@ class DatabaseHooks
 	 * Creates database tables.
 	 *
 	 * @param DatabaseUpdater $updater
-	 * @since 0.1.8
+	 * @since 0.1.13
 	 */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
 		$type = $updater->getDB()->getType();
 		$path = dirname( __DIR__ ) . '/../sql';
+
 		$updater->addExtensionTable(
 			'wikispeech_utterance',
 			"$path/$type/tables-generated.sql"
 		);
+
 		if ( $type === 'postgres' ) {
 			$updater->modifyExtensionField(
 				'wikispeech_utterance', 'wsu_date_stored', "$path/$type/patch-wikispeech_utterance-wsu_date_stored.sql"
 			);
 		}
+
+		$updater->addExtensionField(
+			'wikispeech_utterance',
+			'wsu_message_key',
+			"$path/$type/patch-wikispeech_utterance-wsu_message_key.sql"
+		);
 	}
 }

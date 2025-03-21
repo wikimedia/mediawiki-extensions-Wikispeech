@@ -24,6 +24,9 @@ class Utterance {
 	/** @var int Mediawiki page ID. */
 	private $pageId;
 
+	/** @var string Message key */
+	private $messageKey;
+
 	/** @var string ISO 639 */
 	private $language;
 
@@ -43,9 +46,10 @@ class Utterance {
 	private $synthesisMetadata;
 
 	/**
-	 * @since 0.1.10
+	 * @since 0.1.13
 	 * @param int $utteranceId
 	 * @param string|null $remoteWikiHash
+	 * @param string|null $messageKey
 	 * @param int $pageId
 	 * @param string $language
 	 * @param string $voice
@@ -55,6 +59,7 @@ class Utterance {
 	public function __construct(
 		int $utteranceId,
 		?string $remoteWikiHash,
+		?string $messageKey,
 		int $pageId,
 		string $language,
 		string $voice,
@@ -63,6 +68,7 @@ class Utterance {
 	) {
 		$this->utteranceId = $utteranceId;
 		$this->remoteWikiHash = $remoteWikiHash;
+		$this->messageKey = $messageKey;
 		$this->pageId = $pageId;
 		$this->language = $language;
 		$this->voice = $voice;
@@ -148,6 +154,22 @@ class Utterance {
 	 */
 	public function setPageId( int $pageId ): void {
 		$this->pageId = $pageId;
+	}
+
+	/**
+	 * @since 0.1.13
+	 * @return string
+	 */
+	public function getMessageKey(): string {
+		return $this->messageKey;
+	}
+
+	/**
+	 * @since 0.1.13
+	 * @return string
+	 */
+	public function setMessageKey(): string {
+		return $this->messageKey;
 	}
 
 	/**

@@ -17,6 +17,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\WikiMap\WikiMap;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use SwiftFileBackend;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\ILoadBalancer;
@@ -32,6 +33,7 @@ use Wikimedia\Rdbms\IResultWrapper;
  * (.opus and .json suffixes are added in file backed store although this class is agnostic
  * regarding to the actual data encoding and formats.)
  *
+ * @since 0.1.13 Introduces messageKey as parameter for system error messages.
  * @since 0.1.5
  */
 class UtteranceStore {
@@ -126,7 +128,7 @@ class UtteranceStore {
 	 * Retrieves an utterance for a given segment in a page, using a specific
 	 * voice and language.
 	 *
-	 * @since 0.1.5
+	 * @since 0.1.13
 	 * @param string|null $consumerUrl Remote wiki where page is located, or null if local.
 	 * @param int $pageId Mediawiki page ID.
 	 * @param string $language ISO-639.
@@ -146,6 +148,7 @@ class UtteranceStore {
 		$utterance = $this->retrieveUtteranceMetadata(
 			$consumerUrl,
 			$pageId,
+			null,
 			$language,
 			$voice,
 			$segmentHash
@@ -154,7 +157,50 @@ class UtteranceStore {
 			return null;
 		}
 
-		// load utterance audio and synthesis metadata
+		return $this->loadUtteranceAudio( $utterance, $omitAudio );
+	}
+
+	/**
+	 * Retrieves an utterance for a specific error message
+	 *
+	 * @since 0.1.13
+	 * @param string|null $consumerUrl Remote wiki where page is located, or null if local.
+	 * @param string $messageKey Message key for system message.
+	 * @param string $language ISO-639.
+	 * @param string $voice Name of synthesis voice.
+	 * @param string $segmentHash Hash of segment representing utterance.
+	 * @param bool $omitAudio If true, then no audio is returned.
+	 * @return Utterance|null Utterance found, or null if non-existing.
+	 */
+	public function findMessageUtterance(
+		?string $consumerUrl,
+		string $messageKey,
+		string $language,
+		string $voice,
+		string $segmentHash,
+		bool $omitAudio = false
+	) {
+		$utterance = $this->retrieveUtteranceMetadata(
+			$consumerUrl,
+			0,
+			$messageKey,
+			$language,
+			$voice,
+			$segmentHash
+		);
+		if ( !$utterance ) {
+			return null;
+		}
+
+		return $this->loadUtteranceAudio( $utterance, $omitAudio );
+	}
+
+	/**
+	 * Loads utterance audio and synthesis metadata
+	 *
+	 * @since 0.1.13
+	 */
+	private function loadUtteranceAudio( Utterance $utterance, bool $omitAudio ): ?Utterance {
 		$utteranceId = $utterance->getUtteranceId();
 
 		// @note We might want to keep this as separate function calls,
@@ -196,9 +242,11 @@ class UtteranceStore {
 	 * Retrieves the utterance metadata from the database for a given segment in a page,
 	 * using a specific voice and language.
 	 *
+	 * @since 0.1.13 Optional parameter messageKey
 	 * @since 0.1.5
 	 * @param string|null $consumerUrl Remote wiki where page is located, or null if local.
 	 * @param int $pageId Mediawiki page ID.
+	 * @param string|null $messageKey Mediawiki message key.
 	 * @param string $language ISO-639.
 	 * @param string $voice Name of synthesis voice.
 	 * @param string $segmentHash Hash of segment representing utterance.
@@ -207,27 +255,41 @@ class UtteranceStore {
 	public function retrieveUtteranceMetadata(
 		?string $consumerUrl,
 		int $pageId,
+		?string $messageKey,
 		string $language,
 		string $voice,
 		string $segmentHash
 	): ?Utterance {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbr = $this->dbLoadBalancer->getConnection( DB_REPLICA );
+
+		$conditions = [
+			'wsu_remote_wiki_hash' => $remoteWikiHash,
+			'wsu_lang' => $language,
+			'wsu_voice' => $voice,
+			'wsu_seg_hash' => $segmentHash
+		];
+
+		if ( $pageId > 0 ) {
+			$conditions['wsu_page_id'] = $pageId;
+		} else {
+			if ( $messageKey === null ) {
+				throw new RuntimeException( 'If pageId is 0, messageKey must be provided.' );
+			}
+			$conditions['wsu_message_key'] = $messageKey;
+			$conditions['wsu_page_id'] = 0;
+		}
+
 		$row = $dbr->selectRow( self::UTTERANCE_TABLE, [
 			'wsu_utterance_id',
 			'wsu_remote_wiki_hash',
+			'wsu_message_key',
 			'wsu_page_id',
 			'wsu_lang',
 			'wsu_voice',
 			'wsu_seg_hash',
 			'wsu_date_stored'
-		], [
-			'wsu_remote_wiki_hash' => $remoteWikiHash,
-			'wsu_page_id' => $pageId,
-			'wsu_lang' => $language,
-			'wsu_voice' => $voice,
-			'wsu_seg_hash' => $segmentHash
-		], __METHOD__, [
+		], $conditions, __METHOD__, [
 			'ORDER BY date_stored DESC',
 		] );
 		if ( !$row ) {
@@ -236,6 +298,7 @@ class UtteranceStore {
 		$utterance = new Utterance(
 			intval( $row->wsu_utterance_id ),
 			$row->wsu_remote_wiki_hash === null ? null : strval( $row->wsu_remote_wiki_hash ),
+			$row->wsu_message_key ? strval( $row->wsu_message_key ) : null,
 			intval( $row->wsu_page_id ),
 			strval( $row->wsu_lang ),
 			strval( $row->wsu_voice ),
@@ -271,7 +334,7 @@ class UtteranceStore {
 	/**
 	 * Creates an utterance in the database.
 	 *
-	 * @since 0.1.5
+	 * @since 0.1.13
 	 * @param string|null $consumerUrl
 	 * @param int $pageId Mediawiki page ID.
 	 * @param string $language ISO 639.
@@ -291,11 +354,88 @@ class UtteranceStore {
 		string $audio,
 		string $synthesisMetadata
 	): Utterance {
+		if ( $pageId === 0 ) {
+			throw new RuntimeException( 'Page ID must not be 0 when creating regular utterance.' );
+		}
+
+		return $this->storeUtterance(
+			$consumerUrl,
+			$pageId,
+			null,
+			$language,
+			$voice,
+			$segmentHash,
+			$audio,
+			$synthesisMetadata
+		);
+	}
+
+	/**
+	 * Creates a system error utterance in the database and prepares for storing.
+	 *
+	 * @since 0.1.13
+	 * @param string|null $consumerUrl
+	 * @param string|null $messageKey Mediawiki message key.
+	 * @param string $language ISO 639.
+	 * @param string $voice Name of synthesis voice.
+	 * @param string $segmentHash Hash of segment representing utterance.
+	 * @param string $audio Utterance audio.
+	 * @param string $synthesisMetadata JSON form metadata about the audio.
+	 * @return Utterance Inserted utterance.
+	 * @throws ExternalStoreException If unable to prepare or create files in file backend.
+	 */
+	public function createMessageUtterance(
+		?string $consumerUrl,
+		?string $messageKey,
+		string $language,
+		string $voice,
+		string $segmentHash,
+		string $audio,
+		string $synthesisMetadata
+	) {
+		return $this->storeUtterance(
+			$consumerUrl,
+			0,
+			$messageKey,
+			$language,
+			$voice,
+			$segmentHash,
+			$audio,
+			$synthesisMetadata
+		);
+	}
+
+	/**
+	 * Stores a created utterance.
+	 *
+	 * @since 0.1.13
+	 * @param string|null $consumerUrl
+	 * @param int $pageId Mediawiki page ID.
+	 * @param string|null $messageKey Mediawiki message key.
+	 * @param string $language ISO 639.
+	 * @param string $voice Name of synthesis voice.
+	 * @param string $segmentHash Hash of segment representing utterance.
+	 * @param string $audio Utterance audio.
+	 * @param string $synthesisMetadata JSON form metadata about the audio.
+	 * @return Utterance Inserted utterance.
+	 * @throws ExternalStoreException If unable to prepare or create files in file backend.
+	 */
+	private function storeUtterance(
+		?string $consumerUrl,
+		int $pageId,
+		?string $messageKey,
+		string $language,
+		string $voice,
+		string $segmentHash,
+		string $audio,
+		string $synthesisMetadata
+	) {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
 		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$rows = [
 			'wsu_remote_wiki_hash' => $remoteWikiHash,
 			'wsu_page_id' => $pageId,
+			'wsu_message_key' => $messageKey,
 			'wsu_lang' => $language,
 			'wsu_voice' => $voice,
 			'wsu_seg_hash' => $segmentHash,
@@ -305,6 +445,7 @@ class UtteranceStore {
 		$utterance = new Utterance(
 			intval( $dbw->insertId() ),
 			$remoteWikiHash,
+			$messageKey,
 			$pageId,
 			$language,
 			$voice,

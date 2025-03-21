@@ -12,18 +12,13 @@ CREATE TABLE wikispeech_utterance (
   wsu_date_stored TIMESTAMPTZ NOT NULL,
   PRIMARY KEY(wsu_utterance_id)
 );
-
 CREATE INDEX get_utterance ON wikispeech_utterance (
   wsu_remote_wiki_hash, wsu_page_id,
   wsu_lang, wsu_voice, wsu_seg_hash
 );
-
 CREATE INDEX expire_page_utterances ON wikispeech_utterance (
   wsu_remote_wiki_hash, wsu_page_id
 );
-
 CREATE INDEX expire_utterances_lang ON wikispeech_utterance (wsu_lang);
-
 CREATE INDEX expire_utterances_lang_voice ON wikispeech_utterance (wsu_lang, wsu_voice);
-
 CREATE INDEX expire_utterances_ttl ON wikispeech_utterance (wsu_date_stored);

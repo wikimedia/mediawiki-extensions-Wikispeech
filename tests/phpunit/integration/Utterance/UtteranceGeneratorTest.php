@@ -141,6 +141,7 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 		$mockedFoundUtterance = new Utterance(
 			1,
 			null,
+			null,
 			2,
 			'sv',
 			'anna',

@@ -67,6 +67,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 					'consumerUrl' => 'http://foo.bar/wiki',
 					'remoteWikiHash' => '2386df4fdb39d2f492614cd81e53b642019fcc7ff932d93f81214035e40c6971',
 					'pageId' => 1,
+					'messageKey' => 'wikispeech-edit-lexicon-transcription-unretrievable',
 					'language' => 'sv',
 					'voice' => 'bertil',
 					'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
@@ -80,6 +81,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 					'consumerUrl' => null,
 					'remoteWikiHash' => null,
 					'pageId' => 1,
+					'messageKey' => 'wikispeech-edit-lexicon-transcription-unretrievable',
 					'language' => 'sv',
 					'voice' => 'bertil',
 					'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
@@ -122,12 +124,58 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			UtteranceStore::UTTERANCE_TABLE,
 			[ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
 			[ 'wsu_utterance_id' => $created->getUtteranceId() ],
-			[ [ $data['remoteWikiHash'], $data['pageId'], $data['language'], $data['segmentHash'], $data['voice'] ] ]
+			[ [
+				$data['remoteWikiHash'],
+				$data['pageId'],
+				$data['language'],
+				$data['segmentHash'],
+				$data['voice'] ] ]
 		);
 	}
 
 	/**
-	 * Creates an utterance in the database,
+	 * Creates an error message utterance in the database,
+	 * asserts that identity was set,
+	 *
+	 * @dataProvider provideTestCreateAndFindUtterance
+	 * @since 0.1.13
+	 * @param array $data
+	 * @throws MWException
+	 */
+	public function testCreateMessageUtterance( array $data ) {
+		$started = MWTimestamp::getInstance();
+		$created = $this->utteranceStore->createMessageUtterance(
+			$data['consumerUrl'],
+			$data['messageKey'],
+			$data['language'],
+			$data['voice'],
+			$data['segmentHash'],
+			$data['audio'],
+			$data['synthesisMetadata']
+		);
+		$this->assertSame( $data['remoteWikiHash'], $created->getRemoteWikiHash() );
+		$this->assertTrue( is_int( $created->getUtteranceId() ) );
+		$this->assertTrue( $started <= $created->getDateStored() );
+		$this->assertSame( $data['messageKey'], $created->getMessageKey() );
+		$this->assertSame( $data['language'], $created->getLanguage() );
+		$this->assertSame( $data['voice'], $created->getVoice() );
+		$this->assertSame( $data['segmentHash'], $created->getSegmentHash() );
+		$this->assertSelect(
+			UtteranceStore::UTTERANCE_TABLE,
+			[ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_message_key', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
+			[ 'wsu_utterance_id' => $created->getUtteranceId() ],
+			[ [
+				$data['remoteWikiHash'],
+				0,
+				$data['messageKey'],
+				$data['language'],
+				$data['segmentHash'],
+				$data['voice'] ] ]
+		);
+	}
+
+	/**
+	 * Creates a regular utterance in the database,
 	 * fetches the utterance using findUtterance,
 	 * asserts that values match
 	 *
@@ -145,7 +193,6 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			$data['audio'],
 			$data['synthesisMetadata']
 		);
-		// find the utterance we created and ensure it matches.
 		$retrieved = $this->utteranceStore->findUtterance(
 			$data['consumerUrl'],
 			$data['pageId'],
@@ -157,6 +204,45 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		// assert database values are set
 		$this->assertSame( $data['remoteWikiHash'], $retrieved->getRemoteWikiHash() );
 		$this->assertSame( $data['pageId'], $retrieved->getPageId() );
+		$this->assertSame( $data['language'], $retrieved->getLanguage() );
+		$this->assertSame( $data['voice'], $retrieved->getVoice() );
+		$this->assertSame( $data['segmentHash'], $retrieved->getSegmentHash() );
+		// assert values from file store is loaded
+		$this->assertEquals( $data['audio'], $retrieved->getAudio() );
+		$this->assertEquals( $data['synthesisMetadata'], $retrieved->getSynthesisMetadata() );
+	}
+
+	/**
+	 * Creates an error message utterance in the database,
+	 * fetches the utterance using findMessageUtterance,
+	 * asserts that values match
+	 *
+	 * @dataProvider provideTestCreateAndFindUtterance
+	 * @since 0.1.13
+	 * @param array $data
+	 */
+	public function testFindMessageUtterance( array $data ) {
+		$this->utteranceStore->createMessageUtterance(
+			$data['consumerUrl'],
+			$data['messageKey'],
+			$data['language'],
+			$data['voice'],
+			$data['segmentHash'],
+			$data['audio'],
+			$data['synthesisMetadata']
+		);
+		// find the utterance we created and ensure it matches.
+		$retrieved = $this->utteranceStore->findMessageUtterance(
+			$data['consumerUrl'],
+			$data['messageKey'],
+			$data['language'],
+			$data['voice'],
+			$data['segmentHash']
+		);
+		$this->assertNotNull( $retrieved, 'Unable to find newly created utterance!' );
+		// assert database values are set
+		$this->assertSame( $data['remoteWikiHash'], $retrieved->getRemoteWikiHash() );
+		$this->assertSame( $data['messageKey'], $retrieved->getMessageKey() );
 		$this->assertSame( $data['language'], $retrieved->getLanguage() );
 		$this->assertSame( $data['voice'], $retrieved->getVoice() );
 		$this->assertSame( $data['segmentHash'], $retrieved->getSegmentHash() );

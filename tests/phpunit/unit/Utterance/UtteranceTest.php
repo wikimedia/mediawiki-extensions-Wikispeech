@@ -24,6 +24,7 @@ class UtteranceTest extends MediaWikiUnitTestCase {
 		$utterance = new Utterance(
 			1,
 			'DummyRemoteWikiHash',
+			null,
 			2,
 			'sv',
 			'anna',
@@ -46,6 +47,7 @@ class UtteranceTest extends MediaWikiUnitTestCase {
 		$utterance = new Utterance(
 			1,
 			null,
+			null,
 			2,
 			'sv',
 			'anna',
@@ -67,7 +69,8 @@ class UtteranceTest extends MediaWikiUnitTestCase {
 		$utterance = new Utterance(
 			0,
 			null,
-			0,
+			null,
+			1,
 			'',
 			'',
 			'',

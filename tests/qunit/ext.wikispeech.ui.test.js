@@ -274,9 +274,9 @@ QUnit.test( 'addSelectionPlayer(): hide selection player initially', ( assert ) 
 function createKeydownEvent( keyCode, modifiers ) {
 	const event = $.Event( 'keydown' );
 	event.which = keyCode;
-	event.ctrlKey = modifiers.indexOf( 'c' ) >= 0;
-	event.altKey = modifiers.indexOf( 'a' ) >= 0;
-	event.shiftKey = modifiers.indexOf( 's' ) >= 0;
+	event.ctrlKey = modifiers.includes( 'c' );
+	event.altKey = modifiers.includes( 'a' );
+	event.shiftKey = modifiers.includes( 's' );
 	return event;
 }
 

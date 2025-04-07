@@ -93,7 +93,7 @@ function Ui() {
 		const api = new mw.Api();
 		api.getUserInfo()
 			.done( ( info ) => {
-				const canEditLexicon = info.rights.indexOf( 'wikispeech-edit-lexicon' ) >= 0;
+				const canEditLexicon = info.rights.includes( 'wikispeech-edit-lexicon' );
 				if ( !canEditLexicon ) {
 					return;
 				}
@@ -463,9 +463,9 @@ function Ui() {
 
 	this.eventMatchShortcut = function ( event, shortcut ) {
 		return event.which === shortcut.key &&
-			event.ctrlKey === shortcut.modifiers.indexOf( 'ctrl' ) >= 0 &&
-			event.altKey === shortcut.modifiers.indexOf( 'alt' ) >= 0 &&
-			event.shiftKey === shortcut.modifiers.indexOf( 'shift' ) >= 0;
+			event.ctrlKey === shortcut.modifiers.includes( 'ctrl' ) &&
+			event.altKey === shortcut.modifiers.includes( 'alt' ) &&
+			event.shiftKey === shortcut.modifiers.includes( 'shift' );
 	};
 
 	/**

@@ -75,7 +75,7 @@ function Main() {
 	this.enabledForNamespace = function () {
 		const validNamespaces = mw.config.get( 'wgWikispeechNamespaces' );
 		const namespace = mw.config.get( 'wgNamespaceNumber' );
-		return validNamespaces.indexOf( namespace ) >= 0;
+		return validNamespaces.includes( namespace );
 	};
 
 }

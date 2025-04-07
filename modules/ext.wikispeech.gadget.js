@@ -86,7 +86,7 @@ function addUserOptions() {
 
 			// Take the option value from user page if it is set,
 			// otherwise use default.
-			if ( Object.keys( options ).indexOf( key ) >= 0 ) {
+			if ( Object.keys( options ).includes( key ) ) {
 				value = options[ key ];
 			} else {
 				value = defaultOptions[ key ];

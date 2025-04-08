@@ -45,6 +45,7 @@
 	"wikispeech-lexicon-copyrightnote": "שמירת השינויים מהווה את הסכמתך לשחרור התרומה שלך לפי תנאי [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "עורכי מילון ויקידיבור",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|עורך מילון ויקידיבור|עורכת מילון ויקידיבור}}",
+	"wikispeech-lexicon-null-edit": "לא זוהו שינויים רלוונטיים בתעתיק או במצב מועדף.",
 	"wikispeech-skip-back": "לדלג אחורה",
 	"wikispeech-previous": "הקודם",
 	"wikispeech-play": "לנגן",

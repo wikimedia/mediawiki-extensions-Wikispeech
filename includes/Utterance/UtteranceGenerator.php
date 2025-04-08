@@ -74,6 +74,7 @@ class UtteranceGenerator {
 	 * @param string $language
 	 * @param int $pageId
 	 * @param Segment $segment
+	 * @param string|null $messageKey
 	 * @return array Containing base64 'audio' and synthesisMetadata 'tokens'.
 	 * @throws ExternalStoreException
 	 * @throws ConfigException
@@ -85,8 +86,12 @@ class UtteranceGenerator {
 		string $voice,
 		string $language,
 		int $pageId,
-		Segment $segment
+		Segment $segment,
+		?string $messageKey = null
 	) {
+		if ( $pageId === 0 && !$messageKey ) {
+			throw new InvalidArgumentException( 'Message key must be set when Page ID is 0.' );
+		}
 		if ( $pageId !== 0 && !$pageId ) {
 			throw new InvalidArgumentException( 'Page ID must be set.' );
 		}
@@ -94,20 +99,33 @@ class UtteranceGenerator {
 		if ( $segmentHash === null ) {
 			throw new InvalidArgumentException( 'Segment hash must be set.' );
 		}
+
 		if ( !$voice ) {
 			$voice = $this->voiceHandler->getDefaultVoice( $language );
 			if ( !$voice ) {
 				throw new ConfigException( "Invalid default voice configuration." );
 			}
 		}
-		$utterance = $this->utteranceStore->findUtterance(
-			$consumerUrl,
-			$pageId,
-			$language,
-			$voice,
-			$segmentHash
-		);
-
+		if ( $pageId === 0 ) {
+			if ( $messageKey === null ) {
+				throw new InvalidArgumentException( 'Message key must be set when Page ID is 0.' );
+			}
+			$utterance = $this->utteranceStore->findMessageUtterance(
+				$consumerUrl,
+				$messageKey,
+				$language,
+				$voice,
+				$segmentHash
+			);
+		} else {
+			$utterance = $this->utteranceStore->findUtterance(
+				$consumerUrl,
+				$pageId,
+				$language,
+				$voice,
+				$segmentHash
+			);
+		}
 		if ( !$utterance ) {
 			$this->logger->debug( __METHOD__ . ': Creating new utterance for {pageId} {segmentHash}', [
 				'pageId' => $pageId,
@@ -143,17 +161,28 @@ class UtteranceGenerator {
 					$segmentText
 				);
 			}
-			$this->utteranceStore->createUtterance(
-				$consumerUrl,
-				$pageId,
-				$language,
-				$voice,
-				$segmentHash,
-				$speechoidResponse['audio_data'],
-				FormatJson::encode(
-					$speechoidResponse['tokens']
-				)
-			);
+			if ( $pageId === 0 ) {
+				$this->utteranceStore->createMessageUtterance(
+					$consumerUrl,
+					$messageKey,
+					$language,
+					$voice,
+					$segmentHash,
+					$speechoidResponse['audio_data'],
+					FormatJson::encode( $speechoidResponse['tokens'] )
+				);
+			} else {
+				$this->utteranceStore->createUtterance(
+					$consumerUrl,
+					$pageId,
+					$language,
+					$voice,
+					$segmentHash,
+					$speechoidResponse['audio_data'],
+					FormatJson::encode( $speechoidResponse['tokens'] )
+				);
+			}
+
 			return [
 				'audio' => $speechoidResponse['audio_data'],
 				'tokens' => $speechoidResponse['tokens']

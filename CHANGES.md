@@ -33,6 +33,7 @@ Update version in extension.json.
 ### 0.1.13-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
+* [T387284](https://phabricator.wikimedia.org/T387284) Pre-sythesize messages
 * [T277152](https://phabricator.wikimedia.org/T277152) Display disambiguation information about a lexicon entry
 * [T405327](https://phabricator.wikimedia.org/T405327) Add playback hover descriptions
 * [T394284](https://phabricator.wikimedia.org/T394284) Flush utterances after edit from consumer wiki

@@ -352,7 +352,7 @@ class ApiWikispeechListen extends ApiBase {
 		} catch ( RuntimeException $e ) {
 			$this->dieWithError(
 				[ 'apierror-wikispeech-listen-invalid-input-too-long',
-				$this->config->get( 'WikispeechListenMaximumInputCharacters' ), mb_strlen( $input ) ]
+					$this->config->get( 'WikispeechListenMaximumInputCharacters' ), mb_strlen( $input ) ]
 			);
 		}
 	}

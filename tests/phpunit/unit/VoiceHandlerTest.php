@@ -58,10 +58,9 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'sv' => 'bertil',
-					'en' => 'bravo'
-				]
-			);
+				'sv' => 'bertil',
+				'en' => 'bravo'
+			] );
 		$this->assertEquals( 'bertil', $this->voiceHandler->getDefaultVoice( 'sv' ) );
 	}
 
@@ -77,9 +76,8 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'en' => 'bravo'
-				]
-			);
+				'en' => 'bravo'
+			] );
 		$this->assertEquals( 'adam', $this->voiceHandler->getDefaultVoice( 'sv' ) );
 	}
 
@@ -96,11 +94,10 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->exactly( 3 ) )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'sv' => '',
-					'en' => false,
-					'no' => null
-				]
-			);
+				'sv' => '',
+				'en' => false,
+				'no' => null
+			] );
 		$this->assertEquals( 'adam', $this->voiceHandler->getDefaultVoice( 'sv' ) );
 		$this->assertEquals( 'alpha', $this->voiceHandler->getDefaultVoice( 'en' ) );
 		$this->assertEquals( 'anne', $this->voiceHandler->getDefaultVoice( 'no' ) );
@@ -117,9 +114,8 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'en' => 'bravo'
-				]
-			);
+				'en' => 'bravo'
+			] );
 		$this->assertNull( $this->voiceHandler->getDefaultVoice( 'sv' ) );
 	}
 
@@ -134,10 +130,9 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'sv' => 'adam',
-					'en' => 'bravo'
-				]
-			);
+				'sv' => 'adam',
+				'en' => 'bravo'
+			] );
 		$this->assertNull( $this->voiceHandler->getDefaultVoice( 'sv' ) );
 	}
 
@@ -153,10 +148,9 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'sv' => 'adam',
-					'en' => 'bravo'
-				]
-			);
+				'sv' => 'adam',
+				'en' => 'bravo'
+			] );
 		$this->assertNull( $this->voiceHandler->getDefaultVoice( 'sv' ) );
 	}
 
@@ -172,10 +166,9 @@ class VoiceHandlerTest extends MediaWikiUnitTestCase {
 			->expects( $this->once() )
 			->method( 'listDefaultVoicePerLanguage' )
 			->willReturn( [
-					'sv' => 'david',
-					'en' => 'bravo'
-				]
-			);
+				'sv' => 'david',
+				'en' => 'bravo'
+			] );
 		$this->assertNull( $this->voiceHandler->getDefaultVoice( 'sv' ) );
 	}
 

@@ -4,6 +4,24 @@
 	<rule ref="MediaWiki.Commenting.FunctionComment.WrongStyle">
 		<exclude-pattern>*/tests/phpunit/*\.php</exclude-pattern>
 	</rule>
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent" />
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="indent" value="4" />
+			<property name="tabIndent" value="true" />
+		</properties>
+	</rule>
+	<rule ref="Generic.Arrays.ArrayIndent">
+		<exclude name="Generic.Arrays.ArrayIndent.CloseBraceNotNewLine" />
+		<properties>
+			<property name="indent" value="4" />
+		</properties>
+	</rule>
+	<rule ref="PEAR.WhiteSpace.ObjectOperatorIndent">
+		<properties>
+			<property name="indent" value="4" />
+		</properties>
+	</rule>
 	<file>.</file>
 	<arg name="extensions" value="php" />
 	<arg name="encoding" value="UTF-8" />

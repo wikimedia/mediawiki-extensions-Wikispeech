@@ -94,8 +94,8 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 			// @todo implement support
 			$this->logger->debug( __METHOD__ .
 				': Input must be greater than 1  and less than 99 but was {input}', [
-				'input' => $input,
-			] );
+					'input' => $input,
+				] );
 			return null;
 		}
 		if ( $input < 20 ) {
@@ -256,8 +256,8 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 			if ( !$found ) {
 				$this->logger->debug( __METHOD__ .
 					': Input number is too large to be handled: {inputNumber}', [
-					'inputNumber' => $inputNumber,
-				] );
+						'inputNumber' => $inputNumber,
+					] );
 				return null;
 			}
 		}

@@ -1,6 +1,31 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Meno25"
+		]
 	},
-	"apihelp-wikispeech-listen-param-text": "نص لتركيبها"
+	"apihelp-wikispeech-segment-summary": "تقسيم محتوى الصفحة HTML إلى أجزاء.",
+	"apihelp-wikispeech-segment-param-page": "عنوان الصفحة المراد تقسيمها.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "علامات HTML التي يُفترض أن تُجزّئ المقاطع. يُرجى العلم أن wikispeech-listen يستخدم الإعداد الافتراضي للتجزئة، وقد لا يكون متوافقًا مع المقاطع المُنتَجة بإعداد مُخصّص لهذه المُعامل.",
+	"apihelp-wikispeech-segment-param-consumer-url": "عنوان URL لمسار البرنامج النصي الخاص بـ wiki للمستهلك.",
+	"apihelp-wikispeech-segment-example-1": "تقسيم الصفحة الرئيسية باستخدام المعلمات الافتراضية من التكوين.",
+	"apihelp-wikispeech-segment-example-3": "تقسيم الصفحة الرئيسية على ويكي آخر.",
+	"apihelp-wikispeech-listen-summary": "توليف الكلام.",
+	"apihelp-wikispeech-listen-param-lang": "رمز اللغة.",
+	"apihelp-wikispeech-listen-param-revision": "مراجعة الصفحة التي تم العثور على المقطع فيها.",
+	"apihelp-wikispeech-listen-param-segment": "تجزئة القطعة المركبة.",
+	"apihelp-wikispeech-listen-param-text": "نص لتركيبها",
+	"apihelp-wikispeech-listen-param-ipa": "سلسلة IPA للتوليف.",
+	"apihelp-wikispeech-listen-param-voice": "الصوت المُراد استخدامه. في حال عدم توفره، سيتم استخدام الصوت الافتراضي للغة.",
+	"apihelp-wikispeech-listen-param-consumer-url": "عنوان URL لمسار البرنامج النصي الخاص بـ wiki للمستهلك.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "افتراضيًا، القيمة \"خطأ\". إذا كانت \"صحيحًا\"، فلن تُخزَّن البيانات المجهولة في سجل مقاييس المجلة. يُستخدم هذا الخيار بشكل أساسي عند تنفيذ عمليات العرض المسبق لتجنب إضافة طلبات روبوتية إلى الإحصائيات.",
+	"apierror-wikispeech-listen-deleted-revision": "لا يمكن الاستماع إلى المراجعات المحذوفة.",
+	"apierror-wikispeech-listen-notallowed": "ليس لديك الحق في استدعاء إجراء API هذا.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "فشل الحصول على الصفحة ذات معرف المراجعة '$1' من المستهلك على عنوان URL $2.",
+	"apierror-wikispeech-consumer-not-allowed": "لا يُسمح بالطلبات من الويكيات البعيدة.",
+	"apihelp-wikispeech-listen-example-1": "تلخيص عبارة باللغة الإنجليزية.",
+	"apihelp-wikispeech-listen-example-2": "استخدم صوتًا غير افتراضي.",
+	"apihelp-wikispeech-listen-example-3": "اطلب مقطعًا من مراجعة. سيتم استخدام التوليف المُخزَّن مؤقتًا إن وُجد.",
+	"apihelp-wikispeech-listen-example-4": "تلخيص عبارة من ويكي آخر.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "يجب ألا يتجاوز النص المدخل $1 حرفًا، ولكن يجب أن يحتوي على $2 حرفًا."
 }

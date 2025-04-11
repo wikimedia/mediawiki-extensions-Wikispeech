@@ -7,6 +7,13 @@
  * @constructor
  */
 
+require( './ext.wikispeech.util.js' );
+require( './ext.wikispeech.ui.js' );
+require( './ext.wikispeech.storage.js' );
+require( './ext.wikispeech.player.js' );
+require( './ext.wikispeech.selectionPlayer.js' );
+require( './ext.wikispeech.highlighter.js' );
+
 function Main() {
 	const self = this;
 
@@ -46,6 +53,8 @@ function Main() {
 	/**
 	 * Toggle the visibility of the control panel.
 	 *
+	 * @method
+	 * @memberof ext.wikispeech.Main
 	 * @param {Event} event
 	 */
 
@@ -68,6 +77,8 @@ function Main() {
 	/**
 	 * Check if Wikispeech is enabled for the current namespace.
 	 *
+	 * @method
+	 * @memberof ext.wikispeech.Main
 	 * @return {boolean} true is the namespace of current page
 	 *  should activate Wikispeech, else false.
 	 */

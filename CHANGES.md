@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 * [T387739](https://phabricator.wikimedia.org/T387739) Add framework for handling parts of content
+* [T387325](https://phabricator.wikimedia.org/T387325) Created fallback error message when synthesis doesn't work
 * [T393443](https://phabricator.wikimedia.org/T393443) Adding config variable for testing utterance generation
 * [T392457](https://phabricator.wikimedia.org/T392457) Overwrite utterance if files and database are out of sync
 

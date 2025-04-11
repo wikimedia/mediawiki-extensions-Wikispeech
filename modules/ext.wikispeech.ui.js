@@ -20,6 +20,7 @@ function Ui() {
 		self.addKeyboardShortcuts();
 		self.windowManager = new OO.ui.WindowManager();
 		self.addDialogs();
+		self.loadErrorAudio();
 		self.ready.resolve();
 	};
 
@@ -542,6 +543,17 @@ function Ui() {
 	};
 
 	/**
+	 * Loads the error audio once and calls it in init()
+	 */
+
+	this.loadErrorAudio = function () {
+		const errorAudioData = require( './audio/error.json' );
+		const src = 'data:audio/ogg;base64,' + errorAudioData[ 'wikispeech-listen' ].audio;
+
+		self.errorAudio = new Audio( src );
+	};
+
+	/**
 	 * Show an error dialog for when audio could not be loaded
 	 *
 	 * Has buttons for retrying and stopping playback.
@@ -550,10 +562,20 @@ function Ui() {
 	 */
 
 	this.showLoadAudioError = function () {
+		if ( self.errorAudio ) {
+			self.errorAudio.play();
+		}
+
 		return self.openWindow(
 			self.messageDialog,
 			self.errorLoadAudioDialogData
-		);
+		).then( ( data ) => {
+			if ( self.errorAudio ) {
+				self.errorAudio.pause();
+				self.errorAudio.currentTime = 0;
+			}
+			return data;
+		} );
 	};
 
 	/**

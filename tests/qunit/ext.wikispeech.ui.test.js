@@ -261,6 +261,26 @@ QUnit.test( 'addSelectionPlayer(): hide selection player initially', ( assert ) 
 	assert.false( ui.selectionPlayer.isVisible() );
 } );
 
+QUnit.test( 'showLoadAudioError(): plays and stops the error audio', ( assert ) => {
+	const done = assert.async();
+
+	const audioMock = {
+		play: sinon.stub(),
+		pause: sinon.stub(),
+		currentTime: 123
+	};
+	ui.errorAudio = audioMock;
+
+	sinon.stub( ui, 'openWindow' ).resolves( { action: 'stop' } );
+
+	ui.showLoadAudioError().then( () => {
+		assert.strictEqual( audioMock.play.calledOnce, true );
+		assert.strictEqual( audioMock.pause.calledOnce, true );
+		assert.strictEqual( audioMock.currentTime, 0 );
+		done();
+	} );
+} );
+
 /**
  * Create a keydown event.
  *

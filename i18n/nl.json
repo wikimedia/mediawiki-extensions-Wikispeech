@@ -50,6 +50,7 @@
 	"wikispeech-lexicon-copyrightnote": "Door de wijzigingen op te slaan, gaat u ermee akkoord uw bijdrage vrij te geven onder de licentie [https://creativecommons.org/publicdomain/zero/1.0/deed.nl Creative Commons CC0].",
 	"group-wikispeech-edit-lexicon": "Wikispeech-lexicon-bewerkers",
 	"group-wikispeech-edit-lexicon-member": "Wikispeech-lexicon-bewerk{{GENDER:$1||st}}er",
+	"wikispeech-lexicon-null-edit": "Er zijn geen ter zake doende veranderingen waargenomen in transcriptie of voorkeursstatus.",
 	"wikispeech-skip-back": "Terugspringen",
 	"wikispeech-previous": "Vorige",
 	"wikispeech-play": "Afspelen",

@@ -44,6 +44,7 @@
 	"wikispeech-lexicon-copyrightnote": "Зачувувајќи ги промените, се согласувате дека вашиот придонес го објавувате под лиценцата [https://creativecommons.org/publicdomain/zero/1.0/deed.mk CC0].",
 	"group-wikispeech-edit-lexicon": "Лексиконски уредници на Викиговор",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Лексиконски уредник на Викиговор}}",
+	"wikispeech-lexicon-null-edit": "Не се пронајдени релевантни промени во преписот или претпочитаниот статус",
 	"wikispeech-skip-back": "Прескокни назад",
 	"wikispeech-previous": "Претходно",
 	"wikispeech-play": "Пушти",

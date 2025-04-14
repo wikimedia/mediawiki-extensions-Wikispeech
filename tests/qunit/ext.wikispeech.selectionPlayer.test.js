@@ -1,6 +1,6 @@
-let sandbox, contentSelector, selectionPlayer, player, storage;
+let contentSelector, selectionPlayer, player, storage;
 
-QUnit.module( 'ext.wikispeech.selectionPlayer', {
+QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 	beforeEach: function () {
 		mw.wikispeech.storage =
 			sinon.stub( new mw.wikispeech.Storage() );
@@ -25,24 +25,27 @@ QUnit.module( 'ext.wikispeech.selectionPlayer', {
 		player = mw.wikispeech.player;
 		selectionPlayer =
 			new mw.wikispeech.SelectionPlayer();
-		sandbox = sinon.sandbox.create();
+		mw.wikispeech.ui = {
+			showBufferingIconIfAudioIsLoading: sinon.stub(),
+			hideBufferingIcon: sinon.stub()
+		};
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' )
 		);
-		mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
-		contentSelector =
-			mw.config.get( 'wgWikispeechContentSelector' );
+
+		contentSelector = '#mw-content-text';
+		mw.config.set( 'wgWikispeechContentSelector', contentSelector );
+
 		this.clock = sinon.useFakeTimers();
 	},
 	afterEach: function () {
-		sandbox.restore();
 		// Remove the event listeners to not trigger them after
 		// the tests have run.
 		$( document ).off( 'mouseup' );
 		this.clock.restore();
 		mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
 	}
-} );
+} ) );
 
 /**
  * Create a mocked `Selection`.
@@ -86,7 +89,7 @@ function createMockedSelection(
 	};
 }
 
-QUnit.skip( 'playSelection()', () => {
+QUnit.test( 'playSelection()', function () {
 	mw.wikispeech.test.util.setContentHtml(
 		'Utterance with selected text.'
 		//              [-----------]
@@ -96,7 +99,7 @@ QUnit.skip( 'playSelection()', () => {
 	);
 	const textNode = $( contentSelector ).contents().get( 0 );
 	const selection = createMockedSelection( 15, textNode, 27 );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].endOffset = 28;
 	storage.utterances[ 0 ].content = [ {
@@ -165,7 +168,7 @@ QUnit.skip( 'playSelection()', () => {
 	);
 } );
 
-QUnit.skip( 'playSelection(): multiple ranges', () => {
+QUnit.test( 'playSelection(): multiple ranges', function () {
 	mw.wikispeech.test.util.setContentHtml(
 		'Utterance with selected <del>not selectable</del>text.'
 		//              [-------]                         [--]
@@ -192,7 +195,7 @@ QUnit.skip( 'playSelection(): multiple ranges', () => {
 			}
 		}
 	};
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].content = [
 		{ path: './text()[1]' },
@@ -265,7 +268,7 @@ QUnit.skip( 'playSelection(): multiple ranges', () => {
 	);
 } );
 
-QUnit.skip( 'playSelection(): spanning multiple nodes', () => {
+QUnit.test( 'playSelection(): spanning multiple nodes', function () {
 	mw.wikispeech.test.util.setContentHtml(
 		'Utterance with selected text <b>and </b>more selected text.'
 		//              [-----------------------------------------]
@@ -273,7 +276,7 @@ QUnit.skip( 'playSelection(): spanning multiple nodes', () => {
 	const textNode1 = $( contentSelector ).contents().get( 0 );
 	const textNode2 = $( contentSelector ).contents().get( 2 );
 	const selection = createMockedSelection( 15, textNode1, 17, textNode2 );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].content = [
 		{ path: './text()[1]' },
@@ -320,14 +323,14 @@ QUnit.skip( 'playSelection(): spanning multiple nodes', () => {
 	);
 } );
 
-QUnit.skip( 'playSelection(): selected nodes are elements', () => {
+QUnit.test( 'playSelection(): selected nodes are elements', function () {
 	mw.wikispeech.test.util.setContentHtml(
 		'<b>Utterance zero.</b>'
 		//  [-------------]
 	);
 	const parent = $( contentSelector + ' b' ).get( 0 );
 	const selection = createMockedSelection( 0, parent, 1 );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].content = [ { path: './b/text()' } ];
 	storage.utterances[ 0 ].tokens = [
@@ -376,14 +379,14 @@ QUnit.skip( 'playSelection(): selected nodes are elements', () => {
 	);
 } );
 
-QUnit.skip( 'playSelection(): selected nodes are elements that also contain non-utterance nodes', () => {
+QUnit.test( 'playSelection(): selected nodes are elements that also contain non-utterance nodes', function () {
 	mw.wikispeech.test.util.setContentHtml(
 		'<b>Not an utterance<br />Utterance zero.<br />Not an utterance</b>'
 		//  [---------------------------------------------------------]
 	);
 	const parent = $( contentSelector + ' b' ).get( 0 );
 	const selection = createMockedSelection( 0, parent, 1 );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].content = [ { path: './b/text()[2]' } ];
 	storage.utterances[ 0 ].tokens = [
@@ -545,7 +548,7 @@ QUnit.skip( 'resetPreviousEndUtterance()', function () {
 	sinon.assert.notCalled( player.stop );
 } );
 
-QUnit.skip( 'getFirstNodeInSelection()', ( assert ) => {
+QUnit.test( 'getFirstNodeInSelection()', function ( assert ) {
 	mw.wikispeech.test.util.setContentHtml(
 		'before<selected>first text node</selected>after'
 		//               [-------------]
@@ -554,7 +557,7 @@ QUnit.skip( 'getFirstNodeInSelection()', ( assert ) => {
 	const expectedNode =
 		$( contentSelector + ' selected' ).contents().get( 0 );
 	const selection = createMockedSelection( 0, expectedNode, 14 );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
 		selectionPlayer.getFirstNodeInSelection();
@@ -562,7 +565,7 @@ QUnit.skip( 'getFirstNodeInSelection()', ( assert ) => {
 	assert.strictEqual( actualNode, expectedNode );
 } );
 
-QUnit.skip( 'getFirstNodeInSelection(): start offset greater than max', ( assert ) => {
+QUnit.test( 'getFirstNodeInSelection(): start offset greater than max', function ( assert ) {
 	mw.wikispeech.test.util.setContentHtml(
 		'before<selected>first text node</selected>after'
 		//               [-------------]
@@ -573,7 +576,7 @@ QUnit.skip( 'getFirstNodeInSelection(): start offset greater than max', ( assert
 		$( contentSelector ).contents().get( 0 );
 	const selection =
 		createMockedSelection( 6, previousNode, 14, expectedNode );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
 		selectionPlayer.getFirstNodeInSelection();
@@ -581,7 +584,7 @@ QUnit.skip( 'getFirstNodeInSelection(): start offset greater than max', ( assert
 	assert.strictEqual( actualNode, expectedNode );
 } );
 
-QUnit.skip( 'getFirstNodeInSelection(): start offset greater than max, no sibling', ( assert ) => {
+QUnit.test( 'getFirstNodeInSelection(): start offset greater than max, no sibling', function ( assert ) {
 	mw.wikispeech.test.util.setContentHtml(
 		'<a><b>before</b></a><selected>first text node</selected>after'
 		//                             [-------------]
@@ -593,7 +596,7 @@ QUnit.skip( 'getFirstNodeInSelection(): start offset greater than max, no siblin
 		$( contentSelector + ' a b' ).contents().get( 0 );
 	const selection =
 		createMockedSelection( 6, previousNode, 14, expectedNode );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
 		selectionPlayer.getFirstNodeInSelection();
@@ -601,7 +604,7 @@ QUnit.skip( 'getFirstNodeInSelection(): start offset greater than max, no siblin
 	assert.strictEqual( actualNode, expectedNode );
 } );
 
-QUnit.skip( 'getLastNodeInSelection()', ( assert ) => {
+QUnit.test( 'getLastNodeInSelection()', function ( assert ) {
 	mw.wikispeech.test.util.setContentHtml(
 		'before<selected>last text node</selected>after'
 		//               [------------]
@@ -610,7 +613,7 @@ QUnit.skip( 'getLastNodeInSelection()', ( assert ) => {
 	const expectedNode =
 		$( contentSelector + ' selected' ).contents().get( 0 );
 	const selection = createMockedSelection( 0, expectedNode, 13 );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
 		selectionPlayer.getLastNodeInSelection();
@@ -618,7 +621,7 @@ QUnit.skip( 'getLastNodeInSelection()', ( assert ) => {
 	assert.strictEqual( actualNode, expectedNode );
 } );
 
-QUnit.skip( 'getLastNodeInSelection(): end offset is zero', ( assert ) => {
+QUnit.test( 'getLastNodeInSelection(): end offset is zero', function ( assert ) {
 	mw.wikispeech.test.util.setContentHtml(
 		'before<selected>last text node</selected>after'
 		//               [------------]
@@ -628,7 +631,7 @@ QUnit.skip( 'getLastNodeInSelection(): end offset is zero', ( assert ) => {
 	const nextNode = $( contentSelector ).contents().get( 2 );
 	const selection =
 		createMockedSelection( 0, expectedNode, -1, nextNode );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
 		selectionPlayer.getLastNodeInSelection();
@@ -636,7 +639,7 @@ QUnit.skip( 'getLastNodeInSelection(): end offset is zero', ( assert ) => {
 	assert.strictEqual( actualNode, expectedNode );
 } );
 
-QUnit.skip( 'getLastNodeInSelection(): end offset is zero, no sibling', ( assert ) => {
+QUnit.test( 'getLastNodeInSelection(): end offset is zero, no sibling', function ( assert ) {
 	mw.wikispeech.test.util.setContentHtml(
 		'before<selected>last text node</selected><a><b>after</b></a>'
 		//               [------------]
@@ -645,7 +648,7 @@ QUnit.skip( 'getLastNodeInSelection(): end offset is zero, no sibling', ( assert
 	const expectedNode = $( contentSelector + ' selected' ).get( 0 );
 	const nextNode = $( contentSelector + ' a b' ).contents().get( 0 );
 	const selection = createMockedSelection( 0, expectedNode, -1, nextNode );
-	sandbox.stub( window, 'getSelection' ).returns( selection );
+	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode = selectionPlayer.getLastNodeInSelection();
 

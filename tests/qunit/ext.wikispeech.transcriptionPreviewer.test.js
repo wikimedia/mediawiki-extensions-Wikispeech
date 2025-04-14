@@ -6,8 +6,10 @@ QUnit.module( 'ext.wikispeech.transcriptionPreviewer', QUnit.newMwEnvironment( {
 		const $language = sinon.stub( $( '<select>' ) );
 		const $transcription = sinon.stub( $( '<input>' ) );
 		const api = sinon.stub( new mw.Api() );
-		const $player = sinon.stub( $( '<audio>' ) );
-		$player.get.returns( sinon.stub( $( '<audio>' ).get( 0 ) ) );
+		const $player = sinon.stub( $() );
+		this.audio = new Audio();
+		sinon.stub( this.audio, 'play' );
+		$player.get.returns( this.audio );
 		this.transcriptionPreviewer = new TranscriptionPreviewer(
 			$language,
 			$transcription,
@@ -60,18 +62,20 @@ QUnit.skip( 'play(): fetch new audio when not played before', function ( assert 
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'new transcription'
 	);
-	const promise = $.Deferred().resolve().promise();
+	const promise = sinon.promise();
+	promise.resolve();
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' ).returns( promise );
 
-	const done = this.transcriptionPreviewer.play();
+	const done = assert.async();
+
+	this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
-	const self = this;
 	promise.then( () => {
 		sinon.assert.calledOnce(
-			self.transcriptionPreviewer.$player.get( 0 ).play
+			this.audio.play
 		);
-		assert.strictEqual( done.state(), 'resolved' );
+		done();
 	} );
 	assert.strictEqual(
 		this.transcriptionPreviewer.lastTranscription,
@@ -85,18 +89,20 @@ QUnit.skip( 'play(): fetch new audio when no audio data', function ( assert ) {
 		'same transcription'
 	);
 	this.transcriptionPreviewer.$player.attr.returns( '' );
-	const promise = $.Deferred().resolve().promise();
+	const promise = sinon.promise();
+	promise.resolve();
 	sinon.stub( this.transcriptionPreviewer, 'fetchAudio' ).returns( promise );
 
-	const done = this.transcriptionPreviewer.play();
+	const done = assert.async();
+
+	this.transcriptionPreviewer.play();
 
 	sinon.assert.calledOnce( this.transcriptionPreviewer.fetchAudio );
-	const self = this;
 	promise.then( () => {
 		sinon.assert.calledOnce(
-			self.transcriptionPreviewer.$player.get( 0 ).play
+			this.audio.play
 		);
-		assert.strictEqual( done.state(), 'resolved' );
+		done();
 	} );
 } );
 

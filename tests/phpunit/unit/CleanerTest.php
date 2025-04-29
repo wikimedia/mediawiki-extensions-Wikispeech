@@ -12,12 +12,12 @@ use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\SegmentContent;
-use MediaWikiIntegrationTestCase;
+use MediaWikiUnitTestCase;
 
 /**
  * @covers \MediaWiki\Wikispeech\Segment\Cleaner
  */
-class CleanerTest extends MediaWikiIntegrationTestCase {
+class CleanerTest extends MediaWikiUnitTestCase {
 
 	/** @var Cleaner */
 	private $cleaner;

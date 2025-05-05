@@ -11,6 +11,7 @@ namespace MediaWiki\Wikispeech\Lexicon;
 use FormatJson;
 use InvalidArgumentException;
 use MWException;
+use RuntimeException;
 
 /**
  * Keeps track of lexicon entries in Speechoid and local storage.
@@ -138,7 +139,7 @@ class LexiconHandler implements LexiconStorage {
 
 		$failedLocalEntryItemsCount = count( $itemsOutOfSync );
 		if ( $failedLocalEntryItemsCount > 0 ) {
-			throw new MWException(
+			throw new RuntimeException(
 				'Storages out of sync. ' . $failedLocalEntryItemsCount .
 				' entry items from local and Speechoid lexicon failed to merge.: ' .
 				FormatJson::encode( $itemsOutOfSync )
@@ -146,6 +147,38 @@ class LexiconHandler implements LexiconStorage {
 		}
 
 		return $speechoidEntry;
+	}
+
+	/**
+	 * @since 0.1.11
+	 * @param string $language
+	 * @param string $key
+	 * @return LexiconEntry|null
+	 */
+	public function getLocalEntry( string $language, string $key ): ?LexiconEntry {
+		return $this->localStorage->getEntry( $language, $key );
+	}
+
+	/**
+	 * @since 0.1.11
+	 * @param string $language
+	 * @param string $key
+	 * @param int $speechoidId
+	 */
+	public function syncEntryItem( string $language, string $key, int $speechoidId ): void {
+		$speechoidEntry = $this->speechoidStorage->getEntry( $language, $key );
+
+		if ( $speechoidEntry === null ) {
+			throw new RuntimeException( "Speechoid entry not found for language '$language' and key '$key'" );
+		}
+
+		$matchingSpeechoidItem = $speechoidEntry->findItemBySpeechoidIdentity( $speechoidId );
+
+		if ( $matchingSpeechoidItem === null ) {
+			throw new RuntimeException( "Speechoid ID not found for '$language' and key '$key'" );
+		}
+
+		$this->localStorage->updateEntryItem( $language, $key, $matchingSpeechoidItem );
 	}
 
 	/**

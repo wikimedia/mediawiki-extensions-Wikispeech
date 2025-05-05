@@ -12,6 +12,7 @@ use HashBagOStuff;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
+use MediaWiki\Wikispeech\Lexicon\LexiconLocalStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWanCacheStorage;
 use MediaWikiUnitTestCase;
@@ -93,6 +94,7 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 	/**
 	 * One item that exists only in local lexicon.
 	 * One identical item that exists in both local and Speechoid lexicon.
+	 * Should be overwritten by speechoidentry.
 	 */
 	public function testGetEntry_localOnlyAndIntersecting_fails() {
 		$intersectingItem = new LexiconEntryItem();
@@ -100,37 +102,31 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			'id' => 0,
 			'foo' => 'bar'
 		] );
-
 		$localOnlyItem = new LexiconEntryItem();
 		$localOnlyItem->setProperties( (object)[
 			'id' => 0,
 			'foo' => 'bass'
 		] );
-
 		$localEntry = new LexiconEntry();
 		$localEntry->setKey( 'tomten' );
 		$localEntry->setLanguage( 'sv' );
 		$localEntry->setItems( [ $localOnlyItem, $intersectingItem ] );
-
 		$speechoidEntry = new LexiconEntry();
 		$speechoidEntry->setKey( 'tomten' );
 		$speechoidEntry->setLanguage( 'sv' );
 		$speechoidEntry->setItems( [ $intersectingItem ] );
-
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
 			->expects( $this->once() )
 			->method( 'getEntry' )
 			->with( 'sv', 'tomten' )
 			->willReturn( $speechoidEntry );
-
 		$localMock = $this->createMock( LexiconWanCacheStorage::class );
 		$localMock
 			->expects( $this->once() )
 			->method( 'getEntry' )
 			->with( 'sv', 'tomten' )
 			->willReturn( $localEntry );
-
 		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
 		$this->expectExceptionMessage(
 			'Storages out of sync. 1 entry items from local and Speechoid lexicon failed to merge.'
@@ -211,7 +207,6 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 				'timestamp' => '2017-06-18T08:51:25Z'
 			]
 		] );
-
 		$speechoidItem = new LexiconEntryItem();
 		$speechoidItem->setProperties( (object)[
 			'id' => 123,
@@ -221,33 +216,27 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 				'timestamp' => '2018-06-18T08:51:25Z'
 			]
 		] );
-
 		$localEntry = new LexiconEntry();
 		$localEntry->setKey( 'tomten' );
 		$localEntry->setLanguage( 'sv' );
 		$localEntry->setItems( [ $localItem ] );
-
 		$speechoidEntry = new LexiconEntry();
 		$speechoidEntry->setKey( 'tomten' );
 		$speechoidEntry->setLanguage( 'sv' );
 		$speechoidEntry->setItems( [ $speechoidItem ] );
-
 		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
 		$speechoidMock
 			->expects( $this->once() )
 			->method( 'getEntry' )
 			->with( 'sv', 'tomten' )
 			->willReturn( $speechoidEntry );
-
 		$localMock = $this->createMock( LexiconWanCacheStorage::class );
 		$localMock
 			->expects( $this->once() )
 			->method( 'getEntry' )
 			->with( 'sv', 'tomten' )
 			->willReturn( $localEntry );
-
 		$lexiconHandler = new LexiconHandler( $speechoidMock, $localMock );
-
 		$this->expectExceptionMessage(
 			'Storages out of sync. 1 entry items from local and Speechoid lexicon failed to merge.'
 		);
@@ -529,4 +518,66 @@ class LexiconHandlerTest extends MediaWikiUnitTestCase {
 			$item
 		);
 	}
+
+	public function testSyncEntryItem_differentProperties_overwriteWithSpeechoidItem() {
+		$localItem = new LexiconEntryItem();
+		$localItem->setProperties( (object)[
+			'id' => 123,
+			'strn' => 'tomten',
+			'lemma' => (object)[]
+		] );
+
+		$speechoidItem = new LexiconEntryItem();
+		$speechoidItem->setProperties( (object)[
+			'id' => 123,
+			'strn' => 'tomtemor',
+			'lemma' => (object)[]
+		] );
+
+		$language = 'sv';
+		$word = 'tomten';
+
+		$speechoidEntry = new LexiconEntry();
+		$speechoidEntry->setKey( $word );
+		$speechoidEntry->setLanguage( $language );
+		$speechoidEntry->setItems( [ $speechoidItem ] );
+
+		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
+		$speechoidMock
+			->expects( $this->once() )
+			->method( 'getEntry' )
+			->with( $language, $word )
+			->willReturn( $speechoidEntry );
+
+		$localMock = $this->createMock( LexiconWanCacheStorage::class );
+		$localMock
+			->expects( $this->once() )
+			->method( 'updateEntryItem' )
+			->with( $language, $word, $speechoidItem );
+
+		$handler = new LexiconHandler( $speechoidMock, $localMock );
+		$handler->syncEntryItem( $language, $word, $localItem->getSpeechoidIdentity() );
+	}
+
+	public function testGetLocalEntry_entryExists_returnEntry() {
+		$language = 'sv';
+		$word = 'tomten';
+
+		$mockedEntry = $this->createMock( LexiconEntry::class );
+
+		$localStorage = $this->createMock( LexiconLocalStorage::class );
+		$localStorage
+			->expects( $this->once() )
+			->method( 'getEntry' )
+			->with( $language, $word )
+			->willReturn( $mockedEntry );
+
+		$speechoidMock = $this->createMock( LexiconSpeechoidStorage::class );
+		$handler = new LexiconHandler( $speechoidMock, $localStorage );
+
+		$result = $handler->getLocalEntry( $language, $word );
+
+		$this->assertSame( $mockedEntry, $result );
+	}
+
 }

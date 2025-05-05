@@ -345,6 +345,7 @@ class UtteranceStore {
 	 */
 	public function storeFile( $fileUrl, $content, $type ) {
 		$fileBackend = $this->getFileBackend();
+
 		if ( !$fileBackend->prepare( [
 			'dir' => dirname( $fileUrl ),
 			'noAccess' => 1,
@@ -354,7 +355,8 @@ class UtteranceStore {
 		}
 		$opts = [
 			'dst' => $fileUrl,
-			'content' => $content
+			'content' => $content,
+			'overwrite' => true
 		];
 		if ( $this->isWikispeechUtteranceUseSwiftFileBackendExpiring() &&
 			$fileBackend instanceof SwiftFileBackend ) {

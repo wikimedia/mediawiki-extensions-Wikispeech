@@ -165,6 +165,23 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		$this->assertEquals( $data['synthesisMetadata'], $retrieved->getSynthesisMetadata() );
 	}
 
+	public function testStoreFileOverwritesExistingFileContent() {
+		$fileBackend = $this->utteranceStore->fileBackend;
+
+		$utteranceId = 88;
+		$audioUrl = $this->utteranceStore->audioUrlFactory( $utteranceId );
+
+		$content1 = 'original file';
+		$content2 = 'overwritten file';
+
+		$this->utteranceStore->storeFile( $audioUrl, $content1, 'audio file' );
+		$this->assertTrue( $fileBackend->fileExists( [ 'src' => $audioUrl ] ) );
+		$this->assertSame( $content1, $fileBackend->getFileContents( [ 'src' => $audioUrl ] ) );
+
+		$this->utteranceStore->storeFile( $audioUrl, $content2, 'audio file' );
+		$this->assertSame( $content2, $fileBackend->getFileContents( [ 'src' => $audioUrl ] ) );
+	}
+
 	public function testFlushUtterancesByExpirationDate() {
 		$dateExpires = 20020101000000;
 		$mockedUtterances = [

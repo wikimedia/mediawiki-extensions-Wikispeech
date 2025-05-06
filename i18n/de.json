@@ -55,5 +55,8 @@
 	"wikispeech-edit-lexicon-btn": "Lexikon bearbeiten",
 	"wikispeech-edit-lexicon-no-item-found": "Kein Lexikoneintrag mit der ID „$1“ gefunden. Bitte überprüfe die ID und versuche es erneut.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Aussprache konnte nicht vom Aussprachedienst abgerufen werden",
-	"wikispeech-edit-lexicon-speechoid-down": "Der Aussprachedienst ist vorübergehend nicht verfügbar. Bitte versuche es später erneut."
+	"wikispeech-edit-lexicon-speechoid-down": "Der Aussprachedienst ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.",
+	"wikispeech-lexicon-sync-error": "Die Lexika sind nicht synchron. Entweder enthalten sie unterschiedliche Eigenschaften, oder ein Eintrag ist nur in einem der Lexika vorhanden. Möchtest du den lokalen Eintrag überschreiben, damit er mit Speechoid übereinstimmt?",
+	"wikispeech-lexicon-sync-error-button": "Überschreiben",
+	"wikispeech-lexicon-sync-error-unidentified": "Beim Versuch, Lexikoneinträge zu synchronisieren, ist ein nicht identifizierter Fehler aufgetreten."
 }

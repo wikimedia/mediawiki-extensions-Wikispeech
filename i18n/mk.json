@@ -55,5 +55,8 @@
 	"wikispeech-edit-lexicon-btn": "Уреди лексикон",
 	"wikispeech-edit-lexicon-no-item-found": "Не најдов лексиконски запис со назнаката „$1“. Проверете ја назнаката и обидете се повторно.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Не можев да го добијам изговорот од изговорната служба",
-	"wikispeech-edit-lexicon-speechoid-down": "Изговорната служба е привремено недостапна. Обидете се подоцна."
+	"wikispeech-edit-lexicon-speechoid-down": "Изговорната служба е привремено недостапна. Обидете се подоцна.",
+	"wikispeech-lexicon-sync-error": "Лексиконите се неусогласени, било поради тоа што содржат различни својства, или бидејќи еден запис постои само во еден од лексиконите. Дали би сакале да презапишете врз месниот запис за добиеното да одговара на Speechoid?",
+	"wikispeech-lexicon-sync-error-button": "Презапиши",
+	"wikispeech-lexicon-sync-error-unidentified": "Се јави непрепознаена грешка при обидот за усогласување на лексиконските записи."
 }

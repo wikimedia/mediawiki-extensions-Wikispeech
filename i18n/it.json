@@ -19,5 +19,6 @@
 	"wikispeech-preview": "Anteprima",
 	"wikispeech-lexicon-next": "Successivo",
 	"wikispeech-lexicon-save": "Salva",
-	"wikispeech-lexicon-new": "Nuovo"
+	"wikispeech-lexicon-new": "Nuovo",
+	"wikispeech-lexicon-sync-error-button": "Sovrascrivi"
 }

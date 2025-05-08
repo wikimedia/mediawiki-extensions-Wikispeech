@@ -27,5 +27,6 @@
 	"wikispeech-previous": "이전",
 	"wikispeech-next": "다음",
 	"wikispeech-help": "도움말",
-	"wikispeech-feedback": "피드백 보내기"
+	"wikispeech-feedback": "피드백 보내기",
+	"wikispeech-lexicon-sync-error-button": "덮어쓰기"
 }

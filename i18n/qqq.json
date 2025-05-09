@@ -66,7 +66,7 @@
 	"wikispeech-edit-lexicon-no-item-found": "Error message when no lexicon item is found.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Error message when a transcription could not be retrieved from speechoid service",
 	"wikispeech-edit-lexicon-speechoid-down": "Error message when the Speechoid service is down.",
-	"wikispeech-lexicon-sync-error": "Error messege to ask the user if they want to overwrite local entry with speechoid entry since there is syncproblems between the lexicons such as different properties.",
+	"wikispeech-lexicon-sync-error": "Error message to ask the user if they want to overwrite local entry with speechoid entry since there is sync problems between the lexicons, such as different properties.",
 	"wikispeech-lexicon-sync-error-button": "Button for overwriting stuff",
 	"wikispeech-lexicon-sync-error-unidentified": "Throws an error if there is an unidentified error syncing the lexicon entries."
 }

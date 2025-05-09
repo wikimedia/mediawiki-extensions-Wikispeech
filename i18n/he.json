@@ -56,5 +56,7 @@
 	"wikispeech-edit-lexicon-btn": "עריכת המילון",
 	"wikispeech-edit-lexicon-no-item-found": "לא נמצאה רשומת מילון עם מזהה \"$1\". נא לבדוק את המזהה ולנסות שוב.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "לא היה אפשר לקבל הגייה משירות ההגייה",
-	"wikispeech-edit-lexicon-speechoid-down": "שירות ההגייה אינו זמין באופן זמני. נא לנסות שוב מאוחר יותר."
+	"wikispeech-edit-lexicon-speechoid-down": "שירות ההגייה אינו זמין באופן זמני. נא לנסות שוב מאוחר יותר.",
+	"wikispeech-lexicon-sync-error-button": "דריסה",
+	"wikispeech-lexicon-sync-error-unidentified": "אירעה שגיאה לא מזוהה בעת ניסיון לסנכרן ערכי מילון."
 }

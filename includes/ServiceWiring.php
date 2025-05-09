@@ -7,6 +7,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWanCacheStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\WikispeechServices;
 
 /** @phpcs-require-sorted-array */
@@ -48,5 +49,8 @@ return [
 			$services->getMainConfig(),
 			$services->getHttpRequestFactory()
 		);
+	},
+	'Wikispeech.UtteranceGenerator' => static function ( MediaWikiServices $services ): UtteranceGenerator {
+		return new UtteranceGenerator( $services->get( 'Wikispeech.SpeechoidConnector' ), );
 	}
 ];

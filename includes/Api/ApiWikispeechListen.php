@@ -14,25 +14,22 @@ use ApiMain;
 use ApiUsageException;
 use Config;
 use ConfigException;
-use ExternalStoreException;
-use FormatJson;
-use InvalidArgumentException;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionStore;
+use MediaWiki\Wikispeech\InputTextValidator;
 use MediaWiki\Wikispeech\Segment\DeletedRevisionException;
 use MediaWiki\Wikispeech\Segment\RemoteWikiPageProviderException;
-use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
-use MediaWiki\Wikispeech\Segment\TextFilter\Sv\SwedishFilter;
 use MediaWiki\Wikispeech\SpeechoidConnector;
-use MediaWiki\Wikispeech\SpeechoidConnectorException;
+use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
 use MWException;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Throwable;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -67,8 +64,8 @@ class ApiWikispeechListen extends ApiBase {
 	/** @var SpeechoidConnector */
 	private $speechoidConnector;
 
-	/** @var UtteranceStore */
-	private $utteranceStore;
+	/** @var UtteranceGenerator */
+	private $utteranceGenerator;
 
 	/** @var VoiceHandler */
 	private $voiceHandler;
@@ -83,6 +80,7 @@ class ApiWikispeechListen extends ApiBase {
 	 * @param WANObjectCache $cache
 	 * @param RevisionStore $revisionStore
 	 * @param HttpRequestFactory $requestFactory
+	 * @param UtteranceGenerator $utteranceGenerator
 	 * @param string $modulePrefix
 	 */
 	public function __construct(
@@ -91,6 +89,7 @@ class ApiWikispeechListen extends ApiBase {
 		WANObjectCache $cache,
 		RevisionStore $revisionStore,
 		HttpRequestFactory $requestFactory,
+		UtteranceGenerator $utteranceGenerator,
 		string $modulePrefix = ''
 	) {
 		$this->config = $this->getConfig();
@@ -105,7 +104,6 @@ class ApiWikispeechListen extends ApiBase {
 			$this->config,
 			$requestFactory
 		);
-		$this->utteranceStore = new UtteranceStore();
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
 		$this->voiceHandler = new VoiceHandler(
 			$this->logger,
@@ -114,6 +112,8 @@ class ApiWikispeechListen extends ApiBase {
 			$cache
 		);
 		$this->listenMetricEntry = new ListenMetricsEntry();
+		$this->utteranceGenerator = $utteranceGenerator;
+
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 	}
 
@@ -189,7 +189,7 @@ class ApiWikispeechListen extends ApiBase {
 		$this->listenMetricEntry->setMicrosecondsSpent( intval( 1000000 * ( microtime( true ) - $started ) ) );
 
 		// All other metrics fields has been set in other functions of this class.
-
+		// For now the value of utteranceSynthesized() isn't used.
 		if ( !$inputParameters['skip-journal-metrics']
 			&& $this->config->get( 'WikispeechListenDoJournalMetrics' ) ) {
 			$metricsJournal = new ListenMetricsEntryFileJournal( $this->config );
@@ -267,143 +267,13 @@ class ApiWikispeechListen extends ApiBase {
 		$this->listenMetricEntry->setPageId( $pageId );
 		$this->listenMetricEntry->setPageTitle( $segmentPageResponse->getTitle()->getText() );
 
-		return $this->getUtterance(
+		return $this->utteranceGenerator->getUtterance(
 			$consumerUrl,
 			$voice,
 			$language,
 			$pageId,
 			$segment
 		);
-	}
-
-	/**
-	 * Validate input text.
-	 *
-	 * @since 0.1.5
-	 * @param string $text
-	 * @throws ApiUsageException
-	 */
-	private function validateText( $text ) {
-		$numberOfCharactersInInput = mb_strlen( $text );
-		$maximumNumberOfCharacterInInput =
-			$this->config->get( 'WikispeechListenMaximumInputCharacters' );
-		if ( $numberOfCharactersInInput > $maximumNumberOfCharacterInInput ) {
-			$this->dieWithError( [
-				'apierror-wikispeech-listen-invalid-input-too-long',
-				$maximumNumberOfCharacterInInput,
-				$numberOfCharactersInInput
-			] );
-		}
-	}
-
-	/**
-	 * Return the utterance corresponding to the request.
-	 *
-	 * These are either retrieved from storage or synthesize (and then stored).
-	 *
-	 * @since 0.1.5
-	 * @param string|null $consumerUrl
-	 * @param string $voice
-	 * @param string $language
-	 * @param int $pageId
-	 * @param Segment $segment
-	 * @return array Containing base64 'audio' and synthesisMetadata 'tokens'.
-	 * @throws ExternalStoreException
-	 * @throws ConfigException
-	 * @throws InvalidArgumentException
-	 * @throws SpeechoidConnectorException
-	 */
-	private function getUtterance(
-		?string $consumerUrl,
-		string $voice,
-		string $language,
-		int $pageId,
-		Segment $segment
-	) {
-		if ( $pageId !== 0 && !$pageId ) {
-			throw new InvalidArgumentException( 'Page ID must be set.' );
-		}
-		$segmentHash = $segment->getHash();
-		if ( $segmentHash === null ) {
-			throw new InvalidArgumentException( 'Segment hash must be set.' );
-		}
-		if ( !$voice ) {
-			$voice = $this->voiceHandler->getDefaultVoice( $language );
-			if ( !$voice ) {
-				throw new ConfigException( "Invalid default voice configuration." );
-			}
-		}
-		$utterance = $this->utteranceStore->findUtterance(
-			$consumerUrl,
-			$pageId,
-			$language,
-			$voice,
-			$segmentHash
-		);
-
-		$this->listenMetricEntry->setUtteranceSynthesized( $utterance === null );
-
-		if ( !$utterance ) {
-			$this->logger->debug( __METHOD__ . ': Creating new utterance for {pageId} {segmentHash}', [
-				'pageId' => $pageId,
-				'segmentHash' => $segment->getHash()
-			] );
-
-			// Make a string of all the segment contents.
-			$segmentText = '';
-			foreach ( $segment->getContent() as $content ) {
-				$segmentText .= $content->getString();
-			}
-			$this->validateText( $segmentText );
-
-			/** @var string $ssml text/xml Speech Synthesis Markup Language */
-			$ssml = null;
-			if ( $language === 'sv' ) {
-				// @todo implement a per language selecting content text filter facade
-				$textFilter = new SwedishFilter( $segmentText );
-				$ssml = $textFilter->process();
-			}
-			if ( $ssml !== null ) {
-				$speechoidResponse = $this->speechoidConnector->synthesize(
-					$language,
-					$voice,
-					[ 'ssml' => $ssml ]
-				);
-			} else {
-				$speechoidResponse = $this->speechoidConnector->synthesizeText(
-					$language,
-					$voice,
-					$segmentText
-				);
-			}
-			$this->utteranceStore->createUtterance(
-				$consumerUrl,
-				$pageId,
-				$language,
-				$voice,
-				$segmentHash,
-				$speechoidResponse['audio_data'],
-				FormatJson::encode(
-					$speechoidResponse['tokens']
-				)
-			);
-			return [
-				'audio' => $speechoidResponse['audio_data'],
-				'tokens' => $speechoidResponse['tokens']
-			];
-		}
-		$this->logger->debug( __METHOD__ . ': Using cached utterance for {pageId} {segmentHash}', [
-			'pageId' => $pageId,
-			'segmentHash' => $segmentHash
-		] );
-		return [
-			'audio' => $utterance->getAudio(),
-			'tokens' => FormatJson::parse(
-				// @phan-suppress-next-line PhanTypeMismatchArgumentNullable synthesis metadata is set
-				$utterance->getSynthesisMetadata(),
-				FormatJson::FORCE_ASSOC
-			)->getValue()
-		];
 	}
 
 	/**
@@ -477,7 +347,14 @@ class ApiWikispeechListen extends ApiBase {
 
 		// Validate input text.
 		$input = $parameters['text'] ?? '';
-		$this->validateText( $input );
+		try {
+			InputTextValidator::validateText( $input );
+		} catch ( RuntimeException $e ) {
+			$this->dieWithError(
+				[ 'apierror-wikispeech-listen-invalid-input-too-long',
+				$this->config->get( 'WikispeechListenMaximumInputCharacters' ), mb_strlen( $input ) ]
+			);
+		}
 	}
 
 	/**

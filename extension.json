@@ -546,7 +546,8 @@
 			"services": [
 				"MainWANObjectCache",
 				"RevisionStore",
-				"HttpRequestFactory"
+				"HttpRequestFactory",
+				"Wikispeech.UtteranceGenerator"
 			]
 		}
 	},

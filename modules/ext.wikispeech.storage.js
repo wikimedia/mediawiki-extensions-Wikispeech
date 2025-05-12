@@ -14,6 +14,7 @@ class Storage {
 	constructor() {
 		this.utterances = [];
 		this.utterancesLoaded = $.Deferred();
+		this.loadFailed = false;
 		this.uiUtterances = {};
 
 		const producerUrl = mw.config.get( 'wgWikispeechProducerUrl' );
@@ -54,7 +55,7 @@ class Storage {
 					);
 				}
 			}
-		).done( ( data ) => {
+		).then( ( data ) => {
 			mw.log( 'Segments received:', data );
 			this.utterances = data[ 'wikispeech-segment' ].segments;
 
@@ -78,6 +79,10 @@ class Storage {
 			}
 			this.utterancesLoaded.resolve();
 			this.prepareUtterance( this.utterances[ 0 ] );
+		} ).catch( ( jqXHR ) => {
+			if ( jqXHR === 'missingtitle' ) {
+				this.loadFailed = true;
+			}
 		} );
 	}
 
@@ -152,51 +157,101 @@ class Storage {
 	 */
 
 	loadAudio( utterance ) {
-		const utteranceIndex = this.utterances.indexOf( utterance );
+		const utteranceIndex = this.utterances.includes( utterance ) ?
+			this.utterances.indexOf( utterance ) : 'message';
+
 		mw.log(
 			'Loading audio for utterance #' + utteranceIndex + ':',
 			utterance
 		);
-		return this.requestTts( utterance.hash, window )
-			.done( ( response ) => {
-				const audioUrl = 'data:audio/ogg;base64,' +
-					response[ 'wikispeech-listen' ].audio;
-				mw.log(
-					'Setting audio url for: [' + utteranceIndex + ']',
-					utterance, '=',
-					response[ 'wikispeech-listen' ].audio.length + ' base64 bytes'
-				);
-				$( utterance.audio ).attr( 'src', audioUrl );
-				utterance.audio.playbackRate =
-					mw.user.options.get( 'wikispeechSpeechRate' );
-				this.addTokens( utterance, response[ 'wikispeech-listen' ].tokens );
-			} );
+		if ( utterance.messageKey ) {
+			return this.requestMessageUtteranceTts( utterance.messageKey )
+				.then( ( response ) => {
+					const tts = response[ 'wikispeech-listen' ];
+					const utterances = tts.utterances;
+
+					if ( !utterances || utterances.length === 0 ) {
+						mw.log.error( 'No utterances for message key', utterance.messageKey );
+						return;
+					}
+
+					utterance.errorUtterances = this.createErrorUtterances( utterance, utterances );
+					this.prepareUtterance( utterance.errorUtterances );
+				} );
+		} else {
+			return this.requestTts( utterance.hash )
+				.then( ( response ) => {
+					const audioBase64 = response[ 'wikispeech-listen' ].audio;
+					this.setAudio( utterance.audio, audioBase64 );
+
+					mw.log(
+						'Setting audio url for: [' + utteranceIndex + ']',
+						utterance, '=',
+						audioBase64.length + ' base64 bytes'
+					);
+
+					this.addTokens(
+						utterance,
+						response[ 'wikispeech-listen' ].tokens
+					);
+				} );
+		}
+
 	}
 
 	/**
-	 * Send a request to the Speechoid service.
+	 * Set audio source and playback rate.
 	 *
-	 * Request is sent via the "wikispeech-listen" API action. Language to
-	 * use is retrieved from the current page.
+	 * @param {HTMLAudioElement} audioElement
+	 * @param {string} audioBase64
+	 */
+	setAudio( audioElement, audioBase64 ) {
+		audioElement.src = 'data:audio/ogg;base64,' + audioBase64;
+		audioElement.playbackRate = mw.user.options.get( 'wikispeechSpeechRate' );
+	}
+
+	/**
+	 * Create error utterance objects from TTS response.
 	 *
-	 * @param {string} segmentHash
+	 * Each error utterance gets its own audio element and tokens,
+	 * so it can be played andd navigated independently.
+	 *
+	 * @param {Object} baseUtterance
+	 * @param {Array} utterances
+	 *@return {Array} List of utterance objects.
+	 */
+	createErrorUtterances( baseUtterance, utterances ) {
+		return utterances.map( ( res ) => {
+			const u = Object.assign( {}, baseUtterance, {
+				audio: new Audio(),
+				tokens: res.tokens,
+				messageKey: baseUtterance.messageKey
+			} );
+			this.setAudio( u.audio, res.audio );
+			let prevEnd = 0;
+			u.tokens = res.tokens.map( ( t ) => {
+				const token = Object.assign( {}, t, {
+					string: t.orth,
+					startTime: prevEnd,
+					endTime: t.endtime,
+					utterance: u,
+					isErrorUtterance: true
+				} );
+				prevEnd = t.endtime;
+				return token;
+			} );
+			return u;
+		} );
+	}
+
+	/**
+	 * Request is sent via the "wikispeech-listen" API action.
+	 *
+	 * @param {Object} options
 	 * @param {Object} window
 	 * @return {jQuery.Promise}
 	 */
-
-	requestTts( segmentHash, window ) {
-		const language = mw.config.get( 'wgPageContentLanguage' );
-		const voice = util.getUserVoice( language );
-		const options = {
-			action: 'wikispeech-listen',
-			lang: language,
-			revision: mw.config.get( 'wgRevisionId' ),
-			segment: segmentHash
-		};
-		if ( voice !== '' ) {
-			// Set voice if not default.
-			options.voice = voice;
-		}
+	requestListen( options, window ) {
 		if ( mw.config.get( 'wgWikispeechProducerUrl' ) ) {
 			options[ 'consumer-url' ] = window.location.origin +
 				mw.config.get( 'wgScriptPath' );
@@ -218,6 +273,54 @@ class Storage {
 	}
 
 	/**
+	 * Send a page-specific request to the Speechoid service.
+	 *
+	 * Language to use is retrieved from the current page.
+	 *
+	 * @param {string} segmentHash
+	 * @param {Object} window
+	 * @return {jQuery.Promise}
+	 */
+
+	requestTts( segmentHash, window ) {
+		const language = mw.config.get( 'wgPageContentLanguage' );
+		const voice = util.getUserVoice( language );
+
+		const options = {
+			action: 'wikispeech-listen',
+			lang: language,
+			revision: mw.config.get( 'wgRevisionId' ),
+			segment: segmentHash
+		};
+
+		if ( voice !== '' ) {
+			options.voice = voice;
+		}
+
+		return this.requestListen( options, window );
+	}
+
+	/**
+	 * Send a messageKey specific request to the Speechoid service.
+	 *
+	 * @param {string} messageText
+	 * @return {jQuery.Promise}
+	 */
+
+	requestMessageUtteranceTts( messageText ) {
+		const language = mw.config.get( 'wgPageContentLanguage' );
+
+		const options = {
+			action: 'wikispeech-listen',
+			format: 'json',
+			lang: language,
+			'message-key': messageText
+		};
+
+		return this.requestListen( options );
+	}
+
+	/**
 	 * Add tokens to an utterance.
 	 *
 	 * @param {Object} utterance The utterance to add tokens to.
@@ -228,6 +331,11 @@ class Storage {
 	 */
 
 	addTokens( utterance, responseTokens ) {
+		if ( !utterance.content ) {
+			utterance.tokens = responseTokens;
+			return;
+		}
+
 		utterance.tokens = [];
 		let searchOffset = 0;
 		for ( let i = 0; i < responseTokens.length; i++ ) {

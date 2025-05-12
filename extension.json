@@ -71,6 +71,8 @@
 			"messages": [
 				"wikispeech-error-loading-audio-title",
 				"wikispeech-error-loading-audio-message",
+				"wikispeech-error-nonexisting-page-title",
+				"wikispeech-error-nonexisting-page-message",
 				"wikispeech-retry",
 				"wikispeech-stop",
 				"wikispeech-listen",

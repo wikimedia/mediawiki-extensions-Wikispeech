@@ -33,7 +33,7 @@ QUnit.module( 'ext.wikispeech.storage', QUnit.newMwEnvironment( {
 	}
 } ) );
 
-QUnit.test( 'loadUtterances()', function ( assert ) {
+QUnit.test( 'loadUtterances()', async function ( assert ) {
 	sinon.stub( this.storage, 'prepareUtterance' );
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
 	// eslint-disable-next-line no-jquery/no-parse-html-literal
@@ -52,9 +52,9 @@ QUnit.test( 'loadUtterances()', function ( assert ) {
 			} ]
 		}
 	};
-	this.storage.api.get.returns( $.Deferred().resolve( response ) );
+	this.storage.api.get.returns( Promise.resolve( response ) );
 
-	this.storage.loadUtterances( mockWindow );
+	await this.storage.loadUtterances( mockWindow );
 
 	assert.deepEqual(
 		this.storage.api.get.firstCall.args[ 0 ],
@@ -139,7 +139,7 @@ QUnit.test( 'loadUtterances(): part of content enabled', function ( assert ) {
 	);
 } );
 
-QUnit.test( 'loadUtterances(): offset leading whitespaces in title', function ( assert ) {
+QUnit.test( 'loadUtterances(): offset leading whitespaces in title', async function ( assert ) {
 	mw.config.set( 'wgPageName', 'Page' );
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
 
@@ -158,9 +158,9 @@ QUnit.test( 'loadUtterances(): offset leading whitespaces in title', function ( 
 			} ]
 		}
 	};
-	this.storage.api.get.returns( $.Deferred().resolve( response ) );
+	this.storage.api.get.returns( Promise.resolve( response ) );
 
-	this.storage.loadUtterances( mockWindow );
+	await this.storage.loadUtterances( mockWindow );
 
 	assert.strictEqual( this.storage.utterances[ 0 ].startOffset, 3 );
 	assert.strictEqual( this.storage.utterances[ 0 ].endOffset, 6 );
@@ -255,7 +255,7 @@ QUnit.test( 'loadAudio()', function ( assert ) {
 	);
 } );
 
-QUnit.test( 'loadAudio(): request successful', function ( assert ) {
+QUnit.test( 'loadAudio(): request successful', async function ( assert ) {
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	const response = {
 		'wikispeech-listen': {
@@ -271,7 +271,7 @@ QUnit.test( 'loadAudio(): request successful', function ( assert ) {
 	sinon.stub( this.storage, 'addTokens' );
 	mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
 
-	this.storage.loadAudio( this.storage.utterances[ 0 ] );
+	await this.storage.loadAudio( this.storage.utterances[ 0 ] );
 
 	assert.strictEqual(
 		this.storage.utterances[ 0 ].audio.src,

@@ -18,6 +18,10 @@ class Player {
 		this.highlighter = null;
 		this.selectionPlayer = null;
 
+		this.errorUtteranceList = null;
+		this.errorUtteranceIndex = 0;
+		this.errorAudio = null;
+
 		this.toolbarPlayer = new Audio();
 	}
 
@@ -104,6 +108,11 @@ class Player {
 
 		this.paused = false;
 
+		if ( this.errorAudio ) {
+			this.errorAudio.pause();
+			this.errorAudio = null;
+		}
+
 		if ( this.isPlaying() ) {
 			this.stopUtterance( this.currentUtterance );
 			this.currentUtterance = null;
@@ -138,6 +147,7 @@ class Player {
 		} else {
 			this.ui.setPlayPauseIconToPause();
 		}
+
 		if ( this.paused ) {
 			this.currentUtterance.audio.play();
 			this.paused = false;
@@ -148,6 +158,16 @@ class Player {
 			}
 			return;
 		}
+		if ( this.storage.loadFailed ) {
+			const errorUtterance = { messageKey: 'noarticletext', audio: new Audio() };
+			this.storage.prepareUtterance( errorUtterance ).then( () => {
+				this.errorUtteranceList = errorUtterance.errorUtterances;
+				this.errorUtteranceIndex = 0;
+
+				this.playCurrentErrorUtterance();
+			} );
+			return;
+		}
 		this.storage.utterancesLoaded.then( () => {
 			if ( !this.selectionPlayer.playSelectionIfValid() ) {
 				if ( this.ui.isSelectionPlayerShown() && this.selectionPlayer.getFocus() ) {
@@ -156,7 +176,37 @@ class Player {
 					this.playUtterance( this.storage.utterances[ 0 ] );
 				}
 			}
+
 		} );
+	}
+
+	playCurrentErrorUtterance() {
+		if ( this.errorAudio ) {
+			this.errorAudio.onended = null;
+			this.errorAudio.pause();
+			this.errorAudio.currentTime = 0;
+		}
+		if (
+			this.errorUtteranceList &&
+			this.errorUtteranceIndex < this.errorUtteranceList.length
+		) {
+			const u = this.errorUtteranceList[ this.errorUtteranceIndex ];
+			this.currentUtterance = u;
+
+			this.errorAudio = u.audio;
+			u.audio.onended = () => {
+				this.errorUtteranceIndex++;
+				if ( this.errorUtteranceIndex < this.errorUtteranceList.length ) {
+					this.playCurrentErrorUtterance();
+				} else {
+					this.errorUtteranceList = null;
+					this.errorUtteranceIndex = 0;
+					this.stop();
+				}
+			};
+			u.audio.currentTime = 0;
+			u.audio.play();
+		}
 	}
 
 	/**
@@ -253,6 +303,15 @@ class Player {
 	 */
 
 	skipAheadUtterance() {
+		if ( this.errorUtteranceList ) {
+			if ( this.errorUtteranceIndex < this.errorUtteranceList.length - 1 ) {
+				this.errorUtteranceIndex++;
+				this.playCurrentErrorUtterance();
+			} else {
+				this.stop();
+			}
+			return;
+		}
 		const nextUtterance =
 			this.storage.getNextUtterance( this.currentUtterance );
 		if ( nextUtterance ) {
@@ -270,6 +329,15 @@ class Player {
 	 */
 
 	skipBackUtterance() {
+		if ( this.errorUtteranceList ) {
+			if ( this.errorUtteranceIndex > 0 ) {
+				this.errorUtteranceIndex--;
+				this.playCurrentErrorUtterance();
+			} else {
+				this.errorAudio.currentTime = 0;
+			}
+			return;
+		}
 		const rewindThreshold = mw.config.get(
 			'wgWikispeechSkipBackRewindsThreshold'
 		);
@@ -289,7 +357,12 @@ class Player {
 				this.storage.getPreviousUtterance(
 					this.currentUtterance
 				);
-			this.playUtterance( previousUtterance );
+			if ( previousUtterance ) {
+				this.playUtterance( previousUtterance );
+			} else {
+				this.stop();
+			}
+
 		}
 	}
 
@@ -310,6 +383,11 @@ class Player {
 			const duration = token.endTime - token.startTime;
 			return duration > 0;
 		} );
+
+		if ( tokensWithDuration.length === 0 ) {
+			return null;
+		}
+
 		const lastTokenWithDuration =
 			util.getLast( tokensWithDuration );
 		if ( currentTime === lastTokenWithDuration.endTime ) {
@@ -369,6 +447,7 @@ class Player {
 			let previousToken = this.storage.getPreviousToken( currentToken );
 
 			if ( !previousToken ) {
+
 				this.skipBackUtterance();
 				previousToken = this.storage.getLastToken( this.currentUtterance );
 			}

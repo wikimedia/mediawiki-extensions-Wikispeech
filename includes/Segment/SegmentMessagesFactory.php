@@ -20,11 +20,20 @@ class SegmentMessagesFactory extends SegmentFactory {
 	 * @return SegmentMessageResponse
 	 */
 	public function segmentMessage( string $messageKey, string $language ): SegmentMessageResponse {
-		$text = wfMessage( $messageKey )->inLanguage( $language )->text();
+		$message = wfMessage( $messageKey )->inLanguage( $language );
 
-		$cleanedText = new CleanedText( $text );
+		$html = $message->parse();
+
+		$cleanedContent = $this->cleanHtmlDom(
+			'',
+			$html,
+			$this->removeTags ?? $this->config->get( 'WikispeechRemoveTags' ),
+			$this->segmentBreakingTags ?? $this->config->get( 'WikispeechSegmentBreakingTags' )
+		);
+
 		$segmenter = new StandardSegmenter();
-		$segments = $segmenter->segmentSentences( [ $cleanedText ] );
+		$segments = $segmenter->segmentSentences( $cleanedContent );
+
 		$response = new SegmentMessageResponse();
 		$response->setMessageKey( $messageKey );
 		$response->setLanguage( $language );
@@ -32,4 +41,5 @@ class SegmentMessagesFactory extends SegmentFactory {
 
 		return $response;
 	}
+
 }

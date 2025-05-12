@@ -41,6 +41,8 @@
 	"wikispeech-edit-lexicon-raw": "The text of the tab going to the edit form for editing lexicon entry as raw text.",
 	"wikispeech-error-loading-audio-title": "Title for error dialog when audio could not load",
 	"wikispeech-error-loading-audio-message": "Message for error dialog when audio could not load.",
+	"wikispeech-error-nonexisting-page-title": "Title for when a non existing page tries to play.",
+	"wikispeech-error-nonexisting-page-message": "Message for when a non existing page tries to play.",
 	"wikispeech-error-generate-preview-title": "Title for error dialog when transcription preview fails to generate",
 	"wikispeech-retry": "Label for button to retry.\n{{identical|Retry}}",
 	"wikispeech-stop": "Label for button to stop.",

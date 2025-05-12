@@ -31,7 +31,7 @@ class PreSynthesizeMessagesTest extends MaintenanceBaseTestCase {
 	public function testSynthesizeErrorMessage_executeSuccessful() {
 		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
 		$utteranceStoreMock
-			->expects( $this->exactly( 2 ) )
+			->expects( $this->exactly( 3 ) )
 			->method( 'createMessageUtterance' )
 			->with(
 				$this->isNull(),

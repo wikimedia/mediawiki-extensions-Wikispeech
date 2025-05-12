@@ -61,7 +61,11 @@ class PreSynthesizeMessages extends Maintenance {
 
 		// @todo These messages are arbitrary to show that it works.
 		// In the future we probably want to generate a list of messages
-		$errorMessageKeys = [ 'wikispeech-error-loading-audio-title', 'wikispeech-error-generate-preview-title' ];
+		$errorMessageKeys = [
+			'wikispeech-error-loading-audio-title',
+			'wikispeech-error-generate-preview-title',
+			'noarticletext'
+		];
 		foreach ( $errorMessageKeys as $messageKey ) {
 			$this->synthesizeErrorMessage( $messageKey, $language, $voice );
 		}

@@ -49,10 +49,20 @@ class Highlighter {
 		if ( !this.highlightingEnabled ) {
 			return;
 		}
+
+		if ( !utterance.content || utterance.content.length === 0 ) {
+			mw.log( 'No content to highlight, skipping highlightUtterance.' );
+			return;
+		}
 		const textNodes = utterance.content
 			.map( ( item ) => this.storage.getNodeForItem( item ) )
 			// Remove nulls that were added for items without nodes.
-			.filter( ( item ) => item );
+			.filter( ( item ) => item !== null && item !== undefined );
+
+		if ( textNodes.length === 0 ) {
+			mw.log( 'No valid text nodes found, skipping highlight.' );
+			return;
+		}
 		// Class name is documented above
 		// eslint-disable-next-line mediawiki/class-doc
 		const span = $( '<span>' )
@@ -72,6 +82,7 @@ class Highlighter {
 			// highlighting.
 			this.textPath = utterance.content[ i ].path;
 		} );
+
 	}
 
 	/**
@@ -157,6 +168,9 @@ class Highlighter {
 		if ( !this.highlightingEnabled ) {
 			return;
 		}
+		if ( token.isErrorUtterance ) {
+			return;
+		}
 		if ( mw.user.options.get( 'wikispeechPartOfContent' ) ) {
 			return;
 		}
@@ -182,6 +196,8 @@ class Highlighter {
 		let endOffset = token.endOffset;
 		if (
 			$( this.utteranceHighlightingSelector ).length &&
+			token.utterance &&
+			token.utterance.content &&
 				token.items[ 0 ] === token.utterance.content[ 0 ]
 		) {
 			// Modify the offset if the token is the first in the

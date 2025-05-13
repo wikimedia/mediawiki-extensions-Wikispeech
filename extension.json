@@ -1,6 +1,6 @@
 {
 	"name": "Wikispeech",
-	"version": "0.1.10",
+	"version": "0.1.11",
 	"author": [
 		"Sebastian Berlin",
 		"André Costa",
@@ -21,7 +21,7 @@
 		]
 	},
 	"requires": {
-		"MediaWiki": ">= 1.39"
+		"MediaWiki": ">= 1.43"
 	},
 	"AutoloadNamespaces": {
 		"MediaWiki\\Wikispeech\\": "includes/"

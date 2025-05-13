@@ -10,7 +10,6 @@ namespace MediaWiki\Wikispeech\Lexicon;
 
 use FormatJson;
 use InvalidArgumentException;
-use MWException;
 use RuntimeException;
 
 /**
@@ -70,7 +69,7 @@ class LexiconHandler implements LexiconStorage {
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null Entry retrieved from Speechoid
-	 * @throws MWException On various merge errors.
+	 * @throws RuntimeException On various merge errors.
 	 */
 	public function getEntry(
 		string $language,
@@ -81,7 +80,7 @@ class LexiconHandler implements LexiconStorage {
 		if ( $localEntry === null && $speechoidEntry !== null ) {
 			return $speechoidEntry;
 		} elseif ( $localEntry !== null && $speechoidEntry === null ) {
-			throw new MWException(
+			throw new RuntimeException(
 				'Storages out of sync. Local storage contains items unknown to Speechoid.'
 			);
 		} elseif ( $localEntry === null && $speechoidEntry === null ) {
@@ -222,7 +221,7 @@ class LexiconHandler implements LexiconStorage {
 	 * @param string $key
 	 * @param LexiconEntryItem $item Will be updated on success.
 	 * @throws InvalidArgumentException If $item->properties is null.
-	 * @throws MWException If unable to push to any storage.
+	 * @throws RuntimeException If unable to push to any storage.
 	 *  If successfully pushed to Speechoid but unable to push to local storage.
 	 */
 	public function updateEntryItem(
@@ -261,13 +260,13 @@ class LexiconHandler implements LexiconStorage {
 			if ( !$this->localStorage->entryItemExists( $language, $key, $item ) ) {
 				$currentSpeechoidEntry = $this->speechoidStorage->getEntry( $language, $key );
 				if ( $currentSpeechoidEntry === null ) {
-					throw new MWException( 'Expected current Speechoid entry to exist.' );
+					throw new RuntimeException( 'Expected current Speechoid entry to exist.' );
 				}
 				$currentSpeechoidEntryItem = $currentSpeechoidEntry->findItemBySpeechoidIdentity(
 					$itemSpeechoidIdentity
 				);
 				if ( $currentSpeechoidEntryItem === null ) {
-					throw new MWException( 'Expected current Speechoid entry item to exists.' );
+					throw new RuntimeException( 'Expected current Speechoid entry item to exists.' );
 				}
 				$wasPreferred = $currentSpeechoidEntryItem->getPreferred();
 				$this->localStorage->createEntryItem( $language, $key, $currentSpeechoidEntryItem );
@@ -314,7 +313,7 @@ class LexiconHandler implements LexiconStorage {
 	 * @param string $language
 	 * @param string $key
 	 * @param LexiconEntryItem $item
-	 * @throws MWException If successfully deleted in Speechoid but unable to delete in local storage.
+	 * @throws RuntimeException If successfully deleted in Speechoid but unable to delete in local storage.
 	 */
 	public function deleteEntryItem(
 		string $language,

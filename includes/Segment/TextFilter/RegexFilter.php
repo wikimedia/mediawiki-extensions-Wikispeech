@@ -8,7 +8,7 @@ namespace MediaWiki\Wikispeech\Segment\TextFilter;
  * @license GPL-2.0-or-later
  */
 
-use MWException;
+use LogicException;
 
 /**
  * Transforms texts using regular expressions.
@@ -57,7 +57,7 @@ abstract class RegexFilter extends Filter {
 	/**
 	 * @since 0.1.10
 	 * @param RegexFilterRule $rule
-	 * @throws MWException If expression is invalid.
+	 * @throws LogicException If expression is invalid.
 	 */
 	public function processRule(
 		RegexFilterRule $rule
@@ -79,7 +79,7 @@ abstract class RegexFilter extends Filter {
 				);
 
 				if ( $preg_matched === false ) {
-					throw new MWException(
+					throw new LogicException(
 						"Bad expression '{$rule->getExpression()}' on text '{$part->getText()}'."
 					);
 				} elseif ( $preg_matched !== 1 ) {

@@ -8,7 +8,7 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
-use MWException;
+use RuntimeException;
 
 /**
  * In case of invoker requests a revision that has been deleted.
@@ -16,6 +16,6 @@ use MWException;
  *
  * @since 0.1.10
  */
-class DeletedRevisionException extends MWException {
+class DeletedRevisionException extends RuntimeException {
 
 }

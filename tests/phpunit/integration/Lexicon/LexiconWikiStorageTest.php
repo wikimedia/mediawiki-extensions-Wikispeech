@@ -14,7 +14,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
 use MediaWikiIntegrationTestCase;
-use MWException;
+use RuntimeException;
 
 /**
  * @since 0.1.9
@@ -47,7 +47,7 @@ class LexiconWikiStorageTest extends MediaWikiIntegrationTestCase {
 				if ( $p->exists() ) {
 					$p->doDeleteArticleReal( "testing done.", $user );
 				}
-			} catch ( MWException $ex ) {
+			} catch ( RuntimeException $ex ) {
 				// fail silently
 			}
 		}

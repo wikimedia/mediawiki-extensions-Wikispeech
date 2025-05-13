@@ -12,7 +12,7 @@ use DOMComment;
 use DOMDocument;
 use DOMNode;
 use DOMXPath;
-use MWException;
+use LogicException;
 
 /**
  * Used for cleaning text with HTML markup. The cleaned text is used
@@ -242,7 +242,7 @@ class Cleaner {
 	 * @param string $displayTitle
 	 * @param string $pageContent
 	 * @return SegmentContent[] Title and content represented as `CleanedText`s and `SegmentBreak`s
-	 * @throws MWException If segmented title text is not an instance of CleanedText
+	 * @throws LogicException If segmented title text is not an instance of CleanedText
 	 */
 	public function cleanHtmlDom(
 		string $displayTitle,
@@ -265,7 +265,7 @@ class Cleaner {
 		$i = 0;
 		foreach ( $this->cleanHtml( $displayTitle ) as $titlePart ) {
 			if ( !$titlePart instanceof CleanedText ) {
-				throw new MWException(
+				throw new LogicException(
 					'Segmented title is not an instance of CleanedText!'
 				);
 			}

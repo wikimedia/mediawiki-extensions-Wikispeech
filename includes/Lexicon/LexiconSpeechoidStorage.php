@@ -9,9 +9,10 @@ namespace MediaWiki\Wikispeech\Lexicon;
  */
 
 use InvalidArgumentException;
+use LogicException;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
-use MWException;
+use RuntimeException;
 use WANObjectCache;
 
 /**
@@ -76,7 +77,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null
-	 * @throws MWException If no lexicon is available for language.
+	 * @throws RuntimeException If no lexicon is available for language.
 	 * @throws SpeechoidConnectorException On unexpected response from Speechoid.
 	 */
 	public function getEntry(
@@ -89,7 +90,7 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
-			throw new MWException( "No lexicon available for language $language" );
+			throw new RuntimeException( "No lexicon available for language $language" );
 		}
 		$status = $this->speechoidConnector->lookupLexiconEntries( $lexiconName, [ $key ] );
 		if ( !$status->isOK() ) {
@@ -121,7 +122,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is already set.
-	 * @throws MWException If no lexicon is available for language.
+	 * @throws RuntimeException
+	 * 	If no lexicon is available for language.
 	 *  If failed to encode lexicon entry item properties to JSON.
 	 *  If unable to add lexicon entry to Speechoid.
 	 *  If unable to retrieve the created lexicon entry item from Speechoid.
@@ -140,15 +142,15 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
-			throw new MWException( "No lexicon available for language $language" );
+			throw new RuntimeException( "No lexicon available for language $language" );
 		}
 		$json = $item->toJson();
 		if ( $json === '' ) {
-			throw new MWException( 'Failed to encode lexicon entry item properties to JSON.' );
+			throw new RuntimeException( 'Failed to encode lexicon entry item properties to JSON.' );
 		}
 		$status = $this->speechoidConnector->addLexiconEntry( $lexiconName, $json );
 		if ( !$status->isOK() ) {
-			throw new MWException( "Failed to add lexicon entry: $status" );
+			throw new RuntimeException( "Failed to add lexicon entry: $status" );
 		}
 		// Speechoid returns the identity. We need the actual entry.
 		// Thus we make a new request and find that entry.
@@ -158,11 +160,11 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		$speechoidIdentity = $status->getValue();
 		$speechoidEntry = $this->getEntry( $language, $key );
 		if ( $speechoidEntry === null ) {
-			throw new MWException( "Expected the created lexicon entry to exist." );
+			throw new LogicException( "Expected the created lexicon entry to exist." );
 		}
 		$speechoidEntryItem = $speechoidEntry->findItemBySpeechoidIdentity( $speechoidIdentity );
 		if ( $speechoidEntryItem === null ) {
-			throw new MWException( 'Expected the created lexicon entry item to exist.' );
+			throw new LogicException( 'Expected the created lexicon entry item to exist.' );
 		}
 		$item->copyFrom( $speechoidEntryItem );
 	}
@@ -174,8 +176,11 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is not set.
-	 * @throws MWException If no lexicon is available for language.
+	 * @throws RuntimeException
+	 *  If no lexicon is available for language.
 	 *  If failed to encode lexicon entry item properties to JSON.
+	 * @throws LogicException
+	 * If updated entry should have existed
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -192,17 +197,17 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
-			throw new MWException( "No lexicon available for language $language" );
+			throw new RuntimeException( "No lexicon available for language $language" );
 		}
 		$json = $item->toJson();
 		if ( $json === '' ) {
-			throw new MWException( 'Failed to encode lexicon entry item properties to JSON.' );
+			throw new RuntimeException( 'Failed to encode lexicon entry item properties to JSON.' );
 		}
 		// @todo The lexicon name is embedded in $json here.
 		// @todo We want to use our own data model and produce a speechoid object from that instead.
 		$status = $this->speechoidConnector->updateLexiconEntry( $json );
 		if ( !$status->isOK() ) {
-			throw new MWException( "Failed to update lexicon entry item: $status" );
+			throw new RuntimeException( "Failed to update lexicon entry item: $status" );
 		}
 
 		// SpeechoidConnector::updateLexiconEntry does not return dbRef,
@@ -210,11 +215,11 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		// @todo Ask STTS to return complete result at update.
 		$speechoidEntry = $this->getEntry( $language, $key );
 		if ( $speechoidEntry === null ) {
-			throw new MWException( "Expected the updated lexicon entry to exist." );
+			throw new LogicException( "Expected the updated lexicon entry to exist." );
 		}
 		$speechoidEntryItem = $speechoidEntry->findItemBySpeechoidIdentity( $speechoidIdentity );
 		if ( $speechoidEntryItem === null ) {
-			throw new MWException( 'Expected the updated lexicon entry item to exist.' );
+			throw new LogicException( 'Expected the updated lexicon entry item to exist.' );
 		}
 		$item->copyFrom( $speechoidEntryItem );
 	}
@@ -226,7 +231,8 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is not set.
-	 * @throws MWException If no lexicon is available for language.
+	 * @throws RuntimeException
+	 *  If no lexicon is available for language.
 	 *  If failed to delete the lexicon entry item.
 	 */
 	public function deleteEntryItem(
@@ -243,14 +249,14 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 		}
 		$lexiconName = $this->findLexiconNameByLanguage( $language );
 		if ( $lexiconName === null ) {
-			throw new MWException( "No lexicon available for language $language" );
+			throw new RuntimeException( "No lexicon available for language $language" );
 		}
 		$status = $this->speechoidConnector->deleteLexiconEntry(
 			$lexiconName,
 			$itemSpeechoidIdentity
 		);
 		if ( !$status->isOK() ) {
-			throw new MWException( "Failed to delete lexicon entry item: $status" );
+			throw new RuntimeException( "Failed to delete lexicon entry item: $status" );
 		}
 	}
 

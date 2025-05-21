@@ -145,12 +145,6 @@ class FlushUtterancesFromStoreByExpirationJobQueue {
 				$this->minimumMinutesBetweenFlushExpiredUtterancesJobs . ' minutes'
 			)
 		);
-		if ( !$nextPossibleJobQueueTimestamp ) {
-			$this->logger->error( __METHOD__ . ': ' .
-				'Unable to calculate next possible job queue DateTime.'
-			);
-			return false;
-		}
 		return new DateTime() >= $nextPossibleJobQueueTimestamp;
 	}
 }

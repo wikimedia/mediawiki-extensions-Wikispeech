@@ -30,6 +30,9 @@ QUnit.module( 'ext.wikispeech.player', {
 				}
 			}
 		];
+
+		storage.prepareUtterance = sinon.stub().returns( $.Deferred().resolve() );
+
 		player = new mw.wikispeech.Player();
 		mw.config.set(
 			'wgWikispeechSkipBackRewindsThreshold',
@@ -41,21 +44,21 @@ QUnit.module( 'ext.wikispeech.player', {
 	}
 } );
 
-QUnit.test( 'playOrStop(): play', ( assert ) => {
+QUnit.test( 'playOrPause(): play', ( assert ) => {
 	sinon.stub( player, 'play' );
 
-	player.playOrStop();
+	player.playOrPause();
 
 	assert.strictEqual( player.play.called, true );
 } );
 
-QUnit.test( 'playOrStop(): stop', ( assert ) => {
+QUnit.test( 'playOrPause(): pause', ( assert ) => {
 	player.currentUtterance = storage.utterances[ 0 ];
-	sinon.stub( player, 'stop' );
+	sinon.stub( player, 'pause' );
 
-	player.playOrStop();
+	player.playOrPause();
 
-	assert.strictEqual( player.stop.called, true );
+	assert.strictEqual( player.pause.called, true );
 } );
 
 QUnit.test( 'stop()', () => {
@@ -68,7 +71,6 @@ QUnit.test( 'stop()', () => {
 	sinon.assert.calledWith(
 		player.stopUtterance, storage.utterances[ 0 ]
 	);
-	sinon.assert.called( ui.setPlayStopIconToPlay );
 	sinon.assert.called( ui.hideBufferingIcon );
 } );
 
@@ -78,6 +80,16 @@ QUnit.test( 'play()', () => {
 	player.play();
 
 	sinon.assert.called( player.playUtterance );
+} );
+
+QUnit.test( 'pause()', () => {
+	sinon.stub( player, 'pauseUtterance' );
+
+	player.currentUtterance = storage.utterances[ 0 ];
+	player.paused = false;
+	player.pause();
+
+	sinon.assert.calledWith( player.pauseUtterance, storage.utterances[ 0 ] );
 } );
 
 QUnit.test( 'play(): delay until utterances has been loaded', () => {
@@ -208,6 +220,23 @@ QUnit.test( 'skipAheadUtterance(): stop if no next utterance', () => {
 	sinon.assert.called( player.stop );
 } );
 
+QUnit.test( "skipAheadUtterance(): don't play prepared utterance when paused", ( assert ) => {
+	storage.getNextUtterance.returns( storage.utterances[ 1 ] );
+	const utterance = storage.utterances[ 1 ];
+	sinon.stub( utterance.audio, 'play' );
+	player.paused = true;
+	const promise = $.Deferred().resolve();
+	storage.prepareUtterance.returns( promise );
+	const done = assert.async();
+
+	player.skipAheadUtterance();
+
+	promise.then( () => {
+		sinon.assert.notCalled( utterance.audio.play );
+		done();
+	} );
+} );
+
 QUnit.test( 'skipBackUtterance()', () => {
 	sinon.stub( player, 'playUtterance' );
 	player.currentUtterance = storage.utterances[ 1 ];
@@ -225,9 +254,7 @@ QUnit.test( 'skipBackUtterance(): restart if first utterance', ( assert ) => {
 	player.currentUtterance = storage.utterances[ 0 ];
 	storage.utterances[ 0 ].audio.currentTime = 1.0;
 	sinon.stub( storage.utterances[ 0 ].audio, 'pause' );
-
 	player.skipBackUtterance();
-
 	assert.strictEqual(
 		storage.utterances[ 0 ].audio.currentTime,
 		0
@@ -408,6 +435,11 @@ QUnit.test( 'skipAheadToken()', ( assert ) => {
 		}
 	];
 	player.currentUtterance = storage.utterances[ 0 ];
+
+	sinon.stub( player, 'getCurrentToken' ).returns(
+		storage.utterances[ 0 ].tokens[ 0 ]
+	);
+
 	storage.getNextToken.returns( storage.utterances[ 0 ].tokens[ 1 ] );
 
 	player.skipAheadToken();

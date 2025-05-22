@@ -1,5 +1,5 @@
 /**
- * Play, stop and navigate in the recitation.
+ * Play, pause stop and navigate in the recitation.
  *
  * @class ext.wikispeech.Player
  * @constructor
@@ -8,6 +8,19 @@
 function Player() {
 	const self = this;
 	self.currentUtterance = null;
+	self.paused = false;
+
+	/**
+	 * Play or pause, depending on whether an utterance is playing.
+	 */
+
+	this.playOrPause = function () {
+		if ( self.isPlaying() && !self.paused ) {
+			self.pause();
+		} else {
+			self.play();
+		}
+	};
 
 	/**
 	 * Play or stop, depending on whether an utterance is playing.
@@ -37,26 +50,62 @@ function Player() {
 	 */
 
 	this.stop = function () {
+
+		mw.wikispeech.ui.setAllPlayerIconsToPlay();
+
+		self.paused = false;
+
 		if ( self.isPlaying() ) {
 			self.stopUtterance( self.currentUtterance );
+			self.currentUtterance = null;
 		}
-		self.currentUtterance = null;
-		mw.wikispeech.ui.setPlayStopIconToPlay();
+
 		mw.wikispeech.ui.hideBufferingIcon();
+
 		self.playingSelection = false;
+	};
+
+	/**
+	 * Pause playing the utterance currently playing, and resume from paused utterance.
+	 */
+	this.pause = function () {
+		if ( self.isPlaying() && !self.paused ) {
+			self.paused = true;
+			self.pauseUtterance( self.currentUtterance );
+		}
+		if ( self.playingSelection ) {
+			self.stop();
+		}
+		mw.wikispeech.ui.setAllPlayerIconsToPlay();
+		mw.wikispeech.ui.hideBufferingIcon();
 	};
 
 	/**
 	 * Start playing the first utterance or selected text, if any.
 	 */
-
 	this.play = function () {
+		if ( self.playingSelection ) {
+			self.stop();
+		} else {
+			mw.wikispeech.ui.setPlayPauseIconToPause();
+		}
+		if ( self.paused ) {
+			self.currentUtterance.audio.play();
+			self.paused = false;
+
+			const currentToken = self.getCurrentToken();
+			if ( currentToken ) {
+				mw.wikispeech.highlighter.startTokenHighlighting( currentToken );
+			}
+			return;
+		}
 		mw.wikispeech.storage.utterancesLoaded.done( () => {
 			if ( !mw.wikispeech.selectionPlayer.playSelectionIfValid() ) {
 				self.playUtterance( mw.wikispeech.storage.utterances[ 0 ] );
 			}
+
 		} );
-		mw.wikispeech.ui.setPlayStopIconToStop();
+
 	};
 
 	/**
@@ -79,10 +128,10 @@ function Player() {
 		if ( !self.playingSelection ) {
 			mw.wikispeech.highlighter.highlightUtterance( utterance );
 		}
-		self.prepareAndPlayUtterance( utterance );
 		mw.wikispeech.ui.showBufferingIconIfAudioIsLoading(
 			utterance.audio
 		);
+		self.prepareAndPlayUtterance( utterance );
 	};
 
 	/**
@@ -98,7 +147,7 @@ function Player() {
 	this.prepareAndPlayUtterance = function ( utterance ) {
 		mw.wikispeech.storage.prepareUtterance( utterance )
 			.done( () => {
-				if ( utterance === self.currentUtterance ) {
+				if ( utterance === self.currentUtterance && !self.paused ) {
 					utterance.audio.play();
 				}
 			} )
@@ -135,6 +184,18 @@ function Player() {
 		utterance.audio.currentTime = 0;
 		mw.wikispeech.ui.removeCanPlayListener( $( utterance.audio ) );
 		mw.wikispeech.highlighter.clearHighlighting();
+	};
+
+	/**
+	 * Pause the audio for an utterance.
+	 *
+	 * @param {Object} utterance The utterance to pause the audio
+	 *  for.
+	 */
+
+	this.pauseUtterance = function ( utterance ) {
+		utterance.audio.pause();
+		mw.wikispeech.highlighter.clearHighlightTokenTimer();
 	};
 
 	/**
@@ -187,10 +248,13 @@ function Player() {
 	/**
 	 * Get the token being played.
 	 *
-	 * @return {Object} The token being played.
+	 * @return {Object} The token being played. Can return null.
 	 */
 
 	this.getCurrentToken = function () {
+		if ( !self.currentUtterance || !self.currentUtterance.tokens ) {
+			return null;
+		}
 		let currentToken = null;
 		const tokens = self.currentUtterance.tokens;
 		const currentTime = self.currentUtterance.audio.currentTime * 1000;
@@ -219,17 +283,28 @@ function Player() {
 	 */
 
 	this.skipAheadToken = function () {
-		if ( self.isPlaying() ) {
-			const nextToken =
-				mw.wikispeech.storage.getNextToken( self.getCurrentToken() );
-			if ( !nextToken ) {
-				self.skipAheadUtterance();
-			} else {
-				self.currentUtterance.audio.currentTime = nextToken.startTime / 1000;
-				mw.wikispeech.highlighter.startTokenHighlighting(
-					nextToken
-				);
-			}
+		if ( !self.isPlaying() ) {
+			return;
+		}
+
+		const currentToken = self.getCurrentToken();
+		const nextToken = mw.wikispeech.storage.getNextToken( currentToken );
+
+		if ( !nextToken ) {
+			self.skipAheadUtterance();
+			return;
+		}
+
+		self.currentUtterance.audio.currentTime = nextToken.startTime / 1000;
+
+		mw.wikispeech.highlighter.clearHighlighting();
+		mw.wikispeech.highlighter.highlightUtterance( self.currentUtterance );
+
+		if ( self.paused ) {
+			mw.wikispeech.highlighter.highlightToken( nextToken );
+
+		} else {
+			mw.wikispeech.highlighter.startTokenHighlighting( nextToken );
 		}
 	};
 
@@ -242,19 +317,31 @@ function Player() {
 
 	this.skipBackToken = function () {
 		if ( self.isPlaying() ) {
-			let previousToken =
-				mw.wikispeech.storage.getPreviousToken( self.getCurrentToken() );
+			const currentToken = self.getCurrentToken();
+			let previousToken = mw.wikispeech.storage.getPreviousToken( currentToken );
+
 			if ( !previousToken ) {
 				self.skipBackUtterance();
-				previousToken =
-					mw.wikispeech.storage.getLastToken( self.currentUtterance );
+				previousToken = mw.wikispeech.storage.getLastToken( self.currentUtterance );
 			}
-			self.currentUtterance.audio.currentTime = previousToken.startTime / 1000;
-			mw.wikispeech.highlighter.startTokenHighlighting(
-				previousToken
-			);
+
+			if ( previousToken ) {
+				mw.wikispeech.highlighter.clearHighlighting();
+				mw.wikispeech.highlighter.highlightUtterance( self.currentUtterance );
+			}
+
+			if ( previousToken ) {
+				self.currentUtterance.audio.currentTime = previousToken.startTime / 1000;
+
+				if ( self.paused ) {
+					mw.wikispeech.highlighter.highlightToken( previousToken );
+				} else {
+					mw.wikispeech.highlighter.startTokenHighlighting( previousToken );
+				}
+			}
 		}
 	};
+
 }
 
 mw.wikispeech = mw.wikispeech || {};

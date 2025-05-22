@@ -56,12 +56,16 @@ function Ui() {
 			mw.wikispeech.player.skipBackToken,
 			mw.msg( 'wikispeech-previous' )
 		);
-		self.playStopButton = self.addButton(
+		self.playPauseButton = self.addButton(
 			playerGroup,
 			'play',
-			mw.wikispeech.player.playOrStop,
-			mw.msg( 'wikispeech-play' ),
-			[ 'ext-wikispeech-play-stop' ]
+			mw.wikispeech.player.playOrPause,
+			[ 'ext-wikispeech-play-pause' ]
+		);
+		self.addButton(
+			playerGroup,
+			'stop',
+			mw.wikispeech.player.stop
 		);
 		self.addButton(
 			playerGroup,
@@ -195,20 +199,15 @@ function Ui() {
 	};
 
 	/**
-	 * Add buffering icon to the play/stop button.
+	 * Add buffering icon to the play/pause button.
 	 *
 	 * The icon shows when the waiting for audio to play.
 	 */
-
 	this.addBufferingIcon = function () {
-		const $playStopButtons = $(
-			self.toolbar.$element
-				.find( '.ext-wikispeech-play-stop' )
-		)
-			.add( self.selectionPlayer.$element );
+		const $playPauseButtons = $().add( self.playPauseButton.$element ).add( self.selectionPlayer.$element );
 		const $containers = $( '<span>' )
 			.addClass( 'ext-wikispeech-buffering-icon-container' )
-			.appendTo( ( $playStopButtons ).find( '.oo-ui-iconElement-icon' ) );
+			.appendTo( ( $playPauseButtons ).find( '.oo-ui-iconElement-icon' ) );
 		self.$bufferingIcons = $( '<span>' )
 			.addClass( 'ext-wikispeech-buffering-icon' )
 			.appendTo( $containers )
@@ -264,23 +263,29 @@ function Ui() {
 	};
 
 	/**
-	 * Change the icon of the play/stop button to stop.
+	 * Change the icon of the play/pause button to pause.
 	 */
 
-	this.setPlayStopIconToStop = function () {
-		self.playStopButton.setIcon( 'stop' );
-		self.selectionPlayer.setIcon( 'stop' );
+	this.setPlayPauseIconToPause = function () {
+		self.playPauseButton.setIcon( 'pause' );
 	};
 
 	/**
-	 * Change the icon of the play/stop button to play.
+	 * Change the icon of the play/pause button to play.
 	 */
 
-	this.setPlayStopIconToPlay = function () {
-		self.playStopButton.setIcon( 'play' );
+	this.setAllPlayerIconsToPlay = function () {
+		self.playPauseButton.setIcon( 'play' );
 		self.selectionPlayer.setIcon( 'play' );
 	};
 
+	/**
+	 * Change the icon of the selectionPlayer to stop.
+	 */
+
+	this.setSelectionPlayerIconToStop = function () {
+		self.selectionPlayer.setIcon( 'stop' );
+	};
 	/**
 	 * Add a button that takes the user to another page.
 	 *
@@ -309,8 +314,7 @@ function Ui() {
 		self.selectionPlayer = new OO.ui.ButtonWidget( {
 			icon: 'play',
 			classes: [
-				'ext-wikispeech-selection-player',
-				'ext-wikispeech-play-stop'
+				'ext-wikispeech-selection-player'
 			]
 		} )
 			.on( 'click', mw.wikispeech.player.playOrStop );
@@ -357,6 +361,7 @@ function Ui() {
 		const lastRange = selection.getRangeAt( selection.rangeCount - 1 );
 		const lastRect =
 			mw.wikispeech.util.getLast( lastRange.getClientRects() );
+
 		// Place the player under the end of the selected text.
 		let left;
 		if ( self.getTextDirection( lastRange.endContainer ) === 'rtl' ) {
@@ -401,8 +406,16 @@ function Ui() {
 	this.addKeyboardShortcuts = function () {
 		const shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
 		$( document ).on( 'keydown', ( event ) => {
-			if ( self.eventMatchShortcut( event, shortcuts.playStop ) ) {
-				mw.wikispeech.player.playOrStop();
+			if ( self.eventMatchShortcut( event, shortcuts.playPause ) ) {
+				mw.wikispeech.player.playOrPause();
+				return false;
+			} else if (
+				self.eventMatchShortcut(
+					event,
+					shortcuts.stop
+				)
+			) {
+				mw.wikispeech.player.stop();
 				return false;
 			} else if (
 				self.eventMatchShortcut(

@@ -27,7 +27,15 @@ QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 			new mw.wikispeech.SelectionPlayer();
 		mw.wikispeech.ui = {
 			showBufferingIconIfAudioIsLoading: sinon.stub(),
-			hideBufferingIcon: sinon.stub()
+			hideBufferingIcon: sinon.stub(),
+			setSelectionPlayerIconToStop: sinon.stub(),
+			selectionPlayer: {
+				toggle: sinon.stub(),
+				setIcon: sinon.stub(),
+				on: sinon.stub(),
+				off: sinon.stub(),
+				$element: $( '<div>' )
+			}
 		};
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' )

@@ -293,8 +293,12 @@ function createKeydownEvent( keyCode, modifiers ) {
 function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
 	mw.config.set(
 		'wgWikispeechKeyboardShortcuts', {
-			playStop: {
+			playPause: {
 				key: 32,
+				modifiers: [ 'ctrl' ]
+			},
+			stop: {
+				key: 14,
 				modifiers: [ 'ctrl' ]
 			},
 			skipAheadSentence: {

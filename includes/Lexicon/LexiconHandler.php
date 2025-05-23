@@ -272,8 +272,8 @@ class LexiconHandler implements LexiconStorage {
 				$wasPreferred = $currentSpeechoidEntryItem->getPreferred();
 				$this->localStorage->createEntryItem( $language, $key, $currentSpeechoidEntryItem );
 			} else {
-				$currentLocalEntry = $this->localStorage->
-					getEntry( $language, $key );
+				$currentLocalEntry = $this->localStorage
+					->getEntry( $language, $key );
 				$currentLocalEntryItem = $currentLocalEntry->
 					findItemBySpeechoidIdentity( $itemSpeechoidIdentity );
 				$wasPreferred = $currentLocalEntryItem->getPreferred();

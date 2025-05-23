@@ -75,7 +75,7 @@ class UtteranceStore {
 			$this->logger->info( __METHOD__ . ': ' .
 				'Falling back on container name {containerName}', [
 					'containerName' => $this->fileBackendContainerName
-			] );
+				] );
 		}
 
 		$this->dbLoadBalancer = MediaWikiServices::getInstance()->getDBLoadBalancer();
@@ -100,7 +100,7 @@ class UtteranceStore {
 					'on FS storage backend named {name} in {dir}.', [
 						'name' => $fileBackendName,
 						'dir' => $fallbackDir
-				] );
+					] );
 				$this->fileBackend = new FSFileBackend( [
 					'name' => $fileBackendName,
 					'wikiId' => WikiMap::getCurrentWikiId(),
@@ -480,12 +480,12 @@ class UtteranceStore {
 				$this->logger->warning( __METHOD__ . ': ' .
 					'Failed to delete utterance {utteranceId} from database.', [
 						'utteranceId' => $utteranceId
-				] );
+					] );
 			} else {
 				$this->logger->debug( __METHOD__ . ': ' .
 					'Flushed out utterance with id {utteranceId} from database', [
 						'utteranceId' => $utteranceId
-				] );
+					] );
 			}
 
 			// 2. delete in file store.
@@ -532,7 +532,7 @@ class UtteranceStore {
 					'Unable to delete {type} for utterance with identity {utteranceId}.', [
 						'utteranceId' => $utteranceId,
 						'type' => $type
-				] );
+					] );
 				return false;
 			} else {
 				$this->getFileBackend()->clean( [ 'dir' => $this->urlPathFactory( $utteranceId ) ] );
@@ -542,7 +542,7 @@ class UtteranceStore {
 				'Attempted to delete non existing {type} for utterance {utteranceId}.', [
 					'utteranceId' => $utteranceId,
 					'type' => $type
-			] );
+				] );
 			return false;
 		}
 		$this->logger->debug( __METHOD__ . ': ' .
@@ -672,10 +672,10 @@ class UtteranceStore {
 				$timestamp = new MWTimestamp( $fileBackend->getFileTimestamp( $src ) );
 				$this->logger->debug( __METHOD__ . ': ' .
 					'Processing file {src} with timestamp {timestamp}', [
-					'src' => $file,
-					'timestamp' => $timestamp,
-					'expiredTimestamp' => $expiredTimestamp
-				] );
+						'src' => $file,
+						'timestamp' => $timestamp,
+						'expiredTimestamp' => $expiredTimestamp
+					] );
 				if ( $timestamp <= $expiredTimestamp ) {
 					if ( $fileBackend->delete( $src )->isOK() ) {
 						$removedFilesCounter++;

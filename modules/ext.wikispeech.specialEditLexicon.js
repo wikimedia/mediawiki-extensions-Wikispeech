@@ -7,6 +7,14 @@ const api = new mw.Api();
 const $previewPlayer = $( '<audio>' ).insertAfter( $transcription );
 const previewer = new Previewer( $language, $transcription, api, $previewPlayer );
 
+// Toggles raw JSON view
+const $rawJson = $content.find( '.toggle-raw' );
+$rawJson.on( 'click', function () {
+	const targetId = this.getAttribute( 'data-target' );
+	const $target = $( '#' + targetId );
+	$target.toggle();
+} );
+
 const previewButton = OO.ui.infuse( $content.find( '#ext-wikispeech-preview-button' ) );
 previewButton.on(
 	'click',

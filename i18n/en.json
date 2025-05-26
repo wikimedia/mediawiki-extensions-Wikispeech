@@ -70,5 +70,20 @@
 	"wikispeech-lexicon-sync-error": "The lexicons are out of sync. Either they contain different properties, or some entry may only exist in one of the lexicons. Would you like to overwrite the local entry to match Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Overwrite",
 	"wikispeech-lexicon-sync-error-unidentified": "An unidentified error occured when trying to sync lexicon entries.",
-	"wikispeech-poc-link": "link:"
+	"wikispeech-poc-link": "link:",
+	"wikispeech-morphology": "Morphology",
+	"wikispeech-pos": "Part of speech",
+	"wikispeech-paradigm": "Paradigm",
+	"wikispeech-morphology-sin": "Singular",
+	"wikispeech-morphology-plu": "Plural",
+	"wikispeech-morphology-nom": "Nominative",
+	"wikispeech-morphology-gen": "Genitive",
+	"wikispeech-morphology-ind": "Indefinite",
+	"wikispeech-morphology-def": "Definite",
+	"wikispeech-morphology-utr": "Common gender",
+	"wikispeech-morphology-neu": "Neuter",
+	"wikispeech-morphology-nn": "Noun",
+	"wikispeech-morphology-pm": "Pronoun",
+	"wikispeech-morphology-vb": "Verb"
+
 }

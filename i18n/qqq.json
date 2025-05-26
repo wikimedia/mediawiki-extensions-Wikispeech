@@ -77,5 +77,19 @@
 	"wikispeech-lexicon-sync-error": "Error message to ask the user if they want to overwrite local entry with speechoid entry since there is sync problems between the lexicons, such as different properties.",
 	"wikispeech-lexicon-sync-error-button": "Button for overwriting stuff",
 	"wikispeech-lexicon-sync-error-unidentified": "Throws an error if there is an unidentified error syncing the lexicon entries.",
-	"wikispeech-poc-link": "The message to read before a link. Only used if the user has enabled extra information when reading certain elements."
+	"wikispeech-poc-link": "The message to read before a link. Only used if the user has enabled extra information when reading certain elements.",
+	"wikispeech-morphology": "The orphology of a word",
+	"wikispeech-pos": "What part of speech (e.g noun, pronoun) the word belongs to.",
+	"wikispeech-paradigm": "What kind of declination that is used for the word",
+	"wikispeech-morphology-sin": "The word is in singular form",
+	"wikispeech-morphology-plu": "The word is in plural form",
+	"wikispeech-morphology-nom": "The word is nominative",
+	"wikispeech-morphology-gen": "The word is genitive",
+	"wikispeech-morphology-ind": "The word is indefinite",
+	"wikispeech-morphology-def": "The word is definite",
+	"wikispeech-morphology-utr": "The word is of common gender",
+	"wikispeech-morphology-neu": "The word is a neuter",
+	"wikispeech-morphology-nn": "The word is a noun",
+	"wikispeech-morphology-pm": "The word is a pronoun",
+	"wikispeech-morphology-vb": "The word is a verb"
 }

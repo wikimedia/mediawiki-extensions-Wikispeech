@@ -17,6 +17,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Lexicon\ConfiguredLexiconStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
+use MediaWiki\Wikispeech\Lexicon\LexiconEntryMapper;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Lexicon\NullEditLexiconException;
 use MediaWiki\Wikispeech\SpeechoidConnector;
@@ -176,7 +177,7 @@ class SpecialEditLexicon extends SpecialPage {
 			$submitMessage = 'wikispeech-lexicon-save';
 		} elseif ( !in_array( 'id', $request->getValueNames() ) ) {
 			$formId = 'selectItem';
-			$fields = $this->getSelectFields( $entry );
+			$fields = $this->getSelectFields( $entry, $language );
 		} elseif ( $id ) {
 			$formId = 'editItem';
 			$fields = $this->getEditFields( $language, $word, $id );
@@ -376,7 +377,7 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @param LexiconEntry|null $entry
 	 * @return array
 	 */
-	private function getSelectFields( ?LexiconEntry $entry = null ): array {
+	private function getSelectFields( ?LexiconEntry $entry = null, string $language = '' ): array {
 		$fields = $this->getLookupFields();
 		$fields['language']['readonly'] = true;
 		$fields['language']['type'] = 'text';
@@ -398,7 +399,61 @@ class SpecialEditLexicon extends SpecialPage {
 				// Add item id as option for selection.
 				$itemOptions[$id] = $id;
 				// Add item to info text.
-				$this->postHtml .= Html::element( 'pre', [], $item );
+
+				if ( $language === "sv" ) {
+					$word = $properties->strn ?? '';
+					$morphology = $properties->morphology ?? '';
+					$partOfSpeech = $properties->partOfSpeech ?? '';
+					$paradigm = $properties->lemma->paradigm ?? '-';
+
+					$readableMorph = LexiconEntryMapper::morphologyMap( $morphology );
+					$readablePos = LexiconEntryMapper::partOfSpeechMap( $partOfSpeech );
+
+					$description = '';
+					$description .= $this->msg( 'wikispeech-item-id' ) . ': ' . htmlspecialchars( $id ) . "\n";
+					$description .= $this->msg( 'wikispeech-word' ) . ': ' . htmlspecialchars( $word ) . "\n";
+					$description .= $this->msg(
+						'wikispeech-morphology'
+					) . ': ' . htmlspecialchars( $readableMorph ) . "\n";
+					$description .= $this->msg( 'wikispeech-pos' ) . ': ' . htmlspecialchars( $readablePos ) . "\n";
+					if ( $paradigm !== '-' ) {
+						$description .= $this->msg(
+							'wikispeech-paradigm'
+						) . ': ' . htmlspecialchars( $paradigm ) . ' (' .
+						Html::element(
+							'a',
+							[
+								'href' => 'https://sv.wikipedia.org/wiki/Deklination_(lingvistik)',
+								'target' => '_blank',
+								'rel' => 'noopener'
+							],
+							'Read more'
+						) . ')';
+					} else {
+						$description .= $this->msg( 'wikispeech-paradigm' ) . ': ' . htmlspecialchars( $paradigm );
+					}
+
+					$json = json_encode( $item->getProperties(), JSON_PRETTY_PRINT );
+
+					$this->postHtml .= Html::rawElement( 'div',
+					[ 'style' =>
+					'white-space: pre-wrap; font-family: monospace; border: 0.5px solid #ccc; 
+					padding: 0.8em; margin: 1em;'
+					],
+					 $description . "\n\n" .
+					Html::element( 'button', [
+						'class' => 'toggle-raw',
+						'data-target' => "raw-$id",
+						'style' => 'cursor:pointer;'
+					], 'Raw JSON' ) .
+					Html::rawElement( 'pre', [
+						'id' => "raw-$id",
+						'style' => 'display:none'
+					], htmlspecialchars( $json ) )
+					);
+				} else {
+					$this->postHtml .= Html::element( 'pre', [], $item );
+				}
 			}
 		}
 
@@ -473,7 +528,7 @@ class SpecialEditLexicon extends SpecialPage {
 			$this->getOutput()->addHTML( Html::errorBox(
 				$this->getOutput()->msg( 'wikispeech-edit-lexicon-no-item-found' )->params( $id )->parse()
 			) );
-			return $this->getSelectFields( $entry );
+			return $this->getSelectFields( $entry, $language );
 		}
 		$transcriptionStatus = $this->speechoidConnector->toIpa(
 			$item->getTranscription(),

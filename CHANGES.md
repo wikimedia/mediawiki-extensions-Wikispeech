@@ -34,6 +34,8 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T184393](https://phabricator.wikimedia.org/T184393) Adding button to pause recitation
+
 ### 0.1.11
 2025-05-13
 Speechoid: 0.1.2

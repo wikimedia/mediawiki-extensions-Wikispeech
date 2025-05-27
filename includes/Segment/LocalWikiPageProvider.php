@@ -69,7 +69,7 @@ class LocalWikiPageProvider extends AbstractPageProvider {
 		$parserOptions = $page->makeParserOptions( $this->context );
 		$parserOutput = $page->getParserOutput( $parserOptions );
 		$this->setDisplayTitle( $parserOutput->getDisplayTitle() );
-		$this->setPageContent( $parserOutput->getText() );
+		$this->setPageContent( $parserOutput->runOutputPipeline( $parserOptions )->getContentHolderText() );
 		$this->setRevisionId( $page->getLatest() );
 	}
 

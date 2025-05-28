@@ -15,7 +15,8 @@
 		"parallel-lint": "parallel-lint . --exclude vendor --exclude node_modules",
 		"fix": [
 			"minus-x fix .",
-			"@phpcbf"
+			"@phpcbf",
+			"phpcbf"
 		],
 		"phpcbf": "phpcbf",
 		"doc": [

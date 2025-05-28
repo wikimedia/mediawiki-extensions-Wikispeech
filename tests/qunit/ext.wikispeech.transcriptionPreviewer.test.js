@@ -19,7 +19,7 @@ QUnit.module( 'ext.wikispeech.transcriptionPreviewer', QUnit.newMwEnvironment( {
 	}
 } ) );
 
-QUnit.skip( 'fetchAudio(): fetch audio from API', function ( assert ) {
+QUnit.test( 'fetchAudio(): fetch audio from API', function ( assert ) {
 	const originalVoice = mw.user.options.get( 'wikispeechVoiceEn' );
 	mw.user.options.set( 'wikispeechVoiceEn', 'en-voice' );
 	this.transcriptionPreviewer.$language.val.returns( 'en' );
@@ -57,7 +57,7 @@ QUnit.skip( 'fetchAudio(): fetch audio from API', function ( assert ) {
 	mw.user.options.set( 'wikispeechVoiceEn', originalVoice );
 } );
 
-QUnit.skip( 'play(): fetch new audio when not played before', function ( assert ) {
+QUnit.test( 'play(): fetch new audio when not played before', function ( assert ) {
 	this.transcriptionPreviewer.lastTranscription = null;
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'new transcription'
@@ -83,7 +83,7 @@ QUnit.skip( 'play(): fetch new audio when not played before', function ( assert 
 	);
 } );
 
-QUnit.skip( 'play(): fetch new audio when no audio data', function ( assert ) {
+QUnit.test( 'play(): fetch new audio when no audio data', function ( assert ) {
 	this.transcriptionPreviewer.lastTranscription = 'same transcription';
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'same transcription'
@@ -106,7 +106,7 @@ QUnit.skip( 'play(): fetch new audio when no audio data', function ( assert ) {
 	} );
 } );
 
-QUnit.skip( 'play(): play same audio if transcription has not changed', function ( assert ) {
+QUnit.test( 'play(): play same audio if transcription has not changed', function ( assert ) {
 	this.transcriptionPreviewer.lastTranscription = 'same transcription';
 	this.transcriptionPreviewer.$transcription.val.returns(
 		'same transcription'
@@ -123,7 +123,7 @@ QUnit.skip( 'play(): play same audio if transcription has not changed', function
 	assert.strictEqual( done.state(), 'resolved' );
 } );
 
-QUnit.skip( 'play(): rewind before playing', function ( assert ) {
+QUnit.test( 'play(): rewind before playing', function ( assert ) {
 	this.transcriptionPreviewer.$player.currentTime = 1.0;
 	this.transcriptionPreviewer.$player.attr.returns( 'not empty' );
 

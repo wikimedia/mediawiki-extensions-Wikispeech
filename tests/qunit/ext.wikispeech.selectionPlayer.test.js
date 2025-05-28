@@ -443,7 +443,7 @@ QUnit.test( 'playSelection(): selected nodes are elements that also contain non-
 	);
 } );
 
-QUnit.skip( 'playSelectionIfValid(): valid', ( assert ) => {
+QUnit.test( 'playSelectionIfValid(): valid', ( assert ) => {
 	sinon.stub( selectionPlayer, 'isSelectionValid' )
 		.returns( true );
 	sinon.stub( selectionPlayer, 'playSelection' );
@@ -454,7 +454,7 @@ QUnit.skip( 'playSelectionIfValid(): valid', ( assert ) => {
 	assert.strictEqual( actualResult, true );
 } );
 
-QUnit.skip( 'playSelectionIfValid(): invalid', ( assert ) => {
+QUnit.test( 'playSelectionIfValid(): invalid', ( assert ) => {
 	sinon.stub( selectionPlayer, 'isSelectionValid' )
 		.returns( false );
 	sinon.stub( selectionPlayer, 'playSelection' );
@@ -465,7 +465,7 @@ QUnit.skip( 'playSelectionIfValid(): invalid', ( assert ) => {
 	assert.strictEqual( actualResult, false );
 } );
 
-QUnit.skip( 'setEndTime()', function () {
+QUnit.test( 'setEndTime()', function () {
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].tokens = [ {} ];
 	storage.utterances[ 0 ].audio.currentTime = 0.5;
@@ -479,7 +479,7 @@ QUnit.skip( 'setEndTime()', function () {
 	sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
 } );
 
-QUnit.skip( 'setEndTime(): faster speech rate', function () {
+QUnit.test( 'setEndTime(): faster speech rate', function () {
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].tokens = [ {} ];
 	storage.utterances[ 0 ].audio.currentTime = 0.5;
@@ -494,7 +494,7 @@ QUnit.skip( 'setEndTime(): faster speech rate', function () {
 	sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
 } );
 
-QUnit.skip( 'setEndTime(): slower speech rate', function () {
+QUnit.test( 'setEndTime(): slower speech rate', function () {
 	storage.utterances[ 0 ].audio.src = 'loaded';
 	storage.utterances[ 0 ].tokens = [ {} ];
 	storage.utterances[ 0 ].audio.currentTime = 0.5;
@@ -507,7 +507,7 @@ QUnit.skip( 'setEndTime(): slower speech rate', function () {
 	sinon.assert.notCalled( player.stop );
 } );
 
-QUnit.skip( 'resetPreviousEndUtterance()', function () {
+QUnit.test( 'resetPreviousEndUtterance()', function () {
 	mw.wikispeech.test.util.setContentHtml(
 		'Utterance with selected text.'
 	);

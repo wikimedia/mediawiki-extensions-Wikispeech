@@ -148,7 +148,7 @@ function extendUi() {
 				}
 			}
 		);
-	} );
+	}, mw.msg( 'wikispeech-settings' ) );
 	if ( mw.config.get( 'wgWikispeechAllowConsumerEdits' ) ) {
 		const producerApi = new mw.ForeignApi(
 			mw.wikispeech.producerUrl +

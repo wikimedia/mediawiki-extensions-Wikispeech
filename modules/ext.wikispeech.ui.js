@@ -60,12 +60,13 @@ function Ui() {
 			playerGroup,
 			'play',
 			mw.wikispeech.player.playOrPause,
-			[ 'ext-wikispeech-play-pause' ]
+			mw.msg( 'wikispeech-play' )
 		);
 		self.addButton(
 			playerGroup,
 			'stop',
-			mw.wikispeech.player.stop
+			mw.wikispeech.player.stop,
+			mw.msg( 'wikispeech-stop' )
 		);
 		self.addButton(
 			playerGroup,
@@ -172,6 +173,7 @@ function Ui() {
 	 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
 	 * @param {string} icon Name of button icon.
 	 * @param {Function|string} onClick Function to call or link.
+	 * @param {string} ariaLabel Aria-labels
 	 * @param {string[]} classes Classes to add to the button.
 	 * @param {string} id Id to add to the button.
 	 * @return {OO.ui.ButtonWidget}
@@ -268,6 +270,7 @@ function Ui() {
 
 	this.setPlayPauseIconToPause = function () {
 		self.playPauseButton.setIcon( 'pause' );
+		self.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-pause' ) );
 	};
 
 	/**
@@ -276,6 +279,7 @@ function Ui() {
 
 	this.setAllPlayerIconsToPlay = function () {
 		self.playPauseButton.setIcon( 'play' );
+		self.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-play' ) );
 		self.selectionPlayer.setIcon( 'play' );
 	};
 
@@ -296,6 +300,7 @@ function Ui() {
 	 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
 	 * @param {string} icon Name of button icon.
 	 * @param {string} configVariable The config variable to get
+	 * @param {string} ariaLabel Aria-label
 	 *  link destination from.
 	 */
 

@@ -80,11 +80,11 @@ class UtteranceGenerator {
 	 * @throws SpeechoidConnectorException
 	 */
 	public function getUtterance(
-	   ?string $consumerUrl,
-	   string $voice,
-	   string $language,
-	   int $pageId,
-	   Segment $segment
+		?string $consumerUrl,
+		string $voice,
+		string $language,
+		int $pageId,
+		Segment $segment
 	) {
 		if ( $pageId !== 0 && !$pageId ) {
 			throw new InvalidArgumentException( 'Page ID must be set.' );

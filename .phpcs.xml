@@ -22,6 +22,12 @@
 			<property name="indent" value="4" />
 		</properties>
 	</rule>
+	<rule ref="PEAR.Functions.FunctionDeclaration">
+		<exclude name="PEAR.Functions.FunctionDeclaration.BraceOnSameLine" />
+		<properties>
+			<property name="indent" value="4" />
+		</properties>
+	</rule>
 	<file>.</file>
 	<arg name="extensions" value="php" />
 	<arg name="encoding" value="UTF-8" />

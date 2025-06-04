@@ -528,6 +528,13 @@
 				"leads to the edit lexicon page on the producer wiki."
 			],
 			"value": false
+		},
+		"WikispeechFlushUtterances": {
+			"description": [
+				"Mainly for development testing. When true, utterances are flushed when the page is loaded ",
+				"and removes all utterances for all voices, which helps when testing Speechoid utterance generation."
+			],
+			"value": false
 		}
 	},
 	"DefaultUserOptions": {

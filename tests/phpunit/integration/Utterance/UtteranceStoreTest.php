@@ -437,6 +437,56 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}
 
+	public function testFlushUtterancesByPageAndConsumerUrl() {
+		$mockedUtterances = [
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => true,
+				'pageId' => 1,
+				'consumerUrl' => 'http://localhost:8080/wiki',
+				'language' => 'sv',
+				'voice' => 'anna',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			], [
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => false,
+				'pageId' => 2,
+				'consumerUrl' => 'http://localhost:8080/wiki',
+				'language' => 'sv',
+				'voice' => 'anna',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			],
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => false,
+				'pageId' => 1,
+				'consumerUrl' => 'http://localhost:8080/wiki2',
+				'language' => 'sv',
+				'voice' => 'anna',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			]
+		];
+
+		$expectedFlushCounter = $this
+			->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
+
+		$flushedCount = $this->utteranceStore->flushUtterancesByPage( 'http://localhost:8080/wiki', 1 );
+
+		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
+	}
+
 	/**
 	 * Inserts mocked utterances to database and file backend.
 	 * Sets utteranceId from database to mocked utterances.
@@ -451,6 +501,9 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		foreach ( $mockedUtterances as &$mockedUtterance ) {
 			$this->getDb()->insert( UtteranceStore::UTTERANCE_TABLE, [
 				'wsu_date_stored' => $this->getDb()->timestamp( $mockedUtterance['dateStored'] ),
+				'wsu_remote_wiki_hash' => UtteranceStore::evaluateRemoteWikiHash(
+					$mockedUtterance['consumerUrl'] ?? null
+			),
 				'wsu_page_id' => $mockedUtterance['pageId'],
 				'wsu_lang' => $mockedUtterance['language'],
 				'wsu_voice' => $mockedUtterance['voice'],

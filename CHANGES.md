@@ -33,6 +33,7 @@ Update version in extension.json.
 ### 0.1.13-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
+* [T394284](https://phabricator.wikimedia.org/T394284) Flush utterances after edit from consumer wiki
 * [T405912](https://phabricator.wikimedia.org/T405912) Change icons for skipping back and forward by sentence
 * [T387739](https://phabricator.wikimedia.org/T387739) Add framework for handling parts of content
 * [T387325](https://phabricator.wikimedia.org/T387325) Created fallback error message when synthesis doesn't work

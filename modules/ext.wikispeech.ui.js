@@ -141,18 +141,25 @@ class Ui {
 	 *  link will go to the page on the local wiki.
 	 */
 
-	addEditButton( scriptUrl ) {
+	addEditButton( scriptUrl, consumerUrl ) {
 		let editUrl;
 		if ( scriptUrl ) {
 			editUrl = scriptUrl;
 		} else {
 			editUrl = mw.config.get( 'wgScript' );
 		}
-		editUrl += '?' + new URLSearchParams( {
+		const params = {
 			title: 'Special:EditLexicon',
 			language: mw.config.get( 'wgPageContentLanguage' ),
 			page: mw.config.get( 'wgArticleId' )
-		} );
+		};
+
+		if ( consumerUrl ) {
+			params.consumerUrl = consumerUrl;
+		}
+
+		editUrl += '?' + new URLSearchParams( params );
+
 		this.addButton(
 			this.linkGroup,
 			'edit',

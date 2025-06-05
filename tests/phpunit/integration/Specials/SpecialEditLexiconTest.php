@@ -316,4 +316,39 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$page->execute( '' );
 	}
 
+	public function testSubmitFlushesUtterances_pageAndConsumerUrlGiven_utterancesForPageFlushed() {
+		$mockUtteranceStore = $this->createMock( UtteranceStore::class );
+		$mockUtteranceStore->expects( $this->once() )
+			->method( 'flushUtterancesByPage' )
+			->with( 'http://localhost:8080/wiki', 123 );
+
+		$mockLexiconStorage = $this->createMock( LexiconStorage::class );
+		$mockLexiconStorage->method( 'createEntryItem' );
+
+		$mockStatus = $this->createMock( Status::class );
+		$mockStatus->method( 'isOk' )->willReturn( true );
+		$mockStatus->method( 'getValue' )->willReturn( 'some-sampa' );
+
+		$mockSpeechoidConnector = $this->createMock( SpeechoidConnector::class );
+		$mockSpeechoidConnector->method( 'fromIpa' )->willReturn( $mockStatus );
+
+		$special = new SpecialEditLexicon(
+		$this->createMock( LanguageNameUtils::class ),
+		$mockLexiconStorage,
+		$mockSpeechoidConnector,
+		$mockUtteranceStore
+		);
+
+		$data = [
+			'language' => 'sv',
+			'word' => 'hej',
+			'id' => '',
+			'transcription' => 'hɛj',
+			'preferred' => true,
+			'page' => 123,
+			'consumerUrl' => 'http://localhost:8080/wiki'
+		];
+
+		$special->submit( $data );
+	}
 }

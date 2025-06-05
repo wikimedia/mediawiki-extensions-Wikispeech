@@ -83,6 +83,7 @@ QUnit.test( 'addEditButton(): add edit button with link to local URL', function 
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgArticleId', 1 );
 	mw.config.set( 'wgScript', '/wiki/index.php' );
+
 	this.ui.linkGroup = sinon.stub( new OO.ui.ButtonGroupWidget() );
 	const addButton = sinon.stub( this.ui, 'addButton' );
 
@@ -117,6 +118,37 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL', fu
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
 		'http://producer.url/w/index.php?title=Special%3AEditLexicon&language=en&page=1',
+		mw.msg( 'wikispeech-edit-lexicon-btn' ),
+		null,
+		'wikispeech-edit'
+	);
+} );
+
+QUnit.test( 'addEditButton(): add edit button with link to given script URL, with consumerUrl parameter', function () {
+	mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
+	mw.config.set( 'wgPageContentLanguage', 'en' );
+	mw.config.set( 'wgArticleId', 1 );
+	mw.config.set( 'wgScriptPath', '/' );
+
+	this.ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
+	const addButton = this.sandbox.stub( this.ui, 'addButton' );
+
+	const scriptUrl = 'http://producer.url/w/index.php';
+	const consumerUrl = window.location.origin + '/';
+
+	this.ui.addEditButton( scriptUrl, consumerUrl );
+	const expectedUrl = scriptUrl + '?' + new URLSearchParams( {
+		title: 'Special:EditLexicon',
+		language: 'en',
+		page: 1,
+		consumerUrl: consumerUrl
+	} ).toString();
+
+	sinon.assert.calledWith(
+		addButton,
+		this.ui.linkGroup,
+		'edit',
+		expectedUrl,
 		mw.msg( 'wikispeech-edit-lexicon-btn' ),
 		null,
 		'wikispeech-edit'

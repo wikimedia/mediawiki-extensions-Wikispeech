@@ -400,6 +400,7 @@ class UtteranceStore {
 		int $pageId
 	): int {
 		$remoteWikiHash = self::evaluateRemoteWikiHash( $consumerUrl );
+		$this->logger->info( __METHOD__ . ": Flushing utterances for page $pageId at $consumerUrl" );
 		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ],

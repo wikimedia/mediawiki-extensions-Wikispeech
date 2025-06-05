@@ -192,7 +192,7 @@ class SpecialEditLexicon extends SpecialPage {
 		foreach ( $fields as $field ) {
 			$name = $field['name'];
 			$value = $request->getVal( $name );
-			if ( $value !== null ) {
+			if ( $value !== null && $value !== '' ) {
 				// There's no extra conversion logic so default values
 				// are set to strings and handled down the
 				// line. E.g. boolean values are true for "false" or
@@ -312,7 +312,12 @@ class SpecialEditLexicon extends SpecialPage {
 					'type' => 'hidden',
 					'name' => 'word',
 					'default' => $word
-				]
+				],
+				'consumerUrl' => [
+					'name' => 'consumerUrl',
+					'type' => 'hidden',
+					'default' => $this->getRequest()->getText( 'consumerUrl' )
+				],
 			],
 			'formId' => 'syncForm',
 			'submitMessage' => $this->msg( 'wikispeech-lexicon-sync-error-button' ),
@@ -347,7 +352,12 @@ class SpecialEditLexicon extends SpecialPage {
 			'page' => [
 				'name' => 'page',
 				'type' => 'hidden'
-			]
+			],
+			'consumerUrl' => [
+				'name' => 'consumerUrl',
+				'type' => 'hidden',
+				'default' => $this->getRequest()->getText( 'consumerUrl' )
+			],
 		];
 		return $fields;
 	}
@@ -402,6 +412,13 @@ class SpecialEditLexicon extends SpecialPage {
 			'options' => $itemOptions,
 			'default' => ''
 		];
+
+		$fields['consumerUrl'] = [
+			'name' => 'consumerUrl',
+			'type' => 'hidden',
+			'default' => $this->getRequest()->getText( 'consumerUrl' )
+		];
+
 		return $fields;
 	}
 
@@ -496,6 +513,8 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @return bool
 	 */
 	public function submit( array $data ): bool {
+		$this->logger->info( 'Submit-data innehåller: ' . print_r( $data, true ) );
+
 		if (
 			!array_key_exists( 'language', $data ) ||
 			!array_key_exists( 'word', $data ) ||
@@ -586,7 +605,7 @@ class SpecialEditLexicon extends SpecialPage {
 			// @todo pass it down here. Currently we're passing null,
 			// @todo meaning it only support flushing local wiki
 			// @todo utterances.
-			$this->purgeOriginPageUtterances( $data['page'], null );
+			$this->purgeOriginPageUtterances( $data['page'], $data['consumerUrl'] ?? null );
 		}
 
 		return true;

@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Alshamiri1",
+			"Mohammed Qays",
 			"Tala Ali",
 			"محمد أحمد عبد الفتاح"
 		]
@@ -11,5 +12,6 @@
 	"action-wikispeech-listen": "الاستماع إلى الصفحة",
 	"wikispeech-preview": "معاينة",
 	"wikispeech-lexicon-next": "التالي",
-	"wikispeech-lexicon-save": "حفظ"
+	"wikispeech-lexicon-save": "حفظ",
+	"wikispeech-edit-lexicon-transcription-unretrievable": "لم نتمكن من الحصول على النطق من خدمة النطق"
 }

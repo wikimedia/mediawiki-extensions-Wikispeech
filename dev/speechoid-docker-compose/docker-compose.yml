@@ -83,7 +83,6 @@ services:
       - 10001:10001
       - 10002:10002
     volumes:
-      - ./volumes/wikispeech-server_tmp:/srv/wikispeech-server/wikispeech_server/tmp
       - ./compose-files/wikispeech-server-entrypoint.sh:/srv/compose/entrypoint.sh
       - ./compose-files/wikispeech-server.conf:/srv/wikispeech-server/wikispeech_server/default.conf
       - ./compose-files/wait-for-it.sh:/srv/compose/wait-for-it.sh

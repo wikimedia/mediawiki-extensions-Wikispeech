@@ -62,11 +62,13 @@
 				"wikispeech-skip-back",
 				"wikispeech-previous",
 				"wikispeech-play",
+				"wikispeech-pause",
 				"wikispeech-next",
 				"wikispeech-skip-ahead",
 				"wikispeech-help",
 				"wikispeech-feedback",
-				"wikispeech-edit-lexicon-btn"
+				"wikispeech-edit-lexicon-btn",
+				"wikispeech-settings"
 
 			],
 			"dependencies": [

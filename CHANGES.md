@@ -30,11 +30,18 @@ Update version in extension.json.
 
 ## Versions
 
-### 0.1.12-SNAPSHOT
+### 0.1.13-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+### 0.1.12
+2025-06-10
+Speechoid: 0.1.2
+
+* [T314583](https://phabricator.wikimedia.org/T314583) Fixed out of sync lexicon entries
 * [T184393](https://phabricator.wikimedia.org/T184393) Adding button to pause recitation
+* [T245052](https://phabricator.wikimedia.org/T245052) Add correct ARIA tags to player UI - reopened and added missed ARIA label
+
 
 ### 0.1.11
 2025-05-13

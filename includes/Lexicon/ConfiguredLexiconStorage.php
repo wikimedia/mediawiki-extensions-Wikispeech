@@ -68,7 +68,7 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 	/**
 	 * Returns the local lexicon entry without considering any fallbacks.
 	 *
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 *
 	 * @param string $language
 	 * @param string $key
@@ -118,7 +118,7 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 	 * Synchronizes an entry item to both storages if applicable.
 	 * Only works if the decorated storage is a LexiconHandler.
 	 *
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 *
 	 * @param string $language
 	 * @param string $key

@@ -53,7 +53,7 @@ class SpecialEditLexicon extends SpecialPage {
 	private $postHtml;
 
 	/**
-	 * @since 0.1.11 Removed ConfigFactory
+	 * @since 0.1.12 Removed ConfigFactory
 	 * @since 0.1.8
 	 * @param LanguageNameUtils $languageNameUtils
 	 * @param LexiconStorage $lexiconStorage
@@ -143,7 +143,7 @@ class SpecialEditLexicon extends SpecialPage {
 	}
 
 	/**
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 * @return array
 	 */
 	private function formSteps( string $language, string $word ) {
@@ -212,7 +212,7 @@ class SpecialEditLexicon extends SpecialPage {
 	/**
 	 * Overwrite the local entry with speechoid entry
 	 *
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 */
 	public function syncSubmit() {
 		if ( !$this->lexiconStorage instanceof ConfiguredLexiconStorage ) {
@@ -297,7 +297,7 @@ class SpecialEditLexicon extends SpecialPage {
 	 *
 	 * @param string $language
 	 * @param string $word
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 * @return array
 	 */
 	private function getSyncFields( $language, $word ): array {

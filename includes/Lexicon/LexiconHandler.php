@@ -150,7 +150,7 @@ class LexiconHandler implements LexiconStorage {
 	}
 
 	/**
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 * @param string $language
 	 * @param string $key
 	 * @return LexiconEntry|null
@@ -160,7 +160,7 @@ class LexiconHandler implements LexiconStorage {
 	}
 
 	/**
-	 * @since 0.1.11
+	 * @since 0.1.12
 	 * @param string $language
 	 * @param string $key
 	 * @param int $speechoidId

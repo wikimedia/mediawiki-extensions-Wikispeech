@@ -53,5 +53,7 @@
 	"wikispeech-edit-lexicon-btn": "Modificar lexico",
 	"wikispeech-edit-lexicon-no-item-found": "Necun entrata de lexico trovate con ID ‘$1’. Per favor verifica le ID e tenta lo de novo.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Non poteva obtener le pronunciation del servicio de pronunciationes",
-	"wikispeech-edit-lexicon-speechoid-down": "Le servicio de pronunciationes es temporarimente indisponibile. Per favor tenta lo de novo plus tarde."
+	"wikispeech-edit-lexicon-speechoid-down": "Le servicio de pronunciationes es temporarimente indisponibile. Per favor tenta lo de novo plus tarde.",
+	"wikispeech-lexicon-sync-error-button": "Superscriber",
+	"wikispeech-lexicon-sync-error-unidentified": "Un error non identificate ha occurrite durante le tentativa de synchronisar le entratas del lexico."
 }

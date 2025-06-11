@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Derugon",
 			"Golmore",
 			"Gomoko",
 			"JLTRY",
@@ -57,11 +58,13 @@
 	"wikispeech-skip-back": "Revenir en arrière",
 	"wikispeech-previous": "Précédent",
 	"wikispeech-play": "Lecture",
+	"wikispeech-pause": "Pause",
 	"wikispeech-next": "Suivant",
 	"wikispeech-skip-ahead": "Passer à l'étape suivante",
 	"wikispeech-help": "Aide",
 	"wikispeech-feedback": "Envoyer un avis",
 	"wikispeech-edit-lexicon-btn": "Modifier le lexique",
+	"wikispeech-settings": "Paramètres",
 	"wikispeech-edit-lexicon-no-item-found": "Aucune entrée de lexique n'a été trouvée avec l'ID « '$1'. Veuillez vérifier l'ID et réessayer.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Impossible d'obtenir la prononciation à partir du service de prononciation",
 	"wikispeech-edit-lexicon-speechoid-down": "Le service de prononciation est temporairement indisponible. Veuillez réessayer ultérieurement.",

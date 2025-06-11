@@ -14,10 +14,11 @@ services:
       - MYSQL_USER=pronlex
       - MYSQL_PASSWORD=pronlex
 
-  ahotts:
-    image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-ahotts:2021-07-07-080449-production
-    expose:
-      - "1200"
+  # Disabled for now, see https://phabricator.wikimedia.org/T384313.
+  # ahotts:
+  #   image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-ahotts:2021-07-07-080449-production
+  #   expose:
+  #     - "1200"
 
   mishkal:
     image: docker-registry.wikimedia.org/wikimedia/mediawiki-services-wikispeech-mishkal:2025-01-21-125334-production

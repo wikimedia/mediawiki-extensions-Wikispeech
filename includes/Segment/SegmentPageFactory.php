@@ -15,7 +15,7 @@ use LogicException;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
-use MWException;
+use RuntimeException;
 use WANObjectCache;
 
 /**
@@ -373,15 +373,15 @@ class SegmentPageFactory {
 
 			$displayTitle = $pageProvider->getDisplayTitle();
 			if ( $displayTitle === null ) {
-				throw new MWException( 'Display title not loaded!' );
+				throw new RuntimeException( 'Display title not loaded!' );
 			}
 			$pageContent = $pageProvider->getPageContent();
 			if ( $pageContent === null ) {
-				throw new MWException( 'Page content not loaded!' );
+				throw new RuntimeException( 'Page content not loaded!' );
 			}
 			$providedRevisionId = $pageProvider->getRevisionId();
 			if ( $providedRevisionId === null ) {
-				throw new MWException( 'Revision id not loaded!' );
+				throw new RuntimeException( 'Revision id not loaded!' );
 			}
 
 			if ( $revisionId !== null
@@ -491,7 +491,7 @@ class SegmentPageFactory {
 	 * @param string[] $removeTags
 	 * @param string[] $segmentBreakingTags
 	 * @return array
-	 * @throws MWException
+	 * @throws LogicException
 	 */
 	protected function cleanHtmlDom(
 		string $displayTitle,

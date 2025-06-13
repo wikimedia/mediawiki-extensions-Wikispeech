@@ -15,8 +15,8 @@ use MediaWiki\MediaWikiServices;
 use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\SegmentList;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
-use MWException;
 use RequestContext;
+use RuntimeException;
 use WANObjectCache;
 
 /** @var string MediaWiki installation path */
@@ -250,7 +250,7 @@ class Benchmark extends Maintenance {
 			$revisionId
 		)->getSegments();
 		if ( $segments === null ) {
-			throw new MWException( 'Segments is null!' );
+			throw new RuntimeException( 'Segments is null!' );
 		}
 		$this->segments = $segments;
 		$endSegmenting = microtime( true ) * 1000;

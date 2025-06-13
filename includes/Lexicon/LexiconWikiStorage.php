@@ -18,7 +18,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use Mediawiki\Title\Title;
-use MWException;
+use RuntimeException;
 use User;
 use WikiPage;
 
@@ -262,7 +262,7 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	 * @param string $key
 	 * @param LexiconEntry $entry
 	 * @param string $revisionComment
-	 * @throws MWException If failed to encode entry to JSON.
+	 * @throws RuntimeException If failed to encode entry to JSON.
 	 */
 	private function saveLexiconEntryRevision(
 		string $language,
@@ -276,7 +276,7 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 		}
 		$json = FormatJson::encode( $array );
 		if ( $json === false ) {
-			throw new MWException( 'Failed to encode entry to JSON.' );
+			throw new RuntimeException( 'Failed to encode entry to JSON.' );
 		}
 		$content = new JsonContent( $json );
 		$wikiPage = $this->lexiconEntryWikiPageFactory( $language, $key );

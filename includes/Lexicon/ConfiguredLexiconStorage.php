@@ -11,7 +11,7 @@ namespace MediaWiki\Wikispeech\Lexicon;
 use InvalidArgumentException;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\WikispeechServices;
-use MWException;
+use RuntimeException;
 
 /**
  * A decorated {@link LexiconStorage}
@@ -27,7 +27,7 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 	 * @since 0.1.9
 	 * @param string $enumValue
 	 * @param MediaWikiServices $services
-	 * @throws MWException If value of WikispeechPronunciationLexiconConfiguration is unsupported.
+	 * @throws RuntimeException If value of WikispeechPronunciationLexiconConfiguration is unsupported.
 	 */
 	public function __construct(
 		string $enumValue,
@@ -51,7 +51,8 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 				WikispeechServices::getLexiconWanCacheStorage( $services )
 			);
 		} else {
-			throw new MWException( "Unsupported value for WikispeechPronunciationLexiconConfiguration: $enumValue" );
+			throw new RuntimeException( "Unsupported value for WikispeechPronunciationLexiconConfiguration: $enumValue"
+			);
 		}
 	}
 

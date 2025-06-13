@@ -9,7 +9,7 @@ namespace MediaWiki\Wikispeech\Lexicon;
  */
 
 use InvalidArgumentException;
-use MWException;
+use LogicException;
 use WANObjectCache;
 
 /**
@@ -138,7 +138,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 			$entry->setItems( [ $item ] );
 		} else {
 			if ( $entry->findItemBySpeechoidIdentity( $itemSpeechoidIdentity ) !== null ) {
-				throw new MWException( 'Attempting to create an entry item that already exists.' );
+				throw new LogicException( 'Attempting to create an entry item that already exists.' );
 			}
 			$entry->addItem( $item );
 		}
@@ -152,7 +152,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is not set.
-	 * @throws MWException If attempting to update a non existing entry or entry item.
+	 * @throws LogicException If attempting to update a non existing entry or entry item.
 	 */
 	public function updateEntryItem(
 		string $language,
@@ -169,7 +169,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 		}
 		$entry = $this->getEntry( $language, $key );
 		if ( $entry === null ) {
-			throw new MWException( 'Attempting to update a non existing entry.' );
+			throw new LogicException( 'Attempting to update a non existing entry.' );
 		}
 		$entry->replaceItem( $item );
 		$this->putEntry( $entry );
@@ -182,7 +182,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 	 * @param LexiconEntryItem $item
 	 * @throws InvalidArgumentException If $item->item is null.
 	 *  If Speechoid identity is not set.
-	 * @throws MWException If attempting to delete a non existing entry or item.
+	 * @throws LogicException If attempting to delete a non existing entry or item.
 	 */
 	public function deleteEntryItem(
 		string $language,
@@ -199,7 +199,7 @@ class LexiconWanCacheStorage implements LexiconLocalStorage {
 		}
 		$entry = $this->getEntry( $language, $key );
 		if ( $entry === null ) {
-			throw new MWException( 'Attempting to delete a non existing entry.' );
+			throw new LogicException( 'Attempting to delete a non existing entry.' );
 		}
 		$entry->deleteItem( $item );
 		$this->putEntry( $entry );

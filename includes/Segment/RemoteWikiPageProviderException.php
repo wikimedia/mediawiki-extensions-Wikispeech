@@ -8,7 +8,7 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
-use MWException;
+use RuntimeException;
 
 /**
  * In case of unable to communicate with the remote wiki.
@@ -16,6 +16,6 @@ use MWException;
  *
  * @since 0.1.10
  */
-class RemoteWikiPageProviderException extends MWException {
+class RemoteWikiPageProviderException extends RuntimeException {
 
 }

@@ -21,7 +21,6 @@ use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Lexicon\NullEditLexiconException;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
-use MWException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SpecialPage;
@@ -549,7 +548,7 @@ class SpecialEditLexicon extends SpecialPage {
 			$entry = $this->lexiconStorage->getEntry( $language, $word );
 			$item = $entry->findItemBySpeechoidIdentity( intval( $id ) );
 			if ( $item === null ) {
-				throw new MWException( "No item with id '$id' found." );
+				throw new RuntimeException( "No item with id '$id' found." );
 			}
 
 			$properties = $item->getProperties();

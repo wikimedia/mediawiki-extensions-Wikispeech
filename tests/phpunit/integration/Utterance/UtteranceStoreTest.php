@@ -13,9 +13,9 @@ use MediaWiki\WikiMap\WikiMap;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiIntegrationTestCase;
 use MemoryFileBackend;
-use MWException;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -100,7 +100,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideTestCreateAndFindUtterance
 	 * @since 0.1.5
 	 * @param array $data
-	 * @throws MWException
+	 * @throws RuntimeException
 	 */
 	public function testCreateUtterance( array $data ) {
 		$started = MWTimestamp::getInstance();
@@ -508,7 +508,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 	 * @param array $mockedUtterances Array of array with mocked utterances
 	 * @param int $expectedFlushCounter
 	 * @param int $flushedCount
-	 * @throws MWException
+	 * @throws RuntimeException
 	 */
 	private function assertFlushed(
 		array $mockedUtterances,

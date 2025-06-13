@@ -8,7 +8,7 @@ namespace MediaWiki\Wikispeech;
  * @license GPL-2.0-or-later
  */
 
-use MWException;
+use RuntimeException;
 
 /**
  * Parses output from HAProxy stats CSV.
@@ -172,7 +172,7 @@ class HaproxyStatusParser {
 	 * @param string $pxname
 	 * @param string $svname
 	 * @return int
-	 * @throws MWException If no such server in parsed data
+	 * @throws RuntimeException If no such server in parsed data
 	 */
 	public function findServerRowIndex(
 		string $pxname,
@@ -186,7 +186,7 @@ class HaproxyStatusParser {
 				return $rowIndex;
 			}
 		}
-		throw new MWException( "No server defined with pxname '$pxname' and svname '$svname'." );
+		throw new RuntimeException( "No server defined with pxname '$pxname' and svname '$svname'." );
 	}
 
 	/**

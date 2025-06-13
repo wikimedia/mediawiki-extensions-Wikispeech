@@ -26,7 +26,6 @@ use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
-use MWException;
 use MWTimestamp;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -254,13 +253,13 @@ class ApiWikispeechListen extends ApiBase {
 		}
 		$segment = $segmentPageResponse->getSegments()->findFirstItemByHash( $segmentHash );
 		if ( $segment === null ) {
-			throw new MWException( 'No such segment. ' .
+			throw new RuntimeException( 'No such segment. ' .
 				'Did you perhaps reference a segment that was created using incompatible settings ' .
 				'for segmentBreakingTags and/or removeTags?' );
 		}
 		$pageId = $segmentPageResponse->getPageId();
 		if ( $pageId === null ) {
-			throw new MWException( 'Did not retrieve page id for the given revision id.' );
+			throw new RuntimeException( 'Did not retrieve page id for the given revision id.' );
 		}
 
 		$this->listenMetricEntry->setSegmentIndex( $segmentPageResponse->getSegments()->indexOf( $segment ) );

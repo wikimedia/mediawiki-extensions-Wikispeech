@@ -14,7 +14,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\RevisionSlotsUpdate;
 use Mediawiki\Title\Title;
-use MWException;
+use RuntimeException;
 use TestUserRegistry;
 use WikiPage;
 use WikitextContent;
@@ -32,7 +32,7 @@ class WikiPageTestUtil {
 	 * @param string $content
 	 * @param int $namespace Default is NS_MAIN.
 	 * @return WikiPage
-	 * @throws MWException If failed to add page, or page already exists.
+	 * @throws RuntimeException If failed to add page, or page already exists.
 	 */
 	public static function addPage(
 		$title,
@@ -44,7 +44,7 @@ class WikiPageTestUtil {
 		}
 		$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		if ( $page->exists() ) {
-			throw new MWException( 'Page already exists: ' . $title );
+			throw new RuntimeException( 'Page already exists: ' . $title );
 		}
 		$wikiTextContent = new WikiTextContent( $content );
 		$testUser = TestUserRegistry::getImmutableTestUser()->getUser();
@@ -52,7 +52,7 @@ class WikiPageTestUtil {
 		$pageUpdater->setContent( SlotRecord::MAIN, $wikiTextContent );
 		$pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
 		if ( !$pageUpdater->wasSuccessful() ) {
-			throw new MWException( 'Failed to create page: ' . $pageUpdater->getStatus() );
+			throw new RuntimeException( 'Failed to create page: ' . $pageUpdater->getStatus() );
 		}
 		self::$pagesAdded[] = $page;
 		return $page;
@@ -64,14 +64,14 @@ class WikiPageTestUtil {
 	 * @since 0.1.5
 	 * @param WikiPage $page
 	 * @param string $content
-	 * @throws MWException If page does not exist, failed to edit, or a to null-change was executed.
+	 * @throws RuntimeException If page does not exist, failed to edit, or a to null-change was executed.
 	 */
 	public static function editPage(
 		$page,
 		$content
 	) {
 		if ( !$page->exists() ) {
-			throw new MWException( 'Page does not exist: ' . $page->getTitle() );
+			throw new RuntimeException( 'Page does not exist: ' . $page->getTitle() );
 		}
 		$wikiTextContent = new WikiTextContent( $content );
 		$slotsUpdate = new RevisionSlotsUpdate();
@@ -81,12 +81,12 @@ class WikiPageTestUtil {
 		$pageUpdater->setContent( SlotRecord::MAIN, $wikiTextContent );
 		$pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
 		if ( !$pageUpdater->wasSuccessful() && !$pageUpdater->isUnchanged() ) {
-			throw new MWException( 'Failed to edit page: ' . $pageUpdater->getStatus() );
+			throw new RuntimeException( 'Failed to edit page: ' . $pageUpdater->getStatus() );
 		}
 	}
 
 	/**
-	 * @throws MWException
+	 * @throws RuntimeException
 	 * @throws FatalError
 	 */
 	public static function removeCreatedPages() {

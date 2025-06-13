@@ -15,7 +15,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWikiUnitTestCase;
-use MWException;
+use RuntimeException;
 
 /**
  * @since 0.1.8
@@ -107,7 +107,7 @@ class LexiconSpeechoidStorageTest extends MediaWikiUnitTestCase {
 		parent::setUp();
 		$status = FormatJson::parse( $this->mockedLexiconEntryJson );
 		if ( !$status->isOK() ) {
-			throw new MWException( 'Failed to parse mocked JSON' );
+			throw new RuntimeException( 'Failed to parse mocked JSON' );
 		}
 		$this->mockedLexiconEntry = $status->getValue();
 

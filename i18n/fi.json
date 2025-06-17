@@ -33,5 +33,7 @@
 	"wikispeech-preferred": "Ensisijainen",
 	"wikispeech-lexicon-next": "Seuraava",
 	"wikispeech-lexicon-save": "Tallenna",
-	"wikispeech-lexicon-new": "Uusi"
+	"wikispeech-lexicon-new": "Uusi",
+	"group-wikispeech-edit-lexicon": "Wikispeech-sanaston muokkaajat",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech-sanaston muokkaaja}}"
 }

@@ -16,6 +16,7 @@ use MediaWiki\Preferences\Hook\GetPreferencesHook;
 use MediaWiki\User\UserOptionsLookup;
 use MediaWiki\Wikispeech\ConfigurationValidator;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
 use OutputPage;
 use Psr\Log\LoggerInterface;
@@ -99,6 +100,12 @@ class PlayerHooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		if ( !$this->shouldWikispeechRun( $out ) ) {
 			return;
+		}
+		$flushUtterances = $this->config->get( 'WikispeechFlushUtterances' );
+		$pageId = $out->getTitle()->getArticleID();
+		if ( $flushUtterances ) {
+			$utteranceStore = new UtteranceStore();
+			$utteranceStore->flushUtterancesByPage( null, $pageId );
 		}
 		$showPlayer = $this->userOptionsLookup->getOption(
 			$out->getUser(), 'wikispeechShowPlayer'

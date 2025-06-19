@@ -13,3 +13,4 @@ js-docs
 coverage
 /.eslintcache
 dev/speechoid-docker-compose/volumes/
+/.stylelintcache

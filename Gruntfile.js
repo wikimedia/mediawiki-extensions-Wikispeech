@@ -29,7 +29,8 @@ module.exports = function ( grunt ) {
 				failOnError: true,
 				outputFile: '',
 				reportNeedlessDisables: true,
-				syntax: ''
+				syntax: '',
+				cache: true
 			},
 			all: 'modules/**/*.{css,less}'
 		}

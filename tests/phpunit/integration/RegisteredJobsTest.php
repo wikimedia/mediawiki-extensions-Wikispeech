@@ -25,7 +25,6 @@ class RegisteredJobsTest extends MediaWikiIntegrationTestCase {
 	 * indeed are existing classes that extend Job.
 	 */
 	public function testJobClasses_iterateRegistered_areExistingSubclassesOfJob() {
-		$this->markTestSkipped( 'T386081' );
 		$serviceOptions = new ServiceOptions(
 			[ 'JobClasses' ],
 			$this->getServiceContainer()->getMainConfig()

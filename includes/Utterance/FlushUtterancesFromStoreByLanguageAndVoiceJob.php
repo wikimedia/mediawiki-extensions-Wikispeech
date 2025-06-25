@@ -21,11 +21,11 @@ use Psr\Log\LoggerInterface;
  */
 class FlushUtterancesFromStoreByLanguageAndVoiceJob extends Job {
 
-	/** @var LoggerInterface */
-	private $logger;
-
 	/** @var UtteranceStore */
 	private $utteranceStore;
+
+	/** @var LoggerInterface */
+	private $logger;
 
 	/** @var string */
 	private $language;
@@ -34,16 +34,18 @@ class FlushUtterancesFromStoreByLanguageAndVoiceJob extends Job {
 	private $voice;
 
 	/**
+	 * @since 0.1.13 add service $utteranceStore to constructor
 	 * @since 0.1.7
 	 * @param Title $title
 	 * @param array $params [ 'language' => string, 'voice' => string|null ]
+	 * @param UtteranceStore $utteranceStore
 	 */
-	public function __construct( $title, $params ) {
+	public function __construct( $title, $params, $utteranceStore ) {
 		parent::__construct( 'flushUtterancesFromStoreByLanguageAndVoice', $title, $params );
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
-		$this->utteranceStore = new UtteranceStore();
 		$this->language = $params['language'];
 		$this->voice = $params['voice'];
+		$this->utteranceStore = $utteranceStore;
 	}
 
 	/**

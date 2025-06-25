@@ -35,7 +35,8 @@ class FlushUtterancesFromStoreByPageIdJobQueue {
 		$jobQueueGroup->push(
 			new FlushUtterancesFromStoreByPageIdJob(
 				Title::newMainPage(),
-				[ 'pageId' => $pageId ]
+				[ 'pageId' => $pageId ],
+				MediaWikiServices::getInstance()->getService( 'Wikispeech.UtteranceStore' )
 			)
 		);
 	}

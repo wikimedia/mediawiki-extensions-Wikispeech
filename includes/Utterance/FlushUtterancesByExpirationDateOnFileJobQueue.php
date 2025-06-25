@@ -30,7 +30,9 @@ class FlushUtterancesByExpirationDateOnFileJobQueue {
 		$jobQueueGroup = MediaWikiServices::getInstance()->getJobQueueGroup();
 		$jobQueueGroup->push( new FlushUtterancesByExpirationDateOnFileJob(
 				Title::newMainPage(),
-				[]
+				[],
+				MediaWikiServices::getInstance()->getService( 'Wikispeech.UtteranceStore' )
+
 			) );
 	}
 }

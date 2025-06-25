@@ -28,14 +28,16 @@ class FlushUtterancesFromStoreByExpirationJob extends Job {
 	private $utteranceStore;
 
 	/**
+	 * @since 0.1.13 add service $utteranceStore to constructor
 	 * @since 0.1.7
 	 * @param Title $title
 	 * @param array|null $params Ignored
+	 * @param UtteranceStore $utteranceStore
 	 */
-	public function __construct( $title, $params ) {
+	public function __construct( $title, $params, $utteranceStore ) {
 		parent::__construct( 'flushUtterancesFromStoreByExpiration', $title, $params );
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
-		$this->utteranceStore = new UtteranceStore();
+		$this->utteranceStore = $utteranceStore;
 	}
 
 	/**

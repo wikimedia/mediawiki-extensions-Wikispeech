@@ -95,7 +95,7 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 				"tokens" => $synthesizeMetadataArray
 			] );
 
-			$utteranceGenerator = new UtteranceGenerator( $speechoidConnectorMock );
+			$utteranceGenerator = new UtteranceGenerator( $speechoidConnectorMock, $utteranceStoreMock );
 			$utteranceGenerator->setUtteranceStore( $utteranceStoreMock );
 
 		$utterance = $utteranceGenerator->getUtterance(
@@ -170,7 +170,7 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 			->expects( $this->never() )
 			->method( 'synthesizeText' );
 
-			$utteranceGenerator = new UtteranceGenerator( $speechoidConnectorMock );
+			$utteranceGenerator = new UtteranceGenerator( $speechoidConnectorMock, $utteranceStoreMock );
 			$utteranceGenerator->setUtteranceStore( $utteranceStoreMock );
 
 		$utterance = $utteranceGenerator->getUtterance(

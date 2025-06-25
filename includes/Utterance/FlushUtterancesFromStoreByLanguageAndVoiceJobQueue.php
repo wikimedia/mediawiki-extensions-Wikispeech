@@ -40,7 +40,8 @@ class FlushUtterancesFromStoreByLanguageAndVoiceJobQueue {
 				[
 					'language' => $language,
 					'voice' => $voice
-				]
+				],
+				MediaWikiServices::getInstance()->getService( 'Wikispeech.UtteranceStore' )
 			)
 		);
 	}

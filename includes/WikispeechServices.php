@@ -9,6 +9,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWanCacheStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use Psr\Container\ContainerInterface;
 
 class WikispeechServices {
@@ -109,6 +110,20 @@ class WikispeechServices {
 	): UtteranceGenerator {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.UtteranceGenerator' );
+	}
+
+	/**
+	 * @param ContainerInterface|null $services Service container to
+	 *  use. If null, global MediaWikiServices::getInstance() will be
+	 *  used instead.
+	 *
+	 * @return UtteranceStore
+	 */
+	public static function getUtteranceStore(
+		?ContainerInterface $services = null
+	): UtteranceStore {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'Wikispeech.UtteranceStore' );
 	}
 
 }

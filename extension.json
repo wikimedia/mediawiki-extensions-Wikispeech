@@ -144,7 +144,8 @@
 			"services": [
 				"LanguageNameUtils",
 				"Wikispeech.ConfiguredLexiconStorage",
-				"Wikispeech.SpeechoidConnector"
+				"Wikispeech.SpeechoidConnector",
+				"Wikispeech.UtteranceStore"
 			]
 		}
 	},
@@ -214,10 +215,30 @@
 		"wikispeech": "GlobalVarConfig::newInstance"
 	},
 	"JobClasses": {
-		"flushUtterancesByExpirationDateOnFile": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesByExpirationDateOnFileJob",
-		"flushUtterancesFromStoreByExpiration": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByExpirationJob",
-		"flushUtterancesFromStoreByLanguageAndVoice": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByLanguageAndVoiceJob",
-		"flushUtterancesFromStoreByPageId": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByPageIdJob"
+		"flushUtterancesByExpirationDateOnFile": {
+			"class": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesByExpirationDateOnFileJob",
+			"services": [
+				"Wikispeech.UtteranceStore"
+			]
+		},
+		"flushUtterancesFromStoreByExpiration": {
+			"class": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByExpirationJob",
+			"services": [
+				"Wikispeech.UtteranceStore"
+			]
+		},
+		"flushUtterancesFromStoreByLanguageAndVoice": {
+			"class": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByLanguageAndVoiceJob",
+			"services": [
+				"Wikispeech.UtteranceStore"
+			]
+		},
+		"flushUtterancesFromStoreByPageId": {
+			"class": "\\MediaWiki\\Wikispeech\\Utterance\\FlushUtterancesFromStoreByPageIdJob",
+			"services": [
+				"Wikispeech.UtteranceStore"
+			]
+		}
 	},
 	"config": {
 		"WikispeechSpeechoidUrl": {

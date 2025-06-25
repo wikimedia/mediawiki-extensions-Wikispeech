@@ -9,20 +9,26 @@ namespace MediaWiki\Wikispeech\Utterance;
  */
 
 use Job;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 
 /**
  * @since 0.1.7
  */
 class FlushUtterancesByExpirationDateOnFileJob extends Job {
 
+	/** @var UtteranceStore */
+	private $utteranceStore;
+
 	/**
+	 * @since 0.1.13 add service $utteranceStore to constructor
 	 * @since 0.1.8
 	 * @param Title $title
 	 * @param array|null $params Ignored
+	 * @param UtteranceStore $utteranceStore
 	 */
-	public function __construct( $title, $params ) {
+	public function __construct( $title, $params, $utteranceStore ) {
 		parent::__construct( 'flushUtterancesByExpirationDateOnFile', $title, $params );
+		$this->utteranceStore = $utteranceStore;
 	}
 
 	/**
@@ -30,8 +36,7 @@ class FlushUtterancesByExpirationDateOnFileJob extends Job {
 	 * @return bool success
 	 */
 	public function run() {
-		$utteranceStore = new UtteranceStore();
-		$utteranceStore->flushUtterancesByExpirationDateOnFile();
+		$this->utteranceStore->flushUtterancesByExpirationDateOnFile();
 		return true;
 	}
 

@@ -9,6 +9,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Utterance;
  */
 
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiIntegrationTestCase;
@@ -40,7 +41,9 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			'WikispeechUtteranceFileBackendContainerName' => 'foo_container',
 			'WikispeechUtteranceFileBackendName' => '',
 		] );
-		$this->utteranceStore = TestingAccessWrapper::newFromObject( new UtteranceStore() );
+		$this->utteranceStore = TestingAccessWrapper::newFromObject(
+			MediaWikiServices::getInstance()->getService( 'Wikispeech.UtteranceStore' )
+		);
 		// use new empty transient file backend
 		// @todo Investigate mocking of file backend. See https://phabricator.wikimedia.org/T255126
 		$this->utteranceStore->fileBackend = new MemoryFileBackend( [

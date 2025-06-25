@@ -43,12 +43,13 @@ class UtteranceGenerator {
 	private $InputTextValidator;
 
 	public function __construct(
-		SpeechoidConnector $speechoidConnector
+		SpeechoidConnector $speechoidConnector,
+		UtteranceStore $utteranceStore
 	) {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->speechoidConnector = $speechoidConnector;
 
-		$this->utteranceStore = new UtteranceStore();
+		$this->utteranceStore = $utteranceStore;
 	}
 
 	/**

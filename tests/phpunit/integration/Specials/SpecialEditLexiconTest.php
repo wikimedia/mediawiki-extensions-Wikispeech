@@ -12,6 +12,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconStorage;
 use MediaWiki\Wikispeech\Specials\SpecialEditLexicon;
 use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use OutputPage;
 use PermissionsError;
 use SpecialPageTestBase;
@@ -33,6 +34,9 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 	/** @var SpeechoidConnector */
 	private $speechoidConnector;
 
+	/** @var UtteranceStore */
+	private $utteranceStore;
+
 	/** @var User */
 	private $user;
 
@@ -53,11 +57,13 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 		$this->languageNameUtils = $this->createStub( LanguageNameUtils::class );
 		$this->lexiconStorage = $this->createMock( LexiconStorage::class );
 		$this->speechoidConnector = $this->createStub( SpeechoidConnector::class );
+		$this->utteranceStore = $this->createStub( UtteranceStore::class );
 
 		$this->page = new SpecialEditLexicon(
 			$this->languageNameUtils,
 			$this->lexiconStorage,
-			$this->speechoidConnector
+			$this->speechoidConnector,
+			$this->utteranceStore
 		);
 		if ( $this->user ) {
 			$this->page->getContext()->setUser( $this->user );

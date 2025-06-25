@@ -110,7 +110,8 @@ class FlushUtterancesFromStoreByExpirationJobQueue {
 		$jobQueueGroup->push(
 			new FlushUtterancesFromStoreByExpirationJob(
 				Title::newMainPage(),
-				[]
+				[],
+				MediaWikiServices::getInstance()->getService( 'Wikispeech.UtteranceStore' )
 			)
 		);
 	}

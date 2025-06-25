@@ -21,11 +21,11 @@ use Psr\Log\LoggerInterface;
  */
 class FlushUtterancesFromStoreByPageIdJob extends Job {
 
-	/** @var LoggerInterface */
-	private $logger;
-
 	/** @var UtteranceStore */
 	private $utteranceStore;
+
+	/** @var LoggerInterface */
+	private $logger;
 
 	/** @var int */
 	private $pageId;
@@ -34,16 +34,17 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 	private $consumerUrl;
 
 	/**
+	 * @since 0.1.13 add service $utteranceStore to constructor
 	 * @since 0.1.7
 	 * @param Title $title
 	 * @param array $params [ 'pageId' => int ]
+	 * @param UtteranceStore $utteranceStore
 	 */
-	public function __construct( $title, $params ) {
+	public function __construct( $title, $params, $utteranceStore ) {
 		parent::__construct( 'flushUtterancesFromStoreByPageId', $title, $params );
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
-		$this->utteranceStore = new UtteranceStore();
 		$this->pageId = $params['pageId'];
-		$this->consumerUrl = $params['consumerUrl'];
+		$this->utteranceStore = $utteranceStore;
 	}
 
 	/**
@@ -63,5 +64,4 @@ class FlushUtterancesFromStoreByPageIdJob extends Job {
 		);
 		return true;
 	}
-
 }

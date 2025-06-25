@@ -62,7 +62,7 @@ class FlushUtterancesByExpirationDateOnFile extends Maintenance {
 
 		if ( $this->hasOption( 'force' ) ) {
 			if ( !$this->utteranceStore ) {
-				$this->utteranceStore = new UtteranceStore();
+				$this->utteranceStore = WikispeechServices::getUtteranceStore();
 			}
 
 			$flushedCount = $this->utteranceStore->flushUtterancesByExpirationDateOnFile();

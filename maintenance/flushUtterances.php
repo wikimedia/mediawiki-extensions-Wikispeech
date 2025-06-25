@@ -104,7 +104,7 @@ class FlushUtterances extends Maintenance {
 		// i.e. we can't initialize the fields in the constructor,
 		// and we have to be lenient for mocked instances set by tests.
 		if ( !$this->utteranceStore ) {
-			$this->utteranceStore = new UtteranceStore();
+			$this->utteranceStore = WikispeechServices::getUtteranceStore();
 		}
 
 		$flushedCount = 0;

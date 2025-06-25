@@ -48,6 +48,9 @@ class SpecialEditLexicon extends SpecialPage {
 	/** @var LoggerInterface */
 	private $logger;
 
+	/** @var UtteranceStore */
+	private $utteranceStore;
+
 	/** @var string */
 	private $postHtml;
 
@@ -57,16 +60,19 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @param LanguageNameUtils $languageNameUtils
 	 * @param LexiconStorage $lexiconStorage
 	 * @param SpeechoidConnector $speechoidConnector
+	 * @param UtteranceStore $utteranceStore
 	 */
 	public function __construct(
 		$languageNameUtils,
 		$lexiconStorage,
-		$speechoidConnector
+		$speechoidConnector,
+		$utteranceStore
 	) {
 		parent::__construct( 'EditLexicon', 'wikispeech-edit-lexicon' );
 		$this->languageNameUtils = $languageNameUtils;
 		$this->lexiconStorage = $lexiconStorage;
 		$this->speechoidConnector = $speechoidConnector;
+		$this->utteranceStore = $utteranceStore;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->postHtml = '';
 	}
@@ -590,8 +596,7 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @param string|null $consumerUrl
 	 */
 	private function purgeOriginPageUtterances( int $pageId, ?string $consumerUrl ) {
-		$utteranceStore = new UtteranceStore();
-		$utteranceStore->flushUtterancesByPage( $consumerUrl, $pageId );
+		$this->utteranceStore->flushUtterancesByPage( $consumerUrl, $pageId );
 	}
 
 	/**

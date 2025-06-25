@@ -34,14 +34,17 @@ class FlushUtterancesFromStoreByExpirationJobTest extends MediaWikiIntegrationTe
 			'WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs' => 60
 		] );
 
+		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
+
 		/** @var FlushUtterancesFromStoreByExpirationJob|TestingAccessWrapper $job */
 		$job = TestingAccessWrapper::newFromObject(
 			new FlushUtterancesFromStoreByExpirationJob(
 				Title::newMainPage(),
-				[]
+				[],
+				$utteranceStoreMock
 			)
 		);
-		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
+
 		$utteranceStoreMock
 			->expects( $this->once() )
 			->method( 'flushUtterancesByExpirationDate' )

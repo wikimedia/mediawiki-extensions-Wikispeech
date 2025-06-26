@@ -5,7 +5,8 @@
 			"Jopparn",
 			"Sabelöga",
 			"WikiPhoenix",
-			"Anna-Maria Jerdak (WMSE)"
+			"Anna-Maria Jerdak (WMSE)",
+			"Sebastian Berlin (WMSE)"
 		]
 	},
 	"wikispeech": "Wikispeech",
@@ -35,7 +36,7 @@
 	"wikispeech-word": "Ord",
 	"wikispeech-transcription": "Transkribering",
 	"wikispeech-item-id": "ID",
-	"wikispeech-preview": "Förhandsvisning",
+	"wikispeech-preview": "Förhandsgranska",
 	"wikispeech-preferred": "Föredragen",
 	"wikispeech-lexicon-next": "Nästa",
 	"wikispeech-lexicon-save": "Spara",

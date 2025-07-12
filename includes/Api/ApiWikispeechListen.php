@@ -242,13 +242,13 @@ class ApiWikispeechListen extends ApiBase {
 					null,
 					$revisionId
 				);
-		} catch ( RemoteWikiPageProviderException $remoteWikiPageProviderException ) {
+		} catch ( RemoteWikiPageProviderException ) {
 			$this->dieWithError( [
 				'apierror-wikispeech-listen-failed-getting-page-from-consumer',
 				$revisionId,
 				$consumerUrl
 			] );
-		} catch ( DeletedRevisionException $deletedRevisionException ) {
+		} catch ( DeletedRevisionException ) {
 			$this->dieWithError( 'apierror-wikispeech-listen-deleted-revision' );
 		}
 		$segment = $segmentPageResponse->getSegments()->findFirstItemByHash( $segmentHash );
@@ -348,7 +348,7 @@ class ApiWikispeechListen extends ApiBase {
 		$input = $parameters['text'] ?? '';
 		try {
 			InputTextValidator::validateText( $input );
-		} catch ( RuntimeException $e ) {
+		} catch ( RuntimeException ) {
 			$this->dieWithError(
 				[ 'apierror-wikispeech-listen-invalid-input-too-long',
 					$this->config->get( 'WikispeechListenMaximumInputCharacters' ), mb_strlen( $input ) ]

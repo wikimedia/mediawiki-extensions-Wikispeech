@@ -85,7 +85,7 @@ class SpecialEditLexicon extends SpecialPage {
 		$this->addHelpLink( 'Help:Extension:Wikispeech/Lexicon editor' );
 		try {
 			$this->speechoidConnector->requestLexicons();
-		} catch ( Exception $e ) {
+		} catch ( Exception ) {
 			$this->logger->error( 'Speechoid is down.' );
 			$this->getOutput()->showErrorPage(
 				'error',
@@ -101,7 +101,7 @@ class SpecialEditLexicon extends SpecialPage {
 		try {
 			$this->lexiconStorage->getEntry( $language, $word );
 			$formData = $this->formSteps( $language, $word );
-		} catch ( RuntimeException $e ) {
+		} catch ( RuntimeException ) {
 			$this->getOutput()->addHtml( Html::errorBox(
 				$this->msg( 'wikispeech-lexicon-sync-error' )->parse()
 			) );
@@ -159,7 +159,7 @@ class SpecialEditLexicon extends SpecialPage {
 
 		try {
 			$entry = $this->lexiconStorage->getEntry( $language, $word );
-		} catch ( RuntimeException $e ) {
+		} catch ( RuntimeException ) {
 			$entry = null;
 		}
 
@@ -168,18 +168,18 @@ class SpecialEditLexicon extends SpecialPage {
 			$fields = $this->getLookupFields();
 		} elseif ( $entry === null ) {
 			$formId = 'newEntry';
-			$fields = $this->getAddFields( $language, $word );
+			$fields = $this->getAddFields();
 			$submitMessage = 'wikispeech-lexicon-save';
 		} elseif ( !in_array( 'id', $request->getValueNames() ) ) {
 			$formId = 'selectItem';
-			$fields = $this->getSelectFields( $language, $word, $entry );
+			$fields = $this->getSelectFields( $entry );
 		} elseif ( $id ) {
 			$formId = 'editItem';
 			$fields = $this->getEditFields( $language, $word, $id );
 			$submitMessage = 'wikispeech-lexicon-save';
 		} elseif ( $id === '' ) {
 			$formId = 'newItem';
-			$fields = $this->getAddFields( $language, $word );
+			$fields = $this->getAddFields();
 			$submitMessage = 'wikispeech-lexicon-save';
 		} else {
 			// We have a set of parameters that we can't do anything with. Show the first page.
@@ -244,7 +244,7 @@ class SpecialEditLexicon extends SpecialPage {
 				] )
 			);
 
-		} catch ( InvalidArgumentException $e ) {
+		} catch ( InvalidArgumentException ) {
 			$this->getOutput()->addHtml( Html::errorBox(
 				$this->msg( 'wikispeech-lexicon-sync-error-unidentified' )
 			) );
@@ -359,16 +359,10 @@ class SpecialEditLexicon extends SpecialPage {
 	 * word from previous page, but readonly.
 	 *
 	 * @since 0.1.10
-	 * @param string $language
-	 * @param string $word
 	 * @param LexiconEntry|null $entry
 	 * @return array
 	 */
-	private function getSelectFields(
-		string $language,
-		string $word,
-		?LexiconEntry $entry = null
-	): array {
+	private function getSelectFields( ?LexiconEntry $entry = null ): array {
 		$fields = $this->getLookupFields();
 		$fields['language']['readonly'] = true;
 		$fields['language']['type'] = 'text';
@@ -412,12 +406,10 @@ class SpecialEditLexicon extends SpecialPage {
 	 * previous page, but readonly.
 	 *
 	 * @since 0.1.10
-	 * @param string $language
-	 * @param string $word
 	 * @return array
 	 */
-	private function getAddFields( string $language, string $word ): array {
-		$fields = $this->getSelectFields( $language, $word );
+	private function getAddFields(): array {
+		$fields = $this->getSelectFields();
 		$fields['id']['type'] = 'hidden';
 		$fields += [
 			'transcription' => [
@@ -453,14 +445,14 @@ class SpecialEditLexicon extends SpecialPage {
 	 * @return array
 	 */
 	private function getEditFields( string $language, string $word, int $id ): array {
-		$fields = $this->getAddFields( $language, $word );
+		$fields = $this->getAddFields();
 		$entry = $this->lexiconStorage->getEntry( $language, $word );
 		$item = $entry->findItemBySpeechoidIdentity( $id );
 		if ( $item === null ) {
 			$this->getOutput()->addHTML( Html::errorBox(
 				$this->getOutput()->msg( 'wikispeech-edit-lexicon-no-item-found' )->params( $id )->parse()
 			) );
-			return $this->getSelectFields( $language, $word, $entry );
+			return $this->getSelectFields( $entry );
 		}
 		$transcriptionStatus = $this->speechoidConnector->toIpa(
 			$item->getTranscription(),
@@ -566,7 +558,7 @@ class SpecialEditLexicon extends SpecialPage {
 					$word,
 					$item
 				);
-			} catch ( NullEditLexiconException $e ) {
+			} catch ( NullEditLexiconException ) {
 				$this->getOutput()->addHtml(
 					Html::warningBox(
 						$this->msg( 'wikispeech-lexicon-null-edit' )->parse()

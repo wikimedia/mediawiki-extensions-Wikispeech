@@ -221,6 +221,7 @@ class LexiconHandler implements LexiconStorage {
 	 * @param string $key
 	 * @param LexiconEntryItem $item Will be updated on success.
 	 * @throws InvalidArgumentException If $item->properties is null.
+	 * @throws NullEditLexiconException
 	 * @throws RuntimeException If unable to push to any storage.
 	 *  If successfully pushed to Speechoid but unable to push to local storage.
 	 */

@@ -261,7 +261,7 @@ class PlayerHooks implements
 			try {
 				$defaultVoice = $voiceHandler->getDefaultVoice( $language );
 				$options["Default ($defaultVoice)"] = '';
-			} catch ( Exception $e ) {
+			} catch ( Exception ) {
 				$options["Default"] = '';
 			}
 			foreach ( $voices as $voice ) {

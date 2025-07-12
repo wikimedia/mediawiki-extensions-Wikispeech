@@ -158,6 +158,9 @@ class LexiconSpeechoidStorage implements LexiconStorage {
 
 		/** @var int $speechoidIdentity */
 		$speechoidIdentity = $status->getValue();
+		if ( !is_int( $speechoidIdentity ) ) {
+			throw new LogicException( 'Expected speechoid identity to be an int.' );
+		}
 		$speechoidEntry = $this->getEntry( $language, $key );
 		if ( $speechoidEntry === null ) {
 			throw new LogicException( "Expected the created lexicon entry to exist." );

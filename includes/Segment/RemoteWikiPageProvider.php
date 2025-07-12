@@ -55,7 +55,7 @@ class RemoteWikiPageProvider extends AbstractPageProvider {
 		if ( $responseString === null ) {
 			throw new RemoteWikiPageProviderException( 'Failed getting response from remote wiki' );
 		}
-		$response = FormatJson::parse( $responseString )->getValue();
+		$response = (object)FormatJson::parse( $responseString )->getValue();
 		return new PageRevisionProperties(
 			Title::newFromTextThrow( $response->parse->title ),
 			$response->parse->pageid
@@ -83,7 +83,7 @@ class RemoteWikiPageProvider extends AbstractPageProvider {
 				"Failed to get page with title '$title' from consumer on URL $this->consumerUrl."
 			);
 		}
-		$response = FormatJson::parse( $responseString )->getValue();
+		$response = (object)FormatJson::parse( $responseString )->getValue();
 		$this->setDisplayTitle( $response->parse->displaytitle );
 		$this->setPageContent( $response->parse->text->{'*'} );
 		$this->setRevisionId( $response->parse->revid );

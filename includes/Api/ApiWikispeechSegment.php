@@ -94,10 +94,12 @@ class ApiWikispeechSegment extends ApiBase {
 		if ( !$result->isGood() ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalidjson' );
 		}
-		$removeTags = $result->getValue();
-		if ( !self::isValidRemoveTags( $removeTags ) ) {
+		$rawRemoveTags = $result->getValue();
+
+		if ( !self::isValidRemoveTags( $rawRemoveTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
+		$removeTags = is_array( $rawRemoveTags ) ? array_values( $rawRemoveTags ) : null;
 		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
 			$this->configFactory

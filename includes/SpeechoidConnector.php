@@ -134,7 +134,11 @@ class SpeechoidConnector {
 		if ( !$status->isOK() ) {
 			throw new SpeechoidConnectorException( $responseString );
 		}
-		return $status->getValue();
+		$value = $status->getValue();
+		if ( !is_array( $value ) ) {
+			throw new SpeechoidConnectorException( 'Unexpected non-array response' );
+		}
+		return $value;
 	}
 
 	/**
@@ -236,7 +240,11 @@ class SpeechoidConnector {
 		if ( !$status->isOK() ) {
 			throw new SpeechoidConnectorException( 'Unexpected response from Speechoid.' );
 		}
-		return $status->getValue();
+		$value = $status->getValue();
+		if ( !is_array( $value ) ) {
+			throw new SpeechoidConnectorException( 'Unexpected non-array response' );
+		}
+		return $value;
 	}
 
 	/**
@@ -325,7 +333,11 @@ class SpeechoidConnector {
 		if ( !$status->isOK() ) {
 			throw new SpeechoidConnectorException( 'Unexpected response from Speechoid.' );
 		}
-		return $status->getValue();
+		$value = $status->getValue();
+		if ( !is_array( $value ) ) {
+			throw new SpeechoidConnectorException( 'Unexpected non-array response' );
+		}
+		return $value;
 	}
 
 	/**
@@ -539,6 +551,9 @@ class SpeechoidConnector {
 		}
 		/** @var array $deserializedResponse */
 		$deserializedResponse = $deserializedStatus->getValue();
+		if ( !is_array( $deserializedResponse ) ) {
+			return Status::newFatal( 'Unexpected response: Not an array.' );
+		}
 		if ( !array_key_exists( 'ids', $deserializedResponse ) ) {
 			return Status::newFatal( 'Unexpected Speechoid response. No `ids` field.' );
 		}
@@ -594,7 +609,14 @@ class SpeechoidConnector {
 				$symbolSetResponse
 			);
 		}
-		$symbolSet = $symbolSetStatus->getValue()['symbolSetName'];
+		$symbolSetValue = $symbolSetStatus->getValue();
+		if ( !is_array( $symbolSetValue ) || !isset( $symbolSetValue['symbolSetName'] ) ) {
+			return Status::newFatal(
+				"Missing 'symbolSetName' in response from $symbolsetRequestUrl: " .
+				FormatJson::encode( $symbolSetValue, true )
+			);
+		}
+		$symbolSet = $symbolSetValue['symbolSetName'];
 
 		if ( $toIpa ) {
 			$from = $symbolSet;
@@ -613,7 +635,14 @@ class SpeechoidConnector {
 				$mapResponse
 			);
 		}
-		return Status::newGood( $mapStatus->getValue()['Result'] );
+		$mapValue = $mapStatus->getValue();
+		if ( !is_array( $mapValue ) || !isset( $mapValue['Result'] ) ) {
+			return Status::newFatal(
+				"Missing 'Result' in response from $mapRequestUrl: " .
+				FormatJson::encode( $mapValue, true )
+			);
+		}
+		return Status::newGood( $mapValue['Result'] );
 	}
 
 	/**

@@ -4,5 +4,14 @@
 			"Умар"
 		]
 	},
-	"wikispeech-stop": "Сацо"
+	"wikispeech-retry": "ЙухагӀорта",
+	"wikispeech-stop": "Сацо",
+	"wikispeech-language": "Мотт",
+	"wikispeech-word": "Дош",
+	"wikispeech-transcription": "Транскрипци",
+	"wikispeech-item-id": "Идентификатор",
+	"wikispeech-preview": "Хьалххе хьажар",
+	"wikispeech-lexicon-next": "Кхин дӀа",
+	"wikispeech-lexicon-save": "Ӏалашйан",
+	"wikispeech-lexicon-new": "Керланиг"
 }

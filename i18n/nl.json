@@ -54,12 +54,17 @@
 	"wikispeech-skip-back": "Terugspringen",
 	"wikispeech-previous": "Vorige",
 	"wikispeech-play": "Afspelen",
+	"wikispeech-pause": "Pauzeren",
 	"wikispeech-next": "Volgende",
 	"wikispeech-skip-ahead": "Verder springen",
 	"wikispeech-help": "Hulp",
 	"wikispeech-feedback": "Terugkoppeling verzenden",
 	"wikispeech-edit-lexicon-btn": "Lexicon bewerken",
+	"wikispeech-settings": "Instellingen",
 	"wikispeech-edit-lexicon-no-item-found": "Er is geen lexicon-item gevonden met ID ‘$1’. Controleer de ID en probeer het nog eens.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Kon de uitspraak niet oproepen bij de uitspraakdienst",
-	"wikispeech-edit-lexicon-speechoid-down": "De uitspraakdienst is tijdelijk niet beschikbaar. Probeer het later nog eens."
+	"wikispeech-edit-lexicon-speechoid-down": "De uitspraakdienst is tijdelijk niet beschikbaar. Probeer het later nog eens.",
+	"wikispeech-lexicon-sync-error": "De lexicons zijn niet synchroon. Ze bevatten verschillende eigenschappen, of een vermelding komt slechts in één van de lexicons voor. Wilt u de lokale vermelding overschrijven zodat deze overeenkomt met Speechoid?",
+	"wikispeech-lexicon-sync-error-button": "Overschrijven",
+	"wikispeech-lexicon-sync-error-unidentified": "Er is een onbekende fout opgetreden bij het synchroniseren van lexiconvermeldingen."
 }

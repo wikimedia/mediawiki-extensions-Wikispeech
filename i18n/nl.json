@@ -61,5 +61,7 @@
 	"wikispeech-edit-lexicon-btn": "Lexicon bewerken",
 	"wikispeech-edit-lexicon-no-item-found": "Er is geen lexicon-item gevonden met ID ‘$1’. Controleer de ID en probeer het nog eens.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "Kon de uitspraak niet oproepen bij de uitspraakdienst",
-	"wikispeech-edit-lexicon-speechoid-down": "De uitspraakdienst is tijdelijk niet beschikbaar. Probeer het later nog eens."
+	"wikispeech-edit-lexicon-speechoid-down": "De uitspraakdienst is tijdelijk niet beschikbaar. Probeer het later nog eens.",
+	"wikispeech-lexicon-sync-error-button": "Overschrijven",
+	"wikispeech-lexicon-sync-error-unidentified": "Er is een onbekende fout opgetreden bij het synchroniseren van lexiconvermeldingen."
 }

@@ -13,12 +13,9 @@ use Mediawiki\Title\Title;
 /**
  * The response from {@link SegmentPageFactory::segmentPage()}
  *
- * @since 0.1.10
+ * @since 0.1.13
  */
-class SegmentPageResponse {
-
-	/** @var SegmentList|null */
-	private $segments = null;
+class SegmentPageResponse extends SegmentResponse {
 
 	/** @var Title|null */
 	private $title = null;
@@ -28,22 +25,6 @@ class SegmentPageResponse {
 
 	/** @var int|null */
 	private $pageId = null;
-
-	/**
-	 * @since 0.1.10
-	 * @return SegmentList|null
-	 */
-	public function getSegments(): ?SegmentList {
-		return $this->segments;
-	}
-
-	/**
-	 * @since 0.1.10
-	 * @param SegmentList|null $segments
-	 */
-	public function setSegments( ?SegmentList $segments ): void {
-		$this->segments = $segments;
-	}
 
 	/**
 	 * @since 0.1.10

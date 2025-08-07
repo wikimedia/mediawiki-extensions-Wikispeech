@@ -8,8 +8,6 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
-use ConfigFactory;
-use IContextSource;
 use InvalidArgumentException;
 use LogicException;
 use MediaWiki\Http\HttpRequestFactory;
@@ -19,22 +17,9 @@ use RuntimeException;
 use WANObjectCache;
 
 /**
- * @since 0.1.13 Add `$partOfContent`
  * @since 0.1.10
  */
-class SegmentPageFactory {
-
-	/** @var WANObjectCache */
-	private $cache;
-
-	/** @var ConfigFactory */
-	private $configFactory;
-
-	/**
-	 * Whether or not to use cache for segmentation
-	 * @var bool
-	 */
-	private $useSegmentsCache = true;
+class SegmentPageFactory extends SegmentFactory {
 
 	/**
 	 * Whether or not to use cache for page revision properties,
@@ -50,36 +35,6 @@ class SegmentPageFactory {
 	private $useRevisionPropertiesCache = false;
 
 	/**
-	 * Will default to an instance of {@link StandardSegmenter} if not set.
-	 * @var Segmenter|null
-	 */
-	private $segmenter = null;
-
-	/**
-	 * Will default to config setting WikispeechRemoveTags if not set.
-	 * @var string[]|null
-	 */
-	private $removeTags = null;
-
-	/**
-	 * Will default to config setting WikispeechSegmentBreakingTags if not set.
-	 * @var string[]|null
-	 */
-	private $segmentBreakingTags = null;
-
-	/**
-	 * If true certain tags add extra content that is read before any text.
-	 * @var bool
-	 */
-	private $partOfContent = false;
-
-	/**
-	 * Required only when providing page content from a local wiki.
-	 * @var IContextSource
-	 */
-	private $contextSource = null;
-
-	/**
 	 * Required only when providing page content from a local wiki.
 	 * @var RevisionStore|null
 	 */
@@ -92,44 +47,12 @@ class SegmentPageFactory {
 	private $httpRequestFactory = null;
 
 	/**
-	 * Required only when providing page content from a remote wiki.
-	 * @var string|null
-	 */
-	private $consumerUrl = null;
-
-	/**
 	 * If true, page id and title is always retrieved from page provider or cache
 	 * and be made available in response from segmentPage.
 	 *
 	 * @var bool
 	 */
 	private $requirePageRevisionProperties = false;
-
-	/**
-	 * @since 0.1.10
-	 * @param WANObjectCache $cache
-	 * @param ConfigFactory $configFactory
-	 */
-	public function __construct(
-		WANObjectCache $cache,
-		ConfigFactory $configFactory
-	) {
-		$this->cache = $cache;
-		$this->configFactory = $configFactory;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$useSegmentsCache
-	 * @since 0.1.10
-	 * @param bool $useSegmentsCache
-	 * @return SegmentPageFactory $this
-	 */
-	public function setUseSegmentsCache(
-		bool $useSegmentsCache
-	): SegmentPageFactory {
-		$this->useSegmentsCache = $useSegmentsCache;
-		return $this;
-	}
 
 	/**
 	 * @see SegmentPageFactory::$useRevisionPropertiesCache
@@ -141,82 +64,6 @@ class SegmentPageFactory {
 		bool $useRevisionPropertiesCache
 	): SegmentPageFactory {
 		$this->useRevisionPropertiesCache = $useRevisionPropertiesCache;
-		return $this;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$segmenter
-	 * @since 0.1.10
-	 * @param Segmenter|null $segmenter
-	 * @return SegmentPageFactory $this
-	 */
-	public function setSegmenter(
-		?Segmenter $segmenter
-	): SegmentPageFactory {
-		$this->segmenter = $segmenter;
-		return $this;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$setSegmenter
-	 * @since 0.1.10
-	 * @param string $language
-	 * @return SegmentPageFactory $this
-	 */
-	public function setSegmenterByLanguage(
-		string $language
-	): SegmentPageFactory {
-		// @todo lookup segmenter by language
-		return $this->setSegmenter( new StandardSegmenter() );
-	}
-
-	/**
-	 * @see SegmentPageFactory::$removeTags
-	 * @since 0.1.10
-	 * @param string[]|null $removeTags
-	 * @return SegmentPageFactory $this
-	 */
-	public function setRemoveTags(
-		?array $removeTags
-	): SegmentPageFactory {
-		$this->removeTags = $removeTags;
-		return $this;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$partOfContent
-	 * @since 0.1.13
-	 * @param bool $partOfContent
-	 * @return SegmentPageFactory $this
-	 */
-	public function setPartOfContent( bool $partOfContent ): SegmentPageFactory {
-		$this->partOfContent = $partOfContent;
-		return $this;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$segmentBreakingTags
-	 * @since 0.1.10
-	 * @param string[]|null $segmentBreakingTags
-	 * @return SegmentPageFactory $this
-	 */
-	public function setSegmentBreakingTags(
-		?array $segmentBreakingTags
-	): SegmentPageFactory {
-		$this->segmentBreakingTags = $segmentBreakingTags;
-		return $this;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$contextSource
-	 * @since 0.1.10
-	 * @param IContextSource|null $contextSource
-	 * @return SegmentPageFactory $this
-	 */
-	public function setContextSource(
-		?IContextSource $contextSource
-	): SegmentPageFactory {
-		$this->contextSource = $contextSource;
 		return $this;
 	}
 
@@ -243,19 +90,6 @@ class SegmentPageFactory {
 		?HttpRequestFactory $httpRequestFactory
 	): SegmentPageFactory {
 		$this->httpRequestFactory = $httpRequestFactory;
-		return $this;
-	}
-
-	/**
-	 * @see SegmentPageFactory::$consumerUrl
-	 * @since 0.1.10
-	 * @param string|null $consumerUrl
-	 * @return SegmentPageFactory $this
-	 */
-	public function setConsumerUrl(
-		?string $consumerUrl
-	): SegmentPageFactory {
-		$this->consumerUrl = $consumerUrl;
 		return $this;
 	}
 
@@ -497,27 +331,5 @@ class SegmentPageFactory {
 			'Wikispeech.pageRevisionProperties',
 			...$cacheKeyComponents
 		);
-	}
-
-	/**
-	 * This method exists due to need for test mocking.
-	 *
-	 * @see Cleaner::cleanHtmlDom()
-	 * @since 0.1.10
-	 * @param string $displayTitle
-	 * @param string $pageContent
-	 * @param string[] $removeTags
-	 * @param string[] $segmentBreakingTags
-	 * @return array
-	 * @throws LogicException
-	 */
-	protected function cleanHtmlDom(
-		string $displayTitle,
-		string $pageContent,
-		array $removeTags,
-		array $segmentBreakingTags
-	): array {
-		$cleaner = new Cleaner( $removeTags, $segmentBreakingTags, $this->partOfContent );
-		return $cleaner->cleanHtmlDom( $displayTitle, $pageContent );
 	}
 }

@@ -16,6 +16,7 @@ use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
+use MediaWiki\Wikispeech\ConfigurationValidator;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -95,8 +96,7 @@ class ApiWikispeechSegment extends ApiBase {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalidjson' );
 		}
 		$rawRemoveTags = $result->getValue();
-
-		if ( !self::isValidRemoveTags( $rawRemoveTags ) ) {
+		if ( !ConfigurationValidator::isValidRemoveTags( $rawRemoveTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
 		$segmentPageFactory = new SegmentPageFactory(
@@ -124,43 +124,6 @@ class ApiWikispeechSegment extends ApiBase {
 			$this->getModuleName(),
 			[ 'segments' => $segmentPageResponse->getSegments()->toArray() ]
 		);
-	}
-
-	/**
-	 * Tests if a variable is valid as "remove tags".
-	 *
-	 * The variable should be an associative array. Keys should be
-	 * strings and values should be booleans, strings or sequential
-	 * arrays containing strings.
-	 *
-	 * @since 0.0.1
-	 * @param mixed $removeTags The variable to test.
-	 * @return bool true if $removeTags is valid, else false.
-	 */
-	public static function isValidRemoveTags( $removeTags ) {
-		if ( !is_array( $removeTags ) ) {
-			return false;
-		}
-		foreach ( $removeTags as $tagName => $rule ) {
-			if ( !is_string( $tagName ) ) {
-				// A key isn't a string.
-				return false;
-			}
-			if ( is_array( $rule ) ) {
-				// Rule is a list of class names.
-				foreach ( $rule as $className ) {
-					if ( !is_string( $className ) ) {
-						// Only strings are valid if the rule is
-						// an array.
-						return false;
-					}
-				}
-			} elseif ( !is_bool( $rule ) && !is_string( $rule ) ) {
-				// Rule is not array, string or boolean.
-				return false;
-			}
-		}
-		return true;
 	}
 
 	/**

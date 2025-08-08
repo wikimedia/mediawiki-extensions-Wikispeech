@@ -33,6 +33,9 @@ Update version in extension.json.
 ### 0.1.13-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
+* [T393443](https://phabricator.wikimedia.org/T393443) Adding config variable for testing utterance generation
+* [T392457](https://phabricator.wikimedia.org/T392457) Overwrite utterance if files and database are out of sync
+
 
 ### 0.1.12
 2025-06-10

@@ -48,6 +48,17 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	}
 
 	/**
+	 * This is required when running from maintenance scripts,
+	 * where no user context is available by default.
+	 *
+	 * @since 0.1.13
+	 * @param User $user The user to perform edits as.
+	 */
+	public function setUser( User $user ): void {
+		$this->user = $user;
+	}
+
+	/**
 	 * @since 0.1.9
 	 * @param string $language
 	 * @param string $key
@@ -264,7 +275,7 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 	 * @param string $revisionComment
 	 * @throws RuntimeException If failed to encode entry to JSON.
 	 */
-	private function saveLexiconEntryRevision(
+	public function saveLexiconEntryRevision(
 		string $language,
 		string $key,
 		LexiconEntry $entry,
@@ -286,4 +297,34 @@ class LexiconWikiStorage implements LexiconLocalStorage {
 			CommentStoreComment::newUnsavedComment( $revisionComment )
 		);
 	}
+
+	/**
+	 * Replaces or adds a lexicon item based on its Speechoid identity.
+	 * If the entry does not exist, it will be created.
+	 * Existing item with the same identity is removed before adding the new one.
+	 *
+	 * @since 0.1.13
+	 * @param string $language
+	 * @param string $key
+	 * @param LexiconEntryItem $newItem
+	 */
+	public function replaceEntryItem( string $language, string $key, LexiconEntryItem $newItem ): void {
+		$entry = $this->getEntry( $language, $key );
+		if ( $entry === null ) {
+			$entry = new LexiconEntry();
+			$entry->setLanguage( $language );
+			$entry->setKey( $key );
+		}
+
+		$identity = $newItem->getSpeechoidIdentity();
+		$items = $entry->getItems();
+
+		$items = array_filter( $items, static fn ( $item ) => $item->getSpeechoidIdentity() !== $identity );
+
+		$items[] = $newItem;
+		$entry->setItems( $items );
+
+		$this->saveLexiconEntryRevision( $language, $key, $entry, "Replaced item with Speechoid ID $identity" );
+	}
+
 }

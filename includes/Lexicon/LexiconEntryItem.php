@@ -121,6 +121,21 @@ class LexiconEntryItem {
 	}
 
 	/**
+	 * @since 0.1.13
+	 */
+	public function setSpeechoidIdentity( ?int $identity ): void {
+		if ( $this->properties === null ) {
+			$this->properties = new \stdClass();
+		}
+
+		if ( $identity === null ) {
+			unset( $this->properties->id );
+		} else {
+			$this->properties->id = $identity;
+		}
+	}
+
+	/**
 	 * @since 0.1.9
 	 * @return string Empty if JSON encoding failed.
 	 */

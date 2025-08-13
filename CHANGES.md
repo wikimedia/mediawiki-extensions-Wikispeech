@@ -33,6 +33,7 @@ Update version in extension.json.
 ### 0.1.13-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
+* [T392426](https://phabricator.wikimedia.org/T392426) Add lexicon entries from wiki to Speechoid
 * [T400992](https://phabricator.wikimedia.org/T400992) Error message when preview empty transcription
 * [T387284](https://phabricator.wikimedia.org/T387284) Pre-sythesize messages
 * [T277152](https://phabricator.wikimedia.org/T277152) Display disambiguation information about a lexicon entry

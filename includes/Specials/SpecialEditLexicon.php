@@ -410,7 +410,7 @@ class SpecialEditLexicon extends SpecialPage {
 					$readablePos = LexiconEntryMapper::partOfSpeechMap( $partOfSpeech );
 
 					$description = '';
-					$description .= $this->msg( 'wikispeech-item-id' ) . ': ' . htmlspecialchars( $id ) . "\n";
+					$description .= $this->msg( 'wikispeech-item-id' ) . ': ' . htmlspecialchars( (string)$id ) . "\n";
 					$description .= $this->msg( 'wikispeech-word' ) . ': ' . htmlspecialchars( $word ) . "\n";
 					$description .= $this->msg(
 						'wikispeech-morphology'

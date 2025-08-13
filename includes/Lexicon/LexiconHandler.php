@@ -168,13 +168,18 @@ class LexiconHandler implements LexiconStorage {
 		$speechoidEntry = $this->speechoidStorage->getEntry( $language, $key );
 
 		if ( $speechoidEntry === null ) {
-			throw new RuntimeException( "Speechoid entry not found for language '$language' and key '$key'" );
+			throw new RuntimeException( "Speechoid entry not found for language '$language' and key '$key'" .
+			"If this entry previously existed in the wiki lexicon but is missing in Speechoid, " .
+			"run the maintenance script 'populateSpeechoidLexiconFromWiki.php' to restore it."
+			);
 		}
 
 		$matchingSpeechoidItem = $speechoidEntry->findItemBySpeechoidIdentity( $speechoidId );
 
 		if ( $matchingSpeechoidItem === null ) {
-			throw new RuntimeException( "Speechoid ID not found for '$language' and key '$key'" );
+			throw new RuntimeException( "Speechoid ID not found for '$language' and key '$key'" .
+			"You may need to run 'populateSpeechoidLexiconFromWiki.php' to re-create missing Speechoid entries."
+			);
 		}
 
 		$this->localStorage->updateEntryItem( $language, $key, $matchingSpeechoidItem );

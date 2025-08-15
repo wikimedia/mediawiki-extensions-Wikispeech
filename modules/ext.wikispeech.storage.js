@@ -15,8 +15,9 @@ class Storage {
 		this.utterances = [];
 		this.utterancesLoaded = $.Deferred();
 
-		if ( mw.wikispeech && mw.wikispeech.consumerMode ) {
-			const producerApiUrl = mw.wikispeech.producerUrl + '/api.php';
+		const producerUrl = mw.config.get( 'wgWikispeechProducerUrl' );
+		if ( producerUrl ) {
+			const producerApiUrl = `${ producerUrl }/api.php`;
 			this.api = new mw.ForeignApi( producerApiUrl );
 		} else {
 			this.api = new mw.Api();
@@ -39,7 +40,7 @@ class Storage {
 			page: page,
 			'part-of-content': mw.user.options.get( 'wikispeechPartOfContent' )
 		};
-		if ( mw.wikispeech.consumerMode ) {
+		if ( mw.config.get( 'wgWikispeechProducerUrl' ) ) {
 			options[ 'consumer-url' ] = window.location.origin +
 				mw.config.get( 'wgScriptPath' );
 		}
@@ -195,7 +196,7 @@ class Storage {
 			// Set voice if not default.
 			options.voice = voice;
 		}
-		if ( mw.wikispeech.consumerMode ) {
+		if ( mw.config.get( 'wgWikispeechProducerUrl' ) ) {
 			options[ 'consumer-url' ] = window.location.origin +
 				mw.config.get( 'wgScriptPath' );
 		}

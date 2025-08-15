@@ -4,7 +4,7 @@
  * @module ext.wikispeech.gadget
  */
 
-let moduleUrl, api, optionsPage;
+let moduleUrl, api, optionsPage, main;
 
 /**
  * Add config variables from the producer's config.
@@ -138,10 +138,10 @@ function writeUserOptionsToWikiPage( dialog ) {
 function extendUi() {
 	const UserOptionsDialog = require( './ext.wikispeech.userOptionsDialog.js' );
 	const dialog = new UserOptionsDialog();
-	mw.wikispeech.ui.addWindow( dialog );
-	const gadgetGroup = mw.wikispeech.ui.addToolbarGroup();
-	mw.wikispeech.ui.addButton( gadgetGroup, 'settings', () => {
-		mw.wikispeech.ui.openWindow( dialog ).done(
+	main.ui.addWindow( dialog );
+	const gadgetGroup = main.ui.addToolbarGroup();
+	main.ui.addButton( gadgetGroup, 'settings', () => {
+		main.ui.openWindow( dialog ).done(
 			( data ) => {
 				if ( data && data.action === 'save' ) {
 					writeUserOptionsToWikiPage( dialog );
@@ -150,10 +150,8 @@ function extendUi() {
 		);
 	}, mw.msg( 'wikispeech-settings' ) );
 	if ( mw.config.get( 'wgWikispeechAllowConsumerEdits' ) ) {
-		const producerApi = new mw.ForeignApi(
-			mw.wikispeech.producerUrl +
-				'/api.php'
-		);
+		const producerUrl = mw.config.get( 'wgWikispeechProducerUrl' );
+		const producerApi = new mw.ForeignApi( `${ producerUrl }/api.php` );
 		producerApi.get( {
 			action: 'query',
 			format: 'json',
@@ -163,13 +161,10 @@ function extendUi() {
 			.done( ( response ) => {
 				const producerInfo = response.query.general,
 					scriptPath = producerInfo.server + producerInfo.script;
-				mw.wikispeech.ui.addEditButton( scriptPath );
+				main.ui.addEditButton( scriptPath );
 			} );
 	}
 }
-
-mw.wikispeech = mw.wikispeech || {};
-mw.wikispeech.consumerMode = true;
 
 mw.loader.using( [
 	'mediawiki.api',
@@ -183,38 +178,36 @@ mw.loader.using( [
 	'oojs-ui.styles.icons-movement',
 	'oojs-ui.styles.icons-interactions',
 	'oojs-ui.styles.icons-editing-core'
-] ).done( () => {
+] ).then( async () => {
+	const producerUrl = mw.config.get( 'wgWikispeechProducerUrl' );
+	if ( !producerUrl ) {
+		mw.log.error( '[Wikispeech] No producer URL given. Set it with the config variable "wgWikispeechProducerUrl".' );
+		return;
+	}
+
 	addConfig();
 	const namespace = mw.config.get( 'wgNamespaceIds' ).user;
 	const userPage = mw.Title.makeTitle( namespace, mw.user.getName() )
 		.getPrefixedText();
 	optionsPage = userPage + '/Wikispeech_preferences';
 	api = new mw.Api();
-	addUserOptions().done( () => {
-		const parametersString = $.param( {
-			lang: mw.config.get( 'wgUserLanguage' ),
-			skin: mw.config.get( 'skin' ),
-			raw: 1,
-			safemode: 1,
-			modules: 'ext.wikispeech'
-		} );
-		moduleUrl = mw.wikispeech.producerUrl + '/load.php?' +
-			parametersString;
-		mw.log( '[Wikispeech] Loading wikispeech module from ' + moduleUrl );
-		mw.loader.getScript( moduleUrl )
-			.done( () => {
-				mw.loader.using( 'ext.wikispeech' )
-					.done( () => {
-						mw.wikispeech.ui.ready.done( () => {
-							extendUi();
-						} );
-					} )
-					.fail( ( error ) => {
-						mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
-					} );
-			} )
-			.fail( ( error ) => {
-				mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ' + error );
-			} );
+	await addUserOptions();
+	const parametersString = $.param( {
+		lang: mw.config.get( 'wgUserLanguage' ),
+		skin: mw.config.get( 'skin' ),
+		raw: 1,
+		safemode: 1,
+		modules: 'ext.wikispeech'
 	} );
+	moduleUrl = `${ producerUrl }/load.php?${ parametersString }`;
+	mw.log( `[Wikispeech] Loading wikispeech module from ${ moduleUrl }` );
+	try {
+		await mw.loader.getScript( moduleUrl );
+		await mw.loader.using( 'ext.wikispeech' );
+		main = require( 'ext.wikispeech' );
+		await main.ui.ready;
+		extendUi( main );
+	} catch ( error ) {
+		mw.log.error( '[Wikispeech] Failed to load Wikispeech module: ', error );
+	}
 } );

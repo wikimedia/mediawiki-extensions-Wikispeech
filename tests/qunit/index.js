@@ -1,4 +1,3 @@
-require( './ext.wikispeech.test.util.js' );
 require( './ext.wikispeech.highlighter.test.js' );
 require( './ext.wikispeech.player.test.js' );
 require( './ext.wikispeech.selectionPlayer.test.js' );

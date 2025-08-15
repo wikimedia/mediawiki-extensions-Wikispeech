@@ -82,9 +82,9 @@ QUnit.test( 'loadUtterances()', ( assert ) => {
 	);
 } );
 
-QUnit.test( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
+QUnit.test( 'loadUtterances(): pass URL as consumer', ( assert ) => {
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
-	mw.wikispeech.consumerMode = true;
+	mw.config.set( 'wgWikispeechProducerUrl', 'https://producer.url' );
 	sinon.stub( storage, 'prepareUtterance' );
 	// eslint-disable-next-line no-jquery/no-parse-html-literal
 	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
@@ -116,7 +116,6 @@ QUnit.test( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
 QUnit.test( 'loadUtterances(): part of content enabled', ( assert ) => {
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
 	sinon.stub( storage, 'prepareUtterance' );
-	mw.wikispeech.consumerMode = false;
 	// eslint-disable-next-line no-jquery/no-parse-html-literal
 	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
 	mw.config.set( 'wgPageName', 'Page' );
@@ -244,7 +243,6 @@ QUnit.test( 'loadAudio()', ( assert ) => {
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	storage.utterances[ 0 ].hash = 'hash1234';
 	storage.api.get.returns( $.Deferred() );
-	mw.wikispeech.consumerMode = false;
 
 	storage.loadAudio( storage.utterances[ 0 ] );
 
@@ -321,9 +319,9 @@ QUnit.test( 'loadAudio(): non-default voice', ( assert ) => {
 	);
 } );
 
-QUnit.test( 'requestTts(): pass URL in consumer mode', ( assert ) => {
+QUnit.test( 'requestTts(): pass URL as consumer', ( assert ) => {
 	const mockWindow = { location: { origin: 'https://consumer.url' } };
-	mw.wikispeech.consumerMode = true;
+	mw.config.set( 'wgWikispeechProducerUrl', 'https://producer.url' );
 	mw.config.set( 'wgRevisionId', 1 );
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgScriptPath', '/w' );

@@ -197,7 +197,6 @@ class UserOptionsDialog extends OO.ui.ProcessDialog {
 	}
 }
 
-OO.inheritClass( UserOptionsDialog, OO.ui.ProcessDialog );
 UserOptionsDialog.static.name = 'UserOptionsDialog';
 UserOptionsDialog.static.title = mw.msg( 'preferences' );
 UserOptionsDialog.static.actions = [

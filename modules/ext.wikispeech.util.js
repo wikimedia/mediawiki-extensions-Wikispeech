@@ -40,12 +40,7 @@ function getUserVoice( language ) {
 function getLast( array ) {
 	return array[ array.length - 1 ];
 }
-// This allows the old way of loading scripts.
-// this.getUserVoice = getUserVoice;
-// For modules that do not use package files.
-// mw.wikispeech = mw.wikispeech || {};
-// mw.wikispeech.util = new Util();
-// For modules that use package files.
+
 module.exports = {
 	getUserVoice,
 	getVoiceConfigVariable,

@@ -6,7 +6,6 @@
  * @class ext.wikispeech.Main
  * @constructor
  */
-mw.wikispeech = mw.wikispeech || {};
 const Ui = require( './ext.wikispeech.ui.js' );
 const Storage = require( './ext.wikispeech.storage.js' );
 const Player = require( './ext.wikispeech.player.js' );
@@ -107,11 +106,10 @@ class Main {
 
 }
 
-module.exports = Main;
-
 mw.loader.using( [ 'mediawiki.api', 'ext.wikispeech' ] ).done(
 	() => {
 		const main = new Main();
 		main.init();
+		module.exports = main;
 	}
 );

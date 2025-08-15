@@ -99,14 +99,13 @@ class ApiWikispeechSegment extends ApiBase {
 		if ( !self::isValidRemoveTags( $rawRemoveTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
-		$removeTags = is_array( $rawRemoveTags ) ? array_values( $rawRemoveTags ) : null;
 		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
 			$this->configFactory
 		);
 		$segmentPageResponse = $segmentPageFactory
 			->setSegmentBreakingTags( $parameters['segmentbreakingtags'] )
-			->setRemoveTags( $removeTags )
+			->setRemoveTags( $rawRemoveTags )
 			->setUseRevisionPropertiesCache( true )
 			->setRequirePageRevisionProperties( false )
 			->setUseSegmentsCache( true )

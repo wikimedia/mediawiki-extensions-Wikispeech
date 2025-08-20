@@ -12,6 +12,8 @@
 	"prefs-wikispeech-speech-rate-percent": "Sprechgeschwindigkeit (in Prozent)",
 	"prefs-wikispeech-enable": "Wikispeech aktivieren",
 	"prefs-wikispeech-show-player": "Spieler immer einblenden",
+	"prefs-wikispeech-part-of-content": "Zusätzliche Informationen für bestimmte Elemente lesen",
+	"prefs-help-wikispeech-part-of-content": "Wenn diese Option aktiviert ist, werden zusätzliche Informationen für Elemente wie Links gelesen. Wenn diese Option aktiviert ist, ist die Worthervorhebung deaktiviert.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Änderungen an den Voreinstellungen werden beim nächsten Laden einer Seite wirksam. Um die aktuelle Seite mit den neuen Voreinstellungen anzuhören, lade die Seite nach dem Speichern erneut.",
 	"right-wikispeech-listen": "Einer Seite zuhören",
 	"right-wikispeech-read-lexicon": "Lesen im Wikispeech-Lexikon",
@@ -60,5 +62,6 @@
 	"wikispeech-edit-lexicon-speechoid-down": "Der Aussprachedienst ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.",
 	"wikispeech-lexicon-sync-error": "Die Lexika sind nicht synchron. Entweder enthalten sie unterschiedliche Eigenschaften, oder ein Eintrag ist nur in einem der Lexika vorhanden. Möchtest du den lokalen Eintrag überschreiben, damit er mit Speechoid übereinstimmt?",
 	"wikispeech-lexicon-sync-error-button": "Überschreiben",
-	"wikispeech-lexicon-sync-error-unidentified": "Beim Versuch, Lexikoneinträge zu synchronisieren, ist ein nicht identifizierter Fehler aufgetreten."
+	"wikispeech-lexicon-sync-error-unidentified": "Beim Versuch, Lexikoneinträge zu synchronisieren, ist ein nicht identifizierter Fehler aufgetreten.",
+	"wikispeech-poc-link": "Link:"
 }

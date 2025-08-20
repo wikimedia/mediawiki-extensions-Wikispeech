@@ -18,6 +18,8 @@
 	"prefs-wikispeech-speech-rate-percent": "Spreeksnelheid (in procenten)",
 	"prefs-wikispeech-enable": "Schakel Wikispeech in",
 	"prefs-wikispeech-show-player": "De speler altijd weergeven",
+	"prefs-wikispeech-part-of-content": "Extra informatie voorlezen voor bepaalde elementen",
+	"prefs-help-wikispeech-part-of-content": "Indien ingeschakeld wordt extra informatie voor elementen zoals koppelingen voorgelezen. Door het inschakelen hiervan wordt de woordmarkering uitgeschakeld.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Wijzigingen in de voorkeuren worden de volgende keer dat een pagina wordt geladen van kracht. Als u de nieuwe voorkeuren wilt horen, slaat u op en laadt u deze pagina opnieuw.",
 	"right-wikispeech-listen": "Luister naar pagina",
 	"right-wikispeech-read-lexicon": "Het lexicon van Wikispeech uitlezen",
@@ -66,5 +68,6 @@
 	"wikispeech-edit-lexicon-speechoid-down": "De uitspraakdienst is tijdelijk niet beschikbaar. Probeer het later nog eens.",
 	"wikispeech-lexicon-sync-error": "De lexicons zijn niet synchroon. Ze bevatten verschillende eigenschappen, of een vermelding komt slechts in één van de lexicons voor. Wilt u de lokale vermelding overschrijven zodat deze overeenkomt met Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Overschrijven",
-	"wikispeech-lexicon-sync-error-unidentified": "Er is een onbekende fout opgetreden bij het synchroniseren van lexiconvermeldingen."
+	"wikispeech-lexicon-sync-error-unidentified": "Er is een onbekende fout opgetreden bij het synchroniseren van lexiconvermeldingen.",
+	"wikispeech-poc-link": "koppeling:"
 }

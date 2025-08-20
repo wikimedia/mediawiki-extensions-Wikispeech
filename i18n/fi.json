@@ -47,5 +47,6 @@
 	"wikispeech-feedback": "Lähetä palautetta",
 	"wikispeech-edit-lexicon-btn": "Muokkaa sanastoa",
 	"wikispeech-settings": "Asetukset",
-	"wikispeech-lexicon-sync-error-button": "Ylikirjoita"
+	"wikispeech-lexicon-sync-error-button": "Ylikirjoita",
+	"wikispeech-poc-link": "linkki:"
 }

@@ -3,10 +3,12 @@
 		"authors": [
 			"Bonfire12",
 			"MathXplore",
+			"Omotecho",
 			"Thibaut120094"
 		]
 	},
 	"wikispeech-listen": "聞く",
 	"wikispeech-lexicon-next": "次へ",
-	"wikispeech-lexicon-save": "保存"
+	"wikispeech-lexicon-save": "保存",
+	"wikispeech-poc-link": "リンク:"
 }

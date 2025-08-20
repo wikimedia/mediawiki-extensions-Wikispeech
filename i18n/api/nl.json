@@ -8,6 +8,7 @@
 	"apihelp-wikispeech-segment-param-page": "De titel van de te verwerken pagina.",
 	"apihelp-wikispeech-segment-param-removetags": "HTML-tags die volledig verwijderd moeten worden tijdens de reiniging, als JSON-object in het formaat:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n\nwaarbij <code>tag1</code> altijd verwijderd wordt, <code>tag2</code> enkel verwijderd wordt als het ook de CSS class <code>css-class</code> bezit en <code>tag3</code> enkel verwijderd wordt als het ook de CSS class <code>css-class-1</code> of <code>css-class-2</code> bezit. Houd er rekening mee dat \"wikispeech-listen\" de standaardconfiguratie gebruikt voor segmentering en mogelijk niet compatibel is met segmenten die zijn geproduceerd met een ad-hocinstelling van deze parameter.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "HTML-tags die segmenten moeten onderbreken. Houd er rekening mee dat \"wikispeech-listen\" de standaardconfiguratie gebruikt voor segmentering en mogelijk niet compatibel is met segmenten die zijn geproduceerd met een ad-hocinstelling van deze parameter.",
+	"apihelp-wikispeech-segment-param-part-of-content": "Voeg extra inhoud toe voor bepaalde elementen.",
 	"apihelp-wikispeech-segment-param-consumer-url": "URL naar het scriptpad van de consumentwiki.",
 	"apihelp-wikispeech-segment-example-1": "De hoofdpagina segmenteren met standaardparameters uit de configuratie.",
 	"apihelp-wikispeech-segment-example-2": "Verkrijg originele HTML inhoud en gezuiverde tekst.",

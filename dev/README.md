@@ -24,3 +24,10 @@ The test method name is often divided into three parts:
 - `testOnApiCheckCanExecute_UserHasPermission_returnTrue`
 - `testCleanHtml_nodesOnSameLevel_generatePath`
 - `testApiRequest_removeTagsNotAnObject_throwException`
+
+## Generate fallback error message
+If something goes really wrong and Wikispeech doesn't work, for example if Speechoid is down or similar, we have a generic spoken error message located in `/modules/audio/error.json`. That is the spoken version of the i18n message: `wikispeech-error-loading-audio-title` and `wikispeech-error-loading-audio-message`.
+
+If this message is changed, then a new audio file needs to be generated. This can be done using your local wiki in `Special:ApiSandbox` with the right parameters such as `lang` and the `text` to generate. If you want to change what `voice` to use, you can enter that as well.
+
+After making the request (make sure speechoid is up and running to be able to make the request), copy the response data, and paste it into the `error.json` file.

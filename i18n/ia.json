@@ -10,6 +10,8 @@
 	"prefs-wikispeech-speech-rate-percent": "Velocitate de parola (in percentage)",
 	"prefs-wikispeech-enable": "Activar Wikispeech",
 	"prefs-wikispeech-show-player": "Monstrar sempre le reproductor",
+	"prefs-wikispeech-part-of-content": "Leger information extra pro certe elementos",
+	"prefs-help-wikispeech-part-of-content": "Si iste option es activate, information extra essera legite in alte voce pro elementos como ligamines. Si isto es activate, le evidentiamento de parolas es disactivate.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Le modificationes del preferentias habera effecto le proxime vice que un pagina es cargate. Pro audir le pagina actual con le nove preferentias, recarga le pagina post salveguardar.",
 	"right-wikispeech-listen": "Ascoltar paginas",
 	"right-wikispeech-read-lexicon": "Leger le lexico de Wikispeech",
@@ -58,5 +60,6 @@
 	"wikispeech-edit-lexicon-speechoid-down": "Le servicio de pronunciationes es temporarimente indisponibile. Per favor tenta lo de novo plus tarde.",
 	"wikispeech-lexicon-sync-error": "Le lexicos non es synchrone. O illos contine proprietates differente, o qualque entrata existe solmente in un del lexicos. Vole tu superscriber le entrata local de maniera que correspondera con Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Superscriber",
-	"wikispeech-lexicon-sync-error-unidentified": "Un error non identificate ha occurrite durante le tentativa de synchronisar le entratas del lexico."
+	"wikispeech-lexicon-sync-error-unidentified": "Un error non identificate ha occurrite durante le tentativa de synchronisar le entratas del lexico.",
+	"wikispeech-poc-link": "ligamine:"
 }

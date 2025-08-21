@@ -3,6 +3,7 @@
 		"authors": [
 			"Emma Franzen",
 			"Hamilton Abreu",
+			"Mansil alfalb",
 			"Marinaazev"
 		]
 	},
@@ -40,5 +41,6 @@
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",
 	"wikispeech-lexicon-copyrightnote": "Ao gravar as alterações, concorda em publicar a sua contribuição nos termos da [https://creativecommons.org/publicdomain/zero/1.0/deed.pt/ CC0].",
 	"group-wikispeech-edit-lexicon": "Editores do léxico Wikispeech",
-	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Editor|Editora}} do léxico Wikispeech"
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Editor|Editora}} do léxico Wikispeech",
+	"wikispeech-poc-link": "hiperligação:"
 }

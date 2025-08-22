@@ -86,8 +86,8 @@
 		},
 		"ext.wikispeech.specialEditLexicon": {
 			"packageFiles": [
-				"ext.wikispeech.specialEditLexicon.js",
 				"ext.wikispeech.transcriptionPreviewer.js",
+				"ext.wikispeech.specialEditLexicon.js",
 				"ext.wikispeech.util.js"
 			],
 			"messages": [
@@ -163,12 +163,12 @@
 			"tests/qunit/ext.wikispeech.selectionPlayer.test.js",
 			"tests/qunit/ext.wikispeech.storage.test.js",
 			"tests/qunit/ext.wikispeech.transcriptionPreviewer.test.js",
-			"modules/ext.wikispeech.transcriptionPreviewer.js",
 			"modules/ext.wikispeech.util.js",
 			"tests/qunit/ext.wikispeech.ui.test.js"
 		],
 		"dependencies": [
-			"ext.wikispeech"
+			"ext.wikispeech",
+			"ext.wikispeech.specialEditLexicon"
 		]
 	},
 	"HookHandlers": {

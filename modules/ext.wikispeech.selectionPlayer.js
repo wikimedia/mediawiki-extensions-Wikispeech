@@ -8,24 +8,28 @@
  * @constructor
  */
 
-function SelectionPlayer() {
-	const self = this;
-	self.previousEndUtterance = null;
+class SelectionPlayer {
+	constructor() {
 
+		this.previousEndUtterance = null;
+		this.ui = null;
+		this.storage = null;
+
+	}
 	/**
 	 * Play selected text if selection is valid.
 	 *
 	 * @return {boolean} true selection plays, else false.
 	 */
 
-	this.playSelectionIfValid = function () {
-		if ( self.isSelectionValid() ) {
-			self.playSelection();
+	playSelectionIfValid() {
+		if ( this.isSelectionValid() ) {
+			this.playSelection();
 			return true;
 		} else {
 			return false;
 		}
-	};
+	}
 
 	/**
 	 * Test if the selected text is valid for recitation.
@@ -38,25 +42,25 @@ function SelectionPlayer() {
 	 *  recitation, else false.
 	 */
 
-	this.isSelectionValid = function () {
-		if ( !self.isTextSelected() ) {
+	isSelectionValid() {
+		if ( !this.isTextSelected() ) {
 			return false;
 		}
-		const firstNode = self.getFirstNodeInSelection();
+		const firstNode = this.getFirstNodeInSelection();
 		const firstTextNode =
-			mw.wikispeech.storage.getFirstTextNode( firstNode, true );
-		const lastNode = self.getLastNodeInSelection();
+			this.storage.getFirstTextNode( firstNode, true );
+		const lastNode = this.getLastNodeInSelection();
 		const lastTextNode =
-			mw.wikispeech.storage.getLastTextNode( lastNode, true );
+			this.storage.getLastTextNode( lastNode, true );
 		if (
-			mw.wikispeech.storage.isNodeInUtterance( firstTextNode ) &&
-				mw.wikispeech.storage.isNodeInUtterance( lastTextNode )
+			this.storage.isNodeInUtterance( firstTextNode ) &&
+				this.storage.isNodeInUtterance( lastTextNode )
 		) {
 			return true;
 		} else {
 			return false;
 		}
-	};
+	}
 
 	/**
 	 * Test if there is any selected text.
@@ -64,10 +68,10 @@ function SelectionPlayer() {
 	 * @return {boolean} true if there is any text selected, else false.
 	 */
 
-	this.isTextSelected = function () {
+	isTextSelected() {
 		const selection = window.getSelection();
 		return !selection.isCollapsed;
-	};
+	}
 
 	/**
 	 * Get the first node in the selection.
@@ -77,7 +81,7 @@ function SelectionPlayer() {
 	 * @return {Text} The first node in the selection.
 	 */
 
-	this.getFirstNodeInSelection = function () {
+	getFirstNodeInSelection() {
 		const selection = window.getSelection();
 		const startRange = selection.getRangeAt( 0 );
 		const startNode = startRange.startContainer;
@@ -98,7 +102,7 @@ function SelectionPlayer() {
 		} else {
 			return startNode;
 		}
-	};
+	}
 
 	/**
 	 * Play selected text.
@@ -109,11 +113,11 @@ function SelectionPlayer() {
 	 * last.
 	 */
 
-	this.playSelection = function () {
-		mw.wikispeech.player.playingSelection = true;
+	playSelection() {
+		this.player.playingSelection = true;
 		const selection = window.getSelection();
 		const startRange = selection.getRangeAt( 0 );
-		const firstSelectionNode = self.getFirstNodeInSelection();
+		const firstSelectionNode = this.getFirstNodeInSelection();
 		let startOffset;
 		if (
 			firstSelectionNode !== startRange.startContainer ||
@@ -131,35 +135,35 @@ function SelectionPlayer() {
 			startOffset = startRange.startOffset;
 		}
 		const startNode =
-			mw.wikispeech.storage.getFirstTextNode(
+			this.storage.getFirstTextNode(
 				firstSelectionNode,
 				true
 			);
 		const startUtterance =
-			mw.wikispeech.storage.getStartUtterance(
+			this.storage.getStartUtterance(
 				startNode,
 				startOffset
 			);
-		mw.wikispeech.player.currentUtterance = startUtterance;
-		mw.wikispeech.storage.prepareUtterance(
+		this.player.currentUtterance = startUtterance;
+		this.storage.prepareUtterance(
 			startUtterance
 		)
 			.done( () => {
-				const startToken = mw.wikispeech.storage.getStartToken(
+				const startToken = this.storage.getStartToken(
 					startUtterance,
 					startNode,
 					startOffset
 				);
-				self.setStartTime( startUtterance, startToken.startTime );
-				mw.wikispeech.player.playUtterance( startUtterance, false );
-				mw.wikispeech.ui.setSelectionPlayerIconToStop();
+				this.setStartTime( startUtterance, startToken.startTime );
+				this.player.playUtterance( startUtterance, false );
+				this.ui.setSelectionPlayerIconToStop();
 			} );
-		mw.wikispeech.ui.showBufferingIconIfAudioIsLoading(
+		this.ui.showBufferingIconIfAudioIsLoading(
 			startUtterance.audio
 		);
 
 		const endRange = selection.getRangeAt( selection.rangeCount - 1 );
-		const lastSelectionNode = self.getLastNodeInSelection();
+		const lastSelectionNode = this.getLastNodeInSelection();
 		let endOffset;
 		if (
 			lastSelectionNode !== endRange.endContainer ||
@@ -170,27 +174,27 @@ function SelectionPlayer() {
 			endOffset = endRange.endOffset - 1;
 		}
 		const endNode =
-			mw.wikispeech.storage.getLastTextNode(
+			this.storage.getLastTextNode(
 				lastSelectionNode,
 				true
 			);
 		const endUtterance =
-			mw.wikispeech.storage.getEndUtterance( endNode, endOffset );
-		self.previousEndUtterance = endUtterance;
-		mw.wikispeech.storage.prepareUtterance(
+			this.storage.getEndUtterance( endNode, endOffset );
+		this.previousEndUtterance = endUtterance;
+		this.storage.prepareUtterance(
 			endUtterance
 		)
 			.done( () => {
 				// Prepare the end utterance, since token information
 				// is needed to calculate the correct end token.
-				const endToken = mw.wikispeech.storage.getEndToken(
+				const endToken = this.storage.getEndToken(
 					endUtterance,
 					endNode,
 					endOffset
 				);
-				self.setEndTime( endUtterance, endToken.endTime );
+				this.setEndTime( endUtterance, endToken.endTime );
 			} );
-	};
+	}
 
 	/**
 	 * Set the time where an utterance will start playing.
@@ -201,9 +205,9 @@ function SelectionPlayer() {
 	 *  to start playing at.
 	 */
 
-	this.setStartTime = function ( utterance, startTime ) {
+	setStartTime( utterance, startTime ) {
 		utterance.audio.currentTime = startTime / 1000;
-	};
+	}
 
 	/**
 	 * Get the last node in the selection.
@@ -214,7 +218,7 @@ function SelectionPlayer() {
 	 * @return {Text} The last node in the selection.
 	 */
 
-	this.getLastNodeInSelection = function () {
+	getLastNodeInSelection() {
 		const selection = window.getSelection();
 		const endRange = selection.getRangeAt( selection.rangeCount - 1 );
 		const endNode = endRange.endContainer;
@@ -235,7 +239,7 @@ function SelectionPlayer() {
 		} else {
 			return endNode;
 		}
-	};
+	}
 
 	/**
 	 * Set the time where an utterance will stop playing.
@@ -249,38 +253,36 @@ function SelectionPlayer() {
 	 *  playing after.
 	 */
 
-	this.setEndTime = function ( utterance, endTime ) {
+	setEndTime( utterance, endTime ) {
 		$( utterance.audio ).one( 'playing.end', () => {
 			const timeLeft = endTime - utterance.audio.currentTime * 1000;
 			utterance.stopTimeout =
 				window.setTimeout(
 					() => {
-						mw.wikispeech.player.stop();
-						self.resetPreviousEndUtterance();
+						this.player.stop();
+						this.resetPreviousEndUtterance();
 					},
 					timeLeft / mw.user.options.get( 'wikispeechSpeechRate' )
 				);
 		} );
-	};
+	}
 
 	/**
 	 * Remove timeout for stopping end utterance.
 	 */
 
-	this.resetPreviousEndUtterance = function () {
-		if ( self.previousEndUtterance ) {
+	resetPreviousEndUtterance() {
+		if ( this.previousEndUtterance ) {
 			// Remove any trigger for setting end time for an
 			// utterance. Otherwise, this will trigger the next
 			// time the utterance is the end utterance, possibly
 			// stopping playback too early.
-			$( self.previousEndUtterance.audio ).off( 'playing.end' );
-			window.clearTimeout( self.previousEndUtterance.stopTimeout );
-			self.previousEndUtterance.stopTimeout = null;
-			self.previousEndUtterance = null;
+			$( this.previousEndUtterance.audio ).off( 'playing.end' );
+			window.clearTimeout( this.previousEndUtterance.stopTimeout );
+			this.previousEndUtterance.stopTimeout = null;
+			this.previousEndUtterance = null;
 		}
-	};
+	}
 }
 
-mw.wikispeech = mw.wikispeech || {};
-mw.wikispeech.selectionPlayer = new SelectionPlayer();
-mw.wikispeech.SelectionPlayer = SelectionPlayer;
+module.exports = SelectionPlayer;

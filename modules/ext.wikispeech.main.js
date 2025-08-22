@@ -6,19 +6,38 @@
  * @class ext.wikispeech.Main
  * @constructor
  */
+mw.wikispeech = mw.wikispeech || {};
+const Ui = require( './ext.wikispeech.ui.js' );
+const Storage = require( './ext.wikispeech.storage.js' );
+const Player = require( './ext.wikispeech.player.js' );
+const SelectionPlayer = require( './ext.wikispeech.selectionPlayer.js' );
+const Highlighter = require( './ext.wikispeech.highlighter.js' );
 
-require( './ext.wikispeech.util.js' );
-require( './ext.wikispeech.ui.js' );
-require( './ext.wikispeech.storage.js' );
-require( './ext.wikispeech.player.js' );
-require( './ext.wikispeech.selectionPlayer.js' );
-require( './ext.wikispeech.highlighter.js' );
+class Main {
+	constructor() {
+		this.storage = new Storage();
+		this.selectionPlayer = new SelectionPlayer();
+		this.ui = new Ui();
+		this.player = new Player();
+		this.highlighter = new Highlighter();
 
-function Main() {
-	const self = this;
+		this.highlighter.storage = this.storage;
+		this.storage.player = this.player;
+		this.storage.highlighter = this.highlighter;
+		this.player.ui = this.ui;
+		this.player.storage = this.storage;
+		this.player.highlighter = this.highlighter;
+		this.player.selectionPlayer = this.selectionPlayer;
+		this.selectionPlayer.storage = this.storage;
+		this.selectionPlayer.player = this.player;
+		this.selectionPlayer.ui = this.ui;
+		this.ui.player = this.player;
+		this.ui.storage = this.storage;
+		this.ui.selectionPlayer = this.selectionPlayer;
+	}
 
-	this.init = function () {
-		if ( !self.enabledForNamespace() ) {
+	init() {
+		if ( !this.enabledForNamespace() ) {
 			// TODO: This is only required for tests to run
 			// properly since namespace is checked at an earlier
 			// stage for production code. See T267529.
@@ -32,9 +51,10 @@ function Main() {
 			return;
 		}
 
-		mw.wikispeech.storage.loadUtterances( window );
+		this.storage.loadUtterances( window );
 		// Prepare the first utterance for playback.
-		mw.wikispeech.ui.init();
+
+		this.ui.init();
 		// Prepare action link.
 		// eslint-disable-next-line no-jquery/no-global-selector
 		const $toggleVisibility = $( '.ext-wikispeech-listen a' );
@@ -43,12 +63,8 @@ function Main() {
 		$toggleVisibility.text(
 			mw.msg( 'wikispeech-dont-listen' )
 		);
-		$toggleVisibility.on(
-			'click',
-			$toggleVisibility,
-			self.toggleVisibility
-		);
-	};
+		$toggleVisibility.on( 'click', this.toggleVisibility );
+	}
 
 	/**
 	 * Toggle the visibility of the control panel.
@@ -58,11 +74,11 @@ function Main() {
 	 * @param {Event} event
 	 */
 
-	this.toggleVisibility = function ( event ) {
-		mw.wikispeech.ui.toggleVisibility();
+	toggleVisibility( event ) {
+		this.ui.toggleVisibility();
 
 		let toggleVisibilityMessage;
-		if ( mw.wikispeech.ui.isShown() ) {
+		if ( this.ui.isShown() ) {
 			toggleVisibilityMessage = 'wikispeech-dont-listen';
 		} else {
 			toggleVisibilityMessage = 'wikispeech-listen';
@@ -72,7 +88,7 @@ function Main() {
 		// * wikispeech-listen
 		// * wikispeech-dont-listen
 		$toggleVisibility.text( mw.msg( toggleVisibilityMessage ) );
-	};
+	}
 
 	/**
 	 * Check if Wikispeech is enabled for the current namespace.
@@ -83,13 +99,15 @@ function Main() {
 	 *  should activate Wikispeech, else false.
 	 */
 
-	this.enabledForNamespace = function () {
+	enabledForNamespace() {
 		const validNamespaces = mw.config.get( 'wgWikispeechNamespaces' );
 		const namespace = mw.config.get( 'wgNamespaceNumber' );
 		return validNamespaces.includes( namespace );
-	};
+	}
 
 }
+
+module.exports = Main;
 
 mw.loader.using( [ 'mediawiki.api', 'ext.wikispeech' ] ).done(
 	() => {

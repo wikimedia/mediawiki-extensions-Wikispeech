@@ -4,25 +4,32 @@
  * @class ext.wikispeech.Ui
  * @constructor
  */
+const util = require( './ext.wikispeech.util.js' );
 
-function Ui() {
-	const self = this;
+class Ui {
+	constructor() {
 	// Resolves the UI is ready to be extended by consumer.
-	self.ready = $.Deferred();
+		this.ready = $.Deferred();
+		this.selectionPlayer = null;
+		this.player = null;
+		this.storage = null;
+		this.highlighter = null;
+		this.selectionPlayer = null;
+	}
 
 	/**
 	 * Initialize elements and functionality for the UI.
 	 */
 
-	this.init = function () {
-		self.addSelectionPlayer();
-		self.addControlPanel();
-		self.addKeyboardShortcuts();
-		self.windowManager = new OO.ui.WindowManager();
-		self.addDialogs();
-		self.loadErrorAudio();
-		self.ready.resolve();
-	};
+	init() {
+		this.addSelectionPlayer();
+		this.addControlPanel();
+		this.addKeyboardShortcuts();
+		this.windowManager = new OO.ui.WindowManager();
+		this.addDialogs();
+		this.loadErrorAudio();
+		this.ready.resolve();
+	}
 
 	/**
 	 * Add a panel with controls for for Wikispeech.
@@ -31,10 +38,10 @@ function Ui() {
 	 * links to related pages.
 	 */
 
-	this.addControlPanel = function () {
+	addControlPanel() {
 		const toolFactory = new OO.ui.ToolFactory();
 		const toolGroupFactory = new OO.ui.ToolGroupFactory();
-		self.toolbar = new OO.ui.Toolbar(
+		this.toolbar = new OO.ui.Toolbar(
 			toolFactory,
 			toolGroupFactory,
 			{
@@ -44,53 +51,53 @@ function Ui() {
 			}
 		);
 
-		const playerGroup = self.addToolbarGroup();
-		self.addButton(
+		const playerGroup = this.addToolbarGroup();
+		this.addButton(
 			playerGroup,
 			'first',
-			mw.wikispeech.player.skipBackUtterance,
+			() => this.player.skipBackUtterance(),
 			mw.msg( 'wikispeech-skip-back' )
 		);
-		self.addButton(
+		this.addButton(
 			playerGroup,
 			'previous',
-			mw.wikispeech.player.skipBackToken,
+			() => this.player.skipBackToken(),
 			mw.msg( 'wikispeech-previous' )
 		);
-		self.playPauseButton = self.addButton(
+		this.playPauseButton = this.addButton(
 			playerGroup,
 			'play',
-			mw.wikispeech.player.playOrPause,
+			() => this.player.playOrPause(),
 			mw.msg( 'wikispeech-play' )
 		);
-		self.addButton(
+		this.addButton(
 			playerGroup,
 			'stop',
-			mw.wikispeech.player.stop,
+			() => this.player.stop(),
 			mw.msg( 'wikispeech-stop' )
 		);
-		self.addButton(
+		this.addButton(
 			playerGroup,
 			'next',
-			mw.wikispeech.player.skipAheadToken,
+			() => this.player.skipAheadToken(),
 			mw.msg( 'wikispeech-next' )
 		);
-		self.addButton(
+		this.addButton(
 			playerGroup,
 			'last',
-			mw.wikispeech.player.skipAheadUtterance,
+			() => this.player.skipAheadUtterance(),
 			mw.msg( 'wikispeech-skip-ahead' )
 		);
 
-		self.linkGroup = self.addToolbarGroup();
-		self.addLinkConfigButton(
-			self.linkGroup,
+		this.linkGroup = this.addToolbarGroup();
+		this.addLinkConfigButton(
+			this.linkGroup,
 			'help',
 			'wgWikispeechHelpPage',
 			mw.msg( 'wikispeech-help' )
 		);
-		self.addLinkConfigButton(
-			self.linkGroup,
+		this.addLinkConfigButton(
+			this.linkGroup,
 			'feedback',
 			'wgWikispeechFeedbackPage',
 			mw.msg( 'wikispeech-feedback' )
@@ -104,16 +111,16 @@ function Ui() {
 					return;
 				}
 
-				self.addEditButton();
+				this.addEditButton();
 			} );
 
-		$( document.body ).append( self.toolbar.$element );
-		self.toolbar.initialize();
+		$( document.body ).append( this.toolbar.$element );
+		this.toolbar.initialize();
 
 		// Add extra padding at the bottom of the page to not have
 		// the player cover anything.
-		const height = self.toolbar.$element.height();
-		self.$playerFooter = $( '<div>' )
+		const height = this.toolbar.$element.height();
+		this.$playerFooter = $( '<div>' )
 			.height( height )
 			// A bit of CSS is needed to make it interact properly
 			// with the other floating elements in the footer.
@@ -122,8 +129,8 @@ function Ui() {
 				width: '100%'
 			} )
 			.appendTo( '#footer' );
-		self.addBufferingIcon();
-	};
+		this.addBufferingIcon();
+	}
 
 	/**
 	 * Add button that takes the user to the lexicon editor.
@@ -134,7 +141,7 @@ function Ui() {
 	 *  link will go to the page on the local wiki.
 	 */
 
-	this.addEditButton = function ( scriptUrl ) {
+	addEditButton( scriptUrl ) {
 		let editUrl;
 		if ( scriptUrl ) {
 			editUrl = scriptUrl;
@@ -146,15 +153,15 @@ function Ui() {
 			language: mw.config.get( 'wgPageContentLanguage' ),
 			page: mw.config.get( 'wgArticleId' )
 		} );
-		self.addButton(
-			self.linkGroup,
+		this.addButton(
+			this.linkGroup,
 			'edit',
 			editUrl,
 			mw.msg( 'wikispeech-edit-lexicon-btn' ),
 			null,
 			'wikispeech-edit'
 		);
-	};
+	}
 
 	/**
 	 * Add a group to the player toolbar.
@@ -162,11 +169,11 @@ function Ui() {
 	 * @return {OO.ui.ButtonGroupWidget}
 	 */
 
-	this.addToolbarGroup = function () {
+	addToolbarGroup() {
 		const group = new OO.ui.ButtonGroupWidget();
-		self.toolbar.$actions.append( group.$element );
+		this.toolbar.$actions.append( group.$element );
 		return group;
-	};
+	}
 
 	/**
 	 * Add a control button.
@@ -180,7 +187,7 @@ function Ui() {
 	 * @return {OO.ui.ButtonWidget}
 	 */
 
-	this.addButton = function ( group, icon, onClick, ariaLabel, classes, id ) {
+	addButton( group, icon, onClick, ariaLabel, classes, id ) {
 		// eslint-disable-next-line mediawiki/class-doc
 		const button = new OO.ui.ButtonWidget( {
 			icon: icon,
@@ -199,46 +206,46 @@ function Ui() {
 		}
 		group.addItems( [ button ] );
 		return button;
-	};
+	}
 
 	/**
 	 * Add buffering icon to the play/pause button.
 	 *
 	 * The icon shows when the waiting for audio to play.
 	 */
-	this.addBufferingIcon = function () {
-		const $playPauseButtons = $().add( self.playPauseButton.$element ).add( self.selectionPlayer.$element );
+	addBufferingIcon() {
+		const $playPauseButtons = $().add( this.playPauseButton.$element ).add( this.selectionPlayer.button.$element );
 		const $containers = $( '<span>' )
 			.addClass( 'ext-wikispeech-buffering-icon-container' )
 			.appendTo( ( $playPauseButtons ).find( '.oo-ui-iconElement-icon' ) );
-		self.$bufferingIcons = $( '<span>' )
+		this.$bufferingIcons = $( '<span>' )
 			.addClass( 'ext-wikispeech-buffering-icon' )
 			.appendTo( $containers )
 			.hide();
-	};
+	}
 
 	/**
 	 * Hide the buffering icon.
 	 */
 
-	this.hideBufferingIcon = function () {
-		self.$bufferingIcons.hide();
-	};
+	hideBufferingIcon() {
+		this.$bufferingIcons.hide();
+	}
 
 	/**
 	 * Show the buffering icon if the current audio is loading.
 	 */
 
-	this.showBufferingIconIfAudioIsLoading = function ( audio ) {
-		if ( self.audioIsReady( audio ) ) {
-			self.hideBufferingIcon();
+	showBufferingIconIfAudioIsLoading( audio ) {
+		if ( this.audioIsReady( audio ) ) {
+			this.hideBufferingIcon();
 		} else {
 			$( audio ).on( 'canplay', () => {
-				self.hideBufferingIcon();
+				this.hideBufferingIcon();
 			} );
-			self.$bufferingIcons.show();
+			this.$bufferingIcons.show();
 		}
-	};
+	}
 
 	/**
 	 * Check if the current audio is ready to play.
@@ -250,9 +257,9 @@ function Ui() {
 	 * @return {boolean} True if the audio is ready to play else false.
 	 */
 
-	this.audioIsReady = function ( audio ) {
+	audioIsReady( audio ) {
 		return audio.readyState >= 2;
-	};
+	}
 
 	/**
 	 * Remove canplay listener for the audio to hide buffering icon.
@@ -261,36 +268,36 @@ function Ui() {
 	 *  listener is removed.
 	 */
 
-	this.removeCanPlayListener = function ( $audioElement ) {
+	removeCanPlayListener( $audioElement ) {
 		$audioElement.off( 'canplay' );
-	};
+	}
 
 	/**
 	 * Change the icon of the play/pause button to pause.
 	 */
 
-	this.setPlayPauseIconToPause = function () {
-		self.playPauseButton.setIcon( 'pause' );
-		self.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-pause' ) );
-	};
+	setPlayPauseIconToPause() {
+		this.playPauseButton.setIcon( 'pause' );
+		this.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-pause' ) );
+	}
 
 	/**
 	 * Change the icon of the play/pause button to play.
 	 */
 
-	this.setAllPlayerIconsToPlay = function () {
-		self.playPauseButton.setIcon( 'play' );
-		self.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-play' ) );
-		self.selectionPlayer.setIcon( 'play' );
-	};
+	setAllPlayerIconsToPlay() {
+		this.playPauseButton.setIcon( 'play' );
+		this.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-play' ) );
+		this.selectionPlayer.button.setIcon( 'play' );
+	}
 
 	/**
 	 * Change the icon of the selectionPlayer to stop.
 	 */
 
-	this.setSelectionPlayerIconToStop = function () {
-		self.selectionPlayer.setIcon( 'stop' );
-	};
+	setSelectionPlayerIconToStop() {
+		this.selectionPlayer.button.setIcon( 'stop' );
+	}
 	/**
 	 * Add a button that takes the user to another page.
 	 *
@@ -305,46 +312,45 @@ function Ui() {
 	 *  link destination from.
 	 */
 
-	this.addLinkConfigButton = function ( group, icon, configVariable, ariaLabel ) {
+	addLinkConfigButton( group, icon, configVariable, ariaLabel ) {
 		const url = mw.config.get( configVariable );
 		if ( url ) {
-			self.addButton( group, icon, url, ariaLabel );
+			this.addButton( group, icon, url, ariaLabel );
 		}
-	};
+	}
 
 	/**
 	 * Add a small player that appears when text is selected.
 	 */
 
-	this.addSelectionPlayer = function () {
-		self.selectionPlayer = new OO.ui.ButtonWidget( {
+	addSelectionPlayer() {
+		const selectionButton = new OO.ui.ButtonWidget( {
 			icon: 'play',
-			classes: [
-				'ext-wikispeech-selection-player'
-			]
-		} )
-			.on( 'click', mw.wikispeech.player.playOrStop );
-		self.selectionPlayer.toggle( false );
-		$( document.body ).append( self.selectionPlayer.$element );
+			classes: [ 'ext-wikispeech-selection-player' ]
+		} );
+		selectionButton.on( 'click', () => this.player.playOrStop() );
+		this.selectionPlayer.button = selectionButton;
+		this.selectionPlayer.button.toggle( false );
+		$( document.body ).append( this.selectionPlayer.button.$element );
 		$( document ).on( 'mouseup', () => {
 			if (
-				self.isShown() &&
-				mw.wikispeech.selectionPlayer.isSelectionValid()
+				this.isShown() &&
+				this.selectionPlayer.isSelectionValid()
 			) {
-				self.showSelectionPlayer();
+				this.showSelectionPlayer();
 			} else {
-				self.selectionPlayer.toggle( false );
+				this.selectionPlayer.button.toggle( false );
 			}
 		} );
 		$( document ).on( 'click', () => {
 			// A click listener is also needed because of the
 			// order of events when text is deselected by clicking
 			// it.
-			if ( !mw.wikispeech.selectionPlayer.isSelectionValid() ) {
-				self.selectionPlayer.toggle( false );
+			if ( !this.selectionPlayer.isSelectionValid() ) {
+				this.selectionPlayer.button.toggle( false );
 			}
 		} );
-	};
+	}
 
 	/**
 	 * Check if control panel is shown
@@ -352,25 +358,25 @@ function Ui() {
 	 * @return {boolean} Visibility of control panel.
 	 */
 
-	this.isShown = function () {
-		return self.toolbar.isVisible();
-	};
+	isShown() {
+		return this.toolbar.isVisible();
+	}
 
 	/**
 	 * Show the selection player below the end of the selection.
 	 */
 
-	this.showSelectionPlayer = function () {
+	showSelectionPlayer() {
 
-		self.selectionPlayer.toggle( true );
+		this.selectionPlayer.button.toggle( true );
 		const selection = window.getSelection();
 		const lastRange = selection.getRangeAt( selection.rangeCount - 1 );
 		const lastRect =
-			mw.wikispeech.util.getLast( lastRange.getClientRects() );
+			util.getLast( lastRange.getClientRects() );
 
 		// Place the player under the end of the selected text.
 		let left;
-		if ( self.getTextDirection( lastRange.endContainer ) === 'rtl' ) {
+		if ( this.getTextDirection( lastRange.endContainer ) === 'rtl' ) {
 			// For RTL languages, the end of the text is the far left.
 			left = lastRect.left + $( document ).scrollLeft();
 		} else {
@@ -380,14 +386,14 @@ function Ui() {
 			left =
 				lastRect.right +
 				$( document ).scrollLeft() -
-				self.selectionPlayer.$element.width();
+				this.selectionPlayer.button.$element.width();
 		}
 		const top = lastRect.bottom + $( document ).scrollTop();
-		self.selectionPlayer.$element.css( {
+		this.selectionPlayer.button.$element.css( {
 			left: left + 'px',
 			top: top + 'px'
 		} );
-	};
+	}
 
 	/**
 	 * Get the text direction for a node.
@@ -396,58 +402,58 @@ function Ui() {
 	 *  for the node, or for its parent if it is a text node.
 	 */
 
-	this.getTextDirection = function ( node ) {
+	getTextDirection( node ) {
 		if ( node.nodeType === 3 ) {
 			// For text nodes, get the property of the parent element.
 			return $( node ).parent().css( 'direction' );
 		} else {
 			return $( node ).css( 'direction' );
 		}
-	};
+	}
 
 	/**
 	 * Register listeners for keyboard shortcuts.
 	 */
 
-	this.addKeyboardShortcuts = function () {
+	addKeyboardShortcuts() {
 		const shortcuts = mw.config.get( 'wgWikispeechKeyboardShortcuts' );
 		$( document ).on( 'keydown', ( event ) => {
-			if ( self.eventMatchShortcut( event, shortcuts.playPause ) ) {
-				mw.wikispeech.player.playOrPause();
+			if ( this.eventMatchShortcut( event, shortcuts.playPause ) ) {
+				this.player.playOrPause();
 				return false;
 			} else if (
-				self.eventMatchShortcut(
+				this.eventMatchShortcut(
 					event,
 					shortcuts.stop
 				)
 			) {
-				mw.wikispeech.player.stop();
+				this.player.stop();
 				return false;
 			} else if (
-				self.eventMatchShortcut(
+				this.eventMatchShortcut(
 					event,
 					shortcuts.skipAheadSentence
 				)
 			) {
-				mw.wikispeech.player.skipAheadUtterance();
+				this.player.skipAheadUtterance();
 				return false;
 			} else if (
-				self.eventMatchShortcut(
+				this.eventMatchShortcut(
 					event,
 					shortcuts.skipBackSentence
 				)
 			) {
-				mw.wikispeech.player.skipBackUtterance();
+				this.player.skipBackUtterance();
 				return false;
 			} else if (
-				self.eventMatchShortcut( event, shortcuts.skipAheadWord )
+				this.eventMatchShortcut( event, shortcuts.skipAheadWord )
 			) {
-				mw.wikispeech.player.skipAheadToken();
+				this.player.skipAheadToken();
 				return false;
 			} else if (
-				self.eventMatchShortcut( event, shortcuts.skipBackWord )
+				this.eventMatchShortcut( event, shortcuts.skipBackWord )
 			) {
-				mw.wikispeech.player.skipBackToken();
+				this.player.skipBackToken();
 				return false;
 			}
 		} );
@@ -458,12 +464,12 @@ function Ui() {
 		$( document ).on( 'keyup', ( event ) => {
 			for ( const name in shortcuts ) {
 				const shortcut = shortcuts[ name ];
-				if ( self.eventMatchShortcut( event, shortcut ) ) {
+				if ( this.eventMatchShortcut( event, shortcut ) ) {
 					event.preventDefault();
 				}
 			}
 		} );
-	};
+	}
 
 	/**
 	 * Check if a keydown event matches a shortcut from the
@@ -480,21 +486,21 @@ function Ui() {
 	 *  with the shortcut, else false.
 	 */
 
-	this.eventMatchShortcut = function ( event, shortcut ) {
+	eventMatchShortcut( event, shortcut ) {
 		return event.which === shortcut.key &&
 			event.ctrlKey === shortcut.modifiers.includes( 'ctrl' ) &&
 			event.altKey === shortcut.modifiers.includes( 'alt' ) &&
 			event.shiftKey === shortcut.modifiers.includes( 'shift' );
-	};
+	}
 
 	/**
 	 * Create dialogs and add them to a window manager
 	 */
 
-	this.addDialogs = function () {
-		$( document.body ).append( self.windowManager.$element );
-		self.messageDialog = new OO.ui.MessageDialog();
-		self.errorLoadAudioDialogData = {
+	addDialogs() {
+		$( document.body ).append( this.windowManager.$element );
+		this.messageDialog = new OO.ui.MessageDialog();
+		this.errorLoadAudioDialogData = {
 			title: mw.msg( 'wikispeech-error-loading-audio-title' ),
 			message: mw.msg( 'wikispeech-error-loading-audio-message' ),
 			actions: [
@@ -510,8 +516,8 @@ function Ui() {
 				}
 			]
 		};
-		self.addWindow( self.messageDialog );
-	};
+		this.addWindow( this.messageDialog );
+	}
 
 	/**
 	 * Add a window to the window manager.
@@ -519,9 +525,9 @@ function Ui() {
 	 * @param {OO.ui.Window} window
 	 */
 
-	this.addWindow = function ( window ) {
-		self.windowManager.addWindows( [ window ] );
-	};
+	addWindow( window ) {
+		this.windowManager.addWindows( [ window ] );
+	}
 
 	/**
 	 * Toggle GUI visibility
@@ -530,28 +536,28 @@ function Ui() {
 	 * the selection player should be shown.
 	 */
 
-	this.toggleVisibility = function () {
-		if ( self.isShown() ) {
-			self.toolbar.toggle( false );
-			self.selectionPlayer.toggle( false );
-			self.$playerFooter.hide();
+	toggleVisibility() {
+		if ( this.isShown() ) {
+			this.toolbar.toggle( false );
+			this.selectionPlayer.button.toggle( false );
+			this.$playerFooter.hide();
 		} else {
-			self.toolbar.toggle( true );
-			self.selectionPlayer.toggle( true );
-			self.$playerFooter.show();
+			this.toolbar.toggle( true );
+			this.selectionPlayer.button.toggle( true );
+			this.$playerFooter.show();
 		}
-	};
+	}
 
 	/**
 	 * Loads the error audio once and calls it in init()
 	 */
 
-	this.loadErrorAudio = function () {
+	loadErrorAudio() {
 		const errorAudioData = require( './audio/error.json' );
 		const src = 'data:audio/ogg;base64,' + errorAudioData[ 'wikispeech-listen' ].audio;
 
-		self.errorAudio = new Audio( src );
-	};
+		this.errorAudio = new Audio( src );
+	}
 
 	/**
 	 * Show an error dialog for when audio could not be loaded
@@ -561,22 +567,22 @@ function Ui() {
 	 * @return {jQuery.Promise} Resolves when dialog is closed.
 	 */
 
-	this.showLoadAudioError = function () {
-		if ( self.errorAudio ) {
-			self.errorAudio.play();
+	showLoadAudioError() {
+		if ( this.errorAudio ) {
+			this.errorAudio.play();
 		}
 
-		return self.openWindow(
-			self.messageDialog,
-			self.errorLoadAudioDialogData
+		return this.openWindow(
+			this.messageDialog,
+			this.errorLoadAudioDialogData
 		).then( ( data ) => {
-			if ( self.errorAudio ) {
-				self.errorAudio.pause();
-				self.errorAudio.currentTime = 0;
+			if ( this.errorAudio ) {
+				this.errorAudio.pause();
+				this.errorAudio.currentTime = 0;
 			}
 			return data;
 		} );
-	};
+	}
 
 	/**
 	 * Open a window.
@@ -586,11 +592,9 @@ function Ui() {
 	 * @return {jQuery.Promise} Resolves when window is closed.
 	 */
 
-	this.openWindow = function ( window, data ) {
-		return self.windowManager.openWindow( window, data ).closed;
-	};
+	openWindow( window, data ) {
+		return this.windowManager.openWindow( window, data ).closed;
+	}
 }
 
-mw.wikispeech = mw.wikispeech || {};
-mw.wikispeech.Ui = Ui;
-mw.wikispeech.ui = new Ui();
+module.exports = Ui;

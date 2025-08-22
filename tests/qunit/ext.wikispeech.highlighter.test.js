@@ -1,14 +1,17 @@
-let contentSelector, util, highlighter, storage;
+const Highlighter = require( 'ext.wikispeech/ext.wikispeech.highlighter.js' );
+const util = require( './ext.wikispeech.test.util.js' );
+const Storage = require( 'ext.wikispeech/ext.wikispeech.storage.js' );
+
+let contentSelector, highlighter, storage;
 
 QUnit.module( 'ext.wikispeech.highlighter', {
 	beforeEach: function () {
-		util = mw.wikispeech.test.util;
+		highlighter = new Highlighter();
 		mw.config.set( 'wgWikispeechContentSelector', '#mw-content-text' );
 		contentSelector = mw.config.get( 'wgWikispeechContentSelector' );
 		util.setContentHtml( 'Utterance zero.' );
-		mw.wikispeech.storage =
-			sinon.stub( new mw.wikispeech.Storage() );
-		storage = mw.wikispeech.storage;
+		storage = sinon.stub( new Storage() );
+		highlighter.storage = storage;
 		storage.utterances = [
 			{
 				startOffset: 0,
@@ -17,9 +20,7 @@ QUnit.module( 'ext.wikispeech.highlighter', {
 				audio: $( '<audio>' ).get( 0 )
 			}
 		];
-		highlighter = new mw.wikispeech.Highlighter();
 		this.clock = sinon.useFakeTimers();
-		mw.user.options.set( 'wikispeechPartOfContent', false );
 	},
 	afterEach: function () {
 		this.clock.restore();
@@ -395,9 +396,7 @@ QUnit.test( 'highlightToken(): no highlighting when reading part of content', ( 
 		items: [ storage.utterances[ 0 ].content[ 0 ] ]
 	};
 	mw.user.options.set( 'wikispeechPartOfContent', true );
-
 	highlighter.highlightToken( highlightedToken );
-
 	assert.strictEqual(
 		$( contentSelector ).html(),
 		'Utterance zero.'
@@ -466,8 +465,6 @@ QUnit.test( 'setHighlightTokenTimer(): slower speech rate', function () {
 QUnit.test( 'startTokenHighlighting(): do not highlight token if parts of content is enabled', () => {
 	mw.user.options.set( 'wikispeechPartOfContent', true );
 	sinon.spy( highlighter, 'highlightToken' );
-
 	highlighter.startTokenHighlighting( { utterance: 'token' } );
-
 	sinon.assert.notCalled( highlighter.highlightToken );
 } );

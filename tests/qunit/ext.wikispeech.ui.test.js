@@ -1,14 +1,16 @@
-let contentSelector, selectionPlayer, player, ui;
+const Ui = require( 'ext.wikispeech/ext.wikispeech.ui.js' );
+const Player = require( 'ext.wikispeech/ext.wikispeech.player.js' );
+const SelectionPlayer = require( 'ext.wikispeech/ext.wikispeech.selectionPlayer.js' );
+const util = require( './ext.wikispeech.test.util.js' );
+
+let contentSelector, selectionPlayer;
 
 QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 	beforeEach: function () {
-		mw.wikispeech.player = sinon.stub( new mw.wikispeech.Player() );
-		player = mw.wikispeech.player;
-		mw.wikispeech.selectionPlayer =
-			sinon.stub( new mw.wikispeech.SelectionPlayer() );
-		selectionPlayer = mw.wikispeech.selectionPlayer;
-		ui = new mw.wikispeech.Ui();
-		sinon.stub( ui, 'addBufferingIcon' );
+		this.ui = new Ui();
+		this.ui.player = sinon.createStubInstance( Player );
+		selectionPlayer = sinon.stub( new SelectionPlayer() );
+		this.ui.selectionPlayer = selectionPlayer;
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' ),
 			$( '<div>' ).attr( 'id', 'footer' )
@@ -23,7 +25,7 @@ QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 		 * @param {Node} endContainer Node where selection ends.
 		 * @param {DOMRect} rect The selection rectangle.
 		 */
-		this.stubGetSelection = function ( startContainer, endContainer, rect ) {
+		this.stubGetSelection = ( startContainer, endContainer, rect ) => {
 			this.sandbox.stub( window, 'getSelection' ).returns( {
 				rangeCount: 1,
 				getRangeAt: function () {
@@ -47,11 +49,12 @@ QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 	}
 } ) );
 
-QUnit.test( 'addControlPanel(): add help button if page is set', ( assert ) => {
+QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
 	mw.config.set( 'wgArticlePath', '/wiki/$1' );
 	mw.config.set( 'wgWikispeechHelpPage', 'Help' );
+	sinon.stub( this.ui, 'addBufferingIcon' );
 
-	ui.addControlPanel();
+	this.ui.addControlPanel();
 
 	assert.strictEqual(
 		$( '.ext-wikispeech-control-panel' )
@@ -61,11 +64,12 @@ QUnit.test( 'addControlPanel(): add help button if page is set', ( assert ) => {
 	);
 } );
 
-QUnit.test( 'addControlPanel(): add feedback button', ( assert ) => {
+QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
 	mw.config.set( 'wgArticlePath', '/wiki/$1' );
 	mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
+	sinon.stub( this.ui, 'addBufferingIcon' );
 
-	ui.addControlPanel();
+	this.ui.addControlPanel();
 
 	assert.strictEqual(
 		$( '.ext-wikispeech-control-panel' )
@@ -79,14 +83,14 @@ QUnit.test( 'addEditButton(): add edit button with link to local URL', function 
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgArticleId', 1 );
 	mw.config.set( 'wgScript', '/wiki/index.php' );
-	ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
-	const addButton = this.sandbox.stub( ui, 'addButton' );
+	this.ui.linkGroup = sinon.stub( new OO.ui.ButtonGroupWidget() );
+	const addButton = sinon.stub( this.ui, 'addButton' );
 
-	ui.addEditButton();
+	this.ui.addEditButton();
 
 	sinon.assert.calledWith(
 		addButton,
-		ui.linkGroup,
+		this.ui.linkGroup,
 		'edit',
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
@@ -101,14 +105,14 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL', fu
 	mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgArticleId', 1 );
-	ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
-	const addButton = this.sandbox.stub( ui, 'addButton' );
+	this.ui.linkGroup = sinon.stub( new OO.ui.ButtonGroupWidget() );
+	const addButton = sinon.stub( this.ui, 'addButton' );
 
-	ui.addEditButton( 'http://producer.url/w/index.php' );
+	this.ui.addEditButton( 'http://producer.url/w/index.php' );
 
 	sinon.assert.calledWith(
 		addButton,
-		ui.linkGroup,
+		this.ui.linkGroup,
 		'edit',
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
@@ -119,41 +123,41 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL', fu
 	);
 } );
 
-QUnit.test( 'showBufferingIconIfAudioIsLoading()', () => {
-	ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
+QUnit.test( 'showBufferingIconIfAudioIsLoading()', function () {
+	this.ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
 	const mockAudio = { readyState: 0 };
 
-	ui.showBufferingIconIfAudioIsLoading( mockAudio );
+	this.ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
-	sinon.assert.called( ui.$bufferingIcons.show );
+	sinon.assert.called( this.ui.$bufferingIcons.show );
 } );
 
-QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', () => {
-	ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
+QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function () {
+	this.ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
 	const mockAudio = { readyState: 2 };
 
-	ui.showBufferingIconIfAudioIsLoading( mockAudio );
+	this.ui.showBufferingIconIfAudioIsLoading( mockAudio );
 
-	sinon.assert.notCalled( ui.$bufferingIcons.show );
+	sinon.assert.notCalled( this.ui.$bufferingIcons.show );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function () {
-	mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
+	util.setContentHtml( 'LTR text.' );
 	const textNode = $( contentSelector ).contents().get( 0 );
 	selectionPlayer.isSelectionValid.returns( true );
 	this.stubGetSelection( textNode, textNode, { right: 50, bottom: 10 } );
-	sinon.stub( ui, 'isShown' ).returns( true );
-	ui.addSelectionPlayer();
-	ui.selectionPlayer.$element.width( 30 );
-	sinon.spy( ui.selectionPlayer.$element, 'css' );
-	sinon.spy( ui.selectionPlayer, 'toggle' );
+	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.addSelectionPlayer();
+	this.ui.selectionPlayer.button.$element.width( 30 );
+	sinon.spy( this.ui.selectionPlayer.button.$element, 'css' );
+	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, true );
 	sinon.assert.calledWith(
-		ui.selectionPlayer.$element.css,
+		this.ui.selectionPlayer.button.$element.css,
 		{
 			left: '20px',
 			top: 10 + $( document ).scrollTop() + 'px'
@@ -170,23 +174,23 @@ this.addControlPanel = function () {
 };
 
 QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'<b style="direction: rtl">RTL text.</b>'
 	);
 	const textNode = $( contentSelector + ' b' ).contents().get( 0 );
 	selectionPlayer.isSelectionValid.returns( true );
 	this.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
-	sinon.stub( ui, 'isShown' ).returns( true );
-	ui.addSelectionPlayer();
-	sinon.spy( ui.selectionPlayer.$element, 'css' );
-	sinon.spy( ui.selectionPlayer, 'toggle' );
+	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.addSelectionPlayer();
+	sinon.spy( this.ui.selectionPlayer.button.$element, 'css' );
+	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, true );
 	sinon.assert.calledWith(
-		ui.selectionPlayer.$element.css,
+		this.ui.selectionPlayer.button.$element.css,
 		{
 			left: '15px',
 			top: 10 + $( document ).scrollTop() + 'px'
@@ -194,86 +198,83 @@ QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', functi
 	);
 } );
 
-QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', () => {
-	sinon.stub( ui, 'isShown' ).returns( true );
-	ui.addSelectionPlayer();
+QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function () {
+	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.addSelectionPlayer();
 	selectionPlayer.isSelectionValid.returns( false );
-	sinon.spy( ui.selectionPlayer, 'toggle' );
+	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'<del>Not an utterance.</del> An utterance.'
 	);
 	const notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
 	const utteranceNode = $( contentSelector ).contents().get( 1 );
-	sinon.stub( ui, 'isShown' ).returns( true );
-	ui.addSelectionPlayer();
-	sinon.spy( ui.selectionPlayer, 'toggle' );
+	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.addSelectionPlayer();
+	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	this.stubGetSelection( notUtteranceNode, utteranceNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'An utterance. <del>Not an utterance.</del>'
 	);
 	const notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
 	const utteranceNode = $( contentSelector ).contents().get( 0 );
-	sinon.stub( ui, 'isShown' ).returns( true );
-	ui.addSelectionPlayer();
-	sinon.spy( ui.selectionPlayer, 'toggle' );
+	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.addSelectionPlayer();
+	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	this.stubGetSelection( utteranceNode, notUtteranceNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
-	mw.wikispeech.test.util.setContentHtml( 'LTR text.' );
+	util.setContentHtml( 'LTR text.' );
 	const textNode = $( contentSelector ).contents().get( 0 );
-	sinon.stub( ui, 'isShown' ).returns( false );
-	ui.addSelectionPlayer();
+	sinon.stub( this.ui, 'isShown' ).returns( false );
+	this.ui.addSelectionPlayer();
 	selectionPlayer.isSelectionValid.returns( true );
-	sinon.spy( ui.selectionPlayer, 'toggle' );
+	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	this.stubGetSelection( textNode, textNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
 } );
 
-QUnit.test( 'addSelectionPlayer(): hide selection player initially', ( assert ) => {
-	ui.addSelectionPlayer();
+QUnit.test( 'addSelectionPlayer(): hide selection player initially', function ( assert ) {
+	this.ui.addSelectionPlayer();
 
-	assert.false( ui.selectionPlayer.isVisible() );
+	assert.false( this.ui.selectionPlayer.button.isVisible() );
 } );
 
-QUnit.test( 'showLoadAudioError(): plays and stops the error audio', ( assert ) => {
+QUnit.test( 'showLoadAudioError(): plays and stops the error audio', function ( assert ) {
 	const done = assert.async();
-
 	const audioMock = {
 		play: sinon.stub(),
 		pause: sinon.stub(),
 		currentTime: 123
 	};
-	ui.errorAudio = audioMock;
-
-	sinon.stub( ui, 'openWindow' ).resolves( { action: 'stop' } );
-
-	ui.showLoadAudioError().then( () => {
+	this.ui.errorAudio = audioMock;
+	sinon.stub( this.ui, 'openWindow' ).resolves( { action: 'stop' } );
+	this.ui.showLoadAudioError().then( () => {
 		assert.strictEqual( audioMock.play.calledOnce, true );
 		assert.strictEqual( audioMock.pause.calledOnce, true );
 		assert.strictEqual( audioMock.currentTime, 0 );
@@ -339,59 +340,59 @@ function testKeyboardShortcut( assert, functionName, keyCode, modifiers ) {
 			}
 		}
 	);
-	ui.addKeyboardShortcuts();
+	this.ui.addKeyboardShortcuts();
 
 	$( document ).triggerHandler( createKeydownEvent( keyCode, modifiers ) );
 
-	assert.strictEqual( player[ functionName ].called, true );
+	assert.strictEqual( this.ui.player[ functionName ].called, true );
 }
 
-QUnit.test( 'Pressing keyboard shortcut for play/pause', ( assert ) => {
-	testKeyboardShortcut( assert, 'playOrPause', 13, 'c' );
+QUnit.test( 'Pressing keyboard shortcut for play/pause', function ( assert ) {
+	testKeyboardShortcut.call( this, assert, 'playOrPause', 13, 'c' );
 } );
 
-QUnit.test( 'Pressing keyboard shortcut for stop', ( assert ) => {
-	testKeyboardShortcut( assert, 'stop', 8, 'c' );
+QUnit.test( 'Pressing keyboard shortcut for stop', function ( assert ) {
+	testKeyboardShortcut.call( this, assert, 'stop', 8, 'c' );
 } );
 
-QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', ( assert ) => {
-	testKeyboardShortcut( assert, 'skipAheadUtterance', 39, 'c' );
+QUnit.test( 'Pressing keyboard shortcut for skipping ahead sentence', function ( assert ) {
+	testKeyboardShortcut.call( this, assert, 'skipAheadUtterance', 39, 'c' );
 } );
 
-QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', ( assert ) => {
-	testKeyboardShortcut( assert, 'skipBackUtterance', 37, 'c' );
+QUnit.test( 'Pressing keyboard shortcut for skipping back sentence', function ( assert ) {
+	testKeyboardShortcut.call( this, assert, 'skipBackUtterance', 37, 'c' );
 } );
 
-QUnit.test( 'Pressing keyboard shortcut for skipping ahead word', ( assert ) => {
-	testKeyboardShortcut( assert, 'skipAheadToken', 40, 'c' );
+QUnit.test( 'Pressing keyboard shortcut for skipping ahead word', function ( assert ) {
+	testKeyboardShortcut.call( this, assert, 'skipAheadToken', 40, 'c' );
 } );
 
-QUnit.test( 'Pressing keyboard shortcut for skipping back word', ( assert ) => {
-	testKeyboardShortcut( assert, 'skipBackToken', 38, 'c' );
+QUnit.test( 'Pressing keyboard shortcut for skipping back word', function ( assert ) {
+	testKeyboardShortcut.call( this, assert, 'skipBackToken', 38, 'c' );
 } );
 
-QUnit.test( 'toggleVisibility(): hide', () => {
-	ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
-	ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
-	ui.$playerFooter = sinon.stub( $( '<div>' ) );
-	sinon.stub( ui, 'isShown' ).returns( true );
+QUnit.test( 'toggleVisibility(): hide', function () {
+	this.ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
+	this.ui.selectionPlayer.button = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.$playerFooter = sinon.stub( $( '<div>' ) );
+	sinon.stub( this.ui, 'isShown' ).returns( true );
 
-	ui.toggleVisibility();
+	this.ui.toggleVisibility();
 
-	sinon.assert.calledWith( ui.toolbar.toggle, false );
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, false );
-	sinon.assert.called( ui.$playerFooter.hide );
+	sinon.assert.calledWith( this.ui.toolbar.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
+	sinon.assert.called( this.ui.$playerFooter.hide );
 } );
 
-QUnit.test( 'toggleVisibility(): show', () => {
-	ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
-	ui.selectionPlayer = sinon.stub( new OO.ui.ButtonWidget() );
-	ui.$playerFooter = sinon.stub( $( '<div>' ) );
-	sinon.stub( ui, 'isShown' ).returns( false );
+QUnit.test( 'toggleVisibility(): show', function () {
+	this.ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
+	this.ui.selectionPlayer.button = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.$playerFooter = sinon.stub( $( '<div>' ) );
+	sinon.stub( this.ui, 'isShown' ).returns( false );
 
-	ui.toggleVisibility();
+	this.ui.toggleVisibility();
 
-	sinon.assert.calledWith( ui.toolbar.toggle, true );
-	sinon.assert.calledWith( ui.selectionPlayer.toggle, true );
-	sinon.assert.called( ui.$playerFooter.show );
+	sinon.assert.calledWith( this.ui.toolbar.toggle, true );
+	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, true );
+	sinon.assert.called( this.ui.$playerFooter.show );
 } );

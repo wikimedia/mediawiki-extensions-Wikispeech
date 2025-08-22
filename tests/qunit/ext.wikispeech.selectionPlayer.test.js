@@ -1,10 +1,16 @@
+const SelectionPlayer = require( 'ext.wikispeech/ext.wikispeech.selectionPlayer.js' );
+const Player = require( 'ext.wikispeech/ext.wikispeech.player.js' );
+const Storage = require( 'ext.wikispeech/ext.wikispeech.storage.js' );
+const Ui = require( 'ext.wikispeech/ext.wikispeech.ui.js' );
+const util = require( './ext.wikispeech.test.util.js' );
+
 let contentSelector, selectionPlayer, player, storage;
 
 QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 	beforeEach: function () {
-		mw.wikispeech.storage =
-			sinon.stub( new mw.wikispeech.Storage() );
-		storage = mw.wikispeech.storage;
+		selectionPlayer = new SelectionPlayer();
+		storage = sinon.stub( new Storage() );
+		selectionPlayer.storage = storage;
 		storage.utterances = [
 			{
 				audio: $( '<audio>' ).get( 0 ),
@@ -20,23 +26,9 @@ QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 		// Assume that the utterance is already prepared,
 		// resolve immediately.
 		storage.prepareUtterance.returns( $.Deferred().resolve() );
-		mw.wikispeech.player =
-			sinon.stub( new mw.wikispeech.Player() );
-		player = mw.wikispeech.player;
-		selectionPlayer =
-			new mw.wikispeech.SelectionPlayer();
-		mw.wikispeech.ui = {
-			showBufferingIconIfAudioIsLoading: sinon.stub(),
-			hideBufferingIcon: sinon.stub(),
-			setSelectionPlayerIconToStop: sinon.stub(),
-			selectionPlayer: {
-				toggle: sinon.stub(),
-				setIcon: sinon.stub(),
-				on: sinon.stub(),
-				off: sinon.stub(),
-				$element: $( '<div>' )
-			}
-		};
+		player = sinon.stub( new Player() );
+		selectionPlayer.player = player;
+		selectionPlayer.ui = sinon.stub( new Ui() );
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' )
 		);
@@ -99,7 +91,7 @@ function createMockedSelection(
 }
 
 QUnit.test( 'playSelection()', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'Utterance with selected text.'
 		//              [-----------]
 		// The line above shows what part of the text that is
@@ -178,7 +170,7 @@ QUnit.test( 'playSelection()', function () {
 } );
 
 QUnit.test( 'playSelection(): multiple ranges', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'Utterance with selected <del>not selectable</del>text.'
 		//              [-------]                         [--]
 	);
@@ -278,7 +270,7 @@ QUnit.test( 'playSelection(): multiple ranges', function () {
 } );
 
 QUnit.test( 'playSelection(): spanning multiple nodes', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'Utterance with selected text <b>and </b>more selected text.'
 		//              [-----------------------------------------]
 	);
@@ -333,7 +325,7 @@ QUnit.test( 'playSelection(): spanning multiple nodes', function () {
 } );
 
 QUnit.test( 'playSelection(): selected nodes are elements', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'<b>Utterance zero.</b>'
 		//  [-------------]
 	);
@@ -389,7 +381,7 @@ QUnit.test( 'playSelection(): selected nodes are elements', function () {
 } );
 
 QUnit.test( 'playSelection(): selected nodes are elements that also contain non-utterance nodes', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'<b>Not an utterance<br />Utterance zero.<br />Not an utterance</b>'
 		//  [---------------------------------------------------------]
 	);
@@ -509,7 +501,7 @@ QUnit.test( 'setEndTime(): slower speech rate', function () {
 } );
 
 QUnit.test( 'resetPreviousEndUtterance()', function () {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'Utterance with selected text.'
 	);
 	storage.utterances[ 0 ].audio.src = 'loaded';
@@ -558,7 +550,7 @@ QUnit.test( 'resetPreviousEndUtterance()', function () {
 } );
 
 QUnit.test( 'getFirstNodeInSelection()', function ( assert ) {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'before<selected>first text node</selected>after'
 		//               [-------------]
 
@@ -575,7 +567,7 @@ QUnit.test( 'getFirstNodeInSelection()', function ( assert ) {
 } );
 
 QUnit.test( 'getFirstNodeInSelection(): start offset greater than max', function ( assert ) {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'before<selected>first text node</selected>after'
 		//               [-------------]
 	);
@@ -594,7 +586,7 @@ QUnit.test( 'getFirstNodeInSelection(): start offset greater than max', function
 } );
 
 QUnit.test( 'getFirstNodeInSelection(): start offset greater than max, no sibling', function ( assert ) {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'<a><b>before</b></a><selected>first text node</selected>after'
 		//                             [-------------]
 
@@ -614,7 +606,7 @@ QUnit.test( 'getFirstNodeInSelection(): start offset greater than max, no siblin
 } );
 
 QUnit.test( 'getLastNodeInSelection()', function ( assert ) {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'before<selected>last text node</selected>after'
 		//               [------------]
 
@@ -631,7 +623,7 @@ QUnit.test( 'getLastNodeInSelection()', function ( assert ) {
 } );
 
 QUnit.test( 'getLastNodeInSelection(): end offset is zero', function ( assert ) {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'before<selected>last text node</selected>after'
 		//               [------------]
 	);
@@ -649,7 +641,7 @@ QUnit.test( 'getLastNodeInSelection(): end offset is zero', function ( assert ) 
 } );
 
 QUnit.test( 'getLastNodeInSelection(): end offset is zero, no sibling', function ( assert ) {
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'before<selected>last text node</selected><a><b>after</b></a>'
 		//               [------------]
 
@@ -666,7 +658,7 @@ QUnit.test( 'getLastNodeInSelection(): end offset is zero, no sibling', function
 
 QUnit.test( 'isSelectionValid(): valid', function ( assert ) {
 	sinon.stub( selectionPlayer, 'isTextSelected' ).returns( true );
-	mw.wikispeech.test.util.setContentHtml(
+	util.setContentHtml(
 		'Utterance with selected text.'
 		//              [-----------]
 	);
@@ -678,8 +670,6 @@ QUnit.test( 'isSelectionValid(): valid', function ( assert ) {
 	storage.isNodeInUtterance.returns( true );
 	const selection = createMockedSelection( 15, textNode, 27 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-
 	const selectionValid = selectionPlayer.isSelectionValid();
-
 	assert.strictEqual( selectionValid, true );
 } );

@@ -1,14 +1,15 @@
-let storage, player, util, contentSelector;
+const Storage = require( 'ext.wikispeech/ext.wikispeech.storage.js' );
+const Player = require( 'ext.wikispeech/ext.wikispeech.player.js' );
+const util = require( './ext.wikispeech.test.util.js' );
+
+let storage, player, contentSelector;
 
 QUnit.module( 'ext.wikispeech.storage', QUnit.newMwEnvironment( {
 	beforeEach: function () {
-		util = mw.wikispeech.test.util;
-		mw.wikispeech.player = {
-			skipAheadUtterance: sinon.spy(),
-			stop: sinon.spy()
-		};
-		player = mw.wikispeech.player;
-		storage = new mw.wikispeech.Storage();
+		storage = new Storage();
+		player = sinon.stub( new Player() );
+		storage.player = player;
+
 		storage.api = sinon.stub( new mw.Api() );
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' )
@@ -31,12 +32,12 @@ QUnit.module( 'ext.wikispeech.storage', QUnit.newMwEnvironment( {
 	afterEach: function () {
 		mw.user.options.set( 'wikispeechVoiceEn', '' );
 		mw.user.options.set( 'wikispeechSpeechRate', 1.0 );
-		mw.wikispeech.consumerMode = false;
 	}
 } ) );
 
 QUnit.test( 'loadUtterances()', ( assert ) => {
 	sinon.stub( storage, 'prepareUtterance' );
+	const mockWindow = { location: { origin: 'https://consumer.url' } };
 	// eslint-disable-next-line no-jquery/no-parse-html-literal
 	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
 	mw.config.set( 'wgPageName', 'Page' );
@@ -55,7 +56,7 @@ QUnit.test( 'loadUtterances()', ( assert ) => {
 	};
 	storage.api.get.returns( $.Deferred().resolve( response ) );
 
-	storage.loadUtterances();
+	storage.loadUtterances( mockWindow );
 
 	assert.deepEqual(
 		storage.api.get.firstCall.args[ 0 ],
@@ -89,6 +90,7 @@ QUnit.test( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
 	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
 	mw.config.set( 'wgPageName', 'Page' );
 	mw.config.set( 'wgScriptPath', '/w' );
+
 	const response = {
 		'wikispeech-segment': {
 			segments: [ {
@@ -105,14 +107,16 @@ QUnit.test( 'loadUtterances(): pass URL in consumer mode', ( assert ) => {
 		{
 			action: 'wikispeech-segment',
 			page: 'Page',
-			'part-of-content': false,
-			'consumer-url': 'https://consumer.url/w'
+			'consumer-url': 'https://consumer.url/w',
+			'part-of-content': false
 		}
 	);
 } );
 
 QUnit.test( 'loadUtterances(): part of content enabled', ( assert ) => {
+	const mockWindow = { location: { origin: 'https://consumer.url' } };
 	sinon.stub( storage, 'prepareUtterance' );
+	mw.wikispeech.consumerMode = false;
 	// eslint-disable-next-line no-jquery/no-parse-html-literal
 	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>Page</h1>' ).get( 0 ) );
 	mw.config.set( 'wgPageName', 'Page' );
@@ -126,7 +130,7 @@ QUnit.test( 'loadUtterances(): part of content enabled', ( assert ) => {
 	};
 	storage.api.get.returns( $.Deferred().resolve( response ) );
 
-	storage.loadUtterances();
+	storage.loadUtterances( mockWindow );
 
 	assert.deepEqual(
 		storage.api.get.firstCall.args[ 0 ],
@@ -140,6 +144,8 @@ QUnit.test( 'loadUtterances(): part of content enabled', ( assert ) => {
 
 QUnit.test( 'loadUtterances(): offset leading whitespaces in title', ( assert ) => {
 	mw.config.set( 'wgPageName', 'Page' );
+	const mockWindow = { location: { origin: 'https://consumer.url' } };
+
 	sinon.stub( storage, 'prepareUtterance' );
 	// eslint-disable-next-line no-jquery/no-parse-html-literal
 	sinon.stub( storage, 'getNodeForItem' ).returns( $( '<h1>   Page</h1>' ).get( 0 ) );
@@ -157,7 +163,7 @@ QUnit.test( 'loadUtterances(): offset leading whitespaces in title', ( assert ) 
 	};
 	storage.api.get.returns( $.Deferred().resolve( response ) );
 
-	storage.loadUtterances();
+	storage.loadUtterances( mockWindow );
 
 	assert.strictEqual( storage.utterances[ 0 ].startOffset, 3 );
 	assert.strictEqual( storage.utterances[ 0 ].endOffset, 6 );
@@ -238,6 +244,7 @@ QUnit.test( 'loadAudio()', ( assert ) => {
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	storage.utterances[ 0 ].hash = 'hash1234';
 	storage.api.get.returns( $.Deferred() );
+	mw.wikispeech.consumerMode = false;
 
 	storage.loadAudio( storage.utterances[ 0 ] );
 
@@ -1425,7 +1432,7 @@ QUnit.test( 'getEndToken(): in different node', ( assert ) => {
 } );
 
 QUnit.test( 'getNodeForItem()', ( assert ) => {
-	mw.wikispeech.test.util.setContentHtml( 'Text node.' );
+	util.setContentHtml( 'Text node.' );
 	const item = { path: './text()' };
 
 	const textNode = storage.getNodeForItem( item );
@@ -1438,8 +1445,6 @@ QUnit.test( 'getNodeForItem()', ( assert ) => {
 
 QUnit.test( 'getNodeForItem(): path is null', ( assert ) => {
 	const item = { path: null };
-
 	const textNode = storage.getNodeForItem( item );
-
 	assert.strictEqual( textNode, null );
 } );

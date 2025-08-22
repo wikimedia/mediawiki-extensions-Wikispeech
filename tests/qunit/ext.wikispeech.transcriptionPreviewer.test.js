@@ -1,15 +1,16 @@
+const TranscriptionPreviewer = require( 'ext.wikispeech.specialEditLexicon/ext.wikispeech.transcriptionPreviewer.js' );
+
 QUnit.module( 'ext.wikispeech.transcriptionPreviewer', QUnit.newMwEnvironment( {
 	beforeEach: function () {
-		const TranscriptionPreviewer = require(
-			'../../modules/ext.wikispeech.transcriptionPreviewer.js'
-		);
-		const $language = sinon.stub( $( '<select>' ) );
-		const $transcription = sinon.stub( $( '<input>' ) );
+		const $language = $( '<select>' );
+		const $transcription = $( '<input>' );
 		const api = sinon.stub( new mw.Api() );
 		const $player = sinon.stub( $() );
 		this.audio = new Audio();
 		sinon.stub( this.audio, 'play' );
 		$player.get.returns( this.audio );
+		sinon.stub( $language, 'val' ).returns( 'en' );
+		sinon.stub( $transcription, 'val' ).returns( 'test transcription' );
 		this.transcriptionPreviewer = new TranscriptionPreviewer(
 			$language,
 			$transcription,
@@ -124,6 +125,8 @@ QUnit.test( 'play(): play same audio if transcription has not changed', function
 } );
 
 QUnit.test( 'play(): rewind before playing', function ( assert ) {
+	this.transcriptionPreviewer.lastTranscription = 'same transcription';
+	this.transcriptionPreviewer.$transcription.val.returns( 'same transcription' );
 	this.transcriptionPreviewer.$player.currentTime = 1.0;
 	this.transcriptionPreviewer.$player.attr.returns( 'not empty' );
 

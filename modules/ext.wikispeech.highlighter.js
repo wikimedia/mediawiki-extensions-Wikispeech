@@ -5,13 +5,15 @@
  * @constructor
  */
 
-function Highlighter() {
-	const self = this;
-	self.highlightTokenTimer = null;
-	self.utteranceHighlightingClass =
-		'ext-wikispeech-highlight-sentence';
-	self.utteranceHighlightingSelector =
-		'.' + self.utteranceHighlightingClass;
+class Highlighter {
+	constructor() {
+		this.highlightTokenTimer = null;
+		this.utteranceHighlightingClass =
+			'ext-wikispeech-highlight-sentence';
+		this.utteranceHighlightingSelector =
+			'.' + this.utteranceHighlightingClass;
+		this.storage = null;
+	}
 
 	/**
 	 * Highlight text associated with an utterance.
@@ -26,23 +28,23 @@ function Highlighter() {
 	 *  highlighting to.
 	 */
 
-	this.highlightUtterance = function ( utterance ) {
+	highlightUtterance( utterance ) {
 		const textNodes = utterance.content
-			.map( ( item ) => mw.wikispeech.storage.getNodeForItem( item ) )
+			.map( ( item ) => this.storage.getNodeForItem( item ) )
 			// Remove nulls that were added for items without nodes.
 			.filter( ( item ) => item );
 		// Class name is documented above
 		// eslint-disable-next-line mediawiki/class-doc
 		const span = $( '<span>' )
-			.addClass( self.utteranceHighlightingClass )
+			.addClass( this.utteranceHighlightingClass )
 			.get( 0 );
-		self.wrapTextNodes(
+		this.wrapTextNodes(
 			span,
 			textNodes,
 			utterance.startOffset,
 			utterance.endOffset
 		);
-		$( self.utteranceHighlightingSelector ).each( function ( i ) {
+		$( this.utteranceHighlightingSelector ).each( function ( i ) {
 			// Save the path to the text node, as it was before
 			// adding the span. This will no longer be the correct
 			// path, once the span is added. This enables adding
@@ -50,7 +52,7 @@ function Highlighter() {
 			// highlighting.
 			this.textPath = utterance.content[ i ].path;
 		} );
-	};
+	}
 
 	/**
 	 * Wrap text nodes in an element.
@@ -68,7 +70,7 @@ function Highlighter() {
 	 *  node.
 	 */
 
-	this.wrapTextNodes = function (
+	wrapTextNodes(
 		wrapper,
 		textNodes,
 		startOffset,
@@ -100,7 +102,7 @@ function Highlighter() {
 			$nodesToWrap = $nodesToWrap.add( lastNode );
 		}
 		$nodesToWrap.wrap( wrapper );
-	};
+	}
 
 	/**
 	 * Highlight a token in the original HTML.
@@ -111,16 +113,16 @@ function Highlighter() {
 	 *  to highlight.
 	 */
 
-	this.startTokenHighlighting = function ( token ) {
+	startTokenHighlighting( token ) {
 		if ( mw.user.options.get( 'wikispeechPartOfContent' ) ) {
 			return;
 		}
 
-		self.removeWrappers( '.ext-wikispeech-highlight-word' );
-		self.clearHighlightTokenTimer();
-		self.highlightToken( token );
-		self.setHighlightTokenTimer( token );
-	};
+		this.removeWrappers( '.ext-wikispeech-highlight-word' );
+		this.clearHighlightTokenTimer();
+		this.highlightToken( token );
+		this.setHighlightTokenTimer( token );
+	}
 
 	/**
 	 * Highlight a token in the original HTML.
@@ -131,7 +133,7 @@ function Highlighter() {
 	 *  to highlight.
 	 */
 
-	this.highlightToken = function ( token ) {
+	highlightToken( token ) {
 		if ( mw.user.options.get( 'wikispeechPartOfContent' ) ) {
 			return;
 		}
@@ -142,21 +144,21 @@ function Highlighter() {
 		const textNodes = token.items.map( ( item ) => {
 			let textNode;
 
-			if ( $( self.utteranceHighlightingSelector ).length ) {
+			if ( $( this.utteranceHighlightingSelector ).length ) {
 				// Add the token highlighting within the
 				// utterance highlightings, if there are any.
-				textNode = self.getNodeInUtteranceHighlighting(
+				textNode = this.getNodeInUtteranceHighlighting(
 					item
 				);
 			} else {
-				textNode = mw.wikispeech.storage.getNodeForItem( item );
+				textNode = this.storage.getNodeForItem( item );
 			}
 			return textNode;
 		} );
 		let startOffset = token.startOffset;
 		let endOffset = token.endOffset;
 		if (
-			$( self.utteranceHighlightingSelector ).length &&
+			$( this.utteranceHighlightingSelector ).length &&
 				token.items[ 0 ] === token.utterance.content[ 0 ]
 		) {
 			// Modify the offset if the token is the first in the
@@ -166,13 +168,13 @@ function Highlighter() {
 			startOffset -= token.utterance.startOffset;
 			endOffset -= token.utterance.startOffset;
 		}
-		self.wrapTextNodes(
+		this.wrapTextNodes(
 			span,
 			textNodes,
 			startOffset,
 			endOffset
 		);
-	};
+	}
 
 	/**
 	 * Get text node, within utterance highlighting, for an item.
@@ -180,10 +182,10 @@ function Highlighter() {
 	 * @param {Object} item The item to get text node for.
 	 */
 
-	this.getNodeInUtteranceHighlighting = function ( item ) {
+	getNodeInUtteranceHighlighting( item ) {
 		// Get the text node from the utterance highlighting that
 		// wrapped the node for `textElement`.
-		const textNode = $( self.utteranceHighlightingSelector )
+		const textNode = $( this.utteranceHighlightingSelector )
 			.filter( function () {
 				return this.textPath ===
 					item.path;
@@ -191,7 +193,7 @@ function Highlighter() {
 			.contents()
 			.get( 0 );
 		return textNode;
-	};
+	}
 
 	/**
 	 * Set a timer for when the next token should be highlighted.
@@ -200,27 +202,27 @@ function Highlighter() {
 	 *  for the token following this one.
 	 */
 
-	this.setHighlightTokenTimer = function ( token ) {
+	setHighlightTokenTimer( token ) {
 		const currentTime = token.utterance.audio.currentTime * 1000;
 		// The duration of the timer is the duration of the
 		// current token.
 		const duration = token.endTime - currentTime;
-		const nextToken = mw.wikispeech.storage.getNextToken( token );
+		const nextToken = this.storage.getNextToken( token );
 		if ( nextToken ) {
-			self.highlightTokenTimer = window.setTimeout(
+			this.highlightTokenTimer = window.setTimeout(
 				() => {
-					self.removeWrappers(
+					this.removeWrappers(
 						'.ext-wikispeech-highlight-word'
 					);
-					self.highlightToken( nextToken );
+					this.highlightToken( nextToken );
 					// Add a new timer for the next token, when it
 					// starts playing.
-					self.setHighlightTokenTimer( nextToken );
+					this.setHighlightTokenTimer( nextToken );
 				},
 				duration / mw.user.options.get( 'wikispeechSpeechRate' )
 			);
 		}
-	};
+	}
 
 	/**
 	 * Remove elements wrapping text nodes.
@@ -232,7 +234,7 @@ function Highlighter() {
 	 *  elements to remove
 	 */
 
-	this.removeWrappers = function ( wrapperSelector ) {
+	removeWrappers( wrapperSelector ) {
 		const parents = [];
 		const $span = $( wrapperSelector );
 		$span.each( function () {
@@ -245,29 +247,27 @@ function Highlighter() {
 			parents[ 0 ].normalize();
 			parents[ parents.length - 1 ].normalize();
 		}
-	};
+	}
 
 	/**
 	 * Remove any sentence and word highlighting.
 	 */
 
-	this.clearHighlighting = function () {
+	clearHighlighting() {
 		// Remove sentence highlighting.
-		self.removeWrappers( '.ext-wikispeech-highlight-sentence' );
+		this.removeWrappers( '.ext-wikispeech-highlight-sentence' );
 		// Remove word highlighting.
-		self.removeWrappers( '.ext-wikispeech-highlight-word' );
-		self.clearHighlightTokenTimer();
-	};
+		this.removeWrappers( '.ext-wikispeech-highlight-word' );
+		this.clearHighlightTokenTimer();
+	}
 
 	/**
 	 * Clear the timer for highlighting tokens.
 	 */
 
-	this.clearHighlightTokenTimer = function () {
-		clearTimeout( self.highlightTokenTimer );
-	};
+	clearHighlightTokenTimer() {
+		clearTimeout( this.highlightTokenTimer );
+	}
 }
 
-mw.wikispeech = mw.wikispeech || {};
-mw.wikispeech.highlighter = new Highlighter();
-mw.wikispeech.Highlighter = Highlighter;
+module.exports = Highlighter;

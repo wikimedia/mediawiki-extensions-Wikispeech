@@ -32,32 +32,22 @@ function getUserVoice( language ) {
 }
 
 /**
- * Contains general help functions that are used by multiple modules.
+ * Get the last item in an array.
  *
- * @class ext.wikispeech.Util
- * @constructor
+ * @param {Array} array The array to look in.
+ * @return {any} The last item in the array.
  */
-function Util() {
-	/**
-	 * Get the last item in an array.
-	 *
-	 * @param {Array} array The array to look in.
-	 * @return The last item in the array.
-	 */
-
-	this.getLast = function ( array ) {
-		return array[ array.length - 1 ];
-	};
-
-	// This allows the old way of loading scripts.
-	this.getUserVoice = getUserVoice;
+function getLast( array ) {
+	return array[ array.length - 1 ];
 }
-
+// This allows the old way of loading scripts.
+// this.getUserVoice = getUserVoice;
 // For modules that do not use package files.
-mw.wikispeech = mw.wikispeech || {};
-mw.wikispeech.util = new Util();
+// mw.wikispeech = mw.wikispeech || {};
+// mw.wikispeech.util = new Util();
 // For modules that use package files.
 module.exports = {
-	getUserVoice: getUserVoice,
-	getVoiceConfigVariable: getVoiceConfigVariable
+	getUserVoice,
+	getVoiceConfigVariable,
+	getLast
 };

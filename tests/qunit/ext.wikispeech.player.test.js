@@ -1,19 +1,22 @@
+const Player = require( 'ext.wikispeech/ext.wikispeech.player.js' );
+const Highlighter = require( 'ext.wikispeech/ext.wikispeech.highlighter.js' );
+const Ui = require( 'ext.wikispeech/ext.wikispeech.ui.js' );
+const SelectionPlayer = require( 'ext.wikispeech/ext.wikispeech.selectionPlayer.js' );
+const Storage = require( 'ext.wikispeech/ext.wikispeech.storage.js' );
+
 let player, storage, selectionPlayer, highlighter, ui;
 
 QUnit.module( 'ext.wikispeech.player', {
 	beforeEach: function () {
-		mw.wikispeech.highlighter =
-			sinon.stub( new mw.wikispeech.Highlighter() );
-		highlighter = mw.wikispeech.highlighter;
-		mw.wikispeech.ui =
-			sinon.stub( new mw.wikispeech.Ui() );
-		ui = mw.wikispeech.ui;
-		mw.wikispeech.selectionPlayer =
-			sinon.stub( new mw.wikispeech.SelectionPlayer() );
-		selectionPlayer = mw.wikispeech.selectionPlayer;
-		mw.wikispeech.storage =
-			sinon.stub( new mw.wikispeech.Storage() );
-		storage = mw.wikispeech.storage;
+		player = new Player();
+		highlighter = sinon.stub( new Highlighter() );
+		player.highlighter = highlighter;
+		ui = sinon.stub( new Ui() );
+		player.ui = ui;
+		selectionPlayer = sinon.stub( new SelectionPlayer() );
+		player.selectionPlayer = selectionPlayer;
+		storage = sinon.stub( new Storage() );
+		player.storage = storage;
 		storage.utterancesLoaded.resolve();
 		storage.utterances = [
 			{
@@ -30,10 +33,8 @@ QUnit.module( 'ext.wikispeech.player', {
 				}
 			}
 		];
-
 		storage.prepareUtterance = sinon.stub().returns( $.Deferred().resolve() );
 
-		player = new mw.wikispeech.Player();
 		mw.config.set(
 			'wgWikispeechSkipBackRewindsThreshold',
 			3.0

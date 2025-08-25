@@ -2,10 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"BnSrSa",
-			"Jackiezelaya"
+			"Jackiezelaya",
+			"Primavera11"
 		]
 	},
 	"apihelp-wikispeech-segment-param-page": "El título de la página por procesar.",
+	"apihelp-wikispeech-segment-param-part-of-content": "Ts'aak jejeláas túukulil ti'al jejeláas meyajo'ob",
 	"apihelp-wikispeech-listen-param-lang": "Código de idioma.",
 	"apihelp-wikispeech-listen-param-text": "Texto por sintetizar.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Fallo al obtener pagina con id de revisión '$1' del consumidor en URL $2.",

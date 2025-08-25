@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"BlueCamille",
 			"Derugon",
 			"Golmore",
 			"Gomoko",
@@ -70,5 +71,6 @@
 	"wikispeech-edit-lexicon-speechoid-down": "Le service de prononciation est temporairement indisponible. Veuillez réessayer ultérieurement.",
 	"wikispeech-lexicon-sync-error": "Les lexiques ne sont pas synchronisés. Soit leurs propriétés sont différentes, soit une entrée n'existe que dans un seul lexique. Souhaitez-vous remplacer l'entrée locale pour qu'elle corresponde à Speechoid ?",
 	"wikispeech-lexicon-sync-error-button": "Écraser",
-	"wikispeech-lexicon-sync-error-unidentified": "Une erreur non identifiée s'est produite lors de la tentative de synchronisation des entrées du lexique."
+	"wikispeech-lexicon-sync-error-unidentified": "Une erreur non identifiée s'est produite lors de la tentative de synchronisation des entrées du lexique.",
+	"wikispeech-poc-link": "lien:"
 }

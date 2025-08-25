@@ -7,6 +7,7 @@
 			"JDíaz32",
 			"Mariano Gimenez",
 			"No se",
+			"Rousmery96",
 			"ZealousBlaze"
 		]
 	},
@@ -16,6 +17,8 @@
 	"prefs-wikispeech-speech-rate-percent": "Velocidad de habla (en porcentaje)",
 	"prefs-wikispeech-enable": "Habilitar Wikispeech",
 	"prefs-wikispeech-show-player": "Mostrar siempre el reproductor",
+	"prefs-wikispeech-part-of-content": "Leer información adicional sobre ciertos elementos",
+	"prefs-help-wikispeech-part-of-content": "Si se habilita, se leerá información adicional para elementos como enlaces. Al habilitar esta opción, se deshabilita el resaltado de palabras.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Cambios a las preferencias tomarán efecto la próxima vez que la página sea recargada. Para escuchar la página actual con las nuevas preferencias, recarga la página después de salvar.",
 	"right-wikispeech-listen": "Escuchar página",
 	"right-wikispeech-read-lexicon": "Leer el léxico de Wikispeech",
@@ -44,5 +47,6 @@
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",
 	"wikispeech-lexicon-copyrightnote": "Al guardar los cambios, usted acepta publicar su contribución bajo la [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"group-wikispeech-edit-lexicon": "Editores del léxico de Wikispeech",
-	"group-wikispeech-edit-lexicon-member": "{{Género:$1| Editor del léxico de Wikispeech}}"
+	"group-wikispeech-edit-lexicon-member": "{{Género:$1| Editor del léxico de Wikispeech}}",
+	"wikispeech-poc-link": "enlace:"
 }

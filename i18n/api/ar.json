@@ -8,6 +8,7 @@
 	"apihelp-wikispeech-segment-param-page": "عنوان الصفحة المراد تقسيمها.",
 	"apihelp-wikispeech-segment-param-removetags": "علامات HTML التي يجب إزالتها تمامًا أثناء التنظيف، ككائن JSON بتنسيق:\n<pre style=\";text-align:right;direction:rtl\"> {\n \"tag1\": صحيح،\n \"tag2\": \"css-class\"،\n \"tag3\": [\"css-class-1\"، \"css-class-2\"]\n}</pre> \n حيث يُحذف <code>tag1</code> دائمًا، ويُحذف <code>tag2</code> فقط إذا كان يحتوي أيضًا على فئة CSS <code>css-class</code> ، ويُحذف <code>tag3</code> فقط إذا كان يحتوي أيضًا على فئة CSS <code>css-class-1</code> أو <code>css-class-2</code> . يُرجى العلم أن دالة wikispeech-listen تستخدم التكوين الافتراضي للتجزئة، وقد لا تكون متوافقة مع المقاطع المُنتجة بإعداد مخصص لهذه المعلمة.",
 	"apihelp-wikispeech-segment-param-segmentbreakingtags": "علامات HTML التي يُفترض أن تُجزّئ المقاطع. يُرجى العلم أن wikispeech-listen يستخدم الإعداد الافتراضي للتجزئة، وقد لا يكون متوافقًا مع المقاطع المُنتَجة بإعداد مُخصّص لهذه المُعامل.",
+	"apihelp-wikispeech-segment-param-part-of-content": "إضافة محتوى إضافي لعناصر معينة.",
 	"apihelp-wikispeech-segment-param-consumer-url": "عنوان URL لمسار البرنامج النصي الخاص بـ wiki للمستهلك.",
 	"apihelp-wikispeech-segment-example-1": "تقسيم الصفحة الرئيسية باستخدام المعلمات الافتراضية من التكوين.",
 	"apihelp-wikispeech-segment-example-2": "تقسيم باستخدام معلمات مخصصة. يُحذف الوسم <code>sup</code> ، وكذلك <code>div</code> عندما يكون من فئة <code>toc</code> . يُؤدي الوسمان <code>h1</code> و <code>h2</code> إلى فصل المقاطع.",

@@ -82,6 +82,7 @@
 	"wikispeech-morphology": "The morphology of a word",
 	"wikispeech-pos": "What part of speech (e.g noun, pronoun) the word belongs to.",
 	"wikispeech-paradigm": "What kind of declination that is used for the word",
+	"wikispeech-enter-transcription": "Tells the user that the transcription field cannot be empty when clicking preview button.",
 	"wikispeech-morphology-sin": "The word is in singular form",
 	"wikispeech-morphology-plu": "The word is in plural form",
 	"wikispeech-morphology-nom": "The word is nominative",

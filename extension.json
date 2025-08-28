@@ -92,7 +92,8 @@
 				"ext.wikispeech.util.js"
 			],
 			"messages": [
-				"wikispeech-error-generate-preview-title"
+				"wikispeech-error-generate-preview-title",
+				"wikispeech-enter-transcription"
 			],
 			"dependencies": [
 				"mediawiki.api",

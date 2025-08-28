@@ -19,6 +19,12 @@ mw.loader.using( 'mediawiki.api' ).then( () => {
 	previewButton.on(
 		'click',
 		() => {
+			const transcription = $transcription.val().trim();
+
+			if ( !transcription ) {
+				mw.notify( mw.msg( 'wikispeech-enter-transcription' ), { type: 'error' } );
+				return;
+			}
 			previewButton.setDisabled( true );
 			previewer.play().then( () => {
 				previewButton.setDisabled( false );

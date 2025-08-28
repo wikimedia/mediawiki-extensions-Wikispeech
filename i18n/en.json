@@ -72,6 +72,7 @@
 	"wikispeech-lexicon-sync-error-button": "Overwrite",
 	"wikispeech-lexicon-sync-error-unidentified": "An unidentified error occured when trying to sync lexicon entries.",
 	"wikispeech-poc-link": "link:",
+	"wikispeech-enter-transcription": "Enter transcription to be able to preview.",
 	"wikispeech-morphology": "Morphology",
 	"wikispeech-pos": "Part of speech",
 	"wikispeech-paradigm": "Paradigm",

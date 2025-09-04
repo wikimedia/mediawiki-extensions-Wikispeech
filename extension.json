@@ -321,10 +321,10 @@
 				"table": true,
 				"sup": "reference",
 				"div": [
-					"thumb",
 					"toc",
 					"shortdescription"
-				]
+				],
+				"figure": true
 			}
 		},
 		"WikispeechSegmentBreakingTags": {

@@ -13,6 +13,8 @@
 	"prefs-wikispeech-speech-rate-percent": "קצב דובר (באחוזים)",
 	"prefs-wikispeech-enable": "הפעלת ויקידיבור",
 	"prefs-wikispeech-show-player": "תמיד להציג נגן",
+	"prefs-wikispeech-part-of-content": "קרא מידע נוסף עבור רכיבים מסוימים",
+	"prefs-help-wikispeech-part-of-content": "אם זה מופעל, מידע נוסף יוקרא עבור רכיבים כמו קישורים. כאשר האפשרות הזאת מופעלת, סימון מילים מושבת.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "שינויים להעדפות ייכנסו לתוקף בפעם הבאה שהדף נטען. כדי להאזין לדף הנוכחי עם ההעדפות הנוכחיות, יש לרענן את הדף אחרי השמירה.",
 	"right-wikispeech-listen": "האזנה לדף",
 	"right-wikispeech-read-lexicon": "קריאת המילון של ויקידיבור",
@@ -59,6 +61,8 @@
 	"wikispeech-edit-lexicon-no-item-found": "לא נמצאה רשומת מילון עם מזהה \"$1\". נא לבדוק את המזהה ולנסות שוב.",
 	"wikispeech-edit-lexicon-transcription-unretrievable": "לא היה אפשר לקבל הגייה משירות ההגייה",
 	"wikispeech-edit-lexicon-speechoid-down": "שירות ההגייה אינו זמין באופן זמני. נא לנסות שוב מאוחר יותר.",
+	"wikispeech-lexicon-sync-error": "המילונים אינם מסונכרנים. או שהם מכילים מאפיינים שונים, או שערך מסוים קיים רק באחד המילונים. האם ברצונך להחליף את הערך המקומי כך שיתאים לספיצ'ואיד?",
 	"wikispeech-lexicon-sync-error-button": "דריסה",
-	"wikispeech-lexicon-sync-error-unidentified": "אירעה שגיאה לא מזוהה בעת ניסיון לסנכרן ערכי מילון."
+	"wikispeech-lexicon-sync-error-unidentified": "אירעה שגיאה לא מזוהה בעת ניסיון לסנכרן ערכי מילון.",
+	"wikispeech-poc-link": "קישור:"
 }

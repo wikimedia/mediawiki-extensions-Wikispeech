@@ -23,7 +23,7 @@
 	"prefs-wikispeech-speech-rate-percent": "Débit de parole (en pourcentage)",
 	"prefs-wikispeech-enable": "Activer Wikispeech",
 	"prefs-wikispeech-show-player": "Toujours afficher le lecteur",
-	"wikispeech-notice-prefs-apply-on-next-page-load": "Les modifications de préférence prendront effet au prochain chargement d’une page. Pour écouter la page actuelle avec les nouvelles références, rechargez la après l’avoir enregistrée.",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Les modifications des préférences prendront effet au prochain chargement d’une page. Pour écouter la page actuelle avec les nouvelles préférences, rechargez-la après l’avoir enregistrée.",
 	"right-wikispeech-listen": "Écouter la page",
 	"right-wikispeech-read-lexicon": "Lire le lexique de Wikispeech",
 	"right-wikispeech-edit-lexicon": "Modifier le lexique de Wikispeech",
@@ -47,9 +47,9 @@
 	"wikispeech-lexicon-next": "Suivant",
 	"wikispeech-lexicon-save": "Enregistrer",
 	"wikispeech-lexicon-add-entry-success": "L’entrée a été ajoutée au lexique.",
-	"wikispeech-lexicon-new": "Nouveau",
+	"wikispeech-lexicon-new": "Nouvelle",
 	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",
-	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de publier votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de publier votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/deed.fr CC0].",
 	"group-wikispeech-edit-lexicon": "Modificateurs du lexique Wikispeech",
 	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech"
 }

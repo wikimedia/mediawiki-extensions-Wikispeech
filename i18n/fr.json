@@ -58,7 +58,6 @@
 	"wikispeech-lexicon-edit-entry-success": "Entrée modifiée.",
 	"wikispeech-lexicon-copyrightnote": "En enregistrant les modifications, vous acceptez de publier votre contribution sous la licence [https://creativecommons.org/publicdomain/zero/1.0/deed.fr CC0].",
 	"wikispeech-testlisten-text": "Texte",
-	"wikispeech-testlisten-ssml": "SSML",
 	"group-wikispeech-edit-lexicon": "Modificateurs du lexique Wikispeech",
 	"group-wikispeech-edit-lexicon-member": "Modificat{{GENDER:$1|eur|rice}} du lexique Wikispeech",
 	"wikispeech-lexicon-null-edit": "Aucun changement pertinent n’a été détecté dans la transcription ou le statut préféré.",

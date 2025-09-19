@@ -48,7 +48,8 @@
 				"ext.wikispeech.storage.js",
 				"ext.wikispeech.ui.js",
 				"ext.wikispeech.util.js",
-				"audio/error.json"
+				"audio/error.en.json",
+				"audio/error.sv.json"
 			],
 			"styles": [
 				"ext.wikispeech.css"

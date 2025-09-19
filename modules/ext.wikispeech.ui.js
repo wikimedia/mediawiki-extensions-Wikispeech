@@ -567,7 +567,14 @@ class Ui {
 	 */
 
 	loadErrorAudio() {
-		const errorAudioData = require( './audio/error.json' );
+		const lang = mw.config.get( 'wgUserLanguage' ) || 'en';
+		let errorAudioData;
+
+		try {
+			errorAudioData = require( `./audio/error.${ lang }.json` );
+		} catch ( e ) {
+			errorAudioData = require( './audio/error.en.json' );
+		}
 		const src = 'data:audio/ogg;base64,' + errorAudioData[ 'wikispeech-listen' ].audio;
 
 		this.errorAudio = new Audio( src );

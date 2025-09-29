@@ -64,6 +64,7 @@
 				"wikispeech-previous",
 				"wikispeech-play",
 				"wikispeech-pause",
+				"wikispeech-play-selection",
 				"wikispeech-next",
 				"wikispeech-skip-ahead",
 				"wikispeech-help",

@@ -189,18 +189,19 @@ class Ui {
 	 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
 	 * @param {string} icon Name of button icon.
 	 * @param {Function|string} onClick Function to call or link.
-	 * @param {string} ariaLabel Aria-labels
+	 * @param {string} label Labels, such as aria labels and titles
 	 * @param {string[]} classes Classes to add to the button.
 	 * @param {string} id Id to add to the button.
 	 * @return {OO.ui.ButtonWidget}
 	 */
 
-	addButton( group, icon, onClick, ariaLabel, classes, id ) {
+	addButton( group, icon, onClick, label, classes, id ) {
 		// eslint-disable-next-line mediawiki/class-doc
 		const button = new OO.ui.ButtonWidget( {
 			icon: icon,
 			classes: classes,
-			id: id
+			id: id,
+			title: label
 		} );
 		if ( typeof onClick === 'function' ) {
 			button.on( 'click', onClick );
@@ -209,8 +210,8 @@ class Ui {
 			// Open link in new tab or window.
 			button.setTarget( '_blank' );
 		}
-		if ( ariaLabel ) {
-			button.$element.find( 'a' ).attr( 'aria-label', ariaLabel );
+		if ( label ) {
+			button.$element.find( 'a' ).attr( 'aria-label', label );
 		}
 		group.addItems( [ button ] );
 		return button;
@@ -286,6 +287,7 @@ class Ui {
 
 	setPlayPauseIconToPause() {
 		this.playPauseButton.setIcon( 'pause' );
+		this.playPauseButton.setTitle( mw.msg( 'wikispeech-pause' ) );
 		this.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-pause' ) );
 	}
 
@@ -295,6 +297,7 @@ class Ui {
 
 	setAllPlayerIconsToPlay() {
 		this.playPauseButton.setIcon( 'play' );
+		this.playPauseButton.setTitle( mw.msg( 'wikispeech-play' ) );
 		this.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-play' ) );
 		this.selectionPlayer.button.setIcon( 'play' );
 	}
@@ -317,13 +320,13 @@ class Ui {
 	 * @param {string} icon Name of button icon.
 	 * @param {string} configVariable The config variable to get
 	 *  link destination from.
-	 * @param {string} ariaLabel Aria-label
+	 * @param {string} label Label for aria labels and titles
 	 */
 
-	addLinkConfigButton( group, icon, configVariable, ariaLabel ) {
+	addLinkConfigButton( group, icon, configVariable, label ) {
 		const url = mw.config.get( configVariable );
 		if ( url ) {
-			this.addButton( group, icon, url, ariaLabel );
+			this.addButton( group, icon, url, label );
 		}
 	}
 
@@ -332,10 +335,13 @@ class Ui {
 	 */
 
 	addSelectionPlayer() {
+		const label = mw.msg( 'wikispeech-play-selection' );
 		const selectionButton = new OO.ui.ButtonWidget( {
 			icon: 'play',
-			classes: [ 'ext-wikispeech-selection-player' ]
+			classes: [ 'ext-wikispeech-selection-player' ],
+			title: label
 		} );
+		selectionButton.$element.find( 'a' ).attr( 'aria-label', label );
 		selectionButton.on( 'click', () => this.player.playOrStop() );
 		this.selectionPlayer.button = selectionButton;
 		this.selectionPlayer.button.toggle( false );

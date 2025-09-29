@@ -65,6 +65,7 @@
 	"wikispeech-previous": "Wikispeech player button to go previous",
 	"wikispeech-play": "Wikispeech player button to play",
 	"wikispeech-pause": "Wikispeech player button to pause",
+	"wikispeech-play-selection": "Wikispeech player selection when selected text should be played.",
 	"wikispeech-next": "Wikispeech player button to go next",
 	"wikispeech-skip-ahead": "Wikispeech player button to skip ahead",
 	"wikispeech-help": "Wikispeech player button to get help",

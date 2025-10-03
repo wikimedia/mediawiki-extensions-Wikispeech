@@ -15,7 +15,6 @@ use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\Preferences\Hook\GetPreferencesHook;
 use MediaWiki\User\UserOptionsLookup;
 use MediaWiki\Wikispeech\ConfigurationValidator;
-use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWiki\Wikispeech\VoiceHandler;
 use OutputPage;
@@ -60,14 +59,18 @@ class PlayerHooks implements
 	/** @var HttpRequestFactory */
 	private $requestFactory;
 
+	/** @var VoiceHandler */
+	private $voiceHandler;
+
 	/**
-	 * @since 0.1.11
+	 * @since 0.1.13
 	 * @param ConfigFactory $configFactory
 	 * @param UserOptionsLookup $userOptionsLookup
 	 * @param WANObjectCache $mainWANObjectCache
 	 * @param LanguageFactory $languageFactory
 	 * @param PermissionManager $permissionManager
 	 * @param HttpRequestFactory $requestFactory
+	 * @param VoiceHandler $voiceHandler
 	 */
 	public function __construct(
 		ConfigFactory $configFactory,
@@ -75,7 +78,8 @@ class PlayerHooks implements
 		WANObjectCache $mainWANObjectCache,
 		LanguageFactory $languageFactory,
 		PermissionManager $permissionManager,
-		HttpRequestFactory $requestFactory
+		HttpRequestFactory $requestFactory,
+		VoiceHandler $voiceHandler
 	) {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->config = $configFactory->makeConfig( 'wikispeech' );
@@ -85,6 +89,7 @@ class PlayerHooks implements
 		$this->languageFactory = $languageFactory;
 		$this->permissionManager = $permissionManager;
 		$this->requestFactory = $requestFactory;
+		$this->voiceHandler = $voiceHandler;
 	}
 
 	/**
@@ -220,16 +225,6 @@ class PlayerHooks implements
 	 * @param array &$preferences Preferences array.
 	 */
 	public function onGetPreferences( $user, &$preferences ) {
-		$speechoidConnector = new SpeechoidConnector(
-			$this->config,
-			$this->requestFactory
-		);
-		$voiceHandler = new VoiceHandler(
-			$this->logger,
-			$this->config,
-			$speechoidConnector,
-			$this->mainWANObjectCache
-		);
 		$preferences['wikispeechEnable'] = [
 			'type' => 'toggle',
 			'label-message' => 'prefs-wikispeech-enable',
@@ -246,7 +241,7 @@ class PlayerHooks implements
 			'label-message' => 'prefs-wikispeech-part-of-content',
 			'help-message' => 'prefs-help-wikispeech-part-of-content'
 		];
-		$this->addVoicePreferences( $preferences, $voiceHandler );
+		$this->addVoicePreferences( $preferences, $this->voiceHandler );
 		$this->addSpeechRatePreferences( $preferences );
 	}
 

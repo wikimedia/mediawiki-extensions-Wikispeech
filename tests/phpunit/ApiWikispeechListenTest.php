@@ -16,6 +16,7 @@ use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\OutdatedOrInvalidRevisionException;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
+use MediaWiki\Wikispeech\VoiceHandler;
 use WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
 
@@ -104,6 +105,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$revisionStore = $this->createStub( RevisionStore::class );
 		$requestFactory = $this->createStub( HttpRequestFactory::class );
 		$utteranceGeneratorMock = $this->createStub( UtteranceGenerator::class );
+		$voiceHandler = $this->createStub( VoiceHandler::class );
 		$api = TestingAccessWrapper::newFromObject( new ApiWikispeechListen(
 			new ApiMain(),
 			'',
@@ -111,6 +113,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			$revisionStore,
 			$requestFactory,
 			$utteranceGeneratorMock,
+			$voiceHandler,
 			''
 		) );
 		return $api;

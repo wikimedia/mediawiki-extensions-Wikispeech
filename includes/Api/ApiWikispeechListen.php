@@ -73,13 +73,14 @@ class ApiWikispeechListen extends ApiBase {
 	private $listenMetricEntry;
 
 	/**
-	 * @since 0.1.5
+	 * @since 0.1.13
 	 * @param ApiMain $mainModule
 	 * @param string $moduleName
 	 * @param WANObjectCache $cache
 	 * @param RevisionStore $revisionStore
 	 * @param HttpRequestFactory $requestFactory
 	 * @param UtteranceGenerator $utteranceGenerator
+	 * @param VoiceHandler $voiceHandler
 	 * @param string $modulePrefix
 	 */
 	public function __construct(
@@ -89,6 +90,7 @@ class ApiWikispeechListen extends ApiBase {
 		RevisionStore $revisionStore,
 		HttpRequestFactory $requestFactory,
 		UtteranceGenerator $utteranceGenerator,
+		VoiceHandler $voiceHandler,
 		string $modulePrefix = ''
 	) {
 		$this->config = $this->getConfig();
@@ -104,12 +106,7 @@ class ApiWikispeechListen extends ApiBase {
 			$requestFactory
 		);
 		$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
-		$this->voiceHandler = new VoiceHandler(
-			$this->logger,
-			$this->config,
-			$this->speechoidConnector,
-			$cache
-		);
+		$this->voiceHandler = $voiceHandler;
 		$this->listenMetricEntry = new ListenMetricsEntry();
 		$this->utteranceGenerator = $utteranceGenerator;
 

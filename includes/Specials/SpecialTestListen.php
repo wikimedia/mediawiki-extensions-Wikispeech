@@ -11,8 +11,6 @@ namespace MediaWiki\Wikispeech\Specials;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\Languages\LanguageNameUtils;
-use MediaWiki\Logger\LoggerFactory;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\VoiceHandler;
 use SpecialPage;
@@ -31,19 +29,25 @@ class SpecialTestListen extends SpecialPage {
 	/** @var SpeechoidConnector */
 	private $speechoidConnector;
 
+	/** @var VoiceHandler */
+	private $voiceHandler;
+
 	/**
 	 * @since 0.1.13
 	 * @param LanguageNameUtils $languageNameUtils
 	 * @param mixed $speechoidConnector
+	 * @param VoiceHandler $voiceHandler
 	 */
 	public function __construct(
 		$languageNameUtils,
-		$speechoidConnector
+		$speechoidConnector,
+		VoiceHandler $voiceHandler
 	) {
 		parent::__construct( 'TestListen', 'wikispeech-listen' );
 
 		$this->languageNameUtils = $languageNameUtils;
 		$this->speechoidConnector = $speechoidConnector;
+		$this->voiceHandler = $voiceHandler;
 	}
 
 	/**
@@ -103,19 +107,8 @@ class SpecialTestListen extends SpecialPage {
 		$form->addHeaderHtml( $note );
 
 		$form->setSubmitCallback( function ( array $data, HTMLForm $form ) {
-			$logger = LoggerFactory::getInstance( 'Wikispeech' );
-			$config = MediaWikiServices::getInstance()
-				->getConfigFactory()
-				->makeConfig( 'wikispeech' );
-			$cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
-			$voiceHandler = new VoiceHandler(
-				$logger,
-				$config,
-				$this->speechoidConnector,
-				$cache
-			);
 			$language = $data['language'];
-			$voice = $voiceHandler->getDefaultVoice( $language );
+			$voice = $this->voiceHandler->getDefaultVoice( $language );
 			$speechoidData = [];
 			if ( $data['ssml'] ) {
 				$speechoidData['ssml'] = $data['text'];

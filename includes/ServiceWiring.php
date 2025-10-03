@@ -1,5 +1,6 @@
 <?php
 
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Lexicon\ConfiguredLexiconStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
@@ -9,6 +10,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+use MediaWiki\Wikispeech\VoiceHandler;
 use MediaWiki\Wikispeech\WikispeechServices;
 
 /** @phpcs-require-sorted-array */
@@ -59,5 +61,14 @@ return [
 	},
 	'Wikispeech.UtteranceStore' => static function ( MediaWikiServices $services ): UtteranceStore {
 		return new UtteranceStore();
+	},
+	'Wikispeech.VoiceHandler' => static function ( MediaWikiServices $services ): VoiceHandler {
+		return new VoiceHandler(
+		LoggerFactory::getInstance( 'Wikispeech' ),
+		$services->getMainConfig(),
+		$services->get( 'Wikispeech.SpeechoidConnector' ),
+		$services->getMainWANObjectCache()
+		);
 	}
+
 ];

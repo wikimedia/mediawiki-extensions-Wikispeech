@@ -152,7 +152,8 @@
 			"class": "MediaWiki\\Wikispeech\\Specials\\SpecialTestListen",
 			"services": [
 				"LanguageNameUtils",
-				"Wikispeech.SpeechoidConnector"
+				"Wikispeech.SpeechoidConnector",
+				"Wikispeech.VoiceHandler"
 			]
 
 		}
@@ -196,7 +197,8 @@
 				"MainWANObjectCache",
 				"LanguageFactory",
 				"PermissionManager",
-				"HttpRequestFactory"
+				"HttpRequestFactory",
+				"Wikispeech.VoiceHandler"
 			]
 		},
 		"DatabaseHooks": {
@@ -594,7 +596,8 @@
 				"MainWANObjectCache",
 				"RevisionStore",
 				"HttpRequestFactory",
-				"Wikispeech.UtteranceGenerator"
+				"Wikispeech.UtteranceGenerator",
+				"Wikispeech.VoiceHandler"
 			]
 		}
 	},

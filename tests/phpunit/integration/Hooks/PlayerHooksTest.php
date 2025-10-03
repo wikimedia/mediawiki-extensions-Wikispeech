@@ -14,6 +14,7 @@ use MediaWiki\Permissions\PermissionManager;
 use Mediawiki\Title\Title;
 use MediaWiki\User\UserOptionsManager;
 use MediaWiki\Wikispeech\Hooks\PlayerHooks;
+use MediaWiki\Wikispeech\VoiceHandler;
 use MediaWikiIntegrationTestCase;
 use Message;
 use OutputPage;
@@ -84,13 +85,15 @@ class PlayerHooksTest extends MediaWikiIntegrationTestCase {
 		$this->skin = $this->createStub( SkinTemplate::class );
 		$this->skin->method( 'getOutput' )->willReturn( $this->out );
 		$this->hookContainer = $this->getServiceContainer()->getHookContainer();
+		$voiceHandler = $this->createStub( VoiceHandler::class );
 		$this->hooks = new PlayerHooks(
 			$this->getServiceContainer()->getConfigFactory(),
 			$this->getServiceContainer()->getUserOptionsLookup(),
 			$this->getServiceContainer()->getMainWANObjectCache(),
 			$this->getServiceContainer()->getLanguageFactory(),
 			$this->getServiceContainer()->getPermissionManager(),
-			$this->getServiceContainer()->getHttpRequestFactory()
+			$this->getServiceContainer()->getHttpRequestFactory(),
+			$voiceHandler
 		);
 	}
 

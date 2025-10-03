@@ -126,4 +126,18 @@ class WikispeechServices {
 			->get( 'Wikispeech.UtteranceStore' );
 	}
 
+	/**
+	 * @param ContainerInterface|null $services Service container to
+	 * use. If null, global MediaWikiServices::getInstance() will be
+	 * used instead.
+	 *
+	 * @return VoiceHandler
+	 */
+	public static function getVoiceHandler(
+		?ContainerInterface $services = null
+	): VoiceHandler {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'Wikispeech.VoiceHandler' );
+	}
+
 }

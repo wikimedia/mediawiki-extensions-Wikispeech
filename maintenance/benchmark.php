@@ -10,7 +10,6 @@ namespace MediaWiki\Wikispeech;
 
 use EmptyBagOStuff;
 use Maintenance;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\SegmentList;
@@ -148,18 +147,11 @@ class Benchmark extends Maintenance {
 
 		$emptyWanCache = new WANObjectCache( [ 'cache' => new EmptyBagOStuff() ] );
 
-		$logger = LoggerFactory::getInstance( 'Wikispeech' );
-
 		if ( !$this->speechoidConnector ) {
 			$this->speechoidConnector = new SpeechoidConnector( $config, $requestFactory );
 		}
 		if ( !$this->voiceHandler ) {
-			$this->voiceHandler = new VoiceHandler(
-				$logger,
-				$config,
-				$this->speechoidConnector,
-				$emptyWanCache
-			);
+			$this->voiceHandler = WikispeechServices::getVoiceHandler();
 		}
 		if ( !$this->segmentPageFactory ) {
 			$this->segmentPageFactory = new SegmentPageFactory(

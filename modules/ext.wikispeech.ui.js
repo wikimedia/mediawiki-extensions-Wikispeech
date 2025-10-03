@@ -54,7 +54,7 @@ class Ui {
 		const playerGroup = this.addToolbarGroup();
 		this.addButton(
 			playerGroup,
-			'first',
+			'doubleChevronStart',
 			() => this.player.skipBackUtterance(),
 			mw.msg( 'wikispeech-skip-back' )
 		);
@@ -84,7 +84,7 @@ class Ui {
 		);
 		this.addButton(
 			playerGroup,
-			'last',
+			'doubleChevronEnd',
 			() => this.player.skipAheadUtterance(),
 			mw.msg( 'wikispeech-skip-ahead' )
 		);

@@ -51,6 +51,19 @@ class Ui {
 			}
 		);
 
+		const playerGroupPlayStop = this.addToolbarGroup();
+		this.playPauseButton = this.addButton(
+			playerGroupPlayStop,
+			'play',
+			() => this.player.playOrPause(),
+			mw.msg( 'wikispeech-play' )
+		);
+		this.addButton(
+			playerGroupPlayStop,
+			'stop',
+			() => this.player.stop(),
+			mw.msg( 'wikispeech-stop' )
+		);
 		const playerGroup = this.addToolbarGroup();
 		this.addButton(
 			playerGroup,
@@ -63,18 +76,6 @@ class Ui {
 			'previous',
 			() => this.player.skipBackToken(),
 			mw.msg( 'wikispeech-previous' )
-		);
-		this.playPauseButton = this.addButton(
-			playerGroup,
-			'play',
-			() => this.player.playOrPause(),
-			mw.msg( 'wikispeech-play' )
-		);
-		this.addButton(
-			playerGroup,
-			'stop',
-			() => this.player.stop(),
-			mw.msg( 'wikispeech-stop' )
 		);
 		this.addButton(
 			playerGroup,

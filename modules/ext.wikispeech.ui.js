@@ -54,40 +54,58 @@ class Ui {
 		const playerGroupPlayStop = this.addToolbarGroup();
 		this.playPauseButton = this.addButton(
 			playerGroupPlayStop,
-			'play',
 			() => this.player.playOrPause(),
-			mw.msg( 'wikispeech-play' )
+			{
+				title: mw.msg( 'wikispeech-play' ),
+				icon: 'play',
+				flags: [
+					'primary',
+					'progressive'
+				]
+			}
 		);
 		this.addButton(
 			playerGroupPlayStop,
-			'stop',
 			() => this.player.stop(),
-			mw.msg( 'wikispeech-stop' )
+			// TODO: add destructive flag when
+			// https://gerrit.wikimedia.org/r/c/1194133 is done.
+			{
+				title: mw.msg( 'wikispeech-stop' ),
+				icon: 'stop'
+			}
 		);
 		const playerGroup = this.addToolbarGroup();
 		this.addButton(
 			playerGroup,
-			'doubleChevronStart',
 			() => this.player.skipBackUtterance(),
-			mw.msg( 'wikispeech-skip-back' )
+			{
+				title: mw.msg( 'wikispeech-skip-back' ),
+				icon: 'doubleChevronStart'
+			}
 		);
 		this.addButton(
 			playerGroup,
-			'previous',
 			() => this.player.skipBackToken(),
-			mw.msg( 'wikispeech-previous' )
+			{
+				title: mw.msg( 'wikispeech-skip-back' ),
+				icon: 'previous'
+			}
 		);
 		this.addButton(
 			playerGroup,
-			'next',
 			() => this.player.skipAheadToken(),
-			mw.msg( 'wikispeech-next' )
+			{
+				title: mw.msg( 'wikispeech-next' ),
+				icon: 'next'
+			}
 		);
 		this.addButton(
 			playerGroup,
-			'doubleChevronEnd',
 			() => this.player.skipAheadUtterance(),
-			mw.msg( 'wikispeech-skip-ahead' )
+			{
+				title: mw.msg( 'wikispeech-skip-ahead' ),
+				icon: 'doubleChevronEnd'
+			}
 		);
 
 		this.linkGroup = this.addToolbarGroup();
@@ -163,11 +181,12 @@ class Ui {
 
 		this.addButton(
 			this.linkGroup,
-			'edit',
 			editUrl,
-			mw.msg( 'wikispeech-edit-lexicon-btn' ),
-			null,
-			'wikispeech-edit'
+			{
+				title: mw.msg( 'wikispeech-edit-lexicon-btn' ),
+				icon: 'edit',
+				id: 'wikispeech-edit'
+			}
 		);
 	}
 
@@ -187,22 +206,17 @@ class Ui {
 	 * Add a control button.
 	 *
 	 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
-	 * @param {string} icon Name of button icon.
 	 * @param {Function|string} onClick Function to call or link.
 	 * @param {string} label Labels, such as aria labels and titles
-	 * @param {string[]} classes Classes to add to the button.
-	 * @param {string} id Id to add to the button.
+	 * @param {Object} config Configuration for the button widget.
+	 *  `title` is also used as `aria-label` attribute.
+	 *  See {@link OO.ui.ButtonWidget}.
 	 * @return {OO.ui.ButtonWidget}
 	 */
 
-	addButton( group, icon, onClick, label, classes, id ) {
-		// eslint-disable-next-line mediawiki/class-doc
-		const button = new OO.ui.ButtonWidget( {
-			icon: icon,
-			classes: classes,
-			id: id,
-			title: label
-		} );
+	addButton( group, onClick, config ) {
+		config = config || {};
+		const button = new OO.ui.ButtonWidget( config );
 		if ( typeof onClick === 'function' ) {
 			button.on( 'click', onClick );
 		} else if ( typeof onClick === 'string' ) {
@@ -210,8 +224,8 @@ class Ui {
 			// Open link in new tab or window.
 			button.setTarget( '_blank' );
 		}
-		if ( label ) {
-			button.$element.find( 'a' ).attr( 'aria-label', label );
+		if ( config.title ) {
+			button.$element.find( 'a' ).attr( 'aria-label', config.title );
 		}
 		group.addItems( [ button ] );
 		return button;
@@ -308,6 +322,9 @@ class Ui {
 
 	setSelectionPlayerIconToStop() {
 		this.selectionPlayer.button.setIcon( 'stop' );
+		this.selectionPlayer.button.setTitle( mw.msg( 'wikispeech-stop' ) );
+		this.selectionPlayer.button.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-stop' ) );
+
 	}
 	/**
 	 * Add a button that takes the user to another page.
@@ -326,7 +343,7 @@ class Ui {
 	addLinkConfigButton( group, icon, configVariable, label ) {
 		const url = mw.config.get( configVariable );
 		if ( url ) {
-			this.addButton( group, icon, url, label );
+			this.addButton( group, url, { title: label, icon: icon } );
 		}
 	}
 

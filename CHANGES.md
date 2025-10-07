@@ -33,6 +33,8 @@ Update version in extension.json.
 ### 0.1.13-SNAPSHOT
 YYYY-MM-DD
 Speechoid: 0.1.2
+
+* [T405910](https://phabricator.wikimedia.org/T405910) Make play button more prominent
 * [T392426](https://phabricator.wikimedia.org/T392426) Add lexicon entries from wiki to Speechoid
 * [T400992](https://phabricator.wikimedia.org/T400992) Error message when preview empty transcription
 * [T387284](https://phabricator.wikimedia.org/T387284) Pre-sythesize messages

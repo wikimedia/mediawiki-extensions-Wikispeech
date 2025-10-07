@@ -92,13 +92,14 @@ QUnit.test( 'addEditButton(): add edit button with link to local URL', function 
 	sinon.assert.calledWith(
 		addButton,
 		this.ui.linkGroup,
-		'edit',
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
 		'/wiki/index.php?title=Special%3AEditLexicon&language=en&page=1',
-		mw.msg( 'wikispeech-edit-lexicon-btn' ),
-		null,
-		'wikispeech-edit'
+		{
+			title: mw.msg( 'wikispeech-edit-lexicon-btn' ),
+			icon: 'edit',
+			id: 'wikispeech-edit'
+		}
 	);
 } );
 
@@ -114,13 +115,14 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL', fu
 	sinon.assert.calledWith(
 		addButton,
 		this.ui.linkGroup,
-		'edit',
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
 		'http://producer.url/w/index.php?title=Special%3AEditLexicon&language=en&page=1',
-		mw.msg( 'wikispeech-edit-lexicon-btn' ),
-		null,
-		'wikispeech-edit'
+		{
+			title: mw.msg( 'wikispeech-edit-lexicon-btn' ),
+			icon: 'edit',
+			id: 'wikispeech-edit'
+		}
 	);
 } );
 
@@ -147,11 +149,12 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL, wit
 	sinon.assert.calledWith(
 		addButton,
 		this.ui.linkGroup,
-		'edit',
 		expectedUrl,
-		mw.msg( 'wikispeech-edit-lexicon-btn' ),
-		null,
-		'wikispeech-edit'
+		{
+			title: mw.msg( 'wikispeech-edit-lexicon-btn' ),
+			icon: 'edit',
+			id: 'wikispeech-edit'
+		}
 	);
 } );
 

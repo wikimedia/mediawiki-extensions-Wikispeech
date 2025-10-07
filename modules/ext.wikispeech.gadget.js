@@ -140,15 +140,19 @@ function extendUi() {
 	const dialog = new UserOptionsDialog();
 	main.ui.addWindow( dialog );
 	const gadgetGroup = main.ui.addToolbarGroup();
-	main.ui.addButton( gadgetGroup, 'settings', () => {
-		main.ui.openWindow( dialog ).done(
-			( data ) => {
-				if ( data && data.action === 'save' ) {
-					writeUserOptionsToWikiPage( dialog );
-				}
+	main.ui.addButton(
+		gadgetGroup,
+		async () => {
+			const data = await main.ui.openWindow( dialog );
+			if ( data && data.action === 'save' ) {
+				writeUserOptionsToWikiPage( dialog );
 			}
-		);
-	}, mw.msg( 'wikispeech-settings' ) );
+		},
+		{
+			title: mw.msg( 'wikispeech-settings' ),
+			icon: 'settings'
+		}
+	);
 	if ( mw.config.get( 'wgWikispeechAllowConsumerEdits' ) ) {
 		const producerUrl = mw.config.get( 'wgWikispeechProducerUrl' );
 		const producerApi = new mw.ForeignApi( `${ producerUrl }/api.php` );

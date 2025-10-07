@@ -308,8 +308,8 @@ class Ui {
 	 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
 	 * @param {string} icon Name of button icon.
 	 * @param {string} configVariable The config variable to get
-	 * @param {string} ariaLabel Aria-label
 	 *  link destination from.
+	 * @param {string} ariaLabel Aria-label
 	 */
 
 	addLinkConfigButton( group, icon, configVariable, ariaLabel ) {

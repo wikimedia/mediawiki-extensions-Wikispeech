@@ -22,5 +22,18 @@
 	"wikispeech-lexicon-new": "Nuovo",
 	"wikispeech-testlisten-text": "Testo",
 	"wikispeech-lexicon-sync-error-button": "Sovrascrivi",
-	"wikispeech-poc-link": "collegamento:"
+	"wikispeech-poc-link": "collegamento:",
+	"wikispeech-morphology": "Morfología",
+	"wikispeech-pos": "Parte del discorso",
+	"wikispeech-paradigm": "Paradigma",
+	"wikispeech-morphology-sin": "Singolare",
+	"wikispeech-morphology-plu": "Plurale",
+	"wikispeech-morphology-nom": "Nominativo",
+	"wikispeech-morphology-gen": "Genitivo",
+	"wikispeech-morphology-ind": "Indefinito",
+	"wikispeech-morphology-utr": "Genere comune",
+	"wikispeech-morphology-neu": "Neutro",
+	"wikispeech-morphology-nn": "Sostantivo",
+	"wikispeech-morphology-pm": "Pronome",
+	"wikispeech-morphology-vb": "Verbo"
 }

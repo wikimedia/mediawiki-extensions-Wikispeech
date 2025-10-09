@@ -65,5 +65,19 @@
 	"wikispeech-lexicon-sync-error": "Die Lexika sind nicht synchron. Entweder enthalten sie unterschiedliche Eigenschaften, oder ein Eintrag ist nur in einem der Lexika vorhanden. Möchtest du den lokalen Eintrag überschreiben, damit er mit Speechoid übereinstimmt?",
 	"wikispeech-lexicon-sync-error-button": "Überschreiben",
 	"wikispeech-lexicon-sync-error-unidentified": "Beim Versuch, Lexikoneinträge zu synchronisieren, ist ein nicht identifizierter Fehler aufgetreten.",
-	"wikispeech-poc-link": "Link:"
+	"wikispeech-poc-link": "Link:",
+	"wikispeech-morphology": "Morphologie",
+	"wikispeech-pos": "Wortart",
+	"wikispeech-paradigm": "Paradigma",
+	"wikispeech-morphology-sin": "Singular",
+	"wikispeech-morphology-plu": "Plural",
+	"wikispeech-morphology-nom": "Nominativ",
+	"wikispeech-morphology-gen": "Genitiv",
+	"wikispeech-morphology-ind": "Indefinite",
+	"wikispeech-morphology-def": "Definite",
+	"wikispeech-morphology-utr": "Gemeinsames Geschlecht",
+	"wikispeech-morphology-neu": "Neutrum",
+	"wikispeech-morphology-nn": "Substantiv",
+	"wikispeech-morphology-pm": "Pronomen",
+	"wikispeech-morphology-vb": "Verb"
 }

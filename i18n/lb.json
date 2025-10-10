@@ -7,6 +7,7 @@
 	},
 	"prefs-wikispeech-voice": "Stëmm",
 	"prefs-wikispeech-speech-rate": "Vitess vun der Sprooch",
+	"prefs-wikispeech-enable": "Wikispeech aktivéieren",
 	"right-wikispeech-listen": "D'Säit lauschteren",
 	"action-wikispeech-listen": "d'Säit lauschteren",
 	"wikispeech-listen": "Lauschteren",
@@ -16,6 +17,7 @@
 	"wikispeech-language": "Sprooch",
 	"wikispeech-word": "Wuert",
 	"wikispeech-transcription": "Transkriptioun",
+	"wikispeech-lexicon-next": "Nächst",
 	"wikispeech-lexicon-save": "Späicheren",
 	"wikispeech-lexicon-new": "Nei",
 	"wikispeech-testlisten-text": "Text",
@@ -28,5 +30,12 @@
 	"wikispeech-edit-lexicon-btn": "Lexikon änneren",
 	"wikispeech-settings": "Astellungen",
 	"wikispeech-lexicon-sync-error-button": "Iwwerschreiwen",
-	"wikispeech-poc-link": "Link:"
+	"wikispeech-poc-link": "Link:",
+	"wikispeech-morphology": "Morphologie",
+	"wikispeech-paradigm": "Paradigma",
+	"wikispeech-morphology-nom": "Nominativ",
+	"wikispeech-morphology-gen": "Genitiv",
+	"wikispeech-morphology-nn": "Substantiv",
+	"wikispeech-morphology-pm": "Pronomen",
+	"wikispeech-morphology-vb": "Verb"
 }

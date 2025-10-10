@@ -65,5 +65,19 @@
 	"wikispeech-lexicon-sync-error": "Лексиконите се неусогласени, било поради тоа што содржат различни својства, или бидејќи еден запис постои само во еден од лексиконите. Дали би сакале да презапишете врз месниот запис за добиеното да одговара на Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Презапиши",
 	"wikispeech-lexicon-sync-error-unidentified": "Се јави непрепознаена грешка при обидот за усогласување на лексиконските записи.",
-	"wikispeech-poc-link": "врска:"
+	"wikispeech-poc-link": "врска:",
+	"wikispeech-morphology": "Морфологија",
+	"wikispeech-pos": "Зборовнa група",
+	"wikispeech-paradigm": "Парадигма",
+	"wikispeech-morphology-sin": "Еднина",
+	"wikispeech-morphology-plu": "Множина",
+	"wikispeech-morphology-nom": "Номинатив",
+	"wikispeech-morphology-gen": "Генитив",
+	"wikispeech-morphology-ind": "Неопределено",
+	"wikispeech-morphology-def": "Определено",
+	"wikispeech-morphology-utr": "Општ род",
+	"wikispeech-morphology-neu": "Среден",
+	"wikispeech-morphology-nn": "Именка",
+	"wikispeech-morphology-pm": "Заменка",
+	"wikispeech-morphology-vb": "Глагол"
 }

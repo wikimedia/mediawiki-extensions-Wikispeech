@@ -11,5 +11,15 @@
 	"wikispeech-next": "Следеће",
 	"wikispeech-help": "Помоћ",
 	"wikispeech-settings": "Подешавања",
-	"wikispeech-lexicon-sync-error-button": "Пресними"
+	"wikispeech-lexicon-sync-error-button": "Пресними",
+	"wikispeech-morphology": "Морфологија",
+	"wikispeech-paradigm": "Парадигма",
+	"wikispeech-morphology-sin": "Једнина",
+	"wikispeech-morphology-plu": "Множина",
+	"wikispeech-morphology-nom": "Номинатив",
+	"wikispeech-morphology-gen": "Генитив",
+	"wikispeech-morphology-ind": "Неодређено",
+	"wikispeech-morphology-nn": "Именица",
+	"wikispeech-morphology-pm": "Заменица",
+	"wikispeech-morphology-vb": "Глагол"
 }

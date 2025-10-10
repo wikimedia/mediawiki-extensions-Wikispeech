@@ -67,5 +67,19 @@
 	"wikispeech-lexicon-sync-error": "المعاجم غير متزامنة. إما أنها تحتوي على خصائص مختلفة، أو قد يكون أحد المدخلات موجودًا في أحد المعاجم فقط. هل ترغب في استبدال المدخل المحلي ليطابق Speechoid؟",
 	"wikispeech-lexicon-sync-error-button": "إعادة كتابة",
 	"wikispeech-lexicon-sync-error-unidentified": "حدث خطأ غير محدد أثناء محاولة مزامنة إدخالات المعجم.",
-	"wikispeech-poc-link": "وصلة:"
+	"wikispeech-poc-link": "وصلة:",
+	"wikispeech-morphology": "علم التشكل",
+	"wikispeech-pos": "جزء من الكلام",
+	"wikispeech-paradigm": "نموذج",
+	"wikispeech-morphology-sin": "مفرد",
+	"wikispeech-morphology-plu": "جمع",
+	"wikispeech-morphology-nom": "ترشيحي",
+	"wikispeech-morphology-gen": "الجر",
+	"wikispeech-morphology-ind": "غير محدد",
+	"wikispeech-morphology-def": "محدد",
+	"wikispeech-morphology-utr": "الجنس المشترك",
+	"wikispeech-morphology-neu": "خصى",
+	"wikispeech-morphology-nn": "اسم",
+	"wikispeech-morphology-pm": "ضمير",
+	"wikispeech-morphology-vb": "الفعل"
 }

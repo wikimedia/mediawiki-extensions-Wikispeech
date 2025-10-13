@@ -71,5 +71,19 @@
 	"wikispeech-lexicon-sync-error": "De lexicons zijn niet synchroon. Ze bevatten verschillende eigenschappen, of een vermelding komt slechts in één van de lexicons voor. Wilt u de lokale vermelding overschrijven zodat deze overeenkomt met Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Overschrijven",
 	"wikispeech-lexicon-sync-error-unidentified": "Er is een onbekende fout opgetreden bij het synchroniseren van lexiconvermeldingen.",
-	"wikispeech-poc-link": "koppeling:"
+	"wikispeech-poc-link": "koppeling:",
+	"wikispeech-morphology": "Morfologie",
+	"wikispeech-pos": "Woordsoort",
+	"wikispeech-paradigm": "Paradigma",
+	"wikispeech-morphology-sin": "Enkelvoud",
+	"wikispeech-morphology-plu": "Meervoud",
+	"wikispeech-morphology-nom": "Nominatief",
+	"wikispeech-morphology-gen": "Genitief",
+	"wikispeech-morphology-ind": "Onbepaald",
+	"wikispeech-morphology-def": "Bepaald",
+	"wikispeech-morphology-utr": "Commuun genus",
+	"wikispeech-morphology-neu": "Onzijdig",
+	"wikispeech-morphology-nn": "Zelfstandig naamwoord",
+	"wikispeech-morphology-pm": "Voornaamwoord",
+	"wikispeech-morphology-vb": "Werkwoord"
 }

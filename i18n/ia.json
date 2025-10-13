@@ -63,5 +63,19 @@
 	"wikispeech-lexicon-sync-error": "Le lexicos non es synchrone. O illos contine proprietates differente, o qualque entrata existe solmente in un del lexicos. Vole tu superscriber le entrata local de maniera que correspondera con Speechoid?",
 	"wikispeech-lexicon-sync-error-button": "Superscriber",
 	"wikispeech-lexicon-sync-error-unidentified": "Un error non identificate ha occurrite durante le tentativa de synchronisar le entratas del lexico.",
-	"wikispeech-poc-link": "ligamine:"
+	"wikispeech-poc-link": "ligamine:",
+	"wikispeech-morphology": "Morphologia",
+	"wikispeech-pos": "Categoria grammatical",
+	"wikispeech-paradigm": "Paradigma",
+	"wikispeech-morphology-sin": "Singular",
+	"wikispeech-morphology-plu": "Plural",
+	"wikispeech-morphology-nom": "Nominativo",
+	"wikispeech-morphology-gen": "Genitivo",
+	"wikispeech-morphology-ind": "Indefinite",
+	"wikispeech-morphology-def": "Definite",
+	"wikispeech-morphology-utr": "Genere commun",
+	"wikispeech-morphology-neu": "Neutro",
+	"wikispeech-morphology-nn": "Substantivo",
+	"wikispeech-morphology-pm": "Pronomine",
+	"wikispeech-morphology-vb": "Verbo"
 }

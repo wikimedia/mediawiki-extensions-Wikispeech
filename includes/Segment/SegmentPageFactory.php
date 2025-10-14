@@ -196,8 +196,8 @@ class SegmentPageFactory extends SegmentFactory {
 	 * @throws InvalidArgumentException If $title xor $revisionId is not provided.
 	 */
 	public function segmentPage(
-		?Title $title,
-		?int $revisionId
+		?Title $title = null,
+		?int $revisionId = null
 	): SegmentPageResponse {
 		$pageProvider = $this->pageProviderFactory();
 

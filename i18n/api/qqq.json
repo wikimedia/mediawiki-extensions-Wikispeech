@@ -32,6 +32,7 @@
 	"apihelp-wikispeech-listen-param-voice": "{{doc-apihelp-param|wikispeech-listen|voice}}",
 	"apihelp-wikispeech-listen-param-consumer-url": "{{doc-apihelp-param|wikispeech-listen|consumer-url}}",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "{{doc-apihelp-param|wikispeech-listen|skip-journal-metrics}}",
+	"apihelp-wikispeech-listen-param-message-key": "{{doc-apihelp-param|wikispeech-listen|message-key}}",
 	"apierror-wikispeech-listen-deleted-revision": "{{doc-apierror}}",
 	"apierror-wikispeech-listen-notallowed": "{{doc-apierror}}",
 	"apierror-wikispeech-listen-invalid-language": "{{doc-apierror}}",
@@ -42,5 +43,7 @@
 	"apihelp-wikispeech-listen-example-2": "{{doc-apihelp-example|wikispeech-listen}}",
 	"apihelp-wikispeech-listen-example-3": "{{doc-apihelp-example|wikispeech-listen}}",
 	"apihelp-wikispeech-listen-example-4": "{{doc-apihelp-example|wikispeech-listen}}",
-	"apierror-wikispeech-listen-invalid-input-too-long": "{{doc-apierror}}"
+	"apihelp-wikispeech-listen-example-5": "{{doc-apihelp-example|wikispeech-listen}}",
+	"apierror-wikispeech-listen-invalid-input-too-long": "{{doc-apierror}}",
+	"apierror-wikispeech-listen-no-audio": "{{doc-apierror}}"
 }

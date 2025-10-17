@@ -8,10 +8,8 @@ namespace MediaWiki\Wikispeech\Segment;
  * @license GPL-2.0-or-later
  */
 
-use InvalidArgumentException;
-
 /**
- * @since 0.1.13
+ * @since 0.1.14
  */
 class SegmentMessagesFactory extends SegmentFactory {
 
@@ -19,14 +17,19 @@ class SegmentMessagesFactory extends SegmentFactory {
 	 * @since 0.1.13
 	 * @param string $messageKey
 	 * @param string $language
-	 * @return SegmentList
-	 * @throws InvalidArgumentException If $text or $language is not provided.
+	 * @return SegmentMessageResponse
 	 */
-	public function segmentMessage( string $messageKey, string $language ): SegmentList {
+	public function segmentMessage( string $messageKey, string $language ): SegmentMessageResponse {
 		$text = wfMessage( $messageKey )->inLanguage( $language )->text();
-		$segment = new Segment( [ new CleanedText( $text ) ] );
-		$segment->setHash( md5( $text ) );
 
-		return new SegmentList( [ $segment ] );
+		$cleanedText = new CleanedText( $text );
+		$segmenter = new StandardSegmenter();
+		$segments = $segmenter->segmentSentences( [ $cleanedText ] );
+		$response = new SegmentMessageResponse();
+		$response->setMessageKey( $messageKey );
+		$response->setLanguage( $language );
+		$response->setSegments( new SegmentList( $segments ) );
+
+		return $response;
 	}
 }

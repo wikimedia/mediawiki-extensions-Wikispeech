@@ -17,6 +17,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Api\ListenMetricsEntry;
 use MediaWiki\Wikispeech\InputTextValidator;
 use MediaWiki\Wikispeech\Segment\Segment;
+use MediaWiki\Wikispeech\Segment\SegmentMessagesFactory;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\Segment\TextFilter\Sv\SwedishFilter;
 use MediaWiki\Wikispeech\SpeechoidConnector;
@@ -24,6 +25,7 @@ use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use MediaWiki\Wikispeech\VoiceHandler;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use WANObjectCache;
 
 /**
  * @since 0.1.11
@@ -34,6 +36,9 @@ class UtteranceGenerator {
 	 * @var SegmentPageFactory
 	 */
 	private $segmentPageFactory;
+
+	/** @var SegmentMessagesFactory */
+	private $segmentMessagesFactory;
 
 	/** @var UtteranceStore */
 	private $utteranceStore;
@@ -53,6 +58,9 @@ class UtteranceGenerator {
 	/** @var IContextSource */
 	private $context;
 
+	/** @var WANObjectCache */
+	private $cache;
+
 	/**
 	 * @since 0.1.13
 	 * @param SpeechoidConnector $speechoidConnector
@@ -62,13 +70,16 @@ class UtteranceGenerator {
 	public function __construct(
 		SpeechoidConnector $speechoidConnector,
 		UtteranceStore $utteranceStore,
-		SegmentPageFactory $segmentPageFactory
+		SegmentPageFactory $segmentPageFactory,
+		WANObjectCache $cache,
+		SegmentMessagesFactory $segmentMessagesFactory
 	) {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->speechoidConnector = $speechoidConnector;
 		$this->segmentPageFactory = $segmentPageFactory;
-
+		$this->cache = $cache;
 		$this->utteranceStore = $utteranceStore;
+		$this->segmentMessagesFactory = $segmentMessagesFactory;
 	}
 
 	/**
@@ -293,4 +304,61 @@ class UtteranceGenerator {
 			$segment
 		);
 	}
+
+	/**
+	 * Retrieves the matching utterance for a given message key.
+	 *
+	 * @since 0.1.14
+	 *
+	 * @param string $messageKey
+	 * @param string $language
+	 * @param string $voice
+	 * @param string|null $consumerUrl
+	 * @throws RuntimeException
+	 * @return Utterance[] $utterancesByHash Map of segment hashes to Utterance objects
+	 */
+	public function getUtterancesForMessageKey(
+		string $messageKey,
+		string $language,
+		string $voice,
+		?string $consumerUrl = null
+	): array {
+		if ( !wfMessage( $messageKey )->exists() ) {
+			throw new InvalidArgumentException( "Invalid message key: $messageKey" );
+		}
+
+		$segmentResponse = $this->segmentMessagesFactory->segmentMessage( $messageKey, $language );
+		$segmentList = $segmentResponse->getSegments();
+		$segments = $segmentList->getSegments();
+
+		$utterancesByHash = [];
+
+		foreach ( $segments as $segment ) {
+
+			$segmentHash = $segment->getHash();
+			if ( $segmentHash === null ) {
+				throw new RuntimeException( 'Segment hash is null' );
+			}
+
+			$utterance = $this->utteranceStore->findMessageUtterance(
+			$consumerUrl,
+			$messageKey,
+			$language,
+			$voice,
+			$segmentHash,
+			false
+			);
+
+			if ( $utterance === null ) {
+				throw new RuntimeException(
+					"No utterance has been synthesized yet for the message key: " . $messageKey .
+					". Please run the 'preSynthesizeMessages.php' maintenance script." );
+			}
+
+			$utterancesByHash[$segmentHash] = $utterance;
+		}
+
+		return $utterancesByHash;
+	}
+
 }

@@ -9,7 +9,6 @@ namespace MediaWiki\Wikispeech;
 use Exception;
 use InvalidArgumentException;
 use Maintenance;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\SegmentMessagesFactory;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 
@@ -27,6 +26,9 @@ require_once "$IP/maintenance/Maintenance.php";
 class PreSynthesizeMessages extends Maintenance {
 	/** @var UtteranceGenerator */
 	private $utteranceGenerator;
+
+	/** @var SegmentMessagesFactory */
+	private $segmentMessagesFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -55,6 +57,7 @@ class PreSynthesizeMessages extends Maintenance {
 		$language = $this->getOption( 'language', null );
 		$voice = $this->getOption( 'voice', null );
 		$this->utteranceGenerator = WikispeechServices::getUtteranceGenerator();
+		$this->segmentMessagesFactory = WikispeechServices::getSegmentMessagesFactory();
 
 		// @todo These messages are arbitrary to show that it works.
 		// In the future we probably want to generate a list of messages
@@ -74,12 +77,9 @@ class PreSynthesizeMessages extends Maintenance {
 	 */
 	public function synthesizeErrorMessage( $messageKey, $language, $voice ) {
 		try {
-			$services = MediaWikiServices::getInstance();
-			$segmentMessagesFactory = new SegmentMessagesFactory(
-				$services->getMainWANObjectCache(),
-				$this->getConfig()
-			);
-			$segmentList = $segmentMessagesFactory->segmentMessage( $messageKey, $language );
+
+			$segmentResponse = $this->segmentMessagesFactory->segmentMessage( $messageKey, $language );
+			$segmentList = $segmentResponse->getSegments();
 			if ( !$voice ) {
 				$voiceHandler = WikispeechServices::getVoiceHandler();
 				$voice = $voiceHandler->getDefaultVoice( $language );
@@ -91,6 +91,7 @@ class PreSynthesizeMessages extends Maintenance {
 			}
 			foreach ( $segmentList->getSegments() as $segment ) {
 				$segmentHash = $segment->getHash();
+
 				if ( $segmentHash === null ) {
 					throw new InvalidArgumentException(
 						"Segment hash is null for message key: $messageKey"
@@ -108,6 +109,7 @@ class PreSynthesizeMessages extends Maintenance {
 			}
 
 			$this->output( "Successfully pre-synthesized message with message key: $messageKey\n" );
+
 		} catch ( Exception $e ) {
 			$this->output( "Error synthesizing message with message key: $messageKey " . $e->getMessage() . "\n" );
 		}

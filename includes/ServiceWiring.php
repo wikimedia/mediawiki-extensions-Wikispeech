@@ -7,6 +7,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
 use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWanCacheStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
+use MediaWiki\Wikispeech\Segment\SegmentMessagesFactory;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
@@ -48,6 +49,12 @@ return [
 			RequestContext::getMain()->getUser()
 		);
 	},
+	'Wikispeech.SegmentMessagesFactory' => static function ( MediaWikiServices $services ): SegmentMessagesFactory {
+		return new SegmentMessagesFactory(
+			$services->getMainWANObjectCache(),
+			$services->getMainConfig(),
+		);
+	},
 	'Wikispeech.SegmentPageFactory' => static function ( MediaWikiServices $services ): SegmentPageFactory {
 		return new SegmentPageFactory(
 			$services->getMainWANObjectCache(),
@@ -66,7 +73,9 @@ return [
 		return new UtteranceGenerator(
 			$services->get( 'Wikispeech.SpeechoidConnector' ),
 			$services->get( 'Wikispeech.UtteranceStore' ),
-			$services->get( 'Wikispeech.SegmentPageFactory' )
+			$services->get( 'Wikispeech.SegmentPageFactory' ),
+			$services->getMainWANObjectCache(),
+			$services->get( 'Wikispeech.SegmentMessagesFactory' )
 		);
 	},
 	'Wikispeech.UtteranceStore' => static function ( MediaWikiServices $services ): UtteranceStore {

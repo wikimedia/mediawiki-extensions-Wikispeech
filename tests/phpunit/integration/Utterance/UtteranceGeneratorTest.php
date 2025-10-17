@@ -14,6 +14,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentList;
+use MediaWiki\Wikispeech\Segment\SegmentMessagesFactory;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\Segment\SegmentPageResponse;
 use MediaWiki\Wikispeech\SpeechoidConnector;
@@ -22,6 +23,7 @@ use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiIntegrationTestCase;
 use MWTimestamp;
+use WANObjectCache;
 
 /**
  * @covers \MediaWiki\Wikispeech\Utterance\UtteranceGenerator
@@ -103,7 +105,9 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 		$utteranceGenerator = new UtteranceGenerator(
 			$speechoidConnectorMock,
 			$utteranceStoreMock,
-			$this->createMock( SegmentPageFactory::class )
+			$this->createMock( SegmentPageFactory::class ),
+			$this->createStub( WANObjectCache::class ),
+			$this->createMock( SegmentMessagesFactory::class )
 		);
 
 		$utterance = $utteranceGenerator->getUtterance(
@@ -181,7 +185,9 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 		$utteranceGenerator = new UtteranceGenerator(
 			$speechoidConnectorMock,
 			$utteranceStoreMock,
-			$this->createMock( SegmentPageFactory::class )
+			$this->createMock( SegmentPageFactory::class ),
+			$this->createStub( WANObjectCache::class ),
+			$this->createMock( SegmentMessagesFactory::class )
 		);
 
 		$utterance = $utteranceGenerator->getUtterance(
@@ -224,7 +230,9 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 		$utteranceGenerator = new UtteranceGenerator(
 			$speechoidConnector,
 			$this->createMock( UtteranceStore::class ),
-			$segmentPageFactory
+			$segmentPageFactory,
+			$this->createStub( WANObjectCache::class ),
+			$this->createMock( SegmentMessagesFactory::class )
 		);
 		$utteranceGenerator->setContext( new RequestContext() );
 

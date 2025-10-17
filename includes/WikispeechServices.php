@@ -8,6 +8,7 @@ use MediaWiki\Wikispeech\Lexicon\LexiconHandler;
 use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWanCacheStorage;
 use MediaWiki\Wikispeech\Lexicon\LexiconWikiStorage;
+use MediaWiki\Wikispeech\Segment\SegmentMessagesFactory;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
@@ -111,6 +112,20 @@ class WikispeechServices {
 	): SegmentPageFactory {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'Wikispeech.SegmentPageFactory' );
+	}
+
+	/**
+	 * @param ContainerInterface|null $services Service container to
+	 * use. If null, global MediaWikiServices::getInstance() will be
+	 * used instead.
+	 *
+	 * @return SegmentMessagesFactory
+	 */
+	public static function getSegmentMessagesFactory(
+		?ContainerInterface $services = null
+	): SegmentMessagesFactory {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'Wikispeech.SegmentMessagesFactory' );
 	}
 
 	/**

@@ -28,6 +28,7 @@
 	"apihelp-wikispeech-listen-param-voice": "Voice to use. If not provided the default voice for the language will be used.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL to the consumer wiki's script path.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Defaults to false. If true, anonymous data will not be stored in journal metrics log. Primarily used when executing pre rendering to avoid adding robot requests to statistics.",
+	"apihelp-wikispeech-listen-param-message-key": "Message key to synthesize.",
 	"apierror-wikispeech-listen-deleted-revision": "Deleted revisions cannot be listened to.",
 	"apierror-wikispeech-listen-notallowed": "You do not have the rights to call this API action.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is not a valid language. Should be one of: $2.",
@@ -38,5 +39,7 @@
 	"apihelp-wikispeech-listen-example-2": "Use a non-default voice.",
 	"apihelp-wikispeech-listen-example-3": "Request a segment from a revision. Will use cached synthesis if it exists.",
 	"apihelp-wikispeech-listen-example-4": "Synthesize an utterance from another wiki.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "Input text must not exceed $1 characters, but contained $2 characters."
+	"apihelp-wikispeech-listen-example-5": "Synthesize a system message using its message key.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Input text must not exceed $1 characters, but contained $2 characters.",
+	"apierror-wikispeech-listen-no-audio": "The utterance with ID \"$1\" exists in the database but the audio file is missing. Please remove the corresponding entry from the 'wikispeech_utterance' table, and if it is a message-based utterance, then re-run the 'preSynthesizeMessages.php' maintenance script to regenerate it."
 }

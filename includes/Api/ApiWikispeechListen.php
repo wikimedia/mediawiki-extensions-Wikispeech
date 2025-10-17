@@ -14,6 +14,7 @@ use ApiMain;
 use ApiUsageException;
 use Config;
 use ConfigException;
+use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
@@ -123,16 +124,47 @@ class ApiWikispeechListen extends ApiBase {
 		$this->listenMetricEntry->setTimestamp( MWTimestamp::getInstance() );
 
 		$inputParameters = $this->extractRequestParams();
-		$this->validateParameters( $inputParameters );
 
 		$language = $inputParameters['lang'];
 		$voice = $inputParameters['voice'];
+		$this->validateParameters( $inputParameters );
+
 		if ( !$voice ) {
 			$voice = $this->voiceHandler->getDefaultVoice( $language );
 			if ( !$voice ) {
 				throw new ConfigException( 'Invalid default voice configuration.' );
 			}
 		}
+
+		if ( isset( $inputParameters['message-key'] ) ) {
+			$messageKey = $inputParameters['message-key'];
+			$consumerUrl = $inputParameters['consumer-url'] ?? null;
+
+			$utterances = $this->utteranceGenerator->getUtterancesForMessageKey(
+				$messageKey,
+				$language,
+				$voice,
+				$consumerUrl
+			);
+			$result = [];
+			foreach ( $utterances as $segmentHash => $utterance ) {
+				$metadataJson = $utterance->getSynthesisMetadata() ?? '[]';
+				$tokens = FormatJson::parse( $metadataJson, FormatJson::FORCE_ASSOC )->getValue();
+				$result[] = [
+					'segment-hash' => $segmentHash,
+					'audio' => $utterance->getAudio(),
+					'tokens' => $tokens
+				];
+			}
+
+			$this->getResult()->addValue(
+			null,
+			$this->getModuleName(),
+			[ 'utterances' => $result ]
+			);
+			return;
+		}
+
 		if ( isset( $inputParameters['revision'] ) ) {
 			try {
 				$response = $this->utteranceGenerator->getUtteranceForRevisionAndSegment(
@@ -254,7 +286,8 @@ class ApiWikispeechListen extends ApiBase {
 			$parameters,
 			'revision',
 			'text',
-			'ipa'
+			'ipa',
+			'message-key'
 		);
 		$voices = $this->config->get( 'WikispeechVoices' );
 		$language = $parameters['lang'];
@@ -345,6 +378,9 @@ class ApiWikispeechListen extends ApiBase {
 				'skip-journal-metrics' => [
 					ParamValidator::PARAM_TYPE => 'boolean',
 					ParamValidator::PARAM_DEFAULT => false
+				],
+				'message-key' => [
+					ParamValidator::PARAM_TYPE => 'string'
 				]
 			]
 		);
@@ -367,6 +403,9 @@ class ApiWikispeechListen extends ApiBase {
 			// phpcs:ignore Generic.Files.LineLength
 			'action=wikispeech-listen&format=json&lang=en&revision=1&segment=hash1234&consumer-url=https://consumer.url/w'
 			=> 'apihelp-wikispeech-listen-example-4',
+			'action=wikispeech-listen&format=json&lang=en&message-key=wikispeech-error-loading-audio-title'
+			=> 'apihelp-wikispeech-listen-example-5',
+
 		];
 	}
 }

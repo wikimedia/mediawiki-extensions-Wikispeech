@@ -3,6 +3,7 @@
 		"authors": [
 			"Dr1t jg",
 			"Gustmd7410",
+			"YeBoy371",
 			"Ykhwong"
 		]
 	},
@@ -24,10 +25,10 @@
 	"wikispeech-lexicon-next": "다음",
 	"wikispeech-lexicon-save": "저장",
 	"wikispeech-lexicon-new": "새 항목",
-	"wikispeech-previous": "이전",
-	"wikispeech-next": "다음",
-	"wikispeech-help": "도움말",
-	"wikispeech-feedback": "피드백 보내기",
+	"wikispeech-previous": "단어 뒤로 건너뛰기",
+	"wikispeech-next": "단어 앞으로 건너뛰기",
+	"wikispeech-help": "도움말 보기",
+	"wikispeech-feedback": "발음 오류 신고",
 	"wikispeech-settings": "설정",
 	"wikispeech-lexicon-sync-error-button": "덮어쓰기"
 }

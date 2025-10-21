@@ -87,8 +87,8 @@
 		},
 		"ext.wikispeech.specialEditLexicon": {
 			"packageFiles": [
-				"ext.wikispeech.transcriptionPreviewer.js",
 				"ext.wikispeech.specialEditLexicon.js",
+				"ext.wikispeech.transcriptionPreviewer.js",
 				"ext.wikispeech.util.js"
 			],
 			"messages": [

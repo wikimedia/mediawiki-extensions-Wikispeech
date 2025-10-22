@@ -19,9 +19,6 @@
 			"phpcbf"
 		],
 		"phpcbf": "phpcbf",
-		"doc": [
-			"DOXYGEN_FILTER='php ../../maintenance/mwdoc-filter.php' doxygen"
-		],
 		"phan": "phan -d . -p --color",
 		"phpcs": "phpcs -sp --cache"
 	},

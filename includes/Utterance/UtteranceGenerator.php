@@ -12,20 +12,28 @@ use ConfigException;
 use ExternalStoreException;
 use FormatJson;
 use InvalidArgumentException;
+use MediaWiki\Context\IContextSource;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Wikispeech\Api\ListenMetricsEntry;
 use MediaWiki\Wikispeech\InputTextValidator;
 use MediaWiki\Wikispeech\Segment\Segment;
+use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\Segment\TextFilter\Sv\SwedishFilter;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use MediaWiki\Wikispeech\VoiceHandler;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
- /**
-  * @since 0.1.11
-  */
+/**
+ * @since 0.1.11
+ */
 
 class UtteranceGenerator {
+	/**
+	 * @var SegmentPageFactory
+	 */
+	private $segmentPageFactory;
 
 	/** @var UtteranceStore */
 	private $utteranceStore;
@@ -42,12 +50,23 @@ class UtteranceGenerator {
 	/** @var InputTextValidator */
 	private $InputTextValidator;
 
+	/** @var IContextSource */
+	private $context;
+
+	/**
+	 * @since 0.1.13
+	 * @param SpeechoidConnector $speechoidConnector
+	 * @param UtteranceStore $utteranceStore
+	 * @param SegmentPageFactory $segmentPageFactory
+	 */
 	public function __construct(
 		SpeechoidConnector $speechoidConnector,
-		UtteranceStore $utteranceStore
+		UtteranceStore $utteranceStore,
+		SegmentPageFactory $segmentPageFactory
 	) {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->speechoidConnector = $speechoidConnector;
+		$this->segmentPageFactory = $segmentPageFactory;
 
 		$this->utteranceStore = $utteranceStore;
 	}
@@ -61,6 +80,14 @@ class UtteranceGenerator {
 	 */
 	public function setUtteranceStore( UtteranceStore $utteranceStore ): void {
 		$this->utteranceStore = $utteranceStore;
+	}
+
+	/**
+	 * @since 0.1.13
+	 * @param IContextSource $context
+	 */
+	public function setContext( IContextSource $context ) {
+		$this->context = $context;
 	}
 
 	/**
@@ -200,5 +227,70 @@ class UtteranceGenerator {
 				FormatJson::FORCE_ASSOC
 			)->getValue()
 		];
+	}
+
+	/**
+	 * Retrieves the matching utterance for a given revision ID and segment hash.
+	 *
+	 * @since 0.1.13
+	 * @param string $voice
+	 * @param string $language
+	 * @param int $revisionId
+	 * @param string $segmentHash
+	 * @param string|null $consumerUrl URL to the script path on the consumer,
+	 *  if used as a producer.
+	 * @param ListenMetricsEntry|null $listenMetricEntry Add page and segment
+	 *  information to this entry.
+	 * @return array An utterance
+	 * @throws RuntimeException
+	 */
+	public function getUtteranceForRevisionAndSegment(
+		string $voice,
+		string $language,
+		int $revisionId,
+		string $segmentHash,
+		?string $consumerUrl = null,
+		?ListenMetricsEntry $listenMetricEntry = null
+	): array {
+		$segmentPageResponse = $this->segmentPageFactory
+			->setSegmentBreakingTags( null )
+			->setRemoveTags( null )
+			->setUseSegmentsCache( true )
+			->setUseRevisionPropertiesCache( true )
+			->setContextSource( $this->context )
+			->setConsumerUrl( $consumerUrl )
+			->setRequirePageRevisionProperties( true )
+			->segmentPage(
+				null,
+				$revisionId
+			);
+		$segment = $segmentPageResponse->getSegments()->findFirstItemByHash( $segmentHash );
+		if ( $segment === null ) {
+			throw new RuntimeException( 'No such segment. ' .
+				'Did you perhaps reference a segment that was created using incompatible settings ' .
+				'for segmentBreakingTags and/or removeTags?' );
+		}
+		$pageId = $segmentPageResponse->getPageId();
+		if ( $pageId === null ) {
+			throw new RuntimeException( 'Did not retrieve page id for the given revision id.' );
+		}
+
+		if ( $listenMetricEntry ) {
+			$listenMetricEntry->setSegmentIndex(
+				$segmentPageResponse->getSegments()->indexOf( $segment )
+			);
+			$listenMetricEntry->setPageId( $pageId );
+			$listenMetricEntry->setPageTitle(
+				$segmentPageResponse->getTitle()->getText()
+			);
+		}
+
+		return $this->getUtterance(
+			$consumerUrl,
+			$voice,
+			$language,
+			$pageId,
+			$segment
+		);
 	}
 }

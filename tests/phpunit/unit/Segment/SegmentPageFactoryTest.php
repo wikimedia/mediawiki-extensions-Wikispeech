@@ -8,10 +8,11 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
  * @license GPL-2.0-or-later
  */
 
-use ConfigFactory;
 use HashBagOStuff;
 use HashConfig;
 use InvalidArgumentException;
+use MediaWiki\Config\Config;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\PageProvider;
@@ -31,22 +32,27 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 	/** @var WANObjectCache */
 	private $cache;
 
-	/** @var ConfigFactory */
-	private $configFactory;
+	/** @var Config */
+	private $config;
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->cache = new WANObjectCache( [ 'cache' => new HashBagOStuff() ] );
 
-		$config = new HashConfig();
-		$config->set( 'WikispeechRemoveTags', [ 'default remove' ] );
-		$config->set( 'WikispeechSegmentBreakingTags', [ 'default break' ] );
-		$this->configFactory = $this->createMock( ConfigFactory::class );
-		$this->configFactory
-			->method( 'makeConfig' )
-			->with( 'wikispeech' )
-			->willReturn( $config );
+		$this->config = new HashConfig();
+		$this->config->set( 'WikispeechRemoveTags', [ 'default remove' ] );
+		$this->config->set( 'WikispeechSegmentBreakingTags', [ 'default break' ] );
+	}
+
+	private function createFactory() {
+		$factory = new SegmentPageFactory(
+			$this->cache,
+			$this->config,
+			$this->createMock( RevisionStore::class ),
+			$this->createMock( HttpRequestFactory::class )
+		);
+		return $factory;
 	}
 
 	private function configureTestFactory( SegmentPageFactory $factory ): SegmentPageFactory {
@@ -62,7 +68,7 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 	}
 
 	public function testSegmentPage_neitherTitleNorRevisionIdProvided_throwsException() {
-		$factory = new SegmentPageFactory( $this->cache, $this->configFactory );
+		$factory = $this->createFactory();
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( '$title xor $revisionId must be provided.' );
 		$this->configureTestFactory( $factory )
@@ -70,7 +76,7 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 	}
 
 	public function testSegmentPage_bothTitleAndRevisionIdProvided_throwsException() {
-		$factory = new SegmentPageFactory( $this->cache, $this->configFactory );
+		$factory = $this->createFactory();
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( '$title xor $revisionId must be provided.' );
 		$this->configureTestFactory( $factory )
@@ -102,7 +108,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'pageProviderFactory' ] )
 			->getMock();
 		$factory
@@ -150,7 +161,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'pageProviderFactory', 'cleanHtmlDom' ] )
 			->getMock();
 		$factory
@@ -199,7 +215,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'cleanHtmlDom', 'pageProviderFactory' ] )
 			->getMock();
 		$factory
@@ -245,7 +266,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'cleanHtmlDom', 'pageProviderFactory' ] )
 			->getMock();
 		$factory
@@ -290,7 +316,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'pageProviderFactory' ] )
 			->getMock();
 		$factory
@@ -345,7 +376,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'pageProviderFactory' ] )
 			->getMock();
 		$factory
@@ -399,7 +435,12 @@ class SegmentPageFactoryTest extends MediaWikiUnitTestCase {
 
 		/** @var SegmentPageFactory|MockObject $factory */
 		$factory = $this->getMockBuilder( SegmentPageFactory::class )
-			->setConstructorArgs( [ $this->cache, $this->configFactory ] )
+			->setConstructorArgs( [
+				$this->cache,
+				$this->config,
+				$this->createMock( RevisionStore::class ),
+				$this->createMock( HttpRequestFactory::class )
+			] )
 			->onlyMethods( [ 'pageProviderFactory' ] )
 			->getMock();
 		$factory

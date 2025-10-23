@@ -8,8 +8,8 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
  * @license GPL-2.0-or-later
  */
 
-use ConfigFactory;
 use HashBagOStuff;
+use MediaWiki\Config\HashConfig;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
@@ -80,20 +80,21 @@ class RemoteWikiPageProviderTest extends MediaWikiUnitTestCase {
 				'bae6b55875cd8e8bee3b760773f36a3a25e2d6fa102f168aade3d49f77c34da6'
 			)
 		];
+		// TODO: This should be mocked to make this a cleaner unit test.
 		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
-			$this->createMock( ConfigFactory::class )
+			new HashConfig(),
+			$this->createMock( RevisionStore::class ),
+			$httpRequestFactory
 		);
 		$segments = $segmentPageFactory
 			->setConsumerUrl( 'https://consumer.url' )
-			->setHttpRequestFactory( $httpRequestFactory )
 			->setRequirePageRevisionProperties( false )
 			->setUseRevisionPropertiesCache( false )
 			->setUseSegmentsCache( false )
 			->setRemoveTags( [] )
 			->setSegmentBreakingTags( [] )
 			->setContextSource( new RequestContext() )
-			->setRevisionStore( $this->createMock( RevisionStore::class ) )
 			->segmentPage(
 				$title,
 				null

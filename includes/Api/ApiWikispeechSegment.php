@@ -11,7 +11,6 @@ namespace MediaWiki\Wikispeech\Api;
 
 use ApiBase;
 use ApiMain;
-use ConfigFactory;
 use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
@@ -37,17 +36,18 @@ class ApiWikispeechSegment extends ApiBase {
 	/** @var RevisionStore */
 	private $revisionStore;
 
-	/** @var ConfigFactory */
-	private $configFactory;
+	/** @var SegmentPageFactory */
+	private $segmentPageFactory;
 
 	/**
+	 * @since 0.1.13 add parameter $segmentPageFactory, remove parameter $configFactory.
 	 * @since 0.1.7
 	 * @param ApiMain $mainModule
 	 * @param string $moduleName
 	 * @param WANObjectCache $cache
 	 * @param HttpRequestFactory $requestFactory
 	 * @param RevisionStore $revisionStore
-	 * @param ConfigFactory $configFactory
+	 * @param SegmentPageFactory $segmentPageFactory
 	 * @param string $modulePrefix
 	 */
 	public function __construct(
@@ -56,14 +56,14 @@ class ApiWikispeechSegment extends ApiBase {
 		WANObjectCache $cache,
 		HttpRequestFactory $requestFactory,
 		RevisionStore $revisionStore,
-		ConfigFactory $configFactory,
+		SegmentPageFactory $segmentPageFactory,
 		string $modulePrefix = ''
 	) {
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 		$this->cache = $cache;
 		$this->requestFactory = $requestFactory;
 		$this->revisionStore = $revisionStore;
-		$this->configFactory = $configFactory;
+		$this->segmentPageFactory = $segmentPageFactory;
 	}
 
 	/**
@@ -99,11 +99,7 @@ class ApiWikispeechSegment extends ApiBase {
 		if ( !ConfigurationValidator::isValidRemoveTags( $rawRemoveTags ) ) {
 			$this->dieWithError( 'apierror-wikispeech-segment-removetagsinvalid' );
 		}
-		$segmentPageFactory = new SegmentPageFactory(
-			$this->cache,
-			$this->configFactory
-		);
-		$segmentPageResponse = $segmentPageFactory
+		$segmentPageResponse = $this->segmentPageFactory
 			->setSegmentBreakingTags( $parameters['segmentbreakingtags'] )
 			->setRemoveTags( $rawRemoveTags )
 			->setPartOfContent( $parameters['part-of-content'] )

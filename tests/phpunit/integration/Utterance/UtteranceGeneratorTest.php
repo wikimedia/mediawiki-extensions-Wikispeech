@@ -8,15 +8,20 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Utterance;
  * @license GPL-2.0-or-later
  */
 
- use FormatJson;
- use MediaWiki\Wikispeech\Segment\CleanedText;
- use MediaWiki\Wikispeech\Segment\Segment;
- use MediaWiki\Wikispeech\SpeechoidConnector;
- use MediaWiki\Wikispeech\Utterance\Utterance;
- use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
- use MediaWiki\Wikispeech\Utterance\UtteranceStore;
- use MediaWikiIntegrationTestCase;
- use MWTimestamp;
+use FormatJson;
+use MediaWiki\Context\RequestContext;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Wikispeech\Segment\CleanedText;
+use MediaWiki\Wikispeech\Segment\Segment;
+use MediaWiki\Wikispeech\Segment\SegmentList;
+use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
+use MediaWiki\Wikispeech\Segment\SegmentPageResponse;
+use MediaWiki\Wikispeech\SpeechoidConnector;
+use MediaWiki\Wikispeech\Utterance\Utterance;
+use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
+use MediaWiki\Wikispeech\Utterance\UtteranceStore;
+use MediaWikiIntegrationTestCase;
+use MWTimestamp;
 
 /**
  * @covers \MediaWiki\Wikispeech\Utterance\UtteranceGenerator
@@ -95,8 +100,11 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 				"tokens" => $synthesizeMetadataArray
 			] );
 
-			$utteranceGenerator = new UtteranceGenerator( $speechoidConnectorMock, $utteranceStoreMock );
-			$utteranceGenerator->setUtteranceStore( $utteranceStoreMock );
+		$utteranceGenerator = new UtteranceGenerator(
+			$speechoidConnectorMock,
+			$utteranceStoreMock,
+			$this->createMock( SegmentPageFactory::class )
+		);
 
 		$utterance = $utteranceGenerator->getUtterance(
 			null,
@@ -170,8 +178,11 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 			->expects( $this->never() )
 			->method( 'synthesizeText' );
 
-			$utteranceGenerator = new UtteranceGenerator( $speechoidConnectorMock, $utteranceStoreMock );
-			$utteranceGenerator->setUtteranceStore( $utteranceStoreMock );
+		$utteranceGenerator = new UtteranceGenerator(
+			$speechoidConnectorMock,
+			$utteranceStoreMock,
+			$this->createMock( SegmentPageFactory::class )
+		);
 
 		$utterance = $utteranceGenerator->getUtterance(
 			null,
@@ -185,4 +196,49 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $synthesizeMetadataArray, $utterance['tokens'] );
 	}
 
+	public function testGetUtteranceForRevisionAndSegment_utteranceExists_giveUtterance() {
+		$services = MediaWikiServices::getInstance();
+		$segmentPageFactory = $this->getMockBuilder( SegmentPageFactory::class )
+			->setConstructorArgs( [
+				$services->getMainWANObjectCache(),
+				$services->getMainConfig(),
+				$services->getRevisionFactory(),
+				$services->getHttpRequestFactory()
+			] )
+			->onlyMethods( [ 'segmentPage' ] )
+			->getMock();
+		$response = new SegmentPageResponse();
+		$segment = new Segment( hash: 'SEGMENT HASH' );
+		$segmentList = new SegmentList( [ $segment ] );
+		$response->setSegments( $segmentList );
+		$response->setPageId( 123 );
+		$response->setRevisionId( 456 );
+		$segmentPageFactory->method( 'segmentPage' )->willReturn( $response );
+		$speechoidConnector = $this->createMock( SpeechoidConnector::class );
+		$speechoidConnector->method( 'synthesizeText' )->willReturn(
+			[
+				'audio_data' => 'AUDIO',
+				'tokens' => [ 'TOKEN1', 'TOKEN2' ]
+			]
+		);
+		$utteranceGenerator = new UtteranceGenerator(
+			$speechoidConnector,
+			$this->createMock( UtteranceStore::class ),
+			$segmentPageFactory
+		);
+		$utteranceGenerator->setContext( new RequestContext() );
+
+		$utterance = $utteranceGenerator->getUtteranceForRevisionAndSegment(
+			'anna',
+			'sv',
+			456,
+			'SEGMENT HASH'
+		);
+
+		$expectedUtterance = [
+			'audio' => 'AUDIO',
+			'tokens' => [ 'TOKEN1', 'TOKEN2' ]
+		];
+		$this->assertSame( $expectedUtterance, $utterance );
+	}
 }

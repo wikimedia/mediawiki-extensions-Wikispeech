@@ -590,7 +590,7 @@
 				"MainWANObjectCache",
 				"HttpRequestFactory",
 				"RevisionStore",
-				"ConfigFactory"
+				"Wikispeech.SegmentPageFactory"
 			]
 		},
 		"wikispeech-listen": {

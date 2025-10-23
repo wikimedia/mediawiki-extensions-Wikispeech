@@ -21,7 +21,6 @@ use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\InputTextValidator;
 use MediaWiki\Wikispeech\Segment\DeletedRevisionException;
 use MediaWiki\Wikispeech\Segment\RemoteWikiPageProviderException;
-use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
@@ -109,6 +108,7 @@ class ApiWikispeechListen extends ApiBase {
 		$this->voiceHandler = $voiceHandler;
 		$this->listenMetricEntry = new ListenMetricsEntry();
 		$this->utteranceGenerator = $utteranceGenerator;
+		$utteranceGenerator->setContext( $this->getContext() );
 
 		parent::__construct( $mainModule, $moduleName, $modulePrefix );
 	}
@@ -134,13 +134,24 @@ class ApiWikispeechListen extends ApiBase {
 			}
 		}
 		if ( isset( $inputParameters['revision'] ) ) {
-			$response = $this->getUtteranceForRevisionAndSegment(
-				$voice,
-				$language,
-				$inputParameters['revision'],
-				$inputParameters['segment'],
-				$inputParameters['consumer-url']
-			);
+			try {
+				$response = $this->utteranceGenerator->getUtteranceForRevisionAndSegment(
+					$voice,
+					$language,
+					$inputParameters['revision'],
+					$inputParameters['segment'],
+					$inputParameters['consumer-url'],
+					$this->listenMetricEntry
+				);
+			} catch ( RemoteWikiPageProviderException ) {
+				$this->dieWithError( [
+					'apierror-wikispeech-listen-failed-getting-page-from-consumer',
+					$inputParameters['revision'],
+					$inputParameters['consumer-url']
+				] );
+			} catch ( DeletedRevisionException ) {
+				$this->dieWithError( 'apierror-wikispeech-listen-deleted-revision' );
+			}
 		} else {
 			try {
 				$speechoidResponse = $this->speechoidConnector->synthesize(
@@ -184,8 +195,9 @@ class ApiWikispeechListen extends ApiBase {
 		);
 		$this->listenMetricEntry->setMicrosecondsSpent( intval( 1000000 * ( microtime( true ) - $started ) ) );
 
-		// All other metrics fields has been set in other functions of this class.
-		// For now the value of utteranceSynthesized() isn't used.
+		// All other metrics fields has been set in other functions of this or
+		// other classes. For now the value of utteranceSynthesized() isn't
+		// used.
 		if ( !$inputParameters['skip-journal-metrics']
 			&& $this->config->get( 'WikispeechListenDoJournalMetrics' ) ) {
 			$metricsJournal = new ListenMetricsEntryFileJournal( $this->config );
@@ -199,77 +211,6 @@ class ApiWikispeechListen extends ApiBase {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Retrieves the matching utterance for a given revision id and segment hash .
-	 *
-	 * @since 0.1.5
-	 * @param string $voice
-	 * @param string $language
-	 * @param int $revisionId
-	 * @param string $segmentHash
-	 * @param string|null $consumerUrl URL to the script path on the consumer, if used as a producer.
-	 * @return array An utterance
-	 */
-	private function getUtteranceForRevisionAndSegment(
-		string $voice,
-		string $language,
-		int $revisionId,
-		string $segmentHash,
-		?string $consumerUrl = null
-	): array {
-		$segmentPageFactory = new SegmentPageFactory(
-			$this->cache,
-			// todo inject config factory
-			MediaWikiServices::getInstance()->getConfigFactory()
-		);
-		try {
-			$segmentPageResponse = $segmentPageFactory
-				->setSegmentBreakingTags( null )
-				->setRemoveTags( null )
-				->setUseSegmentsCache( true )
-				->setUseRevisionPropertiesCache( true )
-				->setContextSource( $this->getContext() )
-				->setRevisionStore( $this->revisionStore )
-				->setHttpRequestFactory( $this->requestFactory )
-				->setConsumerUrl( $consumerUrl )
-				->setRequirePageRevisionProperties( true )
-				->segmentPage(
-					null,
-					$revisionId
-				);
-		} catch ( RemoteWikiPageProviderException ) {
-			$this->dieWithError( [
-				'apierror-wikispeech-listen-failed-getting-page-from-consumer',
-				$revisionId,
-				$consumerUrl
-			] );
-		} catch ( DeletedRevisionException ) {
-			$this->dieWithError( 'apierror-wikispeech-listen-deleted-revision' );
-		}
-		$segment = $segmentPageResponse->getSegments()->findFirstItemByHash( $segmentHash );
-		if ( $segment === null ) {
-			throw new RuntimeException( 'No such segment. ' .
-				'Did you perhaps reference a segment that was created using incompatible settings ' .
-				'for segmentBreakingTags and/or removeTags?' );
-		}
-		$pageId = $segmentPageResponse->getPageId();
-		if ( $pageId === null ) {
-			throw new RuntimeException( 'Did not retrieve page id for the given revision id.' );
-		}
-
-		$this->listenMetricEntry->setSegmentIndex( $segmentPageResponse->getSegments()->indexOf( $segment ) );
-		$this->listenMetricEntry->setPageId( $pageId );
-		$this->listenMetricEntry->setPageTitle( $segmentPageResponse->getTitle()->getText() );
-
-		return $this->utteranceGenerator->getUtterance(
-			$consumerUrl,
-			$voice,
-			$language,
-			$pageId,
-			$segment
-		);
 	}
 
 	/**

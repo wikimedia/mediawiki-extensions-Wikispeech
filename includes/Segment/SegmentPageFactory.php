@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Segment;
 
 use InvalidArgumentException;
 use LogicException;
+use MediaWiki\Config\Config;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
@@ -53,6 +54,25 @@ class SegmentPageFactory extends SegmentFactory {
 	 * @var bool
 	 */
 	private $requirePageRevisionProperties = false;
+
+	/**
+	 * @since 0.1.13
+	 * @param WANObjectCache $cache
+	 * @param Config $config
+	 * @param RevisionStore $revisionStore
+	 * @param HttpRequestFactory $httpRequestFactory
+	 */
+	public function __construct(
+		WANObjectCache $cache,
+		Config $config,
+		RevisionStore $revisionStore,
+		HttpRequestFactory $httpRequestFactory
+	) {
+		parent::__construct( $cache, $config );
+
+		$this->revisionStore = $revisionStore;
+		$this->httpRequestFactory = $httpRequestFactory;
+	}
 
 	/**
 	 * @see SegmentPageFactory::$useRevisionPropertiesCache
@@ -198,9 +218,8 @@ class SegmentPageFactory extends SegmentFactory {
 			throw new InvalidArgumentException( '$title xor $revisionId must be provided.' );
 		}
 
-		$config = $this->configFactory->makeConfig( 'wikispeech' );
-		$removeTags = $this->removeTags ?? $config->get( 'WikispeechRemoveTags' );
-		$segmentBreakingTags = $this->segmentBreakingTags ?? $config->get( 'WikispeechSegmentBreakingTags' );
+		$removeTags = $this->removeTags ?? $this->config->get( 'WikispeechRemoveTags' );
+		$segmentBreakingTags = $this->segmentBreakingTags ?? $this->config->get( 'WikispeechSegmentBreakingTags' );
 
 		$segmenter = $this->segmenter ?? new StandardSegmenter();
 

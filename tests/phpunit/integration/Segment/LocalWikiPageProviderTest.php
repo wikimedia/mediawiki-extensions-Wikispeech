@@ -8,8 +8,9 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
  * @license GPL-2.0-or-later
  */
 
-use ConfigFactory;
 use HashBagOStuff;
+use MediaWiki\Config\HashConfig;
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\CleanedText;
@@ -72,7 +73,9 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 		];
 		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
-			$this->createMock( ConfigFactory::class )
+			new HashConfig(),
+			$this->createMock( RevisionStore::class ),
+			$this->createMock( HttpRequestFactory::class )
 		);
 		$segments = $segmentPageFactory
 			->setUseRevisionPropertiesCache( false )
@@ -80,7 +83,6 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 			->setRemoveTags( [] )
 			->setSegmentBreakingTags( [] )
 			->setContextSource( new RequestContext() )
-			->setRevisionStore( $this->createMock( RevisionStore::class ) )
 			->segmentPage(
 				$title,
 				null
@@ -109,7 +111,9 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 		];
 		$segmentPageFactory = new SegmentPageFactory(
 			$this->cache,
-			$this->createMock( ConfigFactory::class )
+			new HashConfig(),
+			$this->createMock( RevisionStore::class ),
+			$this->createMock( HttpRequestFactory::class )
 		);
 		$segments = $segmentPageFactory
 			->setUseRevisionPropertiesCache( false )
@@ -117,7 +121,6 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 			->setRemoveTags( [] )
 			->setSegmentBreakingTags( [] )
 			->setContextSource( new RequestContext() )
-			->setRevisionStore( $this->createMock( RevisionStore::class ) )
 			->segmentPage(
 				$title,
 				null

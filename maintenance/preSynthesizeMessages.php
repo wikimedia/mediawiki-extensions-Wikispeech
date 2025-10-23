@@ -6,14 +6,12 @@ namespace MediaWiki\Wikispeech;
  * @ingroup Extensions
  * @license GPL-2.0-or-later
  */
-use ConfigFactory;
 use Exception;
 use InvalidArgumentException;
 use Maintenance;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\SegmentMessagesFactory;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
-use WANObjectCache;
 
 /** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );
@@ -27,15 +25,8 @@ require_once "$IP/maintenance/Maintenance.php";
  * @since 0.1.13
  */
 class PreSynthesizeMessages extends Maintenance {
-
-	/** @var WANObjectCache */
-	private $cache;
-
 	/** @var UtteranceGenerator */
 	private $utteranceGenerator;
-
-	/** @var ConfigFactory */
-	private $configFactory;
 
 	public function __construct() {
 		parent::__construct();
@@ -61,8 +52,6 @@ class PreSynthesizeMessages extends Maintenance {
 	 * @return bool success
 	 */
 	public function execute() {
-		$this->cache = MediaWikiServices::getInstance()->getMainWANObjectCache();
-		$this->configFactory = MediaWikiServices::getInstance()->getConfigFactory();
 		$language = $this->getOption( 'language', null );
 		$voice = $this->getOption( 'voice', null );
 		$this->utteranceGenerator = WikispeechServices::getUtteranceGenerator();
@@ -85,9 +74,10 @@ class PreSynthesizeMessages extends Maintenance {
 	 */
 	public function synthesizeErrorMessage( $messageKey, $language, $voice ) {
 		try {
+			$services = MediaWikiServices::getInstance();
 			$segmentMessagesFactory = new SegmentMessagesFactory(
-				$this->cache,
-				$this->configFactory
+				$services->getMainWANObjectCache(),
+				$this->getConfig()
 			);
 			$segmentList = $segmentMessagesFactory->segmentMessage( $messageKey, $language );
 			if ( !$voice ) {

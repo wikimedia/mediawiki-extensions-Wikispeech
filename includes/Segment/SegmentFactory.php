@@ -11,6 +11,7 @@ namespace MediaWiki\Wikispeech\Segment;
 use ConfigFactory;
 use IContextSource;
 use LogicException;
+use MediaWiki\Config\Config;
 use WANObjectCache;
 
 /**
@@ -21,6 +22,11 @@ abstract class SegmentFactory {
 
 	/** @var WANObjectCache */
 	protected $cache;
+
+	/**
+	 * @var Config
+	 */
+	protected $config;
 
 	/** @var ConfigFactory */
 	protected $configFactory;
@@ -70,14 +76,14 @@ abstract class SegmentFactory {
 	/**
 	 * @since 0.1.13
 	 * @param WANObjectCache $cache
-	 * @param ConfigFactory $configFactory
+	 * @param Config $config
 	 */
 	public function __construct(
 		WANObjectCache $cache,
-		ConfigFactory $configFactory
+		Config $config
 	) {
 		$this->cache = $cache;
-		$this->configFactory = $configFactory;
+		$this->config = $config;
 	}
 
 	/**
@@ -91,12 +97,12 @@ abstract class SegmentFactory {
 		return $this;
 	}
 
-	 /**
-	  * @see SegmentFactory::$segmenter
-	  * @since 0.1.13
-	  * @param Segmenter|null $segmenter
-	  * @return $this
-	  */
+	/**
+	 * @see SegmentFactory::$segmenter
+	 * @since 0.1.13
+	 * @param Segmenter|null $segmenter
+	 * @return $this
+	 */
 	public function setSegmenter( ?Segmenter $segmenter ) {
 		$this->segmenter = $segmenter;
 		return $this;

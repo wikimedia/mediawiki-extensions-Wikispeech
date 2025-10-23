@@ -139,11 +139,9 @@ class Benchmark extends Maintenance {
 		// i.e. we can't initialize the fields in the constructor,
 		// and we have to be lenient for mocked instances set by tests.
 
-		$config = MediaWikiServices::getInstance()
-			->getConfigFactory()
-			->makeConfig( 'wikispeech' );
-		$requestFactory = MediaWikiServices::getInstance()
-			->getHttpRequestFactory();
+		$services = MediaWikiServices::getInstance();
+		$config = $services->getConfigFactory()->makeConfig( 'wikispeech' );
+		$requestFactory = $services->getHttpRequestFactory();
 
 		$emptyWanCache = new WANObjectCache( [ 'cache' => new EmptyBagOStuff() ] );
 
@@ -156,13 +154,15 @@ class Benchmark extends Maintenance {
 		if ( !$this->segmentPageFactory ) {
 			$this->segmentPageFactory = new SegmentPageFactory(
 				$emptyWanCache,
-				MediaWikiServices::getInstance()->getConfigFactory()
+				$config,
+				$services->getRevisionStore(),
+				$services->getHttpRequestFactory()
 			);
 			$this->segmentPageFactory
 				->setUseSegmentsCache( false )
 				->setUseRevisionPropertiesCache( false )
 				->setContextSource( new RequestContext() )
-				->setRevisionStore( MediaWikiServices::getInstance()->getRevisionStore() );
+				->setRevisionStore( $services->getRevisionStore() );
 		}
 	}
 

@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Brettchenweber",
 			"FF-11",
 			"FF11",
 			"HajFunk"
@@ -67,6 +68,7 @@
 	"wikispeech-lexicon-sync-error-button": "Überschreiben",
 	"wikispeech-lexicon-sync-error-unidentified": "Beim Versuch, Lexikoneinträge zu synchronisieren, ist ein nicht identifizierter Fehler aufgetreten.",
 	"wikispeech-poc-link": "Link:",
+	"wikispeech-enter-transcription": "Gib die Transkription ein, um eine Vorschau zu sehen.",
 	"wikispeech-morphology": "Morphologie",
 	"wikispeech-pos": "Wortart",
 	"wikispeech-paradigm": "Paradigma",

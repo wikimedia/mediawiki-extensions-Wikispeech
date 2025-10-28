@@ -3,20 +3,18 @@ const Player = require( 'ext.wikispeech/ext.wikispeech.player.js' );
 const SelectionPlayer = require( 'ext.wikispeech/ext.wikispeech.selectionPlayer.js' );
 const util = require( './ext.wikispeech.test.util.js' );
 
-let contentSelector, selectionPlayer;
-
 QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 	beforeEach: function () {
 		this.ui = new Ui();
 		this.ui.player = sinon.createStubInstance( Player );
-		selectionPlayer = sinon.stub( new SelectionPlayer() );
-		this.ui.selectionPlayer = selectionPlayer;
+		this.selectionPlayer = sinon.stub( new SelectionPlayer() );
+		this.ui.selectionPlayer = this.selectionPlayer;
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' ),
 			$( '<div>' ).attr( 'id', 'footer' )
 		);
-		contentSelector = '#mw-content-text';
-		mw.config.set( 'wgWikispeechContentSelector', contentSelector );
+		this.contentSelector = '#mw-content-text';
+		mw.config.set( 'wgWikispeechContentSelector', this.contentSelector );
 
 		/**
 		 * Stub window.getSelection
@@ -178,8 +176,8 @@ QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function () {
 
 QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function () {
 	util.setContentHtml( 'LTR text.' );
-	const textNode = $( contentSelector ).contents().get( 0 );
-	selectionPlayer.isSelectionValid.returns( true );
+	const textNode = $( this.contentSelector ).contents().get( 0 );
+	this.selectionPlayer.isSelectionValid.returns( true );
 	this.stubGetSelection( textNode, textNode, { right: 50, bottom: 10 } );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
@@ -212,8 +210,8 @@ QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', functi
 	util.setContentHtml(
 		'<b style="direction: rtl">RTL text.</b>'
 	);
-	const textNode = $( contentSelector + ' b' ).contents().get( 0 );
-	selectionPlayer.isSelectionValid.returns( true );
+	const textNode = $( this.contentSelector + ' b' ).contents().get( 0 );
+	this.selectionPlayer.isSelectionValid.returns( true );
 	this.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
@@ -236,7 +234,7 @@ QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', functi
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function () {
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	selectionPlayer.isSelectionValid.returns( false );
+	this.selectionPlayer.isSelectionValid.returns( false );
 	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
@@ -249,8 +247,8 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of
 	util.setContentHtml(
 		'<del>Not an utterance.</del> An utterance.'
 	);
-	const notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
-	const utteranceNode = $( contentSelector ).contents().get( 1 );
+	const notUtteranceNode = $( this.contentSelector + ' del' ).contents().get( 0 );
+	const utteranceNode = $( this.contentSelector ).contents().get( 1 );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
 	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
@@ -266,8 +264,8 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of s
 	util.setContentHtml(
 		'An utterance. <del>Not an utterance.</del>'
 	);
-	const notUtteranceNode = $( contentSelector + ' del' ).contents().get( 0 );
-	const utteranceNode = $( contentSelector ).contents().get( 0 );
+	const notUtteranceNode = $( this.contentSelector + ' del' ).contents().get( 0 );
+	const utteranceNode = $( this.contentSelector ).contents().get( 0 );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
 	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
@@ -281,10 +279,10 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of s
 
 QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
 	util.setContentHtml( 'LTR text.' );
-	const textNode = $( contentSelector ).contents().get( 0 );
+	const textNode = $( this.contentSelector ).contents().get( 0 );
 	sinon.stub( this.ui, 'isShown' ).returns( false );
 	this.ui.addSelectionPlayer();
-	selectionPlayer.isSelectionValid.returns( true );
+	this.selectionPlayer.isSelectionValid.returns( true );
 	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
 	this.stubGetSelection( textNode, textNode );
 	const event = $.Event( 'mouseup' );

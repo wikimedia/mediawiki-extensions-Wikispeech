@@ -4,14 +4,12 @@ const Storage = require( 'ext.wikispeech/ext.wikispeech.storage.js' );
 const Ui = require( 'ext.wikispeech/ext.wikispeech.ui.js' );
 const util = require( './ext.wikispeech.test.util.js' );
 
-let contentSelector, selectionPlayer, player, storage;
-
 QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 	beforeEach: function () {
-		selectionPlayer = new SelectionPlayer();
-		storage = sinon.stub( new Storage() );
-		selectionPlayer.storage = storage;
-		storage.utterances = [
+		this.selectionPlayer = new SelectionPlayer();
+		this.storage = sinon.stub( new Storage() );
+		this.selectionPlayer.storage = this.storage;
+		this.storage.utterances = [
 			{
 				audio: $( '<audio>' ).get( 0 ),
 				startOffset: 0,
@@ -25,16 +23,16 @@ QUnit.module( 'ext.wikispeech.selectionPlayer', QUnit.newMwEnvironment( {
 		];
 		// Assume that the utterance is already prepared,
 		// resolve immediately.
-		storage.prepareUtterance.returns( $.Deferred().resolve() );
-		player = sinon.stub( new Player() );
-		selectionPlayer.player = player;
-		selectionPlayer.ui = sinon.stub( new Ui() );
+		this.storage.prepareUtterance.returns( $.Deferred().resolve() );
+		this.player = sinon.stub( new Player() );
+		this.selectionPlayer.player = this.player;
+		this.selectionPlayer.ui = sinon.stub( new Ui() );
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' )
 		);
 
-		contentSelector = '#mw-content-text';
-		mw.config.set( 'wgWikispeechContentSelector', contentSelector );
+		this.contentSelector = '#mw-content-text';
+		mw.config.set( 'wgWikispeechContentSelector', this.contentSelector );
 		mw.user.options.set( 'wikispeechPartOfContent', false );
 
 		this.clock = sinon.useFakeTimers();
@@ -98,19 +96,19 @@ QUnit.test( 'playSelection()', function () {
 		// selected. The selection includes the characters above
 		// the brackets and everything in between.
 	);
-	const textNode = $( contentSelector ).contents().get( 0 );
+	const textNode = $( this.contentSelector ).contents().get( 0 );
 	const selection = createMockedSelection( 15, textNode, 27 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].endOffset = 28;
-	storage.utterances[ 0 ].content = [ {
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].endOffset = 28;
+	this.storage.utterances[ 0 ].content = [ {
 		path: './text()'
 	} ];
-	storage.utterances[ 0 ].tokens = [
+	this.storage.utterances[ 0 ].tokens = [
 		{
 			string: 'Utterance',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startTime: 0,
 			endTime: 1000,
 			startOffset: 0,
@@ -118,8 +116,8 @@ QUnit.test( 'playSelection()', function () {
 		},
 		{
 			string: 'with',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startTime: 1000,
 			endTime: 2000,
 			startOffset: 10,
@@ -127,8 +125,8 @@ QUnit.test( 'playSelection()', function () {
 		},
 		{
 			string: 'selected',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startTime: 2000,
 			endTime: 3000,
 			startOffset: 15,
@@ -136,35 +134,35 @@ QUnit.test( 'playSelection()', function () {
 		},
 		{
 			string: 'text',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startTime: 3000,
 			endTime: 3500,
 			startOffset: 24,
 			endOffset: 27
 		}
 	];
-	storage.getStartUtterance.returns( storage.utterances[ 0 ] );
-	storage.getStartToken.returns( storage.utterances[ 0 ].tokens[ 2 ] );
-	storage.getEndUtterance.returns( storage.utterances[ 0 ] );
-	storage.getEndToken.returns( storage.utterances[ 0 ].tokens[ 3 ] );
-	sinon.spy( selectionPlayer, 'setStartTime' );
-	sinon.spy( selectionPlayer, 'setEndTime' );
+	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 2 ] );
+	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getEndToken.returns( this.storage.utterances[ 0 ].tokens[ 3 ] );
+	sinon.spy( this.selectionPlayer, 'setStartTime' );
+	sinon.spy( this.selectionPlayer, 'setEndTime' );
 
-	selectionPlayer.playSelection();
+	this.selectionPlayer.playSelection();
 
 	sinon.assert.calledWith(
-		player.playUtterance,
-		storage.utterances[ 0 ]
+		this.player.playUtterance,
+		this.storage.utterances[ 0 ]
 	);
 	sinon.assert.calledWith(
-		selectionPlayer.setStartTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setStartTime,
+		this.storage.utterances[ 0 ],
 		2000
 	);
 	sinon.assert.calledWith(
-		selectionPlayer.setEndTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setEndTime,
+		this.storage.utterances[ 0 ],
 		3500
 	);
 } );
@@ -174,8 +172,8 @@ QUnit.test( 'playSelection(): multiple ranges', function () {
 		'Utterance with selected <del>not selectable</del>text.'
 		//              [-------]                         [--]
 	);
-	const textNode1 = $( contentSelector ).contents().get( 0 );
-	const textNode2 = $( contentSelector ).contents().get( 2 );
+	const textNode1 = $( this.contentSelector ).contents().get( 0 );
+	const textNode2 = $( this.contentSelector ).contents().get( 2 );
 	const selection = {
 		rangeCount: 2,
 		getRangeAt: function ( index ) {
@@ -197,18 +195,18 @@ QUnit.test( 'playSelection(): multiple ranges', function () {
 		}
 	};
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].content = [
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].content = [
 		{ path: './text()[1]' },
 		{ path: './b/text()' },
 		{ path: './text()[2]' }
 	];
-	storage.utterances[ 0 ].endOffset = 18;
-	storage.utterances[ 0 ].tokens = [
+	this.storage.utterances[ 0 ].endOffset = 18;
+	this.storage.utterances[ 0 ].tokens = [
 		{
 			string: 'Utterance',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startTime: 0,
 			endTime: 1000,
 			startOffset: 0,
@@ -216,8 +214,8 @@ QUnit.test( 'playSelection(): multiple ranges', function () {
 		},
 		{
 			string: 'with',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startTime: 1000,
 			endTime: 2000,
 			startOffset: 10,
@@ -225,46 +223,46 @@ QUnit.test( 'playSelection(): multiple ranges', function () {
 		},
 		{
 			string: 'selected',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 22,
 			startTime: 3000
 		},
 		{
 			string: 'text',
-			items: [ storage.utterances[ 0 ].content[ 2 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 2 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 3,
 			endTime: 5000
 		},
 		{
 			string: '.',
-			items: [ storage.utterances[ 0 ].content[ 2 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 2 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 4,
 			endOffset: 4,
 			endTime: 3000
 		}
 	];
-	storage.getStartUtterance.returns( storage.utterances[ 0 ] );
-	storage.getStartToken.returns( storage.utterances[ 0 ].tokens[ 2 ] );
-	storage.getEndUtterance.returns( storage.utterances[ 0 ] );
-	storage.getEndToken.returns( storage.utterances[ 0 ].tokens[ 3 ] );
-	sinon.spy( selectionPlayer, 'setStartTime' );
-	sinon.spy( selectionPlayer, 'setEndTime' );
+	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 2 ] );
+	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getEndToken.returns( this.storage.utterances[ 0 ].tokens[ 3 ] );
+	sinon.spy( this.selectionPlayer, 'setStartTime' );
+	sinon.spy( this.selectionPlayer, 'setEndTime' );
 
-	selectionPlayer.playSelection();
+	this.selectionPlayer.playSelection();
 
 	sinon.assert.calledWith(
-		selectionPlayer.setStartTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setStartTime,
+		this.storage.utterances[ 0 ],
 		3000
 	);
 	sinon.assert.calledWith(
-		selectionPlayer.setEndTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setEndTime,
+		this.storage.utterances[ 0 ],
 		5000
 	);
 } );
@@ -274,52 +272,52 @@ QUnit.test( 'playSelection(): spanning multiple nodes', function () {
 		'Utterance with selected text <b>and </b>more selected text.'
 		//              [-----------------------------------------]
 	);
-	const textNode1 = $( contentSelector ).contents().get( 0 );
-	const textNode2 = $( contentSelector ).contents().get( 2 );
+	const textNode1 = $( this.contentSelector ).contents().get( 0 );
+	const textNode2 = $( this.contentSelector ).contents().get( 2 );
 	const selection = createMockedSelection( 15, textNode1, 17, textNode2 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].content = [
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].content = [
 		{ path: './text()[1]' },
 		{ path: './b/text()' },
 		{ path: './text()[2]' }
 	];
-	storage.utterances[ 0 ].endOffset = 18;
-	storage.utterances[ 0 ].tokens = [
+	this.storage.utterances[ 0 ].endOffset = 18;
+	this.storage.utterances[ 0 ].tokens = [
 		{
 			string: 'selected',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 22,
 			startTime: 1000
 		},
 		{
 			string: 'text',
-			items: [ storage.utterances[ 0 ].content[ 2 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 2 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 14,
 			endOffset: 17,
 			endTime: 2000
 		}
 	];
-	storage.getStartUtterance.returns( storage.utterances[ 0 ] );
-	storage.getStartToken.returns( storage.utterances[ 0 ].tokens[ 0 ] );
-	storage.getEndUtterance.returns( storage.utterances[ 0 ] );
-	storage.getEndToken.returns( storage.utterances[ 0 ].tokens[ 1 ] );
-	sinon.spy( selectionPlayer, 'setStartTime' );
-	sinon.spy( selectionPlayer, 'setEndTime' );
+	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 0 ] );
+	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getEndToken.returns( this.storage.utterances[ 0 ].tokens[ 1 ] );
+	sinon.spy( this.selectionPlayer, 'setStartTime' );
+	sinon.spy( this.selectionPlayer, 'setEndTime' );
 
-	selectionPlayer.playSelection();
+	this.selectionPlayer.playSelection();
 
 	sinon.assert.calledWith(
-		selectionPlayer.setStartTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setStartTime,
+		this.storage.utterances[ 0 ],
 		1000
 	);
 	sinon.assert.calledWith(
-		selectionPlayer.setEndTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setEndTime,
+		this.storage.utterances[ 0 ],
 		2000
 	);
 } );
@@ -329,53 +327,53 @@ QUnit.test( 'playSelection(): selected nodes are elements', function () {
 		'<b>Utterance zero.</b>'
 		//  [-------------]
 	);
-	const parent = $( contentSelector + ' b' ).get( 0 );
+	const parent = $( this.contentSelector + ' b' ).get( 0 );
 	const selection = createMockedSelection( 0, parent, 1 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].content = [ { path: './b/text()' } ];
-	storage.utterances[ 0 ].tokens = [
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].content = [ { path: './b/text()' } ];
+	this.storage.utterances[ 0 ].tokens = [
 		{
 			string: 'Utterance',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 8,
 			startTime: 1000
 		},
 		{
 			string: 'zero',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 10,
 			endOffset: 13
 		},
 		{
 			string: '.',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 14,
 			endOffset: 14,
 			endTime: 2000
 		}
 	];
-	storage.getStartUtterance.returns( storage.utterances[ 0 ] );
-	storage.getStartToken.returns( storage.utterances[ 0 ].tokens[ 0 ] );
-	storage.getEndUtterance.returns( storage.utterances[ 0 ] );
-	storage.getEndToken.returns( storage.utterances[ 0 ].tokens[ 2 ] );
-	sinon.spy( selectionPlayer, 'setStartTime' );
-	sinon.spy( selectionPlayer, 'setEndTime' );
+	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 0 ] );
+	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getEndToken.returns( this.storage.utterances[ 0 ].tokens[ 2 ] );
+	sinon.spy( this.selectionPlayer, 'setStartTime' );
+	sinon.spy( this.selectionPlayer, 'setEndTime' );
 
-	selectionPlayer.playSelection();
+	this.selectionPlayer.playSelection();
 
 	sinon.assert.calledWith(
-		selectionPlayer.setStartTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setStartTime,
+		this.storage.utterances[ 0 ],
 		1000
 	);
 	sinon.assert.calledWith(
-		selectionPlayer.setEndTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setEndTime,
+		this.storage.utterances[ 0 ],
 		2000
 	);
 } );
@@ -385,168 +383,168 @@ QUnit.test( 'playSelection(): selected nodes are elements that also contain non-
 		'<b>Not an utterance<br />Utterance zero.<br />Not an utterance</b>'
 		//  [---------------------------------------------------------]
 	);
-	const parent = $( contentSelector + ' b' ).get( 0 );
+	const parent = $( this.contentSelector + ' b' ).get( 0 );
 	const selection = createMockedSelection( 0, parent, 1 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].content = [ { path: './b/text()[2]' } ];
-	storage.utterances[ 0 ].tokens = [
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].content = [ { path: './b/text()[2]' } ];
+	this.storage.utterances[ 0 ].tokens = [
 		{
 			string: 'Utterance',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 8,
 			startTime: 1000
 		},
 		{
 			string: 'zero',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 10,
 			endOffset: 13
 		},
 		{
 			string: '.',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 14,
 			endOffset: 14,
 			endTime: 2000
 		}
 	];
-	storage.getStartUtterance.returns( storage.utterances[ 0 ] );
-	storage.getStartToken.returns( storage.utterances[ 0 ].tokens[ 0 ] );
-	storage.getEndUtterance.returns( storage.utterances[ 0 ] );
-	storage.getEndToken.returns( storage.utterances[ 0 ].tokens[ 2 ] );
-	sinon.spy( selectionPlayer, 'setStartTime' );
-	sinon.spy( selectionPlayer, 'setEndTime' );
+	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 0 ] );
+	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
+	this.storage.getEndToken.returns( this.storage.utterances[ 0 ].tokens[ 2 ] );
+	sinon.spy( this.selectionPlayer, 'setStartTime' );
+	sinon.spy( this.selectionPlayer, 'setEndTime' );
 
-	selectionPlayer.playSelection();
+	this.selectionPlayer.playSelection();
 
 	sinon.assert.calledWith(
-		selectionPlayer.setStartTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setStartTime,
+		this.storage.utterances[ 0 ],
 		1000
 	);
 	sinon.assert.calledWith(
-		selectionPlayer.setEndTime,
-		storage.utterances[ 0 ],
+		this.selectionPlayer.setEndTime,
+		this.storage.utterances[ 0 ],
 		2000
 	);
 } );
 
-QUnit.test( 'playSelectionIfValid(): valid', ( assert ) => {
-	sinon.stub( selectionPlayer, 'isSelectionValid' )
+QUnit.test( 'playSelectionIfValid(): valid', function ( assert ) {
+	sinon.stub( this.selectionPlayer, 'isSelectionValid' )
 		.returns( true );
-	sinon.stub( selectionPlayer, 'playSelection' );
+	sinon.stub( this.selectionPlayer, 'playSelection' );
 
-	const actualResult = selectionPlayer.playSelectionIfValid();
+	const actualResult = this.selectionPlayer.playSelectionIfValid();
 
-	sinon.assert.called( selectionPlayer.playSelection );
+	sinon.assert.called( this.selectionPlayer.playSelection );
 	assert.strictEqual( actualResult, true );
 } );
 
-QUnit.test( 'playSelectionIfValid(): invalid', ( assert ) => {
-	sinon.stub( selectionPlayer, 'isSelectionValid' )
+QUnit.test( 'playSelectionIfValid(): invalid', function ( assert ) {
+	sinon.stub( this.selectionPlayer, 'isSelectionValid' )
 		.returns( false );
-	sinon.stub( selectionPlayer, 'playSelection' );
+	sinon.stub( this.selectionPlayer, 'playSelection' );
 
-	const actualResult = selectionPlayer.playSelectionIfValid();
+	const actualResult = this.selectionPlayer.playSelectionIfValid();
 
-	sinon.assert.notCalled( selectionPlayer.playSelection );
+	sinon.assert.notCalled( this.selectionPlayer.playSelection );
 	assert.strictEqual( actualResult, false );
 } );
 
 QUnit.test( 'setEndTime()', function () {
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].tokens = [ {} ];
-	storage.utterances[ 0 ].audio.currentTime = 0.5;
-	selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
-	$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
-	sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].tokens = [ {} ];
+	this.storage.utterances[ 0 ].audio.currentTime = 0.5;
+	this.selectionPlayer.setEndTime( this.storage.utterances[ 0 ], 1500 );
+	$( this.storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
+	sinon.stub( this.selectionPlayer, 'resetPreviousEndUtterance' );
 
 	this.clock.tick( 1001 );
 
-	sinon.assert.called( player.stop );
-	sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
+	sinon.assert.called( this.player.stop );
+	sinon.assert.called( this.selectionPlayer.resetPreviousEndUtterance );
 } );
 
 QUnit.test( 'setEndTime(): faster speech rate', function () {
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].tokens = [ {} ];
-	storage.utterances[ 0 ].audio.currentTime = 0.5;
-	selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].tokens = [ {} ];
+	this.storage.utterances[ 0 ].audio.currentTime = 0.5;
+	this.selectionPlayer.setEndTime( this.storage.utterances[ 0 ], 1500 );
 	mw.user.options.set( 'wikispeechSpeechRate', 2.0 );
-	$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
-	sinon.stub( selectionPlayer, 'resetPreviousEndUtterance' );
+	$( this.storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
+	sinon.stub( this.selectionPlayer, 'resetPreviousEndUtterance' );
 
 	this.clock.tick( 501 );
 
-	sinon.assert.called( player.stop );
-	sinon.assert.called( selectionPlayer.resetPreviousEndUtterance );
+	sinon.assert.called( this.player.stop );
+	sinon.assert.called( this.selectionPlayer.resetPreviousEndUtterance );
 } );
 
 QUnit.test( 'setEndTime(): slower speech rate', function () {
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].tokens = [ {} ];
-	storage.utterances[ 0 ].audio.currentTime = 0.5;
-	selectionPlayer.setEndTime( storage.utterances[ 0 ], 1500 );
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].tokens = [ {} ];
+	this.storage.utterances[ 0 ].audio.currentTime = 0.5;
+	this.selectionPlayer.setEndTime( this.storage.utterances[ 0 ], 1500 );
 	mw.user.options.set( 'wikispeechSpeechRate', 0.5 );
-	$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
+	$( this.storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
 
 	this.clock.tick( 1001 );
 
-	sinon.assert.notCalled( player.stop );
+	sinon.assert.notCalled( this.player.stop );
 } );
 
 QUnit.test( 'resetPreviousEndUtterance()', function () {
 	util.setContentHtml(
 		'Utterance with selected text.'
 	);
-	storage.utterances[ 0 ].audio.src = 'loaded';
-	storage.utterances[ 0 ].endOffset = 28;
-	storage.utterances[ 0 ].content = [ { path: './text()' } ];
-	storage.utterances[ 0 ].tokens = [
+	this.storage.utterances[ 0 ].audio.src = 'loaded';
+	this.storage.utterances[ 0 ].endOffset = 28;
+	this.storage.utterances[ 0 ].content = [ { path: './text()' } ];
+	this.storage.utterances[ 0 ].tokens = [
 		{
 			string: 'Utterance',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 0,
 			endOffset: 8
 		},
 		{
 			string: 'with',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 10,
 			endOffset: 13
 		},
 		{
 			string: 'selected',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 15,
 			endOffset: 22,
 			startTime: 2000
 		},
 		{
 			string: 'text',
-			items: [ storage.utterances[ 0 ].content[ 0 ] ],
-			utterance: storage.utterances[ 0 ],
+			items: [ this.storage.utterances[ 0 ].content[ 0 ] ],
+			utterance: this.storage.utterances[ 0 ],
 			startOffset: 24,
 			endOffset: 27,
 			endTime: 4000
 		}
 	];
-	selectionPlayer.setEndTime( storage.utterances[ 0 ], 1000 );
-	selectionPlayer.previousEndUtterance = storage.utterances[ 0 ];
-	selectionPlayer.resetPreviousEndUtterance();
-	$( storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
+	this.selectionPlayer.setEndTime( this.storage.utterances[ 0 ], 1000 );
+	this.selectionPlayer.previousEndUtterance = this.storage.utterances[ 0 ];
+	this.selectionPlayer.resetPreviousEndUtterance();
+	$( this.storage.utterances[ 0 ].audio ).triggerHandler( 'playing' );
 
 	this.clock.tick( 1000 );
 
-	sinon.assert.notCalled( player.stop );
+	sinon.assert.notCalled( this.player.stop );
 } );
 
 QUnit.test( 'getFirstNodeInSelection()', function ( assert ) {
@@ -556,12 +554,12 @@ QUnit.test( 'getFirstNodeInSelection()', function ( assert ) {
 
 	);
 	const expectedNode =
-		$( contentSelector + ' selected' ).contents().get( 0 );
+		$( this.contentSelector + ' selected' ).contents().get( 0 );
 	const selection = createMockedSelection( 0, expectedNode, 14 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
-		selectionPlayer.getFirstNodeInSelection();
+		this.selectionPlayer.getFirstNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
 } );
@@ -572,15 +570,15 @@ QUnit.test( 'getFirstNodeInSelection(): start offset greater than max', function
 		//               [-------------]
 	);
 	const expectedNode =
-		$( contentSelector + ' selected' ).get( 0 );
+		$( this.contentSelector + ' selected' ).get( 0 );
 	const previousNode =
-		$( contentSelector ).contents().get( 0 );
+		$( this.contentSelector ).contents().get( 0 );
 	const selection =
 		createMockedSelection( 6, previousNode, 14, expectedNode );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
-		selectionPlayer.getFirstNodeInSelection();
+		this.selectionPlayer.getFirstNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
 } );
@@ -592,15 +590,15 @@ QUnit.test( 'getFirstNodeInSelection(): start offset greater than max, no siblin
 
 	);
 	const expectedNode =
-		$( contentSelector + ' selected' ).get( 0 );
+		$( this.contentSelector + ' selected' ).get( 0 );
 	const previousNode =
-		$( contentSelector + ' a b' ).contents().get( 0 );
+		$( this.contentSelector + ' a b' ).contents().get( 0 );
 	const selection =
 		createMockedSelection( 6, previousNode, 14, expectedNode );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
-		selectionPlayer.getFirstNodeInSelection();
+		this.selectionPlayer.getFirstNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
 } );
@@ -612,12 +610,12 @@ QUnit.test( 'getLastNodeInSelection()', function ( assert ) {
 
 	);
 	const expectedNode =
-		$( contentSelector + ' selected' ).contents().get( 0 );
+		$( this.contentSelector + ' selected' ).contents().get( 0 );
 	const selection = createMockedSelection( 0, expectedNode, 13 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
-		selectionPlayer.getLastNodeInSelection();
+		this.selectionPlayer.getLastNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
 } );
@@ -628,14 +626,14 @@ QUnit.test( 'getLastNodeInSelection(): end offset is zero', function ( assert ) 
 		//               [------------]
 	);
 	const expectedNode =
-		$( contentSelector + ' selected' ).get( 0 );
-	const nextNode = $( contentSelector ).contents().get( 2 );
+		$( this.contentSelector + ' selected' ).get( 0 );
+	const nextNode = $( this.contentSelector ).contents().get( 2 );
 	const selection =
 		createMockedSelection( 0, expectedNode, -1, nextNode );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
 	const actualNode =
-		selectionPlayer.getLastNodeInSelection();
+		this.selectionPlayer.getLastNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
 } );
@@ -646,30 +644,30 @@ QUnit.test( 'getLastNodeInSelection(): end offset is zero, no sibling', function
 		//               [------------]
 
 	);
-	const expectedNode = $( contentSelector + ' selected' ).get( 0 );
-	const nextNode = $( contentSelector + ' a b' ).contents().get( 0 );
+	const expectedNode = $( this.contentSelector + ' selected' ).get( 0 );
+	const nextNode = $( this.contentSelector + ' a b' ).contents().get( 0 );
 	const selection = createMockedSelection( 0, expectedNode, -1, nextNode );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
 
-	const actualNode = selectionPlayer.getLastNodeInSelection();
+	const actualNode = this.selectionPlayer.getLastNodeInSelection();
 
 	assert.strictEqual( actualNode, expectedNode );
 } );
 
 QUnit.test( 'isSelectionValid(): valid', function ( assert ) {
-	sinon.stub( selectionPlayer, 'isTextSelected' ).returns( true );
+	sinon.stub( this.selectionPlayer, 'isTextSelected' ).returns( true );
 	util.setContentHtml(
 		'Utterance with selected text.'
 		//              [-----------]
 	);
-	const textNode = $( contentSelector ).contents().get( 0 );
-	const firstNode = $( contentSelector + ' selected' ).contents().get( 0 );
-	storage.getFirstTextNode.returns( firstNode );
-	const lastNode = $( contentSelector + ' selected' ).contents().get( 0 );
-	storage.getFirstTextNode.returns( lastNode );
-	storage.isNodeInUtterance.returns( true );
+	const textNode = $( this.contentSelector ).contents().get( 0 );
+	const firstNode = $( this.contentSelector + ' selected' ).contents().get( 0 );
+	this.storage.getFirstTextNode.returns( firstNode );
+	const lastNode = $( this.contentSelector + ' selected' ).contents().get( 0 );
+	this.storage.getFirstTextNode.returns( lastNode );
+	this.storage.isNodeInUtterance.returns( true );
 	const selection = createMockedSelection( 15, textNode, 27 );
 	this.sandbox.stub( window, 'getSelection' ).returns( selection );
-	const selectionValid = selectionPlayer.isSelectionValid();
+	const selectionValid = this.selectionPlayer.isSelectionValid();
 	assert.strictEqual( selectionValid, true );
 } );

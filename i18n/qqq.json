@@ -16,7 +16,7 @@
 	},
 	"wikispeech": "{{name}}\nThe name of the extension",
 	"wikispeech-desc": "{{desc|name=Wikispeech|url=https://www.mediawiki.org/wiki/Extension:Wikispeech}}",
-	"prefs-wikispeech": "{{optional}}\nUsed in user preferences as a tab heading.",
+	"prefs-wikispeech": "Used in user preferences as a tab heading.",
 	"prefs-wikispeech-voice": "Used in user preferences as a section heading for voice selection.",
 	"prefs-wikispeech-speech-rate": "Used in user preferences as a label for speech rate selection.",
 	"prefs-wikispeech-speech-rate-percent": "Label for speech rate in the preferences dialog.",

@@ -8,6 +8,7 @@
 		]
 	},
 	"wikispeech-desc": "Ein Text-zu-Sprache-Tool, um Wikimedia-Projekte für Personen zugänglicher zu machen, die aus verschiedenen Gründen Schwierigkeiten beim Lesen haben.",
+	"prefs-wikispeech": "Seiten anhören",
 	"prefs-wikispeech-voice": "Stimme",
 	"prefs-wikispeech-speech-rate": "Sprechgeschwindigkeit",
 	"prefs-wikispeech-speech-rate-percent": "Sprechgeschwindigkeit (in Prozent)",

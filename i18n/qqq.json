@@ -94,5 +94,6 @@
 	"wikispeech-morphology-neu": "The word is a neuter",
 	"wikispeech-morphology-nn": "The word is a noun",
 	"wikispeech-morphology-pm": "The word is a pronoun",
-	"wikispeech-morphology-vb": "The word is a verb"
+	"wikispeech-morphology-vb": "The word is a verb",
+	"wikispeech-menu-label": "Menu for more Wikispeech options, such as help, feedback and edit lexicon"
 }

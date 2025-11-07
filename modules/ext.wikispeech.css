@@ -35,6 +35,10 @@
 	position: absolute;
 }
 
+.oo-ui-menuOptionWidget .oo-ui-labelElement-label {
+	text-align: left;
+}
+
 @keyframes spin {
 	0% {
 		transform: rotate( 0deg );

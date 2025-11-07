@@ -31,6 +31,53 @@ class Ui {
 	}
 
 	/**
+	 * Adds an item to the link dropdown menu.
+	 *
+	 * @param {Object} item The menu item to add.
+	 * @param {string} item.url The URL for the menu item.
+	 * @param {string} item.label The label for the menu item.
+	 * @param {string} item.icon The icon for the menu item.
+	 */
+	addMenuItem( item ) {
+		const option = new OO.ui.MenuOptionWidget( {
+			data: item.url,
+			label: item.label,
+			icon: item.icon
+		} );
+		option.$element
+			.attr( 'title', item.label )
+			.attr( 'aria-label', item.label );
+
+		this.linkMenuButton.getMenu().addItems( [ option ] );
+	}
+
+	/**
+	 * Adds a dropdown menu button to a toolbar group.
+	 *
+	 * @param {OO.ui.ToolGroup} group The group to add the menu button to.
+	 * @param {Function} onChoose Callback when a menu option is chosen.
+	 * @return {OO.ui.ButtonMenuSelectWidget} The created menu button.
+	 */
+	addMenuButton( group, onChoose ) {
+		const label = mw.msg( 'wikispeech-menu-label' );
+
+		const button = new OO.ui.ButtonMenuSelectWidget( {
+			icon: 'ellipsis'
+		} );
+
+		button.$element.find( 'a' )
+			.attr( 'title', label )
+			.attr( 'aria-label', label );
+
+		button.getMenu().on( 'choose', ( item ) => {
+			onChoose( item.getData(), item );
+		} );
+
+		group.addItems( [ button ] );
+		return button;
+	}
+
+	/**
 	 * Add a panel with controls for for Wikispeech.
 	 *
 	 * The panel contains buttons for controlling playback and
@@ -49,7 +96,6 @@ class Ui {
 				position: 'bottom'
 			}
 		);
-
 		const playerGroupPlayStop = this.addToolbarGroup();
 		this.playPauseButton = this.addButton(
 			playerGroupPlayStop,
@@ -108,28 +154,33 @@ class Ui {
 		);
 
 		this.linkGroup = this.addToolbarGroup();
-		this.addLinkConfigButton(
+		this.linkMenuButton = this.addMenuButton(
 			this.linkGroup,
-			'help',
-			'wgWikispeechHelpPage',
-			mw.msg( 'wikispeech-help' )
+			( url ) => window.open( url, '_blank' )
 		);
-		this.addLinkConfigButton(
-			this.linkGroup,
-			'feedback',
-			'wgWikispeechFeedbackPage',
-			mw.msg( 'wikispeech-feedback' )
 
-		);
+		const helpUrl = mw.config.get( 'wgWikispeechHelpPage' );
+		if ( helpUrl ) {
+			this.addMenuItem( {
+				url: mw.util.getUrl( helpUrl ),
+				label: mw.msg( 'wikispeech-help' ),
+				icon: 'help'
+			} );
+		}
+		const feedbackUrl = mw.config.get( 'wgWikispeechFeedbackPage' );
+		this.addMenuItem( {
+			url: mw.util.getUrl( feedbackUrl ),
+			label: mw.msg( 'wikispeech-feedback' ),
+			icon: 'feedback'
+		} );
+
 		const api = new mw.Api();
 		api.getUserInfo()
 			.done( ( info ) => {
 				const canEditLexicon = info.rights.includes( 'wikispeech-edit-lexicon' );
-				if ( !canEditLexicon ) {
-					return;
+				if ( canEditLexicon ) {
+					this.addMenuItem( this.createEditButton( null, null ) );
 				}
-
-				this.addEditButton();
 			} );
 
 		$( document.body ).append( this.toolbar.$element );
@@ -153,13 +204,17 @@ class Ui {
 	/**
 	 * Add button that takes the user to the lexicon editor.
 	 *
-	 * @param {string} If given, this is used to build the URL for
+	 *  If`scriptUrl` is given, this is used to build the URL for
 	 *  the editor page. It should be the URL to the script
 	 *  endpoint of a wiki, i.e. "...index.php". If not given the
 	 *  link will go to the page on the local wiki.
+	 *
+	 *  @param {string} [scriptUrl] Optional. The script endpoint for the editor page (i.e "...index.php").
+	 *  @param {string} [consumerUrl] Optional. The consumer URL to include as a parameter.
+	 *  @return {Object} Menu item configuration for the lexicon editor.
 	 */
 
-	addEditButton( scriptUrl, consumerUrl ) {
+	createEditButton( scriptUrl, consumerUrl ) {
 		let editUrl;
 		if ( scriptUrl ) {
 			editUrl = scriptUrl;
@@ -178,15 +233,14 @@ class Ui {
 
 		editUrl += '?' + new URLSearchParams( params );
 
-		this.addButton(
-			this.linkGroup,
-			editUrl,
-			{
-				title: mw.msg( 'wikispeech-edit-lexicon-btn' ),
-				icon: 'edit',
-				id: 'wikispeech-edit'
-			}
-		);
+		const label = mw.msg( 'wikispeech-edit-lexicon-btn' );
+
+		return {
+			url: editUrl,
+			label: label,
+			icon: 'edit',
+			id: 'wikispeech-edit'
+		};
 	}
 
 	/**
@@ -324,27 +378,6 @@ class Ui {
 		this.playSelectionButton.setIcon( 'stop' );
 		this.playSelectionButton.setTitle( mw.msg( 'wikispeech-stop' ) );
 		this.playSelectionButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-stop' ) );
-	}
-
-	/**
-	 * Add a button that takes the user to another page.
-	 *
-	 * The button gets the link destination from a supplied
-	 * config variable. If the variable isn't specified, the button
-	 * isn't added.
-	 *
-	 * @param {OO.ui.ButtonGroupWidget} group Group to add button to.
-	 * @param {string} icon Name of button icon.
-	 * @param {string} configVariable The config variable to get
-	 *  link destination from.
-	 * @param {string} label Label for aria labels and titles
-	 */
-
-	addLinkConfigButton( group, icon, configVariable, label ) {
-		const url = mw.config.get( configVariable );
-		if ( url ) {
-			this.addButton( group, url, { title: label, icon: icon } );
-		}
 	}
 
 	/**

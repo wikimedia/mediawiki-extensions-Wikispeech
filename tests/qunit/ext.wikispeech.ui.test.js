@@ -47,51 +47,76 @@ QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 	}
 } ) );
 
-QUnit.test( 'addControlPanel(): add help button if page is set', function ( assert ) {
+QUnit.test( 'addControlPanel(): adds help menu item if page is set', function ( assert ) {
+	const done = assert.async();
+
 	mw.config.set( 'wgArticlePath', '/wiki/$1' );
 	mw.config.set( 'wgWikispeechHelpPage', 'Help' );
+
 	sinon.stub( this.ui, 'addBufferingIcon' );
+	const addMenuItemStub = sinon.stub( this.ui, 'addMenuItem' );
+
+	const deferred = $.Deferred();
+	sinon.stub( mw.Api.prototype, 'getUserInfo' ).returns( deferred.promise() );
 
 	this.ui.addControlPanel();
+	deferred.resolve( { rights: [] } );
 
-	assert.strictEqual(
-		$( '.ext-wikispeech-control-panel' )
-			.find( '.oo-ui-buttonElement-button[href="./Help"]' )
-			.length,
-		1
-	);
+	deferred.done( () => {
+		assert.strictEqual( addMenuItemStub.called, true, 'addMenuItem called' );
+
+		const helpItem = addMenuItemStub
+			.getCalls()
+			.map( ( i ) => i.args[ 0 ] )
+			.find( ( item ) => item.icon === 'help' );
+
+		assert.notStrictEqual( helpItem, undefined, 'Help menu item exists' );
+		assert.strictEqual( helpItem.url.includes( 'Help' ), true, 'URL includes Help' );
+
+		mw.Api.prototype.getUserInfo.restore();
+		this.ui.addMenuItem.restore();
+		done();
+	} );
 } );
 
-QUnit.test( 'addControlPanel(): add feedback button', function ( assert ) {
+QUnit.test( 'addControlPanel(): adds feedback menu item if page is set', function ( assert ) {
+	const done = assert.async();
 	mw.config.set( 'wgArticlePath', '/wiki/$1' );
 	mw.config.set( 'wgWikispeechFeedbackPage', 'Feedback' );
 	sinon.stub( this.ui, 'addBufferingIcon' );
 
-	this.ui.addControlPanel();
+	const addMenuItemStub = sinon.stub( this.ui, 'addMenuItem' );
+	const deferred = $.Deferred();
+	sinon.stub( mw.Api.prototype, 'getUserInfo' ).returns( deferred.promise() );
 
-	assert.strictEqual(
-		$( '.ext-wikispeech-control-panel' )
-			.find( '.oo-ui-buttonElement-button[href="./Feedback"]' )
-			.length,
-		1
-	);
+	this.ui.addControlPanel();
+	deferred.resolve( { rights: [] } );
+
+	deferred.then( () => {
+		assert.strictEqual( addMenuItemStub.called, true, 'addMenuItem called' );
+
+		const feedbackItem = addMenuItemStub
+			.getCalls()
+			.map( ( i ) => i.args[ 0 ] )
+			.find( ( item ) => item.icon === 'feedback' );
+
+		assert.notStrictEqual( feedbackItem, undefined, 'Feedback menu item exists' );
+
+		mw.Api.prototype.getUserInfo.restore();
+		this.ui.addMenuItem.restore();
+		done();
+	} );
 } );
 
-QUnit.test( 'addEditButton(): add edit button with link to local URL', function () {
+QUnit.test( 'createEditButton(): returns menu item with local URL', function ( assert ) {
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgArticleId', 1 );
 	mw.config.set( 'wgScript', '/wiki/index.php' );
 
-	this.ui.linkGroup = sinon.stub( new OO.ui.ButtonGroupWidget() );
-	const addButton = sinon.stub( this.ui, 'addButton' );
+	const item = this.ui.createEditButton();
 
-	this.ui.addEditButton();
-
-	sinon.assert.calledWith(
-		addButton,
-		this.ui.linkGroup,
-		// The colon in "Special:EditLexicon" is URL encoded, see:
-		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
+	assert.strictEqual(
+		item.url,
 		'/wiki/index.php?title=Special%3AEditLexicon&language=en&page=1',
 		{
 			title: mw.msg( 'wikispeech-edit-lexicon-btn' ),
@@ -99,20 +124,18 @@ QUnit.test( 'addEditButton(): add edit button with link to local URL', function 
 			id: 'wikispeech-edit'
 		}
 	);
+
 } );
 
-QUnit.test( 'addEditButton(): add edit button with link to given script URL', function () {
+QUnit.test( 'createEditButton(): add edit button with link to given script URL', function ( assert ) {
 	mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgArticleId', 1 );
-	this.ui.linkGroup = sinon.stub( new OO.ui.ButtonGroupWidget() );
-	const addButton = sinon.stub( this.ui, 'addButton' );
 
-	this.ui.addEditButton( 'http://producer.url/w/index.php' );
+	const item = this.ui.createEditButton( 'http://producer.url/w/index.php' );
 
-	sinon.assert.calledWith(
-		addButton,
-		this.ui.linkGroup,
+	assert.strictEqual(
+		item.url,
 		// The colon in "Special:EditLexicon" is URL encoded, see:
 		// https://url.spec.whatwg.org/#concept-urlencoded-serializer.
 		'http://producer.url/w/index.php?title=Special%3AEditLexicon&language=en&page=1',
@@ -124,19 +147,16 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL', fu
 	);
 } );
 
-QUnit.test( 'addEditButton(): add edit button with link to given script URL, with consumerUrl parameter', function () {
+QUnit.test( 'createEditButton(): add edit button with link to given script URL, with consumerUrl parameter', function ( assert ) {
 	mw.config.set( 'wgWikispeechAllowConsumerEdits', true );
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	mw.config.set( 'wgArticleId', 1 );
 	mw.config.set( 'wgScriptPath', '/' );
 
-	this.ui.linkGroup = this.sandbox.stub( new OO.ui.ButtonGroupWidget() );
-	const addButton = this.sandbox.stub( this.ui, 'addButton' );
-
 	const scriptUrl = 'http://producer.url/w/index.php';
 	const consumerUrl = window.location.origin + '/';
 
-	this.ui.addEditButton( scriptUrl, consumerUrl );
+	const item = this.ui.createEditButton( scriptUrl, consumerUrl );
 	const expectedUrl = scriptUrl + '?' + new URLSearchParams( {
 		title: 'Special:EditLexicon',
 		language: 'en',
@@ -144,9 +164,8 @@ QUnit.test( 'addEditButton(): add edit button with link to given script URL, wit
 		consumerUrl: consumerUrl
 	} ).toString();
 
-	sinon.assert.calledWith(
-		addButton,
-		this.ui.linkGroup,
+	assert.strictEqual(
+		item.url,
 		expectedUrl,
 		{
 			title: mw.msg( 'wikispeech-edit-lexicon-btn' ),

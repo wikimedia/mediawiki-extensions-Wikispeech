@@ -166,7 +166,9 @@ function extendUi() {
 				const producerInfo = response.query.general,
 					scriptPath = producerInfo.server + producerInfo.script;
 				const consumerUrl = window.location.origin + mw.config.get( 'wgScriptPath' );
-				main.ui.addEditButton( scriptPath, consumerUrl );
+				const editButtonItem = main.ui.createEditButton( scriptPath, consumerUrl );
+				main.ui.addMenuItem( editButtonItem );
+
 			} );
 	}
 }

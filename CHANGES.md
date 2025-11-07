@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T406016](https://phabricator.wikimedia.org/T406016) Clarify "help", "feedback" and "edit" button
 * [T407474](https://phabricator.wikimedia.org/T407474) Enable message-key input in listen API
 * [T402518](https://phabricator.wikimedia.org/T402518) Combine utterances to audio files
 

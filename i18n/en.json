@@ -87,6 +87,7 @@
 	"wikispeech-morphology-neu": "Neuter",
 	"wikispeech-morphology-nn": "Noun",
 	"wikispeech-morphology-pm": "Pronoun",
-	"wikispeech-morphology-vb": "Verb"
+	"wikispeech-morphology-vb": "Verb",
+	"wikispeech-menu-label": "More options"
 
 }

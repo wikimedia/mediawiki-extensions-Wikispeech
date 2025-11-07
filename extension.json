@@ -71,7 +71,8 @@
 				"wikispeech-help",
 				"wikispeech-feedback",
 				"wikispeech-edit-lexicon-btn",
-				"wikispeech-settings"
+				"wikispeech-settings",
+				"wikispeech-menu-label"
 
 			],
 			"dependencies": [

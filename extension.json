@@ -225,7 +225,7 @@
 		"CustomEditor": "LexiconHooks"
 	},
 	"ConfigRegistry": {
-		"wikispeech": "GlobalVarConfig::newInstance"
+		"wikispeech": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
 	},
 	"JobClasses": {
 		"flushUtterancesByExpirationDateOnFile": {

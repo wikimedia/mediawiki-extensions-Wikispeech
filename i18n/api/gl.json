@@ -1,0 +1,38 @@
+{
+	"@metadata": {
+		"authors": [
+			"Toliño"
+		]
+	},
+	"apihelp-wikispeech-segment-summary": "Dividir o contido HTML dunha páxina en segmentos.",
+	"apihelp-wikispeech-segment-param-page": "O título da páxina a segmentar.",
+	"apihelp-wikispeech-segment-param-removetags": "Etiquetas HTML que se deben eliminar por completo durante a limpeza, como un obxecto JSON co formato:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nonde <code>tag1</code> sempre se elimina, <code>tag2</code> só se elimina se tamén ten a clase CSS <code>css-class</code> e <code>tag3</code> só se elimina se tamén ten a clase CSS <code>css-class-1</code> ou <code>css-class-2</code>. Ten en conta que «wikispeech-listen» usa a configuración predeterminada para a segmentación e pode non ser compatible cos segmentos producidos cunha configuración ad hoc deste parámetro.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Etiquetas HTML que deberían romper os segmentos. Ten en conta que «wikispeech-listen» usa a configuración predeterminada para a segmentación e pode non ser compatible cos segmentos producidos cunha configuración ad hoc deste parámetro.",
+	"apihelp-wikispeech-segment-param-part-of-content": "Engadir contido adicional para certos elementos.",
+	"apihelp-wikispeech-segment-param-consumer-url": "URL á ruta de scripts do wiki do consumidor.",
+	"apihelp-wikispeech-segment-example-1": "Segmenta a páxina principal usando os parámetros predeterminados da configuración.",
+	"apihelp-wikispeech-segment-example-2": "Segmenta usando parámetros personalizados. A etiqueta <code>sup</code> elimínase e tamén se elimina <code>div</code> cando ten a clase <code>toc</code>. As etiquetas <code>h1</code> e <code>h2</code> rompen os segmentos.",
+	"apihelp-wikispeech-segment-example-3": "Segmenta a páxina principal noutro wiki.",
+	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> non é unha cadea JSON válida.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> non ten un formato válido. Debe ser un obxecto con valores booleanos, cadeas ou matrices de cadeas. Para non eliminar ningunha etiqueta, define <var>removetags</var> como un obxecto baleiro (<code>{}</code>).",
+	"apihelp-wikispeech-listen-summary": "Sintetizar o discurso.",
+	"apihelp-wikispeech-listen-param-lang": "Código de lingua.",
+	"apihelp-wikispeech-listen-param-revision": "Revisión da páxina na que se atopa o segmento.",
+	"apihelp-wikispeech-listen-param-segment": "Hash da síntese do segmento.",
+	"apihelp-wikispeech-listen-param-text": "Texto a sintetizar.",
+	"apihelp-wikispeech-listen-param-ipa": "Cadea IPA a sintetizar.",
+	"apihelp-wikispeech-listen-param-voice": "Voz a usar. Se non se indica, usarase a voz predeterminada para a lingua.",
+	"apihelp-wikispeech-listen-param-consumer-url": "URL á ruta de scripts do wiki do consumidor.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "O valor predeterminado é «false». Ao definirse como «true», os datos anónimos non se almacenarán no rexistro de métricas. Úsase principalmente ao executar a renderización previa para evitar engadir solicitudes de robots ás estatísticas.",
+	"apierror-wikispeech-listen-deleted-revision": "Non se poden escoitar as revisións eliminadas.",
+	"apierror-wikispeech-listen-notallowed": "Non tes os dereitos necesarios para chamar a esta acción da API.",
+	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> non é unha lingua válida. Debería ser unha destas: $2.",
+	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> non é unha voz válida. Debería ser unha destas: $2.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Non se puido obter a páxina co identificador de revisión «$1» do consumidor no enderezo URL $2.",
+	"apierror-wikispeech-consumer-not-allowed": "Non se permiten solicitudes desde wikis remotos.",
+	"apihelp-wikispeech-listen-example-1": "Sintetizar unha oración en inglés.",
+	"apihelp-wikispeech-listen-example-2": "Utiliza unha voz que non sexa a predeterminada.",
+	"apihelp-wikispeech-listen-example-3": "Solicita un segmento dunha revisión. Usarase a síntese almacenada na caché, se existe.",
+	"apihelp-wikispeech-listen-example-4": "Sintetizar unha oración doutro wiki.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "O texto de entrada non debe exceder $1 caracteres, mais contiña $2 caracteres."
+}

@@ -15,7 +15,7 @@ use MediaWiki\Wikispeech\Segment\SegmentContent;
  *
  * This adds extra words that are read before the link text.
  *
- * @since 0.0.13
+ * @since 0.1.13
  */
 
 class Link extends SegmentContent {

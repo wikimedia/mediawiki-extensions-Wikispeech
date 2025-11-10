@@ -18,7 +18,7 @@ abstract class SegmentResponse {
 	private $segments = null;
 
 	/**
-	 * @since 0.1.10
+	 * @since 0.1.13
 	 * @return SegmentList|null
 	 */
 	public function getSegments(): ?SegmentList {
@@ -26,7 +26,7 @@ abstract class SegmentResponse {
 	}
 
 	/**
-	 * @since 0.1.10
+	 * @since 0.1.13
 	 * @param SegmentList|null $segments
 	 */
 	public function setSegments( ?SegmentList $segments ): void {

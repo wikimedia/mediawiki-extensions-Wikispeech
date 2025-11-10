@@ -24,14 +24,18 @@ e.g. from 0.1.2-SNAPSHOT to 0.2.0,
 then replace all @since 0.1.2 tags in the code to 0.2.0 using a new task.
 
 Update [mediawiki.org documentation](https://www.mediawiki.org/wiki/Extension:Wikispeech)
-the match the new release version.
+to match the new release version.
 
 Update version in extension.json.
 
 ## Versions
 
-### 0.1.13-SNAPSHOT
+### 0.1.14-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+### 0.1.13
+2025-11-10
 Speechoid: 0.1.2
 
 * [T405910](https://phabricator.wikimedia.org/T405910) Make play button more prominent

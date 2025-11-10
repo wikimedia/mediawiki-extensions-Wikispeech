@@ -54,7 +54,7 @@ class SpecialEditLexicon extends SpecialPage {
 	private $postHtml;
 
 	/**
-	 * @since 0.1.12 Removed ConfigFactory
+	 * @since 0.1.11 Removed ConfigFactory
 	 * @since 0.1.8
 	 * @param LanguageNameUtils $languageNameUtils
 	 * @param LexiconStorage $lexiconStorage

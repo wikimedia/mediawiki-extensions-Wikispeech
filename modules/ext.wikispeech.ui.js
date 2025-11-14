@@ -311,13 +311,15 @@ class Ui {
 
 	/**
 	 * Show the buffering icon if the current audio is loading.
+	 *
+	 * @param {Object} utterance
 	 */
 
-	showBufferingIconIfAudioIsLoading( audio ) {
-		if ( this.audioIsReady( audio ) ) {
+	showBufferingIconIfAudioIsLoading( utterance ) {
+		if ( this.audioIsReady( utterance.audio ) ) {
 			this.hideBufferingIcon();
 		} else {
-			$( audio ).on( 'canplay', () => {
+			$( utterance.audio ).on( 'canplay', () => {
 				this.hideBufferingIcon();
 			} );
 			this.$bufferingIcons.show();
@@ -385,33 +387,65 @@ class Ui {
 	 */
 
 	addSelectionPlayer() {
-		const label = mw.msg( 'wikispeech-play-selection' );
+		const playLabel = mw.msg( 'wikispeech-play-selection' );
 		this.playSelectionButton = new OO.ui.ButtonWidget( {
 			icon: 'play',
-			classes: [ 'ext-wikispeech-selection-player' ],
-			title: label
+			title: playLabel
 		} );
-		this.playSelectionButton.$element.find( 'a' ).attr( 'aria-label', label );
+		this.playSelectionButton.$element.find( 'a' ).attr( 'aria-label', playLabel );
 		this.playSelectionButton.on( 'click', () => this.player.playOrStop() );
-		this.playSelectionButton.toggle( false );
-		$( document.body ).append( this.playSelectionButton.$element );
-		$( document ).on( 'mouseup', () => {
+
+		const closeLabel = mw.msg( 'wikispeech-close-selection-player' );
+		const closeButton = new OO.ui.ButtonWidget( {
+			icon: 'close',
+			title: closeLabel
+		} );
+		closeButton.$element.find( 'a' ).attr( 'aria-label', closeLabel );
+		closeButton.on( 'click', () => {
+			this.hideSelectionPlayer();
+			this.player.stop();
+		} );
+
+		this.selectionPlayerUi = new OO.ui.ButtonGroupWidget( {
+			items: [ this.playSelectionButton, closeButton ],
+			classes: [ 'ext-wikispeech-selection-player' ]
+		} );
+		$( document.body ).append( this.selectionPlayerUi.$element );
+		this.hideSelectionPlayer();
+
+		const pageContent = document.querySelector( mw.config.get( 'wgWikispeechContentSelector' ) );
+		$( document ).on( 'mouseup', ( event ) => {
+			if (
+				this.selectionPlayerUi.$element.get( 0 ).contains( event.target ) ||
+				this.playPauseButton.$element.get( 0 ).contains( event.target )
+			) {
+				// If a play button is clicked we need to *not* hide the player.
+				// The player visibility is checked to see if the focus player
+				// should be used.
+				return;
+			}
+
+			if ( this.isShown() && this.selectionPlayer.isSelectionValid() ) {
+				this.showSelectionPlayer();
+				return;
+			}
+
 			if (
 				this.isShown() &&
-				this.selectionPlayer.isSelectionValid()
+				pageContent.contains( event.target ) &&
+				this.selectionPlayer.getFocus() &&
+				!this.player.isPlaying()
 			) {
-				this.showSelectionPlayer();
-			} else {
-				this.playSelectionButton.toggle( false );
+				// Show focus player only if we click somewhere we can start
+				// playing. Don't show the focus player when playing to
+				// simplify things.
+				this.showSelectionPlayer( true );
+				return;
 			}
-		} );
-		$( document ).on( 'click', () => {
-			// A click listener is also needed because of the
-			// order of events when text is deselected by clicking
-			// it.
-			if ( !this.selectionPlayer.isSelectionValid() ) {
-				this.playSelectionButton.toggle( false );
-			}
+
+			// If there's no reason to show the selection player it means that
+			// you can't use it. Therefore hide it.
+			this.hideSelectionPlayer();
 		} );
 	}
 
@@ -422,39 +456,68 @@ class Ui {
 	 */
 
 	isShown() {
+		if ( !this.toolbar ) {
+			return false;
+		}
 		return this.toolbar.isVisible();
 	}
 
 	/**
-	 * Show the selection player below the end of the selection.
+	 * Show the selection player close to selection or focus.
+	 *
+	 * When used for selection the player is shown below the end of the
+	 * selection. When used for focus the player is shown above the focus. Both
+	 * are meant to avoid covering relevant text.
+	 *
+	 * @param {boolean} focusPlayer If true puts the player above the relevant
+	 *  position, if false below.
 	 */
 
-	showSelectionPlayer() {
-		this.playSelectionButton.toggle( true );
+	showSelectionPlayer( focusPlayer ) {
 		const selection = window.getSelection();
-		const lastRange = selection.getRangeAt( selection.rangeCount - 1 );
-		const lastRect =
-			util.getLast( lastRange.getClientRects() );
-
-		// Place the player under the end of the selected text.
 		let left;
-		if ( this.getTextDirection( lastRange.endContainer ) === 'rtl' ) {
-			// For RTL languages, the end of the text is the far left.
-			left = lastRect.left + $( document ).scrollLeft();
+		let css;
+		const lastRange = selection.getRangeAt( selection.rangeCount - 1 );
+		const lastRect = util.getLast( lastRange.getClientRects() );
+		// Showing the element needs to be done before the calculations to get
+		// the dimensions right.
+		this.selectionPlayerUi.toggle( true );
+
+		if ( focusPlayer ) {
+			// Place the player above the clicked text to not obscure any
+			// follwing text. Preceding text is probably not as important when
+			// you choosing a place to start from.
+			const firstRange = selection.getRangeAt( 0 );
+			const firstRect = firstRange.getClientRects()[ 0 ];
+			left = firstRect.left + $( document ).scrollLeft();
+			const top = firstRect.top + $( document ).scrollTop() -
+				this.selectionPlayerUi.$element.height();
+			css = {
+				left: left + 'px',
+				top: top + 'px'
+			};
 		} else {
-			// For LTR languages, the end of the text is the far
-			// right. This is the default value for the direction
-			// property.
-			left =
-				lastRect.right +
-				$( document ).scrollLeft() -
-				this.playSelectionButton.$element.width();
+			// Place the player under the end of the selected text.
+			if ( this.getTextDirection( lastRange.endContainer ) === 'rtl' ) {
+				// For RTL languages, the end of the text is the far left.
+				left = lastRect.left + $( document ).scrollLeft();
+			} else {
+				// For LTR languages, the end of the text is the far
+				// right. This is the default value for the direction
+				// property.
+				left =
+					lastRect.right +
+					$( document ).scrollLeft() -
+					this.selectionPlayerUi.$element.width();
+			}
+			const top = lastRect.bottom + $( document ).scrollTop();
+			css = {
+				left: left + 'px',
+				top: top + 'px'
+			};
 		}
-		const top = lastRect.bottom + $( document ).scrollTop();
-		this.playSelectionButton.$element.css( {
-			left: left + 'px',
-			top: top + 'px'
-		} );
+
+		this.selectionPlayerUi.$element.css( css );
 	}
 
 	/**
@@ -471,6 +534,24 @@ class Ui {
 		} else {
 			return $( node ).css( 'direction' );
 		}
+	}
+
+	/**
+	 * Hides the selection player.
+	 */
+
+	hideSelectionPlayer() {
+		this.selectionPlayerUi.toggle( false );
+	}
+
+	/**
+	 * Checks if the selection player is shown.
+	 *
+	 * @return {boolean}
+	 */
+
+	isSelectionPlayerShown() {
+		return this.selectionPlayerUi.isVisible();
 	}
 
 	/**
@@ -601,11 +682,11 @@ class Ui {
 	toggleVisibility() {
 		if ( this.isShown() ) {
 			this.toolbar.toggle( false );
-			this.playSelectionButton.toggle( false );
+			this.selectionPlayerUi.toggle( false );
 			this.$playerFooter.hide();
 		} else {
 			this.toolbar.toggle( true );
-			this.playSelectionButton.toggle( true );
+			this.selectionPlayerUi.toggle( true );
 			this.$playerFooter.show();
 		}
 	}

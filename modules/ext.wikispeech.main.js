@@ -30,6 +30,7 @@ class Main {
 		this.selectionPlayer.storage = this.storage;
 		this.selectionPlayer.player = this.player;
 		this.selectionPlayer.ui = this.ui;
+		this.selectionPlayer.highlighter = this.highlighter;
 		this.ui.player = this.player;
 		this.ui.storage = this.storage;
 		this.ui.selectionPlayer = this.selectionPlayer;

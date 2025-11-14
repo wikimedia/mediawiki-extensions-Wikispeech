@@ -7,14 +7,15 @@ QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 	beforeEach: function () {
 		this.ui = new Ui();
 		this.ui.player = sinon.createStubInstance( Player );
-		this.selectionPlayer = sinon.stub( new SelectionPlayer() );
-		this.ui.selectionPlayer = this.selectionPlayer;
+		this.ui.selectionPlayer = sinon.stub( new SelectionPlayer() );
 		$( '#qunit-fixture' ).append(
 			$( '<div>' ).attr( 'id', 'content' ),
 			$( '<div>' ).attr( 'id', 'footer' )
 		);
+		sinon.stub( this.ui, 'isShown' ).returns( true );
 		this.contentSelector = '#mw-content-text';
 		mw.config.set( 'wgWikispeechContentSelector', this.contentSelector );
+		this.$content = util.setContentHtml( 'Some text.' );
 
 		/**
 		 * Stub window.getSelection
@@ -42,6 +43,7 @@ QUnit.module( 'ext.wikispeech.ui', QUnit.newMwEnvironment( {
 		// Remove the event listeners to not trigger them after
 		// the tests have run.
 		$( document ).off( 'mouseup' );
+		this.$content.off( 'click' );
 		$( '#qunit-fixture' ).empty();
 		$( '.ext-wikispeech-control-panel, .ext-wikispeech-selection-player' ).remove();
 	}
@@ -177,18 +179,18 @@ QUnit.test( 'createEditButton(): add edit button with link to given script URL, 
 
 QUnit.test( 'showBufferingIconIfAudioIsLoading()', function () {
 	this.ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
-	const mockAudio = { readyState: 0 };
+	const mockUtterance = { audio: { readyState: 0 } };
 
-	this.ui.showBufferingIconIfAudioIsLoading( mockAudio );
+	this.ui.showBufferingIconIfAudioIsLoading( mockUtterance );
 
 	sinon.assert.called( this.ui.$bufferingIcons.show );
 } );
 
 QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function () {
 	this.ui.$bufferingIcons = sinon.stub( $( '<div>' ) );
-	const mockAudio = { readyState: 2 };
+	const mockUtterance = { audio: { readyState: 2 } };
 
-	this.ui.showBufferingIconIfAudioIsLoading( mockAudio );
+	this.ui.showBufferingIconIfAudioIsLoading( mockUtterance );
 
 	sinon.assert.notCalled( this.ui.$bufferingIcons.show );
 } );
@@ -196,20 +198,20 @@ QUnit.test( 'showBufferingIconIfAudioIsLoading(): already loaded', function () {
 QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function () {
 	util.setContentHtml( 'LTR text.' );
 	const textNode = $( this.contentSelector ).contents().get( 0 );
-	this.selectionPlayer.isSelectionValid.returns( true );
+	this.ui.selectionPlayer.isSelectionValid.returns( true );
+	this.ui.playPauseButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.stubGetSelection( textNode, textNode, { right: 50, bottom: 10 } );
-	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	this.ui.playSelectionButton.$element.width( 30 );
-	sinon.spy( this.ui.playSelectionButton.$element, 'css' );
-	sinon.spy( this.ui.playSelectionButton, 'toggle' );
+	this.ui.selectionPlayerUi.$element.width( 30 );
+	sinon.spy( this.ui.selectionPlayerUi.$element, 'css' );
+	sinon.spy( this.ui.selectionPlayerUi, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, true );
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, true );
 	sinon.assert.calledWith(
-		this.ui.playSelectionButton.$element.css,
+		this.ui.selectionPlayerUi.$element.css,
 		{
 			left: '20px',
 			top: 10 + $( document ).scrollTop() + 'px'
@@ -217,49 +219,55 @@ QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function ()
 	);
 } );
 
-/**
- * Add a mocked control panel for tests that need to check if it's visible
- */
-this.addControlPanel = function () {
-	$( '<div>' ).addClass( 'ext-wikispeech-control-panel' )
-		.appendTo( $( '#qunit-fixture' ) );
-};
+QUnit.test( 'addSelectionPlayer(): mouse up shows focus player', function () {
+	const $content = util.setContentHtml( 'LTR text.' );
+	const textNode = $( this.contentSelector ).contents().get( 0 );
+	this.stubGetSelection( textNode, textNode, { left: 20, top: 30 } );
+	this.ui.selectionPlayer.isSelectionValid.returns( false );
+	this.ui.selectionPlayer.getFocus = sinon.stub().returns( true );
+	this.ui.playPauseButton = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.addSelectionPlayer();
+	this.ui.selectionPlayerUi.$element.height( 20 );
+	sinon.spy( this.ui.selectionPlayerUi.$element, 'css' );
+	sinon.spy( this.ui.selectionPlayerUi, 'toggle' );
+	const event = $.Event( 'mouseup' );
+	event.target = $content.get( 0 );
+
+	$( document ).triggerHandler( event );
+
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, true );
+	sinon.assert.calledWith(
+		this.ui.selectionPlayerUi.$element.css,
+		{
+			left: '20px',
+			top: 10 + $( document ).scrollTop() + 'px'
+		}
+	);
+} );
 
 QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', function () {
 	util.setContentHtml(
 		'<b style="direction: rtl">RTL text.</b>'
 	);
 	const textNode = $( this.contentSelector + ' b' ).contents().get( 0 );
-	this.selectionPlayer.isSelectionValid.returns( true );
+	this.ui.selectionPlayer.isSelectionValid.returns( true );
+	this.ui.playPauseButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
-	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	sinon.spy( this.ui.playSelectionButton.$element, 'css' );
-	sinon.spy( this.ui.playSelectionButton, 'toggle' );
+	sinon.spy( this.ui.selectionPlayerUi.$element, 'css' );
+	sinon.spy( this.ui.selectionPlayerUi, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, true );
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, true );
 	sinon.assert.calledWith(
-		this.ui.playSelectionButton.$element.css,
+		this.ui.selectionPlayerUi.$element.css,
 		{
 			left: '15px',
 			top: 10 + $( document ).scrollTop() + 'px'
 		}
 	);
-} );
-
-QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is not selected', function () {
-	sinon.stub( this.ui, 'isShown' ).returns( true );
-	this.ui.addSelectionPlayer();
-	this.selectionPlayer.isSelectionValid.returns( false );
-	sinon.spy( this.ui.playSelectionButton, 'toggle' );
-	const event = $.Event( 'mouseup' );
-
-	$( document ).triggerHandler( event );
-
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function () {
@@ -268,15 +276,15 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of
 	);
 	const notUtteranceNode = $( this.contentSelector + ' del' ).contents().get( 0 );
 	const utteranceNode = $( this.contentSelector ).contents().get( 1 );
-	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.playPauseButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.ui.addSelectionPlayer();
-	sinon.spy( this.ui.playSelectionButton, 'toggle' );
+	sinon.spy( this.ui.selectionPlayerUi, 'toggle' );
 	this.stubGetSelection( notUtteranceNode, utteranceNode );
-	const event = $.Event( 'mouseup' );
+	const event = new MouseEvent( 'mouseup' );
 
-	$( document ).triggerHandler( event );
+	document.dispatchEvent( event );
 
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function () {
@@ -285,36 +293,37 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of s
 	);
 	const notUtteranceNode = $( this.contentSelector + ' del' ).contents().get( 0 );
 	const utteranceNode = $( this.contentSelector ).contents().get( 0 );
-	sinon.stub( this.ui, 'isShown' ).returns( true );
+	this.ui.playPauseButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.ui.addSelectionPlayer();
-	sinon.spy( this.ui.playSelectionButton, 'toggle' );
+	sinon.spy( this.ui.selectionPlayerUi, 'toggle' );
 	this.stubGetSelection( utteranceNode, notUtteranceNode );
-	const event = $.Event( 'mouseup' );
+	const event = new MouseEvent( 'mouseup' );
 
-	$( document ).triggerHandler( event );
+	document.dispatchEvent( event );
 
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
 	util.setContentHtml( 'LTR text.' );
 	const textNode = $( this.contentSelector ).contents().get( 0 );
-	sinon.stub( this.ui, 'isShown' ).returns( false );
+	this.ui.isShown.returns( false );
+	this.ui.playPauseButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.ui.addSelectionPlayer();
-	this.selectionPlayer.isSelectionValid.returns( true );
-	sinon.spy( this.ui.playSelectionButton, 'toggle' );
+	this.ui.selectionPlayer.isSelectionValid.returns( true );
+	sinon.spy( this.ui.selectionPlayerUi, 'toggle' );
 	this.stubGetSelection( textNode, textNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
+	sinon.assert.neverCalledWith( this.ui.selectionPlayerUi.toggle, true );
 } );
 
 QUnit.test( 'addSelectionPlayer(): hide selection player initially', function ( assert ) {
 	this.ui.addSelectionPlayer();
 
-	assert.false( this.ui.playSelectionButton.isVisible() );
+	assert.false( this.ui.selectionPlayerUi.isVisible() );
 } );
 
 QUnit.test( 'showLoadAudioError(): plays and stops the error audio', function ( assert ) {
@@ -425,26 +434,25 @@ QUnit.test( 'Pressing keyboard shortcut for skipping back word', function ( asse
 
 QUnit.test( 'toggleVisibility(): hide', function () {
 	this.ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
-	this.ui.playSelectionButton = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.selectionPlayerUi = sinon.stub( new OO.ui.ButtonGroupWidget() );
 	this.ui.$playerFooter = sinon.stub( $( '<div>' ) );
-	sinon.stub( this.ui, 'isShown' ).returns( true );
 
 	this.ui.toggleVisibility();
 
 	sinon.assert.calledWith( this.ui.toolbar.toggle, false );
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, false );
 	sinon.assert.called( this.ui.$playerFooter.hide );
 } );
 
 QUnit.test( 'toggleVisibility(): show', function () {
 	this.ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
-	this.ui.playSelectionButton = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.selectionPlayerUi = sinon.stub( new OO.ui.ButtonWidget() );
 	this.ui.$playerFooter = sinon.stub( $( '<div>' ) );
-	sinon.stub( this.ui, 'isShown' ).returns( false );
+	this.ui.isShown.returns( false );
 
 	this.ui.toggleVisibility();
 
 	sinon.assert.calledWith( this.ui.toolbar.toggle, true );
-	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, true );
+	sinon.assert.calledWith( this.ui.selectionPlayerUi.toggle, true );
 	sinon.assert.called( this.ui.$playerFooter.show );
 } );

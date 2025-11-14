@@ -60,6 +60,7 @@
 	"wikispeech-play": "Play",
 	"wikispeech-pause": "Pause",
 	"wikispeech-play-selection": "Play selected text",
+	"wikispeech-close-selection-player": "Close",
 	"wikispeech-next": "Skip ahead word",
 	"wikispeech-skip-ahead": "Skip ahead sentence",
 	"wikispeech-help": "Show help",

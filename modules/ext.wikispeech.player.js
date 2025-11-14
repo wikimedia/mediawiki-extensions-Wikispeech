@@ -108,13 +108,15 @@ class Player {
 			}
 			return;
 		}
-		this.storage.utterancesLoaded.done( () => {
+		this.storage.utterancesLoaded.then( () => {
 			if ( !this.selectionPlayer.playSelectionIfValid() ) {
-				this.playUtterance( this.storage.utterances[ 0 ] );
+				if ( this.ui.isSelectionPlayerShown() && this.selectionPlayer.getFocus() ) {
+					this.selectionPlayer.playFromFocus();
+				} else {
+					this.playUtterance( this.storage.utterances[ 0 ] );
+				}
 			}
-
 		} );
-
 	}
 
 	/**
@@ -136,9 +138,7 @@ class Player {
 		if ( !this.playingSelection ) {
 			this.highlighter.highlightUtterance( utterance );
 		}
-		this.ui.showBufferingIconIfAudioIsLoading(
-			utterance.audio
-		);
+		this.ui.showBufferingIconIfAudioIsLoading( utterance );
 		this.prepareAndPlayUtterance( utterance );
 	}
 

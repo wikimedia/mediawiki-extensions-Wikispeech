@@ -77,6 +77,7 @@ function createMockedSelection(
 	endContainer = endContainer || startContainer;
 	return {
 		rangeCount: 1,
+		anchorNode: sinon.stub( document.createElement( 'div' ) ),
 		getRangeAt: function () {
 			return {
 				startContainer: startContainer,
@@ -142,6 +143,7 @@ QUnit.test( 'playSelection()', function () {
 			endOffset: 27
 		}
 	];
+	this.storage.getFirstTextNode.returns( textNode );
 	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
 	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 2 ] );
 	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
@@ -246,6 +248,7 @@ QUnit.test( 'playSelection(): multiple ranges', function () {
 			endTime: 3000
 		}
 	];
+	this.storage.getFirstTextNode.returns( textNode1 );
 	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
 	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 2 ] );
 	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
@@ -301,6 +304,7 @@ QUnit.test( 'playSelection(): spanning multiple nodes', function () {
 			endTime: 2000
 		}
 	];
+	this.storage.getFirstTextNode.returns( textNode1 );
 	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
 	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 0 ] );
 	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
@@ -357,6 +361,7 @@ QUnit.test( 'playSelection(): selected nodes are elements', function () {
 			endTime: 2000
 		}
 	];
+	this.storage.getFirstTextNode.returns( parent );
 	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
 	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 0 ] );
 	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );
@@ -413,6 +418,7 @@ QUnit.test( 'playSelection(): selected nodes are elements that also contain non-
 			endTime: 2000
 		}
 	];
+	this.storage.getFirstTextNode.returns( parent );
 	this.storage.getStartUtterance.returns( this.storage.utterances[ 0 ] );
 	this.storage.getStartToken.returns( this.storage.utterances[ 0 ].tokens[ 0 ] );
 	this.storage.getEndUtterance.returns( this.storage.utterances[ 0 ] );

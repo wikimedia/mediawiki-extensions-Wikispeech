@@ -10,12 +10,12 @@
 
 class SelectionPlayer {
 	constructor() {
-
 		this.previousEndUtterance = null;
 		this.ui = null;
 		this.storage = null;
-
+		this.highlighter = null;
 	}
+
 	/**
 	 * Play selected text if selection is valid.
 	 *
@@ -116,34 +116,10 @@ class SelectionPlayer {
 	playSelection() {
 		this.player.playingSelection = true;
 		const selection = window.getSelection();
-		const startRange = selection.getRangeAt( 0 );
-		const firstSelectionNode = this.getFirstNodeInSelection();
-		let startOffset;
-		if (
-			firstSelectionNode !== startRange.startContainer ||
-				firstSelectionNode.nodeType === 1
-		) {
-			// If the start node has been changed, this is because
-			// it was corrected in getFirstNodeInSelection(). If
-			// this is the case, the selection actually starts at
-			// the beginning of the current node. If the start
-			// node is an element, start offset is also zero,
-			// because if should start in the first child text
-			// nodes of that node.
-			startOffset = 0;
-		} else {
-			startOffset = startRange.startOffset;
-		}
-		const startNode =
-			this.storage.getFirstTextNode(
-				firstSelectionNode,
-				true
-			);
-		const startUtterance =
-			this.storage.getStartUtterance(
-				startNode,
-				startOffset
-			);
+
+		const [ startNode, startOffset, startUtterance ] =
+			this.getSelectionStart( selection );
+
 		this.player.currentUtterance = startUtterance;
 		this.storage.prepareUtterance(
 			startUtterance
@@ -158,9 +134,7 @@ class SelectionPlayer {
 				this.player.playUtterance( startUtterance, false );
 				this.ui.setSelectionPlayerIconToStop();
 			} );
-		this.ui.showBufferingIconIfAudioIsLoading(
-			startUtterance.audio
-		);
+		this.ui.showBufferingIconIfAudioIsLoading( startUtterance );
 
 		const endRange = selection.getRangeAt( selection.rangeCount - 1 );
 		const lastSelectionNode = this.getLastNodeInSelection();
@@ -194,6 +168,112 @@ class SelectionPlayer {
 				);
 				this.setEndTime( endUtterance, endToken.endTime );
 			} );
+	}
+
+	/**
+	 * Get node, offset and utterance for start of the selection.
+	 *
+	 * @return {Array} Sequence of Text, number and Object. Empty array if start
+	 *   couldn't be calculated.
+	 */
+
+	getSelectionStart( selection ) {
+		const startRange = selection.getRangeAt( 0 );
+		const firstSelectionNode = this.getFirstNodeInSelection();
+		let startOffset;
+		if (
+			firstSelectionNode !== startRange.startContainer ||
+				firstSelectionNode.nodeType === 1
+		) {
+			// If the start node has been changed, this is because
+			// it was corrected in getFirstNodeInSelection(). If
+			// this is the case, the selection actually starts at
+			// the beginning of the current node. If the start
+			// node is an element, start offset is also zero,
+			// because if should start in the first child text
+			// nodes of that node.
+			startOffset = 0;
+		} else {
+			startOffset = startRange.startOffset;
+		}
+		const startNode = this.storage.getFirstTextNode(
+			firstSelectionNode,
+			true
+		);
+		if ( !startNode ) {
+			return null;
+		}
+
+		const startUtterance = this.storage.getStartUtterance(
+			startNode,
+			startOffset
+		);
+
+		return [ startNode, startOffset, startUtterance ];
+	}
+
+	/**
+	 * Get node, offset and utterance for the focus.
+	 *
+	 * @return {Array} Sequence of Text, number and Object. Empty array if there
+	 *  is no focus.
+	 */
+
+	getFocus() {
+		const selection = window.getSelection();
+		if ( !selection.anchorNode ) {
+			return null;
+		}
+
+		return this.getSelectionStart( selection );
+	}
+
+	/**
+	 * Gets the token in focus.
+	 *
+	 * @param {Object} utterance
+	 * @param {Text} node
+	 * @param {number} offest
+	 * @return {Object} Token in focus.
+	 */
+
+	async getTokenInFocus( utterance, node, offset ) {
+		await this.storage.prepareUtterance( utterance );
+		const startToken = this.storage.getStartToken(
+			utterance,
+			node,
+			offset
+		);
+
+		return startToken;
+	}
+
+	/**
+	 * Start playing from a token.
+	 *
+	 * @param {Object} utterance
+	 * @param {Object} token
+	 */
+
+	playFromToken( utterance, token ) {
+		this.player.playUtterance( utterance, token );
+		this.setStartTime( utterance, token.startTime );
+	}
+
+	/**
+	 * Start playing from a certain point in the text.
+	 */
+
+	async playFromFocus() {
+		// Hide the selection player because the focus is lost if we click the
+		// button.
+		this.ui.hideSelectionPlayer();
+
+		const [ node, offset, utterance ] = this.getFocus();
+		this.ui.showBufferingIconIfAudioIsLoading( utterance );
+		const token = await this.getTokenInFocus( utterance, node, offset );
+		this.playFromToken( utterance, token );
+		this.highlighter.startTokenHighlighting( token );
 	}
 
 	/**

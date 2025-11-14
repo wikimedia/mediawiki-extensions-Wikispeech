@@ -10,6 +10,7 @@ QUnit.module( 'ext.wikispeech.player', {
 		this.highlighter = sinon.stub( new Highlighter() );
 		this.player.highlighter = this.highlighter;
 		this.ui = sinon.stub( new Ui() );
+		this.ui.isSelectionPlayerShown = sinon.stub().returns( false );
 		this.player.ui = this.ui;
 		this.selectionPlayer = sinon.stub( new SelectionPlayer() );
 		this.player.selectionPlayer = this.selectionPlayer;
@@ -31,7 +32,8 @@ QUnit.module( 'ext.wikispeech.player', {
 				}
 			}
 		];
-		this.storage.prepareUtterance = sinon.stub().returns( $.Deferred().resolve() );
+		this.utterancePrepared = $.Deferred().resolve();
+		this.storage.prepareUtterance = sinon.stub().returns( this.utterancePrepared );
 
 		mw.config.set(
 			'wgWikispeechSkipBackRewindsThreshold',
@@ -73,12 +75,18 @@ QUnit.test( 'stop()', function () {
 	sinon.assert.called( this.ui.hideBufferingIcon );
 } );
 
-QUnit.test( 'play()', function () {
+QUnit.test( 'play()', function ( assert ) {
 	sinon.stub( this.player, 'playUtterance' );
+	this.selectionPlayer.getFocus.returns( false );
+	const done = assert.async();
 
 	this.player.play();
 
-	sinon.assert.called( this.player.playUtterance );
+	this.storage.utterancesLoaded.then( () => {
+		sinon.assert.called( this.player.playUtterance );
+		done();
+	} );
+
 } );
 
 QUnit.test( 'pause()', function () {
@@ -110,16 +118,35 @@ QUnit.test( 'play(): do not play utterance when selection is valid', function ()
 	sinon.assert.notCalled( this.player.playUtterance );
 } );
 
-QUnit.test( 'play(): play from beginning when selection is invalid', function () {
+QUnit.test( 'play(): play from beginning when selection is invalid', function ( assert ) {
 	sinon.stub( this.player, 'playUtterance' );
 	this.selectionPlayer.playSelectionIfValid.returns( false );
+	const done = assert.async();
 
 	this.player.play();
 
-	sinon.assert.calledWith(
-		this.player.playUtterance,
-		this.storage.utterances[ 0 ]
-	);
+	this.storage.utterancesLoaded.then( () => {
+		sinon.assert.calledWith(
+			this.player.playUtterance,
+			this.storage.utterances[ 0 ]
+		);
+		done();
+	} );
+} );
+
+QUnit.test( 'play(): play from focus', function ( assert ) {
+	sinon.stub( this.player, 'playUtterance' );
+	this.selectionPlayer.playSelectionIfValid.returns( false );
+	this.selectionPlayer.getFocus.returns( true );
+	this.ui.isSelectionPlayerShown.returns( true );
+	const done = assert.async();
+
+	this.player.play();
+
+	this.storage.utterancesLoaded.then( () => {
+		sinon.assert.called( this.selectionPlayer.playFromFocus );
+		done();
+	} );
 } );
 
 QUnit.test( 'playUtterance()', function () {
@@ -133,7 +160,7 @@ QUnit.test( 'playUtterance()', function () {
 	sinon.assert.calledWith( this.highlighter.highlightUtterance, utterance );
 	sinon.assert.calledWith(
 		this.ui.showBufferingIconIfAudioIsLoading,
-		utterance.audio
+		utterance
 	);
 } );
 

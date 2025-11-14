@@ -48,6 +48,19 @@
 				"ext.wikispeech.storage.js",
 				"ext.wikispeech.ui.js",
 				"ext.wikispeech.util.js",
+				"ext.wikispeech.userOptionsDialog.js",
+				"ext.wikispeech.sharedUserOptionSettings.js",
+				{
+					"name": "config.json",
+					"config": [
+						"WikispeechVoices",
+						"WikispeechSpeechRates"
+					]
+				},
+				{
+					"name": "default-user-options.json",
+					"callback": "MediaWiki\\Wikispeech\\DefaultUserOptions::getDefaultUserOptions"
+				},
 				"audio/error.en.json",
 				"audio/error.sv.json"
 			],
@@ -73,8 +86,18 @@
 				"wikispeech-feedback",
 				"wikispeech-edit-lexicon-btn",
 				"wikispeech-settings",
-				"wikispeech-menu-label"
-
+				"wikispeech-menu-label",
+				"preferences",
+				"saveprefs",
+				"default",
+				"wikispeech-language",
+				"prefs-wikispeech-speech-rate-percent",
+				"prefs-wikispeech-voice",
+				"wikispeech-notice-prefs-apply-on-next-page-load",
+				"prefs-wikispeech-part-of-content",
+				"percent",
+				"mypreferences",
+				"prefs-wikispeech-view-all"
 			],
 			"dependencies": [
 				"mediawiki.util",
@@ -109,6 +132,7 @@
 				"ext.wikispeech.gadget.js",
 				"ext.wikispeech.userOptionsDialog.js",
 				"ext.wikispeech.util.js",
+				"ext.wikispeech.sharedUserOptionSettings.js",
 				{
 					"name": "config.json",
 					"config": [
@@ -120,7 +144,8 @@
 						"WikispeechSpeechoidUrl",
 						"WikispeechNamespaces",
 						"WikispeechVoices",
-						"WikispeechAllowConsumerEdits"
+						"WikispeechAllowConsumerEdits",
+						"WikispeechSpeechRates"
 					]
 				},
 				{
@@ -468,6 +493,20 @@
 					"stts_sv_nst-hsmm"
 				]
 			}
+		},
+		"WikispeechSpeechRates": {
+			"description": [
+				"Available speech rate options for Wikispeech.",
+				"Values are numeric speech rates, and will be converted to percentage."
+			],
+			"value": [
+				4.0,
+				2.0,
+				1.5,
+				1.0,
+				0.75,
+				0.5
+			]
 		},
 		"WikispeechMinimumMinutesBetweenFlushExpiredUtterancesJobs": {
 			"description": [

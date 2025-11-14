@@ -5,6 +5,10 @@
  * @constructor
  */
 const util = require( './ext.wikispeech.util.js' );
+const {
+	writeUserOptionsPreferences
+} = require( './ext.wikispeech.sharedUserOptionSettings.js' );
+const UserOptionsDialog = require( './ext.wikispeech.userOptionsDialog.js' );
 
 class Ui {
 	constructor() {
@@ -182,6 +186,20 @@ class Ui {
 					this.addMenuItem( this.createEditButton( null, null ) );
 				}
 			} );
+
+		this.addButton(
+			this.linkGroup,
+			async () => {
+				const data = await this.openWindow( this.settingsDialog );
+				if ( data && data.action === 'save' ) {
+					writeUserOptionsPreferences( api, this.settingsDialog, this.isProducer );
+				}
+			},
+			{
+				title: mw.msg( 'wikispeech-settings' ),
+				icon: 'settings'
+			}
+		);
 
 		$( document.body ).append( this.toolbar.$element );
 		this.toolbar.initialize();
@@ -643,6 +661,7 @@ class Ui {
 	addDialogs() {
 		$( document.body ).append( this.windowManager.$element );
 		this.messageDialog = new OO.ui.MessageDialog();
+		this.settingsDialog = new UserOptionsDialog();
 		this.errorLoadAudioDialogData = {
 			title: mw.msg( 'wikispeech-error-loading-audio-title' ),
 			message: mw.msg( 'wikispeech-error-loading-audio-message' ),
@@ -660,6 +679,7 @@ class Ui {
 			]
 		};
 		this.addWindow( this.messageDialog );
+		this.addWindow( this.settingsDialog );
 	}
 
 	/**

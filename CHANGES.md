@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T405330](https://phabricator.wikimedia.org/T405330) Add quick access settings panel in playback controls
 * [T202042](https://phabricator.wikimedia.org/T202042) Customize highlighting
 * [T182289](https://phabricator.wikimedia.org/T182289) Easy ways of starting to play at a certain point in the text
 * [T406016](https://phabricator.wikimedia.org/T406016) Clarify "help", "feedback" and "edit" button

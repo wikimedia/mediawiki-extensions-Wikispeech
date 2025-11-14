@@ -11,6 +11,7 @@ const Storage = require( './ext.wikispeech.storage.js' );
 const Player = require( './ext.wikispeech.player.js' );
 const SelectionPlayer = require( './ext.wikispeech.selectionPlayer.js' );
 const Highlighter = require( './ext.wikispeech.highlighter.js' );
+const { addUserOptions } = require( './ext.wikispeech.sharedUserOptionSettings.js' );
 
 class Main {
 	constructor() {
@@ -36,7 +37,7 @@ class Main {
 		this.ui.selectionPlayer = this.selectionPlayer;
 	}
 
-	init() {
+	async init() {
 		if ( !this.enabledForNamespace() ) {
 			// TODO: This is only required for tests to run
 			// properly since namespace is checked at an earlier
@@ -50,6 +51,9 @@ class Main {
 			// view. See T169059.
 			return;
 		}
+
+		const api = new mw.Api();
+		await addUserOptions( api, true );
 
 		this.storage.loadUtterances( window );
 		// Prepare the first utterance for playback.
@@ -107,10 +111,13 @@ class Main {
 
 }
 
+const main = new Main();
+main.ui.isProducer = true;
+
 mw.loader.using( [ 'mediawiki.api', 'ext.wikispeech' ] ).done(
-	() => {
-		const main = new Main();
-		main.init();
-		module.exports = main;
+	async () => {
+		await main.init();
 	}
 );
+
+module.exports = main;

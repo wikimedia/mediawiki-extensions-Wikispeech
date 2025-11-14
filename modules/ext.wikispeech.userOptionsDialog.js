@@ -2,7 +2,9 @@
  * Popup dialog for Wikispeech user options.
  *
  * Replaces the normal user options when running on
- * consumer wiki.
+ * consumer wiki and saves preferences to the user's Wikispeech_preferences subpage.
+ *
+ * On the producer wiki, it behaves like the standard user options page and saves to user preferences.
  *
  * @class ext.wikispeech.UserOptionsDialog
  */
@@ -16,6 +18,8 @@ class UserOptionsDialog extends OO.ui.ProcessDialog {
 		this.languageSelect = null;
 		this.voiceSelect = null;
 		this.speechRateInput = null;
+		this.partOfContentInput = null;
+
 	}
 
 	initialize() {
@@ -24,17 +28,44 @@ class UserOptionsDialog extends OO.ui.ProcessDialog {
 		const content = new OO.ui.FieldsetLayout();
 		const voiceFieldset = this.addVoiceFieldset();
 
+		// MediaWiki stores user options as strings.
+		// this.speechRateInput expects a string value to match against its options data fields,
+		// therefore we convert the speech rate to a string.
+		const speechRates = mw.config.get( 'wgWikispeechSpeechRates' );
+		const speechRate = String( mw.user.options.get( 'wikispeechSpeechRate' ) || 1.0 );
+
+		const rateOptions = speechRates.map( ( value ) => ( {
+			label: mw.msg( 'percent', value * 100 ),
+			data: String( value )
+		} ) );
+
 		// Add input field for speech rate, shown in percent.
-		this.speechRateInput = new OO.ui.NumberInputWidget( {
-			min: 0,
-			step: 25,
-			value: mw.user.options.get( 'wikispeechSpeechRate' ) * 100
+		this.speechRateInput = new OO.ui.DropdownInputWidget( {
+			options: rateOptions,
+			value: String( speechRate )
 		} );
+
 		const speechRateFieldset = new OO.ui.FieldsetLayout( {
 			label: mw.msg( 'prefs-wikispeech-speech-rate-percent' )
 		} );
 		const speechRateField = new OO.ui.FieldLayout( this.speechRateInput );
 		speechRateFieldset.addItems( [ speechRateField ] );
+
+		// MediaWiki stores booleans as strings: '1' for true, '' for false.
+		const partOfContentInputRaw = mw.user.options.get( 'wikispeechPartOfContent' );
+		const partOfContentInput = partOfContentInputRaw === '1';
+
+		// Adding extra part of content
+		this.partOfContent = new OO.ui.CheckboxInputWidget( {
+			selected: partOfContentInput
+		} );
+		const layout = new OO.ui.FieldLayout(
+			this.partOfContent,
+			{
+				label: mw.msg( 'prefs-wikispeech-part-of-content' ),
+				align: 'inline'
+			}
+		);
 
 		// Add a notice about needing to reload the page before
 		// preferences kick in.
@@ -43,13 +74,30 @@ class UserOptionsDialog extends OO.ui.ProcessDialog {
 			label: mw.msg( 'wikispeech-notice-prefs-apply-on-next-page-load' )
 		} );
 		const noticeFieldset = new OO.ui.FieldsetLayout();
-		noticeFieldset.addItems( [ new OO.ui.FieldLayout( notice ) ] );
+		noticeFieldset.addItems( [ new OO.ui.FieldLayout( notice, {
+			// HACK: This is not a nice MW way of organize the layout,
+			// Instead, find another OO.ui/Codex element that has the margins predefined.
+			classes: [ 'wikispeech-margin-top' ]
+		} ) ] );
 
 		content.addItems( [
 			voiceFieldset,
 			speechRateFieldset,
+			layout,
 			noticeFieldset
 		] );
+
+		// Add link to preferences page if not in gadget
+		if ( !mw.config.get( 'wgWikispeechProducerUrl' ) ) {
+			const prefsLink = new OO.ui.LabelWidget( {
+				label: $( '<a>' )
+					.attr( 'href', mw.util.getUrl( 'Special:Preferences#mw-prefsection-wikispeech' ) )
+					.css( { display: 'block', marginTop: '1em' } )
+					.text( mw.msg( 'prefs-wikispeech-view-all' ) )
+			} );
+			content.addItems( [ prefsLink ] );
+		}
+
 		panel.$element.append( content.$element );
 		this.$body.append( panel.$element );
 	}
@@ -193,7 +241,16 @@ class UserOptionsDialog extends OO.ui.ProcessDialog {
 	 */
 
 	getSpeechRate() {
-		return this.speechRateInput.value / 100;
+		return parseFloat( this.speechRateInput.value );
+	}
+
+	/**
+	 * Get the check for reading parts of content
+	 *
+	 * @return {boolean} True if the checkbox is checked, otherwise false.
+	 */
+	getPartOfContent() {
+		return this.partOfContent.isSelected();
 	}
 }
 

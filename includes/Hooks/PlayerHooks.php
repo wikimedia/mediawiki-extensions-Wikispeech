@@ -215,6 +215,8 @@ class PlayerHooks implements
 	public function onResourceLoaderGetConfigVars( array &$vars, $skin, Config $config ): void {
 		$vars['wgWikispeechSpeechoidUrl'] = $config->get( 'WikispeechSpeechoidUrl' );
 		$vars['wgWikispeechNamespaces'] = $config->get( 'WikispeechNamespaces' );
+		$vars['wgWikispeechVoices'] = $config->get( 'WikispeechVoices' );
+		$vars['wgWikispeechSpeechRates'] = $config->get( 'WikispeechSpeechRates' );
 	}
 
 	/**
@@ -299,14 +301,11 @@ class PlayerHooks implements
 	 * @param array &$preferences Preferences array.
 	 */
 	private function addSpeechRatePreferences( &$preferences ) {
-		$options = [
-			'400%' => 4.0,
-			'200%' => 2.0,
-			'150%' => 1.5,
-			'100%' => 1.0,
-			'75%' => 0.75,
-			'50%' => 0.5
-		];
+		$values = $this->config->get( 'WikispeechSpeechRates' );
+		$options = [];
+		foreach ( $values as $value ) {
+			$options[ wfMessage( 'percent', $value * 100 )->text() ] = $value;
+		}
 		$preferences['wikispeechSpeechRate'] = [
 			'type' => 'select',
 			'label-message' => 'prefs-wikispeech-speech-rate',

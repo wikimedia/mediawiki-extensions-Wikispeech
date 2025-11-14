@@ -23,6 +23,7 @@
 	"prefs-wikispeech-enable": "Used in user preferences to enable the Wikispeech extension",
 	"prefs-wikispeech-show-player": "Used in user preferences to always show the player where available",
 	"prefs-wikispeech-part-of-content": "\"Read\" as in read out loud (text to speech). Used in user preferences to enable extra information when reading certain elements out loud.",
+	"prefs-wikispeech-view-all": "Redirects the user to the preferences page",
 	"prefs-help-wikispeech-part-of-content": "\"Read\" as in read out loud (text to speech). Used in user preferences to further explain enabling extra information when reading certain elements.\n\nSee also: {{msg-mw|prefs-wikispeech-part-of-content}}",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Notice in the preferences popup dialog. Tells the user that they need to reload the page for changes to take effect.",
 	"right-wikispeech-listen": "{{doc-right|wikispeech-listen}}",

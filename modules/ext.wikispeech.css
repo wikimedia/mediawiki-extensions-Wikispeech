@@ -39,6 +39,10 @@
 	text-align: left;
 }
 
+.wikispeech-margin-top {
+	margin-top: 10px !important; /* stylelint-disable-line declaration-no-important */
+}
+
 @keyframes spin {
 	0% {
 		transform: rotate( 0deg );

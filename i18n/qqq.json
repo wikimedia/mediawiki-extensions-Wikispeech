@@ -57,6 +57,7 @@
 	"wikispeech-lexicon-copyrightnote": "Displayed on Special:EditLexicon under the submit button.",
 	"wikispeech-testlisten-text": "Label for the text field on the test listen special page.",
 	"wikispeech-testlisten-ssml": "Label for the [https://en.wikipedia.org/wiki/Speech_Synthesis_Markup_Language SSML] field on the test listen special page.",
+	"wikispeech-testlisten-audio-data": "Label for the audio data field on the test listen special page.",
 	"group-wikispeech-edit-lexicon": "{{doc-group|wikispeech-edit-lexicon}}",
 	"group-wikispeech-edit-lexicon-member": "{{doc-group|wikispeech-edit-lexicon|member}}",
 	"grouppage-wikispeech-edit-lexicon": "{{notranslate}}\n{{doc-group|wikispeech-edit-lexicon|page}}",

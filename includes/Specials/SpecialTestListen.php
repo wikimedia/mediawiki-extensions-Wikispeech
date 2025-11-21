@@ -64,8 +64,7 @@ class SpecialTestListen extends SpecialPage {
 				'text' => [
 					'name' => 'text',
 					'type' => 'text',
-					'label' => $this->msg( 'wikispeech-testlisten-text' )->text(),
-					'required' => true
+					'label' => $this->msg( 'wikispeech-testlisten-text' )->text()
 				],
 				'language' => [
 					'name' => 'language',
@@ -77,7 +76,13 @@ class SpecialTestListen extends SpecialPage {
 					'name' => 'ssml',
 					'type' => 'check',
 					'label' => $this->msg( 'wikispeech-testlisten-ssml' )->text()
-				]
+				],
+				'audioData' => [
+					'name' => 'audioData',
+					'type' => 'textarea',
+					'label' => $this->msg( 'wikispeech-testlisten-audio-data' )->text(),
+					'rows' => 5
+				],
 			],
 			$this->getContext()
 		);
@@ -106,45 +111,82 @@ class SpecialTestListen extends SpecialPage {
 			->getHtml();
 		$form->addHeaderHtml( $note );
 
-		$form->setSubmitCallback( function ( array $data, HTMLForm $form ) {
-			$language = $data['language'];
-			$voice = $this->voiceHandler->getDefaultVoice( $language );
-			$speechoidData = [];
-			if ( $data['ssml'] ) {
-				$speechoidData['ssml'] = $data['text'];
+		$form->setSubmitCallback( function ( $data, $form ) {
+			if ( $data['text'] ) {
+				return $this->submitCallbackText( $data, $form );
+			} elseif ( $data['audioData'] ) {
+				return $this->submitCallbackAudioData( $data, $form );
 			} else {
-				$speechoidData['text'] = $data['text'];
+				return 'Either text or audio data must be provided.';
 			}
-			$speechoidResponse = $this->speechoidConnector->synthesize(
-				$language,
-				$voice,
-				$speechoidData
-			);
-			$tokens = json_encode( $speechoidResponse['tokens'] );
-			$audioDataString = 'data:audio/ogg;base64,' . $speechoidResponse['audio_data'];
-			$html = Html::element( 'audio', [ 'controls' => '', 'src' => $audioDataString ], $tokens );
-			$html .= Html::openElement( 'table', [ 'class' => 'wikitable' ] );
-			$html .= Html::openElement( 'tr' );
-			$html .= Html::element( 'th', [], 'orth' );
-			$html .= Html::element( 'th', [], 'expanded' );
-			$html .= Html::element( 'th', [], 'endtime' );
-			$html .= Html::openElement( 'tr' );
-			foreach ( $speechoidResponse['tokens'] as $token ) {
-				$html .= Html::openElement( 'tr' );
-				$html .= Html::openElement( 'td' )
-					. Html::element( 'code', [], $token['orth'] )
-					. Html::closeElement( 'td' );
-				$html .= Html::openElement( 'td' );
-				if ( array_key_exists( 'expanded', $token ) ) {
-					$html .= Html::element( 'code', [], $token['expanded'] );
-				}
-				$html .= Html::closeElement( 'td' );
-				$html .= Html::element( 'td', [], $token['endtime'] );
-				$html .= Html::closeElement( 'tr' );
-			}
-			$html .= Html::openElement( 'table' );
-			$form->addFooterHtml( $html );
 		} );
 		$form->show();
+	}
+
+	/**
+	 * Make synthesized speech and add an audio element and a table for tokens.
+	 *
+	 * @param array $data Must contain 'text' or 'ssml'.
+	 * @param HTMLForm $form
+	 */
+	private function submitCallbackText( array $data, HTMLForm $form ) {
+		$language = $data['language'];
+		$voice = $this->voiceHandler->getDefaultVoice( $language );
+		$speechoidData = [];
+		if ( $data['ssml'] ) {
+			$speechoidData['ssml'] = $data['text'];
+		} else {
+			$speechoidData['text'] = $data['text'];
+		}
+		$speechoidResponse = $this->speechoidConnector->synthesize(
+			$language,
+			$voice,
+			$speechoidData
+		);
+		$html = $this->makeAudioElement( $speechoidResponse['audio_data'] );
+		$html .= Html::openElement( 'table', [ 'class' => 'wikitable' ] );
+		$html .= Html::openElement( 'tr' );
+		$html .= Html::element( 'th', [], 'orth' );
+		$html .= Html::element( 'th', [], 'expanded' );
+		$html .= Html::element( 'th', [], 'endtime' );
+		$html .= Html::openElement( 'tr' );
+		foreach ( $speechoidResponse['tokens'] as $token ) {
+			$html .= Html::openElement( 'tr' );
+			$html .= Html::openElement( 'td' )
+				. Html::element( 'code', [], $token['orth'] )
+				. Html::closeElement( 'td' );
+			$html .= Html::openElement( 'td' );
+			if ( array_key_exists( 'expanded', $token ) ) {
+				$html .= Html::element( 'code', [], $token['expanded'] );
+			}
+			$html .= Html::closeElement( 'td' );
+			$html .= Html::element( 'td', [], $token['endtime'] );
+			$html .= Html::closeElement( 'tr' );
+		}
+		$html .= Html::openElement( 'table' );
+		$form->addFooterHtml( $html );
+	}
+
+	/**
+	 * Create an audio element with audio data.
+	 *
+	 * @param string $audioData Base64 encoded Opus data.
+	 * @return string
+	 */
+	private function makeAudioElement( string $audioData ) {
+		$audioDataString = "data:audio/ogg;base64,$audioData";
+		$html = Html::element( 'audio', [ 'controls' => '', 'src' => $audioDataString ] );
+		return $html;
+	}
+
+	/**
+	 * Add an audio element with the input audio data.
+	 *
+	 * @param array $data Must contain 'audioData'.
+	 * @param HTMLForm $form
+	 */
+	private function submitCallbackAudioData( array $data, HTMLForm $form ) {
+		$html = $this->makeAudioElement( $data['audioData'] );
+		$form->addFooterHtml( $html );
 	}
 }

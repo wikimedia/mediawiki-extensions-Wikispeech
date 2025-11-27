@@ -181,16 +181,16 @@ QUnit.test( 'addSelectionPlayer(): mouse up shows selection player', function ()
 	this.stubGetSelection( textNode, textNode, { right: 50, bottom: 10 } );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	this.ui.selectionPlayer.button.$element.width( 30 );
-	sinon.spy( this.ui.selectionPlayer.button.$element, 'css' );
-	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
+	this.ui.playSelectionButton.$element.width( 30 );
+	sinon.spy( this.ui.playSelectionButton.$element, 'css' );
+	sinon.spy( this.ui.playSelectionButton, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, true );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, true );
 	sinon.assert.calledWith(
-		this.ui.selectionPlayer.button.$element.css,
+		this.ui.playSelectionButton.$element.css,
 		{
 			left: '20px',
 			top: 10 + $( document ).scrollTop() + 'px'
@@ -215,15 +215,15 @@ QUnit.test( 'addSelectionPlayer(): mouse up shows selection player, RTL', functi
 	this.stubGetSelection( textNode, textNode, { left: 15, bottom: 10 } );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	sinon.spy( this.ui.selectionPlayer.button.$element, 'css' );
-	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
+	sinon.spy( this.ui.playSelectionButton.$element, 'css' );
+	sinon.spy( this.ui.playSelectionButton, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, true );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, true );
 	sinon.assert.calledWith(
-		this.ui.selectionPlayer.button.$element.css,
+		this.ui.playSelectionButton.$element.css,
 		{
 			left: '15px',
 			top: 10 + $( document ).scrollTop() + 'px'
@@ -235,12 +235,12 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when text is 
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
 	this.selectionPlayer.isSelectionValid.returns( false );
-	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
+	sinon.spy( this.ui.playSelectionButton, 'toggle' );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of selection is not in an utterance node', function () {
@@ -251,13 +251,13 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when start of
 	const utteranceNode = $( this.contentSelector ).contents().get( 1 );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
+	sinon.spy( this.ui.playSelectionButton, 'toggle' );
 	this.stubGetSelection( notUtteranceNode, utteranceNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of selection is not in an utterance node', function () {
@@ -268,13 +268,13 @@ QUnit.test( 'addSelectionPlayer(): mouse up hides selection player when end of s
 	const utteranceNode = $( this.contentSelector ).contents().get( 0 );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 	this.ui.addSelectionPlayer();
-	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
+	sinon.spy( this.ui.playSelectionButton, 'toggle' );
 	this.stubGetSelection( utteranceNode, notUtteranceNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
@@ -283,19 +283,19 @@ QUnit.test( 'addSelectionPlayer(): do not show if UI is hidden', function () {
 	sinon.stub( this.ui, 'isShown' ).returns( false );
 	this.ui.addSelectionPlayer();
 	this.selectionPlayer.isSelectionValid.returns( true );
-	sinon.spy( this.ui.selectionPlayer.button, 'toggle' );
+	sinon.spy( this.ui.playSelectionButton, 'toggle' );
 	this.stubGetSelection( textNode, textNode );
 	const event = $.Event( 'mouseup' );
 
 	$( document ).triggerHandler( event );
 
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
 } );
 
 QUnit.test( 'addSelectionPlayer(): hide selection player initially', function ( assert ) {
 	this.ui.addSelectionPlayer();
 
-	assert.false( this.ui.selectionPlayer.button.isVisible() );
+	assert.false( this.ui.playSelectionButton.isVisible() );
 } );
 
 QUnit.test( 'showLoadAudioError(): plays and stops the error audio', function ( assert ) {
@@ -406,26 +406,26 @@ QUnit.test( 'Pressing keyboard shortcut for skipping back word', function ( asse
 
 QUnit.test( 'toggleVisibility(): hide', function () {
 	this.ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
-	this.ui.selectionPlayer.button = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.playSelectionButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.ui.$playerFooter = sinon.stub( $( '<div>' ) );
 	sinon.stub( this.ui, 'isShown' ).returns( true );
 
 	this.ui.toggleVisibility();
 
 	sinon.assert.calledWith( this.ui.toolbar.toggle, false );
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, false );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, false );
 	sinon.assert.called( this.ui.$playerFooter.hide );
 } );
 
 QUnit.test( 'toggleVisibility(): show', function () {
 	this.ui.toolbar = sinon.stub( new OO.ui.Toolbar() );
-	this.ui.selectionPlayer.button = sinon.stub( new OO.ui.ButtonWidget() );
+	this.ui.playSelectionButton = sinon.stub( new OO.ui.ButtonWidget() );
 	this.ui.$playerFooter = sinon.stub( $( '<div>' ) );
 	sinon.stub( this.ui, 'isShown' ).returns( false );
 
 	this.ui.toggleVisibility();
 
 	sinon.assert.calledWith( this.ui.toolbar.toggle, true );
-	sinon.assert.calledWith( this.ui.selectionPlayer.button.toggle, true );
+	sinon.assert.calledWith( this.ui.playSelectionButton.toggle, true );
 	sinon.assert.called( this.ui.$playerFooter.show );
 } );

@@ -8,9 +8,8 @@ const util = require( './ext.wikispeech.util.js' );
 
 class Ui {
 	constructor() {
-	// Resolves the UI is ready to be extended by consumer.
+		// Resolves the UI is ready to be extended by consumer.
 		this.ready = $.Deferred();
-		this.selectionPlayer = null;
 		this.player = null;
 		this.storage = null;
 		this.highlighter = null;
@@ -236,8 +235,9 @@ class Ui {
 	 *
 	 * The icon shows when the waiting for audio to play.
 	 */
+
 	addBufferingIcon() {
-		const $playPauseButtons = $().add( this.playPauseButton.$element ).add( this.selectionPlayer.button.$element );
+		const $playPauseButtons = $().add( this.playPauseButton.$element ).add( this.playSelectionButton.$element );
 		const $containers = $( '<span>' )
 			.addClass( 'ext-wikispeech-buffering-icon-container' )
 			.appendTo( ( $playPauseButtons ).find( '.oo-ui-iconElement-icon' ) );
@@ -313,7 +313,7 @@ class Ui {
 		this.playPauseButton.setIcon( 'play' );
 		this.playPauseButton.setTitle( mw.msg( 'wikispeech-play' ) );
 		this.playPauseButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-play' ) );
-		this.selectionPlayer.button.setIcon( 'play' );
+		this.playSelectionButton.setIcon( 'play' );
 	}
 
 	/**
@@ -321,11 +321,11 @@ class Ui {
 	 */
 
 	setSelectionPlayerIconToStop() {
-		this.selectionPlayer.button.setIcon( 'stop' );
-		this.selectionPlayer.button.setTitle( mw.msg( 'wikispeech-stop' ) );
-		this.selectionPlayer.button.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-stop' ) );
-
+		this.playSelectionButton.setIcon( 'stop' );
+		this.playSelectionButton.setTitle( mw.msg( 'wikispeech-stop' ) );
+		this.playSelectionButton.$element.find( 'a' ).attr( 'aria-label', mw.msg( 'wikispeech-stop' ) );
 	}
+
 	/**
 	 * Add a button that takes the user to another page.
 	 *
@@ -353,16 +353,15 @@ class Ui {
 
 	addSelectionPlayer() {
 		const label = mw.msg( 'wikispeech-play-selection' );
-		const selectionButton = new OO.ui.ButtonWidget( {
+		this.playSelectionButton = new OO.ui.ButtonWidget( {
 			icon: 'play',
 			classes: [ 'ext-wikispeech-selection-player' ],
 			title: label
 		} );
-		selectionButton.$element.find( 'a' ).attr( 'aria-label', label );
-		selectionButton.on( 'click', () => this.player.playOrStop() );
-		this.selectionPlayer.button = selectionButton;
-		this.selectionPlayer.button.toggle( false );
-		$( document.body ).append( this.selectionPlayer.button.$element );
+		this.playSelectionButton.$element.find( 'a' ).attr( 'aria-label', label );
+		this.playSelectionButton.on( 'click', () => this.player.playOrStop() );
+		this.playSelectionButton.toggle( false );
+		$( document.body ).append( this.playSelectionButton.$element );
 		$( document ).on( 'mouseup', () => {
 			if (
 				this.isShown() &&
@@ -370,7 +369,7 @@ class Ui {
 			) {
 				this.showSelectionPlayer();
 			} else {
-				this.selectionPlayer.button.toggle( false );
+				this.playSelectionButton.toggle( false );
 			}
 		} );
 		$( document ).on( 'click', () => {
@@ -378,7 +377,7 @@ class Ui {
 			// order of events when text is deselected by clicking
 			// it.
 			if ( !this.selectionPlayer.isSelectionValid() ) {
-				this.selectionPlayer.button.toggle( false );
+				this.playSelectionButton.toggle( false );
 			}
 		} );
 	}
@@ -398,8 +397,7 @@ class Ui {
 	 */
 
 	showSelectionPlayer() {
-
-		this.selectionPlayer.button.toggle( true );
+		this.playSelectionButton.toggle( true );
 		const selection = window.getSelection();
 		const lastRange = selection.getRangeAt( selection.rangeCount - 1 );
 		const lastRect =
@@ -417,10 +415,10 @@ class Ui {
 			left =
 				lastRect.right +
 				$( document ).scrollLeft() -
-				this.selectionPlayer.button.$element.width();
+				this.playSelectionButton.$element.width();
 		}
 		const top = lastRect.bottom + $( document ).scrollTop();
-		this.selectionPlayer.button.$element.css( {
+		this.playSelectionButton.$element.css( {
 			left: left + 'px',
 			top: top + 'px'
 		} );
@@ -570,11 +568,11 @@ class Ui {
 	toggleVisibility() {
 		if ( this.isShown() ) {
 			this.toolbar.toggle( false );
-			this.selectionPlayer.button.toggle( false );
+			this.playSelectionButton.toggle( false );
 			this.$playerFooter.hide();
 		} else {
 			this.toolbar.toggle( true );
-			this.selectionPlayer.button.toggle( true );
+			this.playSelectionButton.toggle( true );
 			this.$playerFooter.show();
 		}
 	}

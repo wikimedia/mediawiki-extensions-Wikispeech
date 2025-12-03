@@ -45,6 +45,7 @@
 	"wikispeech-lexicon-edit-entry-success": "Editouse a entrada.",
 	"wikispeech-lexicon-copyrightnote": "Ao gardares os cambios, aceptas publicar a túa contribución baixo a licenza [https://creativecommons.org/publicdomain/zero/1.0/deed.gl CC0].",
 	"wikispeech-testlisten-text": "Texto",
+	"wikispeech-testlisten-audio-data": "Datos de son",
 	"group-wikispeech-edit-lexicon": "Editores de léxico de Wikispeech",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|editor|editora}} de léxico de Wikispeech",
 	"wikispeech-lexicon-null-edit": "Non se detectaron cambios relevantes na transcrición nin no estado preferido.",

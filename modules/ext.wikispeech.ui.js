@@ -86,7 +86,7 @@ class Ui {
 			playerGroup,
 			() => this.player.skipBackToken(),
 			{
-				title: mw.msg( 'wikispeech-skip-back' ),
+				title: mw.msg( 'wikispeech-previous' ),
 				icon: 'previous'
 			}
 		);

@@ -64,6 +64,7 @@
 	"wikispeech-pause": "Pause",
 	"wikispeech-play-selection": "Play selected text",
 	"wikispeech-close-selection-player": "Close",
+	"wikispeech-help-popup-close": "Close",
 	"wikispeech-next": "Skip ahead word",
 	"wikispeech-skip-ahead": "Skip ahead sentence",
 	"wikispeech-help": "Show help",
@@ -96,6 +97,7 @@
 	"prefs-wikispeech-highlighting-enabled": "Enable highlighting",
 	"prefs-wikispeech-highlighting-options": "Highlighting options",
 	"prefs-wikispeech-highlighting-default-option": "Default - Purple + orange",
-	"prefs-wikispeech-highlighting-green-blue": "Green + blue"
+	"prefs-wikispeech-highlighting-green-blue": "Green + blue",
+	"wikispeech-help-message": "The Wikispeech extension is an extension for MediaWiki (the software that runs Wikipedia, among other wikis) that reads the content of a page out loud. It is currently under development and features will change and be added before the project is finalized. \n\nThe player can be found at the bottom of the page and looks like the picture below. With the player, you can start and stop listening to the text. You can also navigate by skipping back and forward in the text."
 
 }

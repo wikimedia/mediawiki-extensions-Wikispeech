@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T405333](https://phabricator.wikimedia.org/T405333) Help page should be a popup
 * [T407346](https://phabricator.wikimedia.org/T407346) Read UI content: Page toolbar
 
 ### 0.1.14

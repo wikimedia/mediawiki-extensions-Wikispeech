@@ -160,17 +160,22 @@ class Ui {
 		this.linkGroup = this.addToolbarGroup();
 		this.linkMenuButton = this.addMenuButton(
 			this.linkGroup,
-			( url ) => window.open( url, '_blank' )
+			( data ) => {
+				if ( data === 'help' ) {
+					const help = require( './ext.wikispeech.helpDialog.js' );
+					help.openHelpDialog();
+				} else {
+					window.open( data, '_blank' );
+				}
+			}
 		);
 
-		const helpUrl = mw.config.get( 'wgWikispeechHelpPage' );
-		if ( helpUrl ) {
-			this.addMenuItem( {
-				url: mw.util.getUrl( helpUrl ),
-				label: mw.msg( 'wikispeech-help' ),
-				icon: 'help'
-			} );
-		}
+		this.addMenuItem( {
+			url: 'help',
+			label: mw.msg( 'wikispeech-help' ),
+			icon: 'help'
+		} );
+
 		const feedbackUrl = mw.config.get( 'wgWikispeechFeedbackPage' );
 		this.addMenuItem( {
 			url: mw.util.getUrl( feedbackUrl ),

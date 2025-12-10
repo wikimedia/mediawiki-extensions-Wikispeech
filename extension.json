@@ -61,6 +61,7 @@
 					"name": "default-user-options.json",
 					"callback": "MediaWiki\\Wikispeech\\DefaultUserOptions::getDefaultUserOptions"
 				},
+				"ext.wikispeech.helpDialog.js",
 				"audio/error.en.json",
 				"audio/error.sv.json"
 			],
@@ -80,6 +81,7 @@
 				"wikispeech-pause",
 				"wikispeech-play-selection",
 				"wikispeech-close-selection-player",
+				"wikispeech-help-popup-close",
 				"wikispeech-next",
 				"wikispeech-skip-ahead",
 				"wikispeech-help",
@@ -87,6 +89,7 @@
 				"wikispeech-edit-lexicon-btn",
 				"wikispeech-settings",
 				"wikispeech-menu-label",
+				"wikispeech-help-message",
 				"preferences",
 				"saveprefs",
 				"default",

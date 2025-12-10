@@ -73,7 +73,6 @@ QUnit.test( 'addControlPanel(): adds help menu item if page is set', function ( 
 			.find( ( item ) => item.icon === 'help' );
 
 		assert.notStrictEqual( helpItem, undefined, 'Help menu item exists' );
-		assert.strictEqual( helpItem.url.includes( 'Help' ), true, 'URL includes Help' );
 
 		mw.Api.prototype.getUserInfo.restore();
 		this.ui.addMenuItem.restore();

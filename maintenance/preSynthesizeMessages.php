@@ -78,6 +78,11 @@ class PreSynthesizeMessages extends Maintenance {
 	public function synthesizeErrorMessage( $messageKey, $language, $voice ) {
 		try {
 
+			$message = wfMessage( $messageKey );
+			if ( !$message->exists() ) {
+				throw new InvalidArgumentException( "Message key does not exist: $messageKey" );
+			}
+
 			$segmentResponse = $this->segmentMessagesFactory->segmentMessage( $messageKey, $language );
 			$segmentList = $segmentResponse->getSegments();
 			if ( !$voice ) {

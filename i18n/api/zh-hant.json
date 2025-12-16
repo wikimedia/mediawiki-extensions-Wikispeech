@@ -26,6 +26,7 @@
 	"apihelp-wikispeech-listen-param-voice": "要使用的語音。若未提供的話，會使用語言的預設語音。",
 	"apihelp-wikispeech-listen-param-consumer-url": "用戶 wiki 腳本路徑的 URL。",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "預設為 false。若設為 true 匿名資料不會儲存在日誌指標紀錄中。主要用在執行預先渲染時使用，以避免把機器人請求加到統計資料裡。",
+	"apihelp-wikispeech-listen-param-message-key": "用於合成的訊息鍵。",
 	"apierror-wikispeech-listen-deleted-revision": "刪除的修訂無法聆聽。",
 	"apierror-wikispeech-listen-notallowed": "您沒有權限來呼叫這個 API 操作。",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> 不是有效的語言。應為這其中之一：$2。",
@@ -36,5 +37,7 @@
 	"apihelp-wikispeech-listen-example-2": "使用非預設語音。",
 	"apihelp-wikispeech-listen-example-3": "從修訂請求切分。若存在的話，會使用快取的合成。",
 	"apihelp-wikispeech-listen-example-4": "合成來自另一個 wiki 中的發聲內容。",
-	"apierror-wikispeech-listen-invalid-input-too-long": "輸入文字有$2字元，超過$1字元的上限。"
+	"apihelp-wikispeech-listen-example-5": "使用訊息鍵合成系統訊息。",
+	"apierror-wikispeech-listen-invalid-input-too-long": "輸入文字有$2字元，超過$1字元的上限。",
+	"apierror-wikispeech-listen-no-audio": "資料庫中存在 ID 為「$1」的語音紀錄，但缺少音訊檔案。請從「wikispeech_utterance」表格中刪除對應的項目，如果是基於訊息的語音紀錄，則重新執行「preSynthesizeMessages.php」維護腳本來重新產生。"
 }

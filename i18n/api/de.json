@@ -32,5 +32,6 @@
 	"apihelp-wikispeech-listen-example-2": "Verwende eine vom Standard abweichende Stimme.",
 	"apihelp-wikispeech-listen-example-3": "Ein Abschnitt aus einer Version anfordern. Es wird die gecachte Synthese verwendet, wenn sie existiert.",
 	"apihelp-wikispeech-listen-example-4": "Synthetisiere eine Äußerung aus einem anderen Wiki.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "Der eingegebene Text darf nicht mehr als $1 Zeichen enthalten, er enthält aber $2 Zeichen."
+	"apierror-wikispeech-listen-invalid-input-too-long": "Der eingegebene Text darf nicht mehr als $1 Zeichen enthalten, er enthält aber $2 Zeichen.",
+	"apierror-wikispeech-listen-no-audio": "Die Äußerung mit der ID „$1” ist in der Datenbank vorhanden, aber die Audiodatei fehlt. Bitte entferne den entsprechenden Eintrag aus der Tabelle „wikispeech_utterance” und führe, wenn es sich um eine nachrichtenbasierte Äußerung handelt, das Wartungsskript „preSynthesizeMessages.php” erneut aus, um sie neu zu generieren."
 }

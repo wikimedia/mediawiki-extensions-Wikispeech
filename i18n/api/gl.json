@@ -24,6 +24,7 @@
 	"apihelp-wikispeech-listen-param-voice": "Voz a usar. Se non se indica, usarase a voz predeterminada para a lingua.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL á ruta de scripts do wiki do consumidor.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "O valor predeterminado é «false». Ao definirse como «true», os datos anónimos non se almacenarán no rexistro de métricas. Úsase principalmente ao executar a renderización previa para evitar engadir solicitudes de robots ás estatísticas.",
+	"apihelp-wikispeech-listen-param-message-key": "Clave da mensaxe a sintetizar.",
 	"apierror-wikispeech-listen-deleted-revision": "Non se poden escoitar as revisións eliminadas.",
 	"apierror-wikispeech-listen-notallowed": "Non tes os dereitos necesarios para chamar a esta acción da API.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> non é unha lingua válida. Debería ser unha destas: $2.",
@@ -34,5 +35,7 @@
 	"apihelp-wikispeech-listen-example-2": "Utiliza unha voz que non sexa a predeterminada.",
 	"apihelp-wikispeech-listen-example-3": "Solicita un segmento dunha revisión. Usarase a síntese almacenada na caché, se existe.",
 	"apihelp-wikispeech-listen-example-4": "Sintetizar unha oración doutro wiki.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "O texto de entrada non debe exceder $1 caracteres, mais contiña $2 caracteres."
+	"apihelp-wikispeech-listen-example-5": "Sintetizar unha mensaxe do sistema usando a súa clave de mensaxe.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "O texto de entrada non debe exceder $1 caracteres, mais contiña $2 caracteres.",
+	"apierror-wikispeech-listen-no-audio": "A oración co identificador «$1» existe na base de datos, pero falta o ficheiro de son. Elimina a entrada correspondente da táboa «wikispeech_utterance» e, se se trata dunha oración baseada en mensaxes, volve executar o script de mantemento «preSynthesizeMessages.php» para rexenerala."
 }

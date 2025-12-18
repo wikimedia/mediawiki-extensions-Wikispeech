@@ -24,6 +24,7 @@
 	"apihelp-wikispeech-listen-param-voice": "Кој глас да се користи. Ако не е укажано, ќе се користи стандардниот глас за тој јазик.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL до патеката на потрошувачката викискрипта.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "По основно е неточно. Ако е точно, во дневникот на мерила нем ада се складираат анонимни податоци. Претежно се користи при вршење на предиспис со цел да се избегнат роботски барања за статистика.",
+	"apihelp-wikispeech-listen-param-message-key": "Клуч на порака за синтеза.",
 	"apierror-wikispeech-listen-deleted-revision": "Не можете да преслушувате избришани преработки.",
 	"apierror-wikispeech-listen-notallowed": "Ги немате правада да го повикувате ова дејство од извршникот.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> не претставува важечки јазик. Треба да биде еден од овие: $2.",
@@ -34,5 +35,7 @@
 	"apihelp-wikispeech-listen-example-2": "Користи нестандарден глас.",
 	"apihelp-wikispeech-listen-example-3": "Побарај разделок од преработка. Ќе користи меѓускладирана синтеза, ако постои.",
 	"apihelp-wikispeech-listen-example-4": "СИнтетизирај исказ од друго вики.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "Внесениот текст не смее да надминува $1 знаци, но содржи $2."
+	"apihelp-wikispeech-listen-example-5": "Синтеза на системска порака со овој клуч на порака.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Внесениот текст не смее да надминува $1 знаци, но содржи $2.",
+	"apierror-wikispeech-listen-no-audio": "Исказот со назнака „$1“ постои во базата, но звучната снимка недостасува. Отстранете ја соодветната ставка од табелата „wikispeech_utterance“, и ако се заснова на порака, тогаш повторно пуштете ја скриптата за одржување „preSynthesizeMessages.php“ за да ја пресоздадете."
 }

@@ -5,6 +5,7 @@
 			"Grace03",
 			"LNDDYL",
 			"Lakejason0",
+			"Pawsdt",
 			"Peterxy12",
 			"Shuiwater",
 			"Si109",
@@ -33,7 +34,7 @@
 	"wikispeech-lexicon-copyrightnote": "在保存更改时，你同意放出你的贡献在[https://creativecommons.org/publicdomain/zero/1.0/ CC0]。",
 	"wikispeech-play": "播放",
 	"wikispeech-pause": "暂停",
-	"wikispeech-play-selection": "播放选定文本",
+	"wikispeech-play-selection": "播放选定的文本",
 	"wikispeech-next": "跳过字词",
 	"wikispeech-settings": "设置"
 }

@@ -9,6 +9,7 @@
 		]
 	},
 	"wikispeech-desc": "أداة تحويل النص إلى كلام لجعل مشاريع ويكيميديا أكثر سهولة في الوصول إليها بالنسبة للأشخاص الذين يواجهون صعوبات في القراءة لأسباب مختلفة.",
+	"prefs-wikispeech": "استمع إلى الصفحات",
 	"prefs-wikispeech-voice": "الصوت",
 	"prefs-wikispeech-speech-rate": "معدل الكلام",
 	"prefs-wikispeech-speech-rate-percent": "معدل الكلام (بالنسبة المئوية)",
@@ -48,6 +49,7 @@
 	"wikispeech-lexicon-edit-entry-success": "تم تعديل المدخل.",
 	"wikispeech-lexicon-copyrightnote": "من خلال حفظ التغييرات، فإنك توافق على إصدار مساهمتك بموجب [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"wikispeech-testlisten-text": "نص",
+	"wikispeech-testlisten-audio-data": "بيانات صوتية",
 	"group-wikispeech-edit-lexicon": "محررو معجم ويكي سبيتش",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1| محرر معجم ويكي سبيتش}}",
 	"wikispeech-lexicon-null-edit": "لم يتم اكتشاف أي تغييرات ذات صلة بالنسخ أو الحالة المفضلة.",

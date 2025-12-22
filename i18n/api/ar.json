@@ -24,6 +24,7 @@
 	"apihelp-wikispeech-listen-param-voice": "الصوت المُراد استخدامه. في حال عدم توفره، سيتم استخدام الصوت الافتراضي للغة.",
 	"apihelp-wikispeech-listen-param-consumer-url": "عنوان URL لمسار البرنامج النصي الخاص بـ wiki للمستهلك.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "افتراضيًا، القيمة \"خطأ\". إذا كانت \"صحيحًا\"، فلن تُخزَّن البيانات المجهولة في سجل مقاييس المجلة. يُستخدم هذا الخيار بشكل أساسي عند تنفيذ عمليات العرض المسبق لتجنب إضافة طلبات روبوتية إلى الإحصائيات.",
+	"apihelp-wikispeech-listen-param-message-key": "مفتاح الرسالة للتوليف.",
 	"apierror-wikispeech-listen-deleted-revision": "لا يمكن الاستماع إلى المراجعات المحذوفة.",
 	"apierror-wikispeech-listen-notallowed": "ليس لديك الحق في استدعاء إجراء API هذا.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ليست لغة صالحة. يجب أن تكون واحدة مما يلي: $2.",
@@ -34,5 +35,7 @@
 	"apihelp-wikispeech-listen-example-2": "استخدم صوتًا غير افتراضي.",
 	"apihelp-wikispeech-listen-example-3": "اطلب مقطعًا من مراجعة. سيتم استخدام التوليف المُخزَّن مؤقتًا إن وُجد.",
 	"apihelp-wikispeech-listen-example-4": "تلخيص عبارة من ويكي آخر.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "يجب ألا يتجاوز النص المدخل $1 حرفًا، ولكن يجب أن يحتوي على $2 حرفًا."
+	"apihelp-wikispeech-listen-example-5": "قم بتوليف رسالة النظام باستخدام مفتاح الرسالة الخاص بها.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "يجب ألا يتجاوز النص المدخل $1 حرفًا، ولكن يجب أن يحتوي على $2 حرفًا.",
+	"apierror-wikispeech-listen-no-audio": "العبارة ذات المعرّف \" $1 \" موجودة في قاعدة البيانات، لكن ملف الصوت مفقود. يُرجى حذف الإدخال المقابل من جدول \"wikispeech_utterance\"، وإذا كانت عبارةً نصيةً، فأعد تشغيل برنامج الصيانة \"preSynthesizeMessages.php\" لإنشائها من جديد."
 }

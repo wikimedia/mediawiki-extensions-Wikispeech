@@ -4,12 +4,13 @@
 			"Base",
 			"DDPAT",
 			"Ice bulldog",
+			"Movses",
 			"Ата"
 		]
 	},
 	"wikispeech": "Вікімовлення",
 	"wikispeech-desc": "Інструмент синтезу мовлення з тексту, з метою зробити проєкти Вікімедіа більш доступними для людей, що з різних причин мають труднощі з читанням.",
-	"prefs-wikispeech": "Вікімовлення",
+	"prefs-wikispeech": "Прослухати сторінки",
 	"prefs-wikispeech-voice": "Голос",
 	"prefs-wikispeech-speech-rate": "Швидкість мовлення",
 	"prefs-wikispeech-speech-rate-percent": "Швидкість мовлення (у відсотках)",

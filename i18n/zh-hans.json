@@ -9,7 +9,9 @@
 			"Si109",
 			"Zhang8569",
 			"坑触可",
-			"沈澄心"
+			"沈澄心",
+			"Pawsdt",
+			"Peterxy12"
 		]
 	},
 	"prefs-wikispeech-voice": "语音",
@@ -29,5 +31,10 @@
 	"wikispeech-lexicon-save": "保存",
 	"wikispeech-lexicon-new": "新",
 	"wikispeech-lexicon-edit-entry-success": "词条已改编",
-	"wikispeech-lexicon-copyrightnote": "在保存更改时，你同意放出你的贡献在[https://creativecommons.org/publicdomain/zero/1.0/ CC0]。"
+	"wikispeech-lexicon-copyrightnote": "在保存更改时，你同意放出你的贡献在[https://creativecommons.org/publicdomain/zero/1.0/ CC0]。",
+	"wikispeech-play": "播放",
+	"wikispeech-pause": "暂停",
+	"wikispeech-play-selection": "播放选定的文本",
+	"wikispeech-next": "跳过字词",
+	"wikispeech-settings": "设置"
 }

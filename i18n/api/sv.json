@@ -4,7 +4,8 @@
 			"André Costa (WMSE)",
 			"Anna-Maria Jerdak (WMSE)",
 			"Jopparn",
-			"Sabelöga"
+			"Sabelöga",
+			"Stefan2255"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Dela en sidas HTML-innehåll i segment.",
@@ -26,6 +27,7 @@
 	"apihelp-wikispeech-listen-param-voice": "Röst att använda. Om detta inte anges kommer standardrösten för språket att användas.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL till wikis konsument skriptsökväg.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Standardinställningen till falsk. Om det är sant kommer anonym data inte att lagras i journalens mätregister. Används främst vid utförande av pre-rendering för att undvika att robotförfrågningar läggs till i statistiken.",
+	"apihelp-wikispeech-listen-param-message-key": "Meddelandenyckel att syntetisera.",
 	"apierror-wikispeech-listen-deleted-revision": "Man kan inte lyssna på raderade sidversioner.",
 	"apierror-wikispeech-listen-notallowed": "Du har inte rättigheterna för att anropa denna API-åtgärd.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> är inte ett giltigt språk. Bör vara en av följande: $2.",
@@ -36,5 +38,7 @@
 	"apihelp-wikispeech-listen-example-2": "Använd en röst som inte är standard.",
 	"apihelp-wikispeech-listen-example-3": "Begär ett segment från en sidversion. Kommer använda cachad syntes om det fnns.",
 	"apihelp-wikispeech-listen-example-4": "Syntetisera ett yttrande från en annan wiki.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "Inmatad text får inte överstiga $1 tecken, och måste innehålla $2 tecken."
+	"apihelp-wikispeech-listen-example-5": "Syntetisera ett systemmeddelande med hjälp av dess meddelandenyckel.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Inmatad text får inte överstiga $1 tecken, och måste innehålla $2 tecken.",
+	"apierror-wikispeech-listen-no-audio": "Uttalandet med ID \"$1\" finns i databasen men ljudfilen saknas. Ta bort motsvarande post från tabellen 'wikispeech_utterance', och om det är ett meddelandebaserat uttalande, kör sedan underhållsskriptet 'preSynthesizeMessages.php' igen för att generera det."
 }

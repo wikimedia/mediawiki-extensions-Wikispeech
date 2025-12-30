@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Avengium",
 			"BnSrSa",
 			"Jackiezelaya",
 			"Primavera11"
@@ -10,6 +11,9 @@
 	"apihelp-wikispeech-segment-param-part-of-content": "Ts'aak jejeláas túukulil ti'al jejeláas meyajo'ob",
 	"apihelp-wikispeech-listen-param-lang": "Código de idioma.",
 	"apihelp-wikispeech-listen-param-text": "Texto por sintetizar.",
+	"apihelp-wikispeech-listen-param-message-key": "Mensaje clave para sintetizar.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Fallo al obtener pagina con id de revisión '$1' del consumidor en URL $2.",
-	"apihelp-wikispeech-listen-example-2": "Utilizar una voz distinta de la predeterminada."
+	"apihelp-wikispeech-listen-example-2": "Utilizar una voz distinta de la predeterminada.",
+	"apihelp-wikispeech-listen-example-5": "Sintetizar un mensaje del sistema utilizando su clave de mensaje.",
+	"apierror-wikispeech-listen-no-audio": "El enunciado con ID \"$1\" existe en la base de datos, pero falta el archivo de audio. Elimine la entrada correspondiente de la tabla 'wikispeech_utterance' y, si se trata de un enunciado basado en mensajes, vuelva a ejecutar el script de mantenimiento 'preSynthesizeMessages.php' para regenerarlo."
 }

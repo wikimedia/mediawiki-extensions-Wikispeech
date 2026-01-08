@@ -19,7 +19,7 @@ if ( $IP === false ) {
 }
 require_once "$IP/maintenance/Maintenance.php";
 /**
- * Maintenance script to pre synthesize error messages
+ * Maintenance script to pre synthesize messages
  *
  * @since 0.1.13
  */

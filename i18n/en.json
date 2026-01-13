@@ -18,6 +18,8 @@
 	"prefs-wikispeech-part-of-content": "Read extra information for certain elements",
 	"prefs-wikispeech-view-all": "View all preferences on the preferences page",
 	"prefs-help-wikispeech-part-of-content": "If enabled extra infromation will be read for elements like links. When this is enabled word highlighting is disabled.",
+	"prefs-wikispeech-page-toolbar": "Read page toolbar",
+	"prefs-help-wikispeech-page-toolbar": "If enabled, the page toolbar will be read when hovered with the mouse or focused using the keyboard (e.g., by tabbing).",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Changes to preferences will take effect next time a page is loaded. To listen to the current page with the new preferences, reload the page after saving.",
 	"right-wikispeech-listen": "Listen to page",
 	"right-wikispeech-read-lexicon": "Read Wikispeech's lexicon",

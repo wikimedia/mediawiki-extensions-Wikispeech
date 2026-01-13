@@ -17,6 +17,46 @@ class Player {
 		this.storage = null;
 		this.highlighter = null;
 		this.selectionPlayer = null;
+
+		this.toolbarPlayer = new Audio();
+	}
+
+	async readUi( e ) {
+
+		if ( !mw.user.options.get( 'wikispeechPageToolbar' ) ) {
+			return;
+		}
+		const inToolbar = e.target.closest( '.vector-page-toolbar' );
+		if ( !inToolbar ) {
+			return;
+		}
+
+		const toolbarLink = e.target.closest( '.vector-page-toolbar a' );
+		let dropdownLabel = e.target.closest( '.vector-dropdown-label' );
+
+		if ( !dropdownLabel && e.target.matches( 'input.vector-dropdown-checkbox' ) ) {
+			dropdownLabel = e.target.parentElement.querySelector( '.vector-dropdown-label' );
+		}
+
+		if ( !toolbarLink && !dropdownLabel ) {
+			return;
+		}
+
+		let text = '';
+		if ( dropdownLabel ) {
+			text = dropdownLabel.querySelector( '.vector-dropdown-label-text' ).textContent;
+		} else {
+			text = e.target.textContent;
+		}
+
+		const lang = mw.config.get( 'wgPageContentLanguage' );
+		const utterance = await this.storage.getUiUtterance( lang, text );
+
+		this.toolbarPlayer.pause();
+		this.toolbarPlayer.currentTime = 0;
+		this.toolbarPlayer.src = utterance.audio.src;
+		this.toolbarPlayer.play();
+
 	}
 
 	/**

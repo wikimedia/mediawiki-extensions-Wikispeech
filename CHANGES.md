@@ -34,6 +34,8 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T407346](https://phabricator.wikimedia.org/T407346) Read UI content: Page toolbar
+
 ### 0.1.14
 2026-02-19
 Speechoid: 0.1.2

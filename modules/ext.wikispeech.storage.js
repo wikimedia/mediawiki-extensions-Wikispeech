@@ -14,6 +14,7 @@ class Storage {
 	constructor() {
 		this.utterances = [];
 		this.utterancesLoaded = $.Deferred();
+		this.uiUtterances = {};
 
 		const producerUrl = mw.config.get( 'wgWikispeechProducerUrl' );
 		if ( producerUrl ) {
@@ -940,6 +941,40 @@ class Storage {
 		const node = result.singleNodeValue;
 		return node;
 	}
+
+	async getUiUtterance( lang, text ) {
+		const key = lang + ' | ' + text;
+		if ( this.uiUtterances[ key ] ) {
+			return this.uiUtterances[ key ];
+		}
+
+		const options = {
+			action: 'wikispeech-listen',
+			lang: lang,
+			text: text
+		};
+
+		const voice = util.getUserVoice( lang );
+		if ( voice !== '' ) {
+			options.voice = voice;
+		}
+		if ( mw.config.get( 'wgWikispeechProducerUrl' ) ) {
+			options[ 'consumer-url' ] = window.location.origin +
+					mw.config.get( 'wgScriptPath' );
+		}
+
+		const data = await this.api.get( options );
+		const utterance = {
+			audio: new Audio(
+				'data:audio/ogg;base64,' + data[ 'wikispeech-listen' ].audio
+			),
+			tokens: data[ 'wikispeech-listen' ].tokens
+		};
+
+		this.uiUtterances[ key ] = utterance;
+		return utterance;
+	}
+
 }
 
 module.exports = Storage;

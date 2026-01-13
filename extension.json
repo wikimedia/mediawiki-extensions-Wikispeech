@@ -625,7 +625,8 @@
 		"wikispeechSpeechRate": 1.0,
 		"wikispeechPartOfContent": false,
 		"wikispeechHighlightingEnabled": true,
-		"wikispeechHighlightingColor": 1
+		"wikispeechHighlightingColor": 1,
+		"wikispeechPageToolbar": false
 	},
 	"APIModules": {
 		"wikispeech-segment": {

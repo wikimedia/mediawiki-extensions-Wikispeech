@@ -68,6 +68,18 @@ class Main {
 			mw.msg( 'wikispeech-dont-listen' )
 		);
 		$toggleVisibility.on( 'click', this.toggleVisibility );
+
+		document.addEventListener(
+			'mouseenter',
+			this.player.readUi.bind( this.player ),
+			true
+		);
+
+		document.addEventListener(
+			'focus',
+			this.player.readUi.bind( this.player ),
+			true
+		);
 	}
 
 	/**

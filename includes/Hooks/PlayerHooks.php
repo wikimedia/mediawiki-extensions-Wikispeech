@@ -241,6 +241,12 @@ class PlayerHooks implements
 			'label-message' => 'prefs-wikispeech-part-of-content',
 			'help-message' => 'prefs-help-wikispeech-part-of-content'
 		];
+		$preferences['wikispeechPageToolbar'] = [
+			'section' => 'wikispeech',
+			'type' => 'toggle',
+			'label-message' => 'prefs-wikispeech-page-toolbar',
+			'help-message' => 'prefs-help-wikispeech-page-toolbar'
+		];
 		$preferences['wikispeechHighlightingEnabled'] = [
 			'section' => 'wikispeech',
 			'type' => 'toggle',

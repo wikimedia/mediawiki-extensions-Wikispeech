@@ -144,6 +144,10 @@ class HaproxyStatusParser {
 		$rows = str_getcsv( $input, "\n" );
 		$columns = [];
 		foreach ( $rows as $row ) {
+			if ( !$row ) {
+				continue;
+			}
+
 			$csv = str_getcsv( $row );
 			if ( !$parsedHeaders ) {
 				if ( $csv[0] === '# pxname' ) {

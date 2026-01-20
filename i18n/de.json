@@ -84,5 +84,6 @@
 	"wikispeech-morphology-neu": "Neutrum",
 	"wikispeech-morphology-nn": "Substantiv",
 	"wikispeech-morphology-pm": "Pronomen",
-	"wikispeech-morphology-vb": "Verb"
+	"wikispeech-morphology-vb": "Verb",
+	"wikispeech-menu-label": "Weitere Optionen"
 }

@@ -45,6 +45,7 @@
 	"wikispeech-lexicon-edit-entry-success": "Entrata modificate.",
 	"wikispeech-lexicon-copyrightnote": "Salveguardante le modificationes, tu accepta de liberar tu contribution sub le licentia [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
 	"wikispeech-testlisten-text": "Texto",
+	"wikispeech-testlisten-audio-data": "Datos audio",
 	"group-wikispeech-edit-lexicon": "Modificatores del lexico de Wikispeech",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|modificator del lexico de Wikispeech}}",
 	"wikispeech-lexicon-null-edit": "Necun cambiamentos relevante detegite in le transcription o in le stato preferite.",
@@ -80,5 +81,6 @@
 	"wikispeech-morphology-neu": "Neutro",
 	"wikispeech-morphology-nn": "Substantivo",
 	"wikispeech-morphology-pm": "Pronomine",
-	"wikispeech-morphology-vb": "Verbo"
+	"wikispeech-morphology-vb": "Verbo",
+	"wikispeech-menu-label": "Plus optiones"
 }

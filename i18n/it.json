@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Ajeje Brazorf",
+			"Amedeo463",
 			"Beta16",
 			"Yiyi"
 		]
@@ -36,5 +37,6 @@
 	"wikispeech-morphology-neu": "Neutro",
 	"wikispeech-morphology-nn": "Sostantivo",
 	"wikispeech-morphology-pm": "Pronome",
-	"wikispeech-morphology-vb": "Verbo"
+	"wikispeech-morphology-vb": "Verbo",
+	"wikispeech-menu-label": "Più opzioni"
 }

@@ -24,15 +24,18 @@
 	"apihelp-wikispeech-listen-param-voice": "Le voce a usar. Si non es fornite, le voce predefinite pro le lingua essera usate.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL del percurso al script del wiki consumitor.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Le valor predefinite es false. Si es mittite a ver, le datos anonyme non essera immagazinate in le registro de metricas del jornal. Principalmente usate durante le execution ante rendition pro evitar le addition de requestas de robot al statisticas.",
+	"apihelp-wikispeech-listen-param-message-key": "Le clave del message a synthetisar.",
 	"apierror-wikispeech-listen-deleted-revision": "Versiones delite non pote esser ascoltate.",
 	"apierror-wikispeech-listen-notallowed": "Tu non ha le derectos necessari pro appellar iste action del API.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> non es un lingua valide. Debe esser un de: $2.",
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> non es un voce valide. Debe esser un de: $2.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Non poteva obtener le pagina con ID de version '$1' del consumitor al URL $2.",
 	"apierror-wikispeech-consumer-not-allowed": "Requestas proveniente de wikis remote non es permittite.",
-	"apihelp-wikispeech-listen-example-1": "Synthetisar un phrase in anglese.",
+	"apihelp-wikispeech-listen-example-1": "Synthetisar un enunciation in anglese.",
 	"apihelp-wikispeech-listen-example-2": "Usar un voce non predefinite.",
 	"apihelp-wikispeech-listen-example-3": "Requestar un segmento de un version. Usara le synthese immagazinate in cache si existe.",
-	"apihelp-wikispeech-listen-example-4": "Synthetisar un phrase de un altere wiki.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "Le texto entrate non debe exceder $1 characteres, ma contineva $2 characteres."
+	"apihelp-wikispeech-listen-example-4": "Synthetisar un enunciation de un altere wiki.",
+	"apihelp-wikispeech-listen-example-5": "Synthetisar un message de systema usante su clave de message.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Le texto entrate non debe exceder $1 characteres, ma contineva $2 characteres.",
+	"apierror-wikispeech-listen-no-audio": "Le enunciation con ID “$1” existe in le base de datos, ma le file audio manca. Elimina le entrata correspondente del tabella ‘wikispeech_utterance’ e, si se tracta de un enunciation basate sur un message, re-executa le script de mantenentia ‘preSynthesizeMessages.php’ pro regenerar lo."
 }

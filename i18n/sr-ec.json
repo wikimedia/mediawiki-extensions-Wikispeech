@@ -21,5 +21,6 @@
 	"wikispeech-morphology-ind": "Неодређено",
 	"wikispeech-morphology-nn": "Именица",
 	"wikispeech-morphology-pm": "Заменица",
-	"wikispeech-morphology-vb": "Глагол"
+	"wikispeech-morphology-vb": "Глагол",
+	"wikispeech-menu-label": "Више опција"
 }

@@ -30,9 +30,9 @@
 	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> non es un voce valide. Debe esser un de: $2.",
 	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Non poteva obtener le pagina con ID de version '$1' del consumitor al URL $2.",
 	"apierror-wikispeech-consumer-not-allowed": "Requestas proveniente de wikis remote non es permittite.",
-	"apihelp-wikispeech-listen-example-1": "Synthetisar un phrase in anglese.",
+	"apihelp-wikispeech-listen-example-1": "Synthetisar un enunciation in anglese.",
 	"apihelp-wikispeech-listen-example-2": "Usar un voce non predefinite.",
 	"apihelp-wikispeech-listen-example-3": "Requestar un segmento de un version. Usara le synthese immagazinate in cache si existe.",
-	"apihelp-wikispeech-listen-example-4": "Synthetisar un phrase de un altere wiki.",
+	"apihelp-wikispeech-listen-example-4": "Synthetisar un enunciation de un altere wiki.",
 	"apierror-wikispeech-listen-invalid-input-too-long": "Le texto entrate non debe exceder $1 characteres, ma contineva $2 characteres."
 }

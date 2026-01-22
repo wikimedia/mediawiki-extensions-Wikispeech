@@ -84,5 +84,6 @@
 	"wikispeech-morphology-neu": "中性",
 	"wikispeech-morphology-nn": "名詞",
 	"wikispeech-morphology-pm": "稱謂",
-	"wikispeech-morphology-vb": "動詞"
+	"wikispeech-morphology-vb": "動詞",
+	"wikispeech-menu-label": "更多選項"
 }

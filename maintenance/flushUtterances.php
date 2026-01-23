@@ -88,6 +88,13 @@ class FlushUtterances extends Maintenance {
 			'c'
 		);
 		$this->addOption(
+			'messages',
+			'Flush all message utterances.',
+			false,
+			false,
+			'm'
+		);
+		$this->addOption(
 			'force',
 			'Forces flushing in current thread rather than queuing as job.',
 			false,
@@ -114,10 +121,11 @@ class FlushUtterances extends Maintenance {
 		$voice = $this->getOption( 'voice', null );
 		$pageId = $this->getOption( 'page', null );
 		$consumerUrl = $this->getOption( 'consumerUrl', null );
+		$messages = $this->getOption( 'messages', null );
 		$force = $this->hasOption( 'force' );
 
 		$supportedSetOfOptions = true;
-		if ( !$expire && !$language && !$voice && !$pageId ) {
+		if ( !$expire && !$language && !$voice && !$pageId && !$messages ) {
 			$supportedSetOfOptions = false;
 		} elseif ( $expire && ( $language || $voice || $pageId ) ) {
 			$supportedSetOfOptions = false;
@@ -127,7 +135,10 @@ class FlushUtterances extends Maintenance {
 			$supportedSetOfOptions = false;
 		} elseif ( $pageId && ( $expire || $language || $voice ) ) {
 			$supportedSetOfOptions = false;
+		} elseif ( $messages && ( $expire || $language || $voice || $pageId ) ) {
+			$supportedSetOfOptions = false;
 		}
+
 		if ( !$supportedSetOfOptions ) {
 			$this->output( "Unsupported set of options!\n" );
 			$this->showHelp();
@@ -174,6 +185,13 @@ class FlushUtterances extends Maintenance {
 
 				$this->flushUtterancesFromStoreByPageIdJobQueue
 					->queueJob( intval( $pageId ) );
+			}
+		} elseif ( $messages ) {
+			if ( $force ) {
+				$flushedCount = $this->utteranceStore->flushMessageUtterances();
+			} else {
+				$this->output( 'Non-forced messages flush is not implemented yet.' . "\n" );
+				return false;
 			}
 		} else {
 			// Fallback in case of future bad code in supported set of options.

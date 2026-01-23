@@ -524,7 +524,9 @@ class UtteranceStore {
 		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ],
-			[ 1 => 'wsu_date_stored <= ' . $expirationDate->getTimestamp( TS_MW ) ],
+			[ 1 => 'wsu_date_stored <= ' . $expirationDate->getTimestamp( TS_MW ),
+				'wsu_message_key' => null,
+			],
 			__METHOD__
 		);
 		return $this->flushUtterances( $dbw, $results );
@@ -555,7 +557,8 @@ class UtteranceStore {
 			[ 'wsu_utterance_id' ],
 			[
 				'wsu_remote_wiki_hash' => $remoteWikiHash,
-				'wsu_page_id' => $pageId
+				'wsu_page_id' => $pageId,
+				'wsu_message_key' => null,
 			],
 			__METHOD__
 		);
@@ -573,7 +576,8 @@ class UtteranceStore {
 	 */
 	public function flushUtterancesByLanguageAndVoice( $language, $voice = null ) {
 		$conditions = [
-			'wsu_lang' => $language
+			'wsu_lang' => $language,
+			'wsu_message_key' => null,
 		];
 		if ( $voice != null ) {
 			$conditions['wsu_voice'] = $voice;
@@ -581,6 +585,20 @@ class UtteranceStore {
 		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
 		$results = $dbw->select( self::UTTERANCE_TABLE,
 			[ 'wsu_utterance_id' ], $conditions, __METHOD__
+		);
+		return $this->flushUtterances( $dbw, $results );
+	}
+
+	/**
+	 * Clears database and file backend of all message utterances.
+	 *
+	 * @since 0.1.14
+	 * @return int Number of utterances flushed.
+	 */
+	public function flushMessageUtterances() {
+		$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
+		$results = $dbw->select( self::UTTERANCE_TABLE,
+			[ 'wsu_utterance_id' ], [ 'wsu_message_key IS NOT NULL' ], __METHOD__
 		);
 		return $this->flushUtterances( $dbw, $results );
 	}

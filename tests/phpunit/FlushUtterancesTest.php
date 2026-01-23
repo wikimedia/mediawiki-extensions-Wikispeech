@@ -286,4 +286,61 @@ class FlushUtterancesTest extends MaintenanceBaseTestCase {
 		$this->assertFalse( $this->maintenance->execute() );
 	}
 
+	// Messages
+	public function testFlushMessages_force_executeSuccessful() {
+		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
+		$utteranceStoreMock
+			->expects( $this->once() )
+			->method( 'flushMessageUtterances' )
+			->willReturn( 0 );
+		$this->maintenance->utteranceStore = $utteranceStoreMock;
+		$this->maintenance->loadWithArgv( [
+			'--force',
+			'--messages',
+		] );
+		$this->assertTrue( $this->maintenance->execute() );
+	}
+
+	public function testFlushMessages_withoutForce_executeFails() {
+		$utteranceStoreMock = $this->createMock( UtteranceStore::class );
+		$utteranceStoreMock
+			->expects( $this->never() )
+			->method( 'flushMessageUtterances' );
+		$this->maintenance->utteranceStore = $utteranceStoreMock;
+		$this->maintenance->loadWithArgv( [
+			'--messages',
+		] );
+		$this->assertFalse( $this->maintenance->execute() );
+	}
+
+	public function testFlushMessages_messagesAndOtherParameters_executeFails() {
+		// Needed by showHelp, called in this failure cases
+		$this->maintenance->mSelf = $this->getMaintenanceClass();
+		$this->maintenance->parameters->setName( $this->maintenance->mSelf );
+
+		$this->maintenance->loadWithArgv( [
+			'--messages',
+			'--expire'
+		] );
+		$this->assertFalse( $this->maintenance->execute() );
+
+		$this->maintenance->loadWithArgv( [
+			'--messages',
+			'--language', 'sv'
+		] );
+		$this->assertFalse( $this->maintenance->execute() );
+
+		$this->maintenance->loadWithArgv( [
+			'--messages',
+			'--page', '1'
+		] );
+		$this->assertFalse( $this->maintenance->execute() );
+
+		$this->maintenance->loadWithArgv( [
+			'--messages',
+			'--voice', 'anna'
+		] );
+		$this->assertFalse( $this->maintenance->execute() );
+	}
+
 }

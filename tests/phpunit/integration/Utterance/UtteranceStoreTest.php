@@ -281,6 +281,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 				'pageId' => 2,
 				'language' => 'sv',
 				'voice' => 'anna',
+				'messageKey' => null,
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
 				'synthesisMetadata' =>
@@ -310,6 +311,36 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}
 
+	public function testFlushUtterancesByExpirationDate_doesNotFlushMessageUtterances() {
+		$dateExpires = 20020101000000;
+
+		$mockedUtterances = [
+			[
+				'utteranceId' => null,
+				'dateStored' => $dateExpires - 10000000000,
+				'expectedToFlush' => false,
+				'pageId' => 0,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'messageKey' => 'some-message',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			]
+		];
+
+		$expectedFlushCounter = $this
+		->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
+
+		$flushedCount = $this->utteranceStore->flushUtterancesByExpirationDate(
+		MWTimestamp::getInstance( $dateExpires )
+		);
+
+		$this->assertSame( 0, $flushedCount );
+		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
+	}
+
 	public function testFlushUtterancesByLanguageAndVoice() {
 		$mockedUtterances = [
 			[
@@ -330,6 +361,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 				'pageId' => 2,
 				'language' => 'sv',
 				'voice' => 'bertil',
+				'messageKey' => null,
 				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
 				'audio' => 'DummyBase64Audio=',
 				'synthesisMetadata' =>
@@ -353,6 +385,32 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 
 		$flushedCount = $this->utteranceStore->flushUtterancesByLanguageAndVoice( 'sv', 'bertil' );
 
+		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
+	}
+
+	public function testFlushUtterancesByLanguageAndVoice_doesNotFlushMessageUtterances() {
+		$mockedUtterances = [
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => false,
+				'pageId' => 0,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'messageKey' => 'some-message',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			]
+		];
+
+		$expectedFlushCounter = $this
+		->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
+
+		$flushedCount = $this->utteranceStore->flushUtterancesByLanguageAndVoice( 'sv', 'anna' );
+
+		$this->assertSame( 0, $flushedCount );
 		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}
 
@@ -402,6 +460,32 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}
 
+	public function testFlushUtterancesByLanguage_doesNotFlushMessageUtterances() {
+		$mockedUtterances = [
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => false,
+				'pageId' => 0,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'messageKey' => 'some-message',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			]
+		];
+
+		$expectedFlushCounter = $this
+		->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
+
+		$flushedCount = $this->utteranceStore->flushUtterancesByLanguageAndVoice( 'sv' );
+
+		$this->assertSame( 0, $flushedCount );
+		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
+	}
+
 	public function testFlushUtterancesByPage() {
 		$mockedUtterances = [
 			[
@@ -434,6 +518,32 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 
 		$flushedCount = $this->utteranceStore->flushUtterancesByPage( null, 1 );
 
+		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
+	}
+
+	public function testFlushUtterancesByPage_doesNotFlushMessageUtterances() {
+		$mockedUtterances = [
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => false,
+				'pageId' => 2,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'messageKey' => 'some-message',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+				'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			]
+		];
+
+		$expectedFlushCounter = $this
+		->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
+
+		$flushedCount = $this->utteranceStore->flushUtterancesByPage( null, 1 );
+
+		$this->assertSame( 0, $flushedCount );
 		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}
 
@@ -505,6 +615,7 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 					$mockedUtterance['consumerUrl'] ?? null
 			),
 				'wsu_page_id' => $mockedUtterance['pageId'],
+				'wsu_message_key' => $mockedUtterance['messageKey'] ?? null,
 				'wsu_lang' => $mockedUtterance['language'],
 				'wsu_voice' => $mockedUtterance['voice'],
 				'wsu_seg_hash' => $mockedUtterance['segmentHash']
@@ -695,5 +806,44 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 			$this->utteranceStore->fileBackend
 				->fileExists( [ 'src' => $synthesisMetadataUrl ] )
 		);
+	}
+
+	public function testFlushMessageUtterances() {
+		$mockedUtterances = [
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => true,
+				'pageId' => 0,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'messageKey' => 'some-message',
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			],
+			[
+				'utteranceId' => null,
+				'dateStored' => 20020101000000,
+				'expectedToFlush' => false,
+				'pageId' => 2,
+				'language' => 'sv',
+				'voice' => 'anna',
+				'messageKey' => null,
+				'segmentHash' => '1234567890123456789012345678901234567890123456789012345678901234',
+				'audio' => 'DummyBase64Audio=',
+				'synthesisMetadata' =>
+					'{"tokens": [{"endtime": 0.155, "orth": "i"}, {"endtime": 0.555, "orth": ""}]}',
+			]
+		];
+
+		$expectedFlushCounter = $this
+			->insertMockedDataForFlushTestsAndReturnExpectedNumberToBeFlushed( $mockedUtterances );
+
+		// actually flush
+		$flushedCount = $this->utteranceStore->flushMessageUtterances();
+
+		$this->assertFlushed( $mockedUtterances, $expectedFlushCounter, $flushedCount );
 	}
 }

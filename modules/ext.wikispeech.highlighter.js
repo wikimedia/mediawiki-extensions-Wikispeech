@@ -8,10 +8,27 @@
 class Highlighter {
 	constructor() {
 		this.highlightTokenTimer = null;
-		this.utteranceHighlightingClass =
-			'ext-wikispeech-highlight-sentence';
-		this.utteranceHighlightingSelector =
-			'.' + this.utteranceHighlightingClass;
+
+		this.highlightingEnabled = mw.user.options.get( 'wikispeechHighlightingEnabled' );
+		const profile = mw.user.options.get( 'wikispeechHighlightingColor' );
+		const profileMap = {
+			1: {
+				sentence: 'ext-wikispeech-highlight-sentence-default',
+				word: 'ext-wikispeech-highlight-word'
+			},
+			2: {
+				sentence: 'ext-wikispeech-highlight-sentence-2',
+				word: 'ext-wikispeech-highlight-word-2'
+			}
+		};
+		const profileClasses = profileMap[ profile ] || profileMap[ 1 ];
+
+		this.utteranceHighlightingClass = profileClasses.sentence;
+		this.wordHighlightingClass = profileClasses.word;
+
+		this.utteranceHighlightingSelector = '.' + this.utteranceHighlightingClass;
+		this.wordHighlightingSelector = '.' + this.wordHighlightingClass;
+
 		this.storage = null;
 	}
 
@@ -29,6 +46,9 @@ class Highlighter {
 	 */
 
 	highlightUtterance( utterance ) {
+		if ( !this.highlightingEnabled ) {
+			return;
+		}
 		const textNodes = utterance.content
 			.map( ( item ) => this.storage.getNodeForItem( item ) )
 			// Remove nulls that were added for items without nodes.
@@ -118,7 +138,7 @@ class Highlighter {
 			return;
 		}
 
-		this.removeWrappers( '.ext-wikispeech-highlight-word' );
+		this.removeWrappers( this.wordHighlightingClass );
 		this.clearHighlightTokenTimer();
 		this.highlightToken( token );
 		this.setHighlightTokenTimer( token );
@@ -134,12 +154,15 @@ class Highlighter {
 	 */
 
 	highlightToken( token ) {
+		if ( !this.highlightingEnabled ) {
+			return;
+		}
 		if ( mw.user.options.get( 'wikispeechPartOfContent' ) ) {
 			return;
 		}
 
 		const span = $( '<span>' )
-			.addClass( 'ext-wikispeech-highlight-word' )
+			.addClass( this.wordHighlightingClass )
 			.get( 0 );
 		const textNodes = token.items.map( ( item ) => {
 			let textNode;
@@ -212,7 +235,7 @@ class Highlighter {
 			this.highlightTokenTimer = window.setTimeout(
 				() => {
 					this.removeWrappers(
-						'.ext-wikispeech-highlight-word'
+						this.wordHighlightingSelector
 					);
 					this.highlightToken( nextToken );
 					// Add a new timer for the next token, when it
@@ -255,9 +278,9 @@ class Highlighter {
 
 	clearHighlighting() {
 		// Remove sentence highlighting.
-		this.removeWrappers( '.ext-wikispeech-highlight-sentence' );
+		this.removeWrappers( this.utteranceHighlightingSelector );
 		// Remove word highlighting.
-		this.removeWrappers( '.ext-wikispeech-highlight-word' );
+		this.removeWrappers( this.wordHighlightingSelector );
 		this.clearHighlightTokenTimer();
 	}
 

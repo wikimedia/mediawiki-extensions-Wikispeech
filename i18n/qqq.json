@@ -96,5 +96,9 @@
 	"wikispeech-morphology-nn": "The word is a noun",
 	"wikispeech-morphology-pm": "The word is a pronoun",
 	"wikispeech-morphology-vb": "The word is a verb",
-	"wikispeech-menu-label": "Menu for more Wikispeech options, such as help, feedback and edit lexicon"
+	"wikispeech-menu-label": "Menu for more Wikispeech options, such as help, feedback and edit lexicon",
+	"prefs-wikispeech-highlighting-enabled": "User preferences to turn on and of highlighting",
+	"prefs-wikispeech-highlighting-options": "User preferences to choose highlighting colors",
+	"prefs-wikispeech-highlighting-default-option": "The default highlighting colors - Purple sentence + orange token",
+	"prefs-wikispeech-highlighting-green-blue": "Second choice for highlighting colors - Green sentence + blue token"
 }

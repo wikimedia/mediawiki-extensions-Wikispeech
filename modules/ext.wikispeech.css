@@ -49,10 +49,18 @@
 	}
 }
 
-.ext-wikispeech-highlight-sentence {
+.ext-wikispeech-highlight-sentence-default {
 	background-color: rgb( 200, 170, 255 );
+}
+
+.ext-wikispeech-highlight-sentence-2 {
+	background-color: rgb( 120, 206, 134 );
 }
 
 .ext-wikispeech-highlight-word {
 	background-color: rgb( 255, 200, 140 );
+}
+
+.ext-wikispeech-highlight-word-2 {
+	background-color: rgb( 107, 176, 255 );
 }

@@ -35,10 +35,10 @@ QUnit.test( 'highlightUtterance()', function ( assert ) {
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'<span class="ext-wikispeech-highlight-sentence">Utterance zero.</span>'
+		'<span class="ext-wikispeech-highlight-sentence-default">Utterance zero.</span>'
 	);
 	assert.strictEqual(
-		$( '.ext-wikispeech-highlight-sentence' ).prop( 'textPath' ),
+		$( '.ext-wikispeech-highlight-sentence-default' ).prop( 'textPath' ),
 		'./text()'
 	);
 } );
@@ -60,7 +60,7 @@ QUnit.test( 'highlightUtterance(): multiple utterances', function ( assert ) {
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span> Utterance two.'
+		'Utterance zero. <span class="ext-wikispeech-highlight-sentence-default">Utterance one.</span> Utterance two.'
 	);
 } );
 
@@ -91,7 +91,7 @@ QUnit.test( 'highlightUtterance(): with tags', function ( assert ) {
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'<p><span class="ext-wikispeech-highlight-sentence">Utterance with </span><b><span class="ext-wikispeech-highlight-sentence">a</span></b><span class="ext-wikispeech-highlight-sentence"> tag.</span></p>'
+		'<p><span class="ext-wikispeech-highlight-sentence-default">Utterance with </span><b><span class="ext-wikispeech-highlight-sentence-default">a</span></b><span class="ext-wikispeech-highlight-sentence-default"> tag.</span></p>'
 	);
 } );
 
@@ -120,7 +120,7 @@ QUnit.test( 'highlightUtterance(): wrap middle text nodes properly', function ( 
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'<span class="ext-wikispeech-highlight-sentence">First</span><br><span class="ext-wikispeech-highlight-sentence">middle</span><br><span class="ext-wikispeech-highlight-sentence">last.</span> Next utterance.'
+		'<span class="ext-wikispeech-highlight-sentence-default">First</span><br><span class="ext-wikispeech-highlight-sentence-default">middle</span><br><span class="ext-wikispeech-highlight-sentence-default">last.</span> Next utterance.'
 	);
 } );
 
@@ -219,8 +219,8 @@ QUnit.test( 'highlightToken(): multiple utterances', function ( assert ) {
 } );
 
 QUnit.test( 'highlightToken(): with utterance highlighting', function ( assert ) {
-	util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Utterance with token.</span>' );
-	$( '.ext-wikispeech-highlight-sentence' )
+	util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence-default">Utterance with token.</span>' );
+	$( '.ext-wikispeech-highlight-sentence-default' )
 		.prop( 'textPath', './text()' );
 	const highlightedToken = {
 		utterance: this.storage.utterances[ 0 ],
@@ -234,15 +234,15 @@ QUnit.test( 'highlightToken(): with utterance highlighting', function ( assert )
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'<span class="ext-wikispeech-highlight-sentence">Utterance with <span class="ext-wikispeech-highlight-word">token</span>.</span>'
+		'<span class="ext-wikispeech-highlight-sentence-default">Utterance with <span class="ext-wikispeech-highlight-word">token</span>.</span>'
 	);
 } );
 
 QUnit.test( 'highlightToken(): with utterance highlighting and multiple utterances', function ( assert ) {
 	util.setContentHtml(
-		'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>'
+		'Utterance zero. <span class="ext-wikispeech-highlight-sentence-default">Utterance one.</span>'
 	);
-	$( '.ext-wikispeech-highlight-sentence' )
+	$( '.ext-wikispeech-highlight-sentence-default' )
 		.prop( 'textPath', './text()' );
 	this.storage.utterances[ 1 ] = {
 		startOffset: 16,
@@ -260,13 +260,13 @@ QUnit.test( 'highlightToken(): with utterance highlighting and multiple utteranc
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'Utterance zero. <span class="ext-wikispeech-highlight-sentence"><span class="ext-wikispeech-highlight-word">Utterance</span> one.</span>'
+		'Utterance zero. <span class="ext-wikispeech-highlight-sentence-default"><span class="ext-wikispeech-highlight-word">Utterance</span> one.</span>'
 	);
 } );
 
 QUnit.test( 'highlightToken(): with utterance highlighting and other spans', function ( assert ) {
-	util.setContentHtml( '<span><span class="ext-wikispeech-highlight-sentence">Utterance with token.</span></span>' );
-	$( '.ext-wikispeech-highlight-sentence' )
+	util.setContentHtml( '<span><span class="ext-wikispeech-highlight-sentence-default">Utterance with token.</span></span>' );
+	$( '.ext-wikispeech-highlight-sentence-default' )
 		.prop( 'textPath', './span/text()' );
 	this.storage.utterances[ 0 ].content[ 0 ] = { path: './span/text()' };
 	const highlightedToken = {
@@ -281,7 +281,7 @@ QUnit.test( 'highlightToken(): with utterance highlighting and other spans', fun
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'<span><span class="ext-wikispeech-highlight-sentence">Utterance with <span class="ext-wikispeech-highlight-word">token</span>.</span></span>'
+		'<span><span class="ext-wikispeech-highlight-sentence-default">Utterance with <span class="ext-wikispeech-highlight-word">token</span>.</span></span>'
 	);
 } );
 
@@ -308,8 +308,8 @@ QUnit.test( 'highlightToken(): with tags', function ( assert ) {
 } );
 
 QUnit.test( 'highlightToken(): with multiple utterance highlightings', function ( assert ) {
-	util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence">Phrase </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">, phrase two.</span>' );
-	$( '.ext-wikispeech-highlight-sentence' )
+	util.setContentHtml( '<span class="ext-wikispeech-highlight-sentence-default">Phrase </span><b><span class="ext-wikispeech-highlight-sentence-default">one</span></b><span class="ext-wikispeech-highlight-sentence-default">, phrase two.</span>' );
+	$( '.ext-wikispeech-highlight-sentence-default' )
 		.get( 2 ).textPath = './text()[2]';
 	this.storage.utterances[ 0 ].content[ 0 ] = { path: './text()[2]' };
 	const highlightedToken = {
@@ -324,13 +324,13 @@ QUnit.test( 'highlightToken(): with multiple utterance highlightings', function 
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'<span class="ext-wikispeech-highlight-sentence">Phrase </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">, <span class="ext-wikispeech-highlight-word">phrase</span> two.</span>'
+		'<span class="ext-wikispeech-highlight-sentence-default">Phrase </span><b><span class="ext-wikispeech-highlight-sentence-default">one</span></b><span class="ext-wikispeech-highlight-sentence-default">, <span class="ext-wikispeech-highlight-word">phrase</span> two.</span>'
 	);
 } );
 
 QUnit.test( 'highlightToken(): with multiple utterance highlightings and text nodes', function ( assert ) {
-	util.setContentHtml( 'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence">Utterance one.</span>' );
-	$( '.ext-wikispeech-highlight-sentence' )
+	util.setContentHtml( 'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence-default">Utterance one.</span>' );
+	$( '.ext-wikispeech-highlight-sentence-default' )
 		.prop( 'textPath', './text()[2]' );
 	this.storage.utterances[ 1 ] = {
 		startOffset: 2,
@@ -348,13 +348,13 @@ QUnit.test( 'highlightToken(): with multiple utterance highlightings and text no
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence"><span class="ext-wikispeech-highlight-word">Utterance</span> one.</span>'
+		'Utterance <b>zero</b>. <span class="ext-wikispeech-highlight-sentence-default"><span class="ext-wikispeech-highlight-word">Utterance</span> one.</span>'
 	);
 } );
 
 QUnit.test( 'highlightToken(): utterance highlighting starts in a new text node', function ( assert ) {
-	util.setContentHtml( 'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence">one</span></b><span class="ext-wikispeech-highlight-sentence">.</span>' );
-	$( '.ext-wikispeech-highlight-sentence' ).get( 1 ).textPath =
+	util.setContentHtml( 'Utterance zero. <span class="ext-wikispeech-highlight-sentence-default">Utterance </span><b><span class="ext-wikispeech-highlight-sentence-default">one</span></b><span class="ext-wikispeech-highlight-sentence-default">.</span>' );
+	$( '.ext-wikispeech-highlight-sentence-default' ).get( 1 ).textPath =
 		'./b/text()';
 	this.storage.utterances[ 1 ] = {
 		startOffset: 2,
@@ -379,7 +379,7 @@ QUnit.test( 'highlightToken(): utterance highlighting starts in a new text node'
 
 	assert.strictEqual(
 		$( this.contentSelector ).html(),
-		'Utterance zero. <span class="ext-wikispeech-highlight-sentence">Utterance </span><b><span class="ext-wikispeech-highlight-sentence"><span class="ext-wikispeech-highlight-word">one</span></span></b><span class="ext-wikispeech-highlight-sentence">.</span>'
+		'Utterance zero. <span class="ext-wikispeech-highlight-sentence-default">Utterance </span><b><span class="ext-wikispeech-highlight-sentence-default"><span class="ext-wikispeech-highlight-word">one</span></span></b><span class="ext-wikispeech-highlight-sentence-default">.</span>'
 	);
 } );
 

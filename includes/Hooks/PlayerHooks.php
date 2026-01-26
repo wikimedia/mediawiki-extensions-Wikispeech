@@ -241,6 +241,21 @@ class PlayerHooks implements
 			'label-message' => 'prefs-wikispeech-part-of-content',
 			'help-message' => 'prefs-help-wikispeech-part-of-content'
 		];
+		$preferences['wikispeechHighlightingEnabled'] = [
+			'section' => 'wikispeech',
+			'type' => 'toggle',
+			'label-message' => 'prefs-wikispeech-highlighting-enabled'
+		];
+		$preferences['wikispeechHighlightingColor'] = [
+			'section' => 'wikispeech',
+			'type' => 'select',
+			'label-message' => 'prefs-wikispeech-highlighting-options',
+			'options-messages' => [
+				'prefs-wikispeech-highlighting-default-option' => 1,
+				'prefs-wikispeech-highlighting-green-blue' => 2
+			],
+			'disable-if' => [ '!==', 'wikispeechHighlightingEnabled', '1' ],
+		];
 		$this->addVoicePreferences( $preferences, $this->voiceHandler );
 		$this->addSpeechRatePreferences( $preferences );
 	}

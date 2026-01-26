@@ -89,6 +89,10 @@
 	"wikispeech-morphology-nn": "Noun",
 	"wikispeech-morphology-pm": "Pronoun",
 	"wikispeech-morphology-vb": "Verb",
-	"wikispeech-menu-label": "More options"
+	"wikispeech-menu-label": "More options",
+	"prefs-wikispeech-highlighting-enabled": "Enable highlighting",
+	"prefs-wikispeech-highlighting-options": "Highlighting options",
+	"prefs-wikispeech-highlighting-default-option": "Default - Purple + orange",
+	"prefs-wikispeech-highlighting-green-blue": "Green + blue"
 
 }

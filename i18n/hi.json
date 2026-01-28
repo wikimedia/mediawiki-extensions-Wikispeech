@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Abijeet Patro"
+			"Abijeet Patro",
+			"Saurmandal"
 		]
 	},
 	"prefs-wikispeech-voice": "आवाज़",
@@ -17,5 +18,6 @@
 	"wikispeech-help": "सहायता",
 	"wikispeech-settings": "सेटिंग्स",
 	"wikispeech-morphology-plu": "बहुवचन",
-	"wikispeech-morphology-vb": "क्रिया"
+	"wikispeech-morphology-vb": "क्रिया",
+	"wikispeech-menu-label": "अधिक विकल्प"
 }

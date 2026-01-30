@@ -2,12 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"Adriendelucca",
-			"Fulup"
+			"Fulup",
+			"Huñvreüs"
 		]
 	},
 	"wikispeech": "Wikispeech",
 	"wikispeech-desc": "Un ostilh eus ar skrid d'ar gomz da lakaat raktresoù Wikimedia da vezañ aesoc'h d'ober ganto evut o devezh poan o lenn evit abeg pe abeg.",
-	"prefs-wikispeech": "Wikispeech",
+	"prefs-wikispeech": "Selaou ouzh pajennoù",
 	"prefs-wikispeech-voice": "Mouezh",
 	"prefs-wikispeech-speech-rate": "Lusk ar vouezh",
 	"prefs-wikispeech-enable": "Gweredekaat Wikispeech",

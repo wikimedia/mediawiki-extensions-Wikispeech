@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"McDutchie"
+			"McDutchie",
+			"Siebrand"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Verwerk een pagina die gebruikt zal worden door de Wikispeech uitbreiding.",
@@ -24,6 +25,7 @@
 	"apihelp-wikispeech-listen-param-voice": "Te gebruiken stem. Indien niet voorzien zal de standaardstem van de taal gebruikt worden.",
 	"apihelp-wikispeech-listen-param-consumer-url": "URL naar het scriptpad van de consumerwiki.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Standaard ingesteld op ''false''. Indien ''true'' worden anonieme gegevens niet opgeslagen in het dagboekstatistiekenlogboek. Wordt voornamelijk gebruikt bij de voorverwerking om te voorkomen dat robotverzoeken aan statistieken worden toegevoegd.",
+	"apihelp-wikispeech-listen-param-message-key": "Berichtsleutel voor synthese.",
 	"apierror-wikispeech-listen-deleted-revision": "Verwijderde versies kunnen niet worden beluisterd.",
 	"apierror-wikispeech-listen-notallowed": "U hebt niet de rechten om deze API-handeling aan te roepen.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is geen geldige taal. Moet één zijn van: $2.",
@@ -34,5 +36,7 @@
 	"apihelp-wikispeech-listen-example-2": "Gebruik een niet-standaard stem.",
 	"apihelp-wikispeech-listen-example-3": "Vraag een segment uit een versie aan. Gebruikt de in de cache opgeslagen synthese als die er is.",
 	"apihelp-wikispeech-listen-example-4": "Synthetiseer een uiting van een andere wiki.",
-	"apierror-wikispeech-listen-invalid-input-too-long": "De ingevoerde tekst mag niet langer dan $1 tekens zijn, maar bevatte $2 tekens."
+	"apihelp-wikispeech-listen-example-5": "Stel een systeembericht samen met behulp van de berichtsleutel.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "De ingevoerde tekst mag niet langer dan $1 tekens zijn, maar bevatte $2 tekens.",
+	"apierror-wikispeech-listen-no-audio": "De spraakuiting met ID \"$1\" bestaat wel in de database, maar het audiobestand ontbreekt. Verwijder de bijbehorende vermelding uit de tabel 'wikispeech_utterance' en, als het een berichtgebaseerde spraakuiting betreft, voer dan het onderhoudsscript 'preSynthesizeMessages.php' opnieuw uit om deze te genereren."
 }

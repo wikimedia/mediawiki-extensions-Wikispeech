@@ -1,10 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Abijeet Patro"
+			"Abijeet Patro",
+			"Saurmandal"
 		]
 	},
 	"prefs-wikispeech-voice": "आवाज़",
+	"prefs-wikispeech-speech-rate": "बोलने की गति",
+	"prefs-wikispeech-speech-rate-percent": "बोलने की गति (प्रतिशत में)",
+	"prefs-wikispeech-show-player": "प्लेयर हमेशा दिखाएँ",
 	"wikispeech-stop": "रोकें",
 	"wikispeech-preview": "पूर्वावलोकन",
 	"wikispeech-lexicon-next": "अगला",

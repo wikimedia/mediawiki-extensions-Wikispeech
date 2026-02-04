@@ -1,17 +1,22 @@
 {
 	"@metadata": {
 		"authors": [
-			"Abijeet Patro"
+			"Abijeet Patro",
+			"Saurmandal"
 		]
 	},
 	"prefs-wikispeech-voice": "आवाज़",
+	"prefs-wikispeech-speech-rate": "बोलने की गति",
+	"prefs-wikispeech-speech-rate-percent": "बोलने की गति (प्रतिशत में)",
+	"prefs-wikispeech-show-player": "प्लेयर हमेशा दिखाएँ",
 	"wikispeech-stop": "रोकें",
 	"wikispeech-preview": "पूर्वावलोकन",
 	"wikispeech-lexicon-next": "अगला",
 	"wikispeech-lexicon-new": "नया",
 	"wikispeech-previous": "पिछला",
-	"wikispeech-play": "चलायें",
+	"wikispeech-play": "चलाएँ",
 	"wikispeech-next": "अगला",
 	"wikispeech-skip-ahead": "आगे बढ़ें",
-	"wikispeech-help": "सहायता"
+	"wikispeech-help": "सहायता",
+	"wikispeech-edit-lexicon-btn": "शब्दकोश सम्पादित करें"
 }

@@ -25,3 +25,5 @@ på Wikipedia" (2016–2017).
 This work was supported by the Swedish Post and Telecom Authority
 (PTS) through the grant "Talresursinsamlaren – För ett tillgängligare
 Wikipedia genom Wikispeech" (2019–2021).
+
+This work was supported by the Swedish Inheritance Fund (Allmänna arvsfonden) through the grant "Wikispeech - Talsyntes och taldatainsamlare" (2024–2027).

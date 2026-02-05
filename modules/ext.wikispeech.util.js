@@ -1,5 +1,5 @@
 /**
- * @module ext.wikispeech
+ * @module ext.wikispeech.util
  */
 
 // This module can be used by modules that use both package files

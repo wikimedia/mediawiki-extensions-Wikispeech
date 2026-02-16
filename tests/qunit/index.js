@@ -4,3 +4,4 @@ require( './ext.wikispeech.selectionPlayer.test.js' );
 require( './ext.wikispeech.transcriptionPreviewer.test.js' );
 require( './ext.wikispeech.storage.test.js' );
 require( './ext.wikispeech.ui.test.js' );
+require( './ext.wikispeech.feedback.test.js' );

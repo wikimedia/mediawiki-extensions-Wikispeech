@@ -107,5 +107,18 @@
 	"prefs-wikispeech-highlighting-options": "User preferences to choose highlighting colors",
 	"prefs-wikispeech-highlighting-default-option": "The default highlighting colors - Purple sentence + orange token",
 	"prefs-wikispeech-highlighting-green-blue": "Second choice for highlighting colors - Green sentence + blue token",
-	"wikispeech-help-message": "Short selection of the help page at Help:Wikispeech."
+	"wikispeech-help-message": "Short selection of the help page at Help:Wikispeech.",
+	"wikispeech-report-table-missing": "Shows a notification if the requested report table does not exist or doesn't have the right structure to be able to add a new row.",
+	"wikispeech-pronunciation-saved": "Shows a notification to the user that the pronunciation error report was successfully saved",
+	"wikispeech-report-pronunciation-error": "Title of the pup-up dialouge to report a pronunciation error",
+	"wikispeech-report-pronunciation-get-error": "Message to the user that the pronunciation error page could not be fetched.",
+	"wikispeech-report-pronunciation-post-error": "Message to the user that the pronunciation error report could not be saved",
+	"wikispeech-report-pronunciation-error-button": "The submit button of the pop-up dialogue to send a pronunciation error report",
+	"wikispeech-report-pronunciation-error-context": "The context of the pronunciation error report",
+	"wikispeech-report-pronunciation-error-other": "Other information of the pronunciation error report",
+	"wikispeech-report-pronunciation-error-select-utterance": "Tells the user that they should mark a word to be able to report",
+	"wikispeech-no-word-error": "Notifies the user that they did not highlight a word, but rather a punctuation och whitespace.",
+	"wikispeech-one-word-only": "Notifies the user that you can only select one word to report pronunciation",
+	"wikispeech-tip-highlight-word": "Notifies the user that they can highlight a word instead of manually entering it before reporting.",
+	"wikispeech-non-existing-page": "Tells the user that the page where when the table for reporting pronunciation errors is missing, urging them to contact the Wikispeech team."
 }

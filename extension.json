@@ -48,6 +48,7 @@
 				"ext.wikispeech.storage.js",
 				"ext.wikispeech.ui.js",
 				"ext.wikispeech.util.js",
+				"ext.wikispeech.feedback.js",
 				"ext.wikispeech.userOptionsDialog.js",
 				"ext.wikispeech.sharedUserOptionSettings.js",
 				{
@@ -102,7 +103,19 @@
 				"prefs-wikispeech-part-of-content",
 				"percent",
 				"mypreferences",
-				"prefs-wikispeech-view-all"
+				"prefs-wikispeech-view-all",
+				"wikispeech-report-table-missing",
+				"wikispeech-pronunciation-saved",
+				"wikispeech-report-pronunciation-error",
+				"wikispeech-report-pronunciation-error-button",
+				"wikispeech-report-pronunciation-post-error",
+				"ooui-dialog-message-reject",
+				"wikispeech-word",
+				"wikispeech-report-pronunciation-error-context",
+				"wikispeech-report-pronunciation-error-other",
+				"wikispeech-no-word-error",
+				"wikispeech-one-word-only",
+				"wikispeech-tip-highlight-word"
 			],
 			"dependencies": [
 				"mediawiki.util",
@@ -150,7 +163,8 @@
 						"WikispeechNamespaces",
 						"WikispeechVoices",
 						"WikispeechAllowConsumerEdits",
-						"WikispeechSpeechRates"
+						"WikispeechSpeechRates",
+						"WikispeechReportPronunciationUrl"
 					]
 				},
 				{
@@ -208,7 +222,8 @@
 			"tests/qunit/ext.wikispeech.storage.test.js",
 			"tests/qunit/ext.wikispeech.transcriptionPreviewer.test.js",
 			"modules/ext.wikispeech.util.js",
-			"tests/qunit/ext.wikispeech.ui.test.js"
+			"tests/qunit/ext.wikispeech.ui.test.js",
+			"tests/qunit/ext.wikispeech.feedback.test.js"
 		],
 		"dependencies": [
 			"ext.wikispeech",
@@ -472,7 +487,7 @@
 				"Feedback page for Wikispeech. If defined, a button that takes ",
 				"the user here is added next to the player buttons."
 			],
-			"value": "Wikispeech feedback"
+			"value": "Extension:Wikispeech/Pronunciation_errors/$lang"
 		},
 		"WikispeechContentSelector": {
 			"description": [
@@ -619,7 +634,12 @@
 				"and removes all utterances for all voices, which helps when testing Speechoid utterance generation."
 			],
 			"value": false
+		},
+		"WikispeechReportPronunciationUrl": {
+			"description": "API endpoint to wiki for pronunciation error reporting.",
+			"value": "https://www.mediawiki.org/w/api.php"
 		}
+
 	},
 	"DefaultUserOptions": {
 		"wikispeechEnable": true,

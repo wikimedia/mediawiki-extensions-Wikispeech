@@ -9,6 +9,7 @@ const {
 	writeUserOptionsPreferences
 } = require( './ext.wikispeech.sharedUserOptionSettings.js' );
 const UserOptionsDialog = require( './ext.wikispeech.userOptionsDialog.js' );
+const feedback = require( './ext.wikispeech.feedback.js' );
 
 class Ui {
 	constructor() {
@@ -38,13 +39,12 @@ class Ui {
 	 * Adds an item to the link dropdown menu.
 	 *
 	 * @param {Object} item The menu item to add.
-	 * @param {string} item.url The URL for the menu item.
 	 * @param {string} item.label The label for the menu item.
 	 * @param {string} item.icon The icon for the menu item.
 	 */
 	addMenuItem( item ) {
 		const option = new OO.ui.MenuOptionWidget( {
-			data: item.url,
+			data: item,
 			label: item.label,
 			icon: item.icon
 		} );
@@ -161,24 +161,31 @@ class Ui {
 		this.linkMenuButton = this.addMenuButton(
 			this.linkGroup,
 			( data ) => {
-				if ( data === 'help' ) {
-					const help = require( './ext.wikispeech.helpDialog.js' );
-					help.openHelpDialog();
-				} else {
-					window.open( data, '_blank' );
+				if ( data.click ) {
+					data.click();
+				} else if ( data.url ) {
+					if ( data.url === 'help' ) {
+						const help = require( './ext.wikispeech.helpDialog.js' );
+						help.openHelpDialog();
+					} else {
+						window.open( data.url, '_blank' );
+					}
 				}
 			}
 		);
-
 		this.addMenuItem( {
 			url: 'help',
 			label: mw.msg( 'wikispeech-help' ),
 			icon: 'help'
 		} );
-
-		const feedbackUrl = mw.config.get( 'wgWikispeechFeedbackPage' );
 		this.addMenuItem( {
-			url: mw.util.getUrl( feedbackUrl ),
+			click: () => {
+				feedback.openPronunciationErrorDialog( {
+					ui: this,
+					storage: this.storage,
+					selectionPlayer: this.selectionPlayer
+				} );
+			},
 			label: mw.msg( 'wikispeech-feedback' ),
 			icon: 'feedback'
 		} );

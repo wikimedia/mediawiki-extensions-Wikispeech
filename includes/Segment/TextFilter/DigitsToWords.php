@@ -28,7 +28,7 @@ interface DigitsToWords {
 	 * Translate floating point to text value, e.g. 3.1415 -> 'three point one four one five'.
 	 * There are limitations to this method due to PHP transforming 3.00 to 3.
 	 *
-	 * @see DigitsToWords::stringFloatToWords() To avoid limitations of PHP.
+	 * @see stringFloatToWords() To avoid limitations of PHP.
 	 * @since 0.1.10
 	 * @param float $input
 	 * @return string|null Null if input number is not supported

@@ -86,7 +86,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$useSegmentsCache
+	 * @see $useSegmentsCache
 	 * @since 0.1.13
 	 * @param bool $useSegmentsCache
 	 * @return $this
@@ -97,7 +97,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$segmenter
+	 * @see $segmenter
 	 * @since 0.1.13
 	 * @param Segmenter|null $segmenter
 	 * @return $this
@@ -108,7 +108,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$contextSource
+	 * @see $contextSource
 	 * @since 0.1.13
 	 * @param IContextSource|null $contextSource
 	 * @return $this
@@ -121,7 +121,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$consumerUrl
+	 * @see $consumerUrl
 	 * @since 0.1.13
 	 * @param string|null $consumerUrl
 	 * @return $this
@@ -134,7 +134,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$removeTags
+	 * @see $removeTags
 	 * @since 0.1.13
 	 * @param string[]|null $removeTags
 	 * @return $this
@@ -147,7 +147,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$segmentBreakingTags
+	 * @see $segmentBreakingTags
 	 * @since 0.1.13
 	 * @param string[]|null $segmentBreakingTags
 	 * @return $this
@@ -160,7 +160,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$setSegmenter
+	 * @see $setSegmenter
 	 * @since 0.1.13
 	 * @param string $language
 	 * @return $this
@@ -173,7 +173,7 @@ abstract class SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentFactory::$partOfContent
+	 * @see $partOfContent
 	 * @since 0.1.13
 	 * @param bool $partOfContent
 	 * @return $this

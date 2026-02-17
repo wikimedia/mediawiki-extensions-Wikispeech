@@ -102,9 +102,9 @@ class LexiconEntryItem {
 	 * Makes this item look exactly like the source item.
 	 *
 	 * @since 0.1.8
-	 * @param LexiconEntryItem $source
+	 * @param self $source
 	 */
-	public function copyFrom( LexiconEntryItem $source ): void {
+	public function copyFrom( self $source ): void {
 		// this might look silly,
 		// but will make it easier to migrate to a future ad hoc data model
 		$this->setProperties( $source->getProperties() );

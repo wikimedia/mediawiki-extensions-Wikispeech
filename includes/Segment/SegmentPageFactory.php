@@ -75,40 +75,40 @@ class SegmentPageFactory extends SegmentFactory {
 	}
 
 	/**
-	 * @see SegmentPageFactory::$useRevisionPropertiesCache
+	 * @see $useRevisionPropertiesCache
 	 * @since 0.1.10
 	 * @param bool $useRevisionPropertiesCache
-	 * @return SegmentPageFactory $this
+	 * @return $this
 	 */
 	public function setUseRevisionPropertiesCache(
 		bool $useRevisionPropertiesCache
-	): SegmentPageFactory {
+	): self {
 		$this->useRevisionPropertiesCache = $useRevisionPropertiesCache;
 		return $this;
 	}
 
 	/**
-	 * @see SegmentPageFactory::$revisionStore
+	 * @see $revisionStore
 	 * @since 0.1.10
 	 * @param RevisionStore|null $revisionStore
-	 * @return SegmentPageFactory $this
+	 * @return $this
 	 */
 	public function setRevisionStore(
 		?RevisionStore $revisionStore
-	): SegmentPageFactory {
+	): self {
 		$this->revisionStore = $revisionStore;
 		return $this;
 	}
 
 	/**
-	 * @see SegmentPageFactory::$httpRequestFactory
+	 * @see $httpRequestFactory
 	 * @since 0.1.10
 	 * @param HttpRequestFactory|null $httpRequestFactory
-	 * @return SegmentPageFactory $this
+	 * @return $this
 	 */
 	public function setHttpRequestFactory(
 		?HttpRequestFactory $httpRequestFactory
-	): SegmentPageFactory {
+	): self {
 		$this->httpRequestFactory = $httpRequestFactory;
 		return $this;
 	}
@@ -119,11 +119,11 @@ class SegmentPageFactory extends SegmentFactory {
 	 *
 	 * @since 0.1.10
 	 * @param bool $requirePageRevisionProperties
-	 * @return SegmentPageFactory $this
+	 * @return $this
 	 */
 	public function setRequirePageRevisionProperties(
 		bool $requirePageRevisionProperties
-	): SegmentPageFactory {
+	): self {
 		$this->requirePageRevisionProperties = $requirePageRevisionProperties;
 		return $this;
 	}

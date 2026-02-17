@@ -11,7 +11,7 @@ namespace MediaWiki\Wikispeech\Tests;
 use DateTime;
 use MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue;
 use MediaWikiIntegrationTestCase;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @covers \MediaWiki\Wikispeech\Utterance\FlushUtterancesFromStoreByExpirationJobQueue

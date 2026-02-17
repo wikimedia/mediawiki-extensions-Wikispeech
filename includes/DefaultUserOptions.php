@@ -11,7 +11,6 @@ namespace MediaWiki\Wikispeech;
  /**
   * @since 0.1.11
   */
-
 class DefaultUserOptions {
 
 	/**

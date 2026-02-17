@@ -9,8 +9,8 @@ namespace MediaWiki\Wikispeech;
  */
 
 use Maintenance;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
-use RequestContext;
 
 /** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );

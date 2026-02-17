@@ -11,7 +11,6 @@ namespace MediaWiki\Wikispeech\Segment;
 /**
  * @since 0.1.13
  */
-
 abstract class SegmentResponse {
 
 	/** @var SegmentList|null */

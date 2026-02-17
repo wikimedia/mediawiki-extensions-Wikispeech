@@ -13,7 +13,7 @@ use LogicException;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use RuntimeException;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @since 0.1.8

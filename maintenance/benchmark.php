@@ -10,13 +10,13 @@ namespace MediaWiki\Wikispeech;
 
 use EmptyBagOStuff;
 use Maintenance;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
 use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\SegmentList;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
-use RequestContext;
 use RuntimeException;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /** @var string MediaWiki installation path */
 $IP = getenv( 'MW_INSTALL_PATH' );
@@ -124,17 +124,13 @@ class Benchmark extends Maintenance {
 		$this->caughtSigInt = false;
 		declare( ticks = 1 );
 		pcntl_async_signals( true );
-		pcntl_signal( SIGINT, [ $this, 'signalHandler' ] );
+		pcntl_signal( SIGINT, function () {
+			// Clean ctrl-c
+			$this->caughtSigInt = true;
+		} );
 	}
 
-	/**
-	 * Clean ctrl-c
-	 */
-	public function signalHandler() {
-		$this->caughtSigInt = true;
-	}
-
-	private function executeSetUp() {
+	private function executeSetUp(): void {
 		// Non PHP core classes aren't available prior to this point,
 		// i.e. we can't initialize the fields in the constructor,
 		// and we have to be lenient for mocked instances set by tests.
@@ -166,7 +162,7 @@ class Benchmark extends Maintenance {
 		}
 	}
 
-	private function executeValidateInput() {
+	private function executeValidateInput(): bool {
 		$this->language = '';
 		$this->voice = '';
 		$this->title = Title::newFromText( $this->getOption( 'page' ) );
@@ -216,7 +212,7 @@ class Benchmark extends Maintenance {
 		return true;
 	}
 
-	private function executeSegmenting() {
+	private function executeSegmenting(): void {
 		// @todo consider adding revision as script parameter.
 		// Setting null will requests the most recent for the title.
 		$revisionId = null;
@@ -249,7 +245,7 @@ class Benchmark extends Maintenance {
 		$this->millisecondsSpentSegmenting = $endSegmenting - $startSegmenting;
 	}
 
-	private function executeSynthesizing() {
+	private function executeSynthesizing(): void {
 		$this->numberOfSuccessfullySynthesizedSegments = 0;
 
 		$this->totalBytesSynthesizedVoice = 0;

@@ -23,7 +23,7 @@ use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\Utterance\UtteranceStore;
 use MediaWikiIntegrationTestCase;
 use MWTimestamp;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @covers \MediaWiki\Wikispeech\Utterance\UtteranceGenerator

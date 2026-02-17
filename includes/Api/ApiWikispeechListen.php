@@ -30,7 +30,7 @@ use MWTimestamp;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
 /**

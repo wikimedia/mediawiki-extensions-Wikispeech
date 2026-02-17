@@ -11,7 +11,6 @@ namespace MediaWiki\Wikispeech\Lexicon;
  /**
   * @since 0.1.13
   */
-
 class LexiconEntryMapper {
 
 	/**

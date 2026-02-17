@@ -25,12 +25,11 @@ use MediaWiki\Wikispeech\SpeechoidConnectorException;
 use MediaWiki\Wikispeech\VoiceHandler;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @since 0.1.11
  */
-
 class UtteranceGenerator {
 	/**
 	 * @var SegmentPageFactory

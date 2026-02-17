@@ -17,7 +17,7 @@ use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
 use MediaWiki\Wikispeech\ConfigurationValidator;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 use Wikimedia\ParamValidator\ParamValidator;
 
 /**

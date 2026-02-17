@@ -22,7 +22,6 @@ use Wikimedia\Codex\Utility\Sanitizer;
  *
  * @since 0.1.13
  */
-
 class SpecialTestListen extends SpecialPage {
 	use LanguageOptionsTrait;
 

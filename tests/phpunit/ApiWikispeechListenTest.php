@@ -17,7 +17,7 @@ use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\OutdatedOrInvalidRevisionException;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\VoiceHandler;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
 
 /**

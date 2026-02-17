@@ -13,7 +13,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Mediawiki\Title\Title;
 use Psr\Log\LoggerInterface;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * Periodically flushes out old utterances from the utterance store.

@@ -15,7 +15,7 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
 use RuntimeException;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @since 0.1.10

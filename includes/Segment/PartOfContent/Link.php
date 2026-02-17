@@ -17,7 +17,6 @@ use MediaWiki\Wikispeech\Segment\SegmentContent;
  *
  * @since 0.1.13
  */
-
 class Link extends SegmentContent {
 	/**
 	 * @since 0.1.13

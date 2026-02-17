@@ -8,6 +8,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Hooks;
  * @license GPL-2.0-or-later
  */
 
+use MediaWiki\Context\RequestContext;
 use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\PermissionManager;
@@ -19,7 +20,6 @@ use MediaWikiIntegrationTestCase;
 use Message;
 use OutputPage;
 use PHPUnit\Framework\MockObject\Stub;
-use RequestContext;
 use SkinTemplate;
 
 /**

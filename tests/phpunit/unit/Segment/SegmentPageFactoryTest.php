@@ -12,6 +12,7 @@ use HashBagOStuff;
 use HashConfig;
 use InvalidArgumentException;
 use MediaWiki\Config\Config;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
@@ -21,8 +22,7 @@ use MediaWiki\Wikispeech\Segment\Segmenter;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWikiUnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use RequestContext;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @covers \MediaWiki\Wikispeech\Segment\SegmentPageFactory

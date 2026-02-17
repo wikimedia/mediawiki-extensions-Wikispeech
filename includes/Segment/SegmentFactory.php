@@ -12,12 +12,11 @@ use ConfigFactory;
 use IContextSource;
 use LogicException;
 use MediaWiki\Config\Config;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @since 0.1.13
  */
-
 abstract class SegmentFactory {
 
 	/** @var WANObjectCache */

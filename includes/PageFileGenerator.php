@@ -22,7 +22,6 @@ use RuntimeException;
  *
  * @since 0.1.14
  */
-
 class PageFileGenerator {
 	/** @var IContextSource */
 	private $context;

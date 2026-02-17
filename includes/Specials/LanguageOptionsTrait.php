@@ -14,7 +14,6 @@ use MediaWiki\Languages\LanguageNameUtils;
 /**
  * @since 0.1.13
  */
-
 trait LanguageOptionsTrait {
 	/**
 	 * @see IContextSource::getLanguage

@@ -27,7 +27,6 @@ use User;
 /**
  * @since 0.1.11
  */
-
 class ApiHooks implements ApiBeforeMainHook, ApiCheckCanExecuteHook {
 
 	/** @var LoggerInterface */

@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech;
 
 use Config;
 use Psr\Log\LoggerInterface;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * Handles voice information.

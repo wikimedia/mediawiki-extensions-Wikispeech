@@ -31,7 +31,6 @@ use SpecialPage;
  *
  * @since 0.1.8
  */
-
 class SpecialEditLexicon extends SpecialPage {
 	use LanguageOptionsTrait;
 

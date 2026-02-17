@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech\Lexicon;
 
 use InvalidArgumentException;
 use LogicException;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * A local lexicon storage implemented using {@link WANObjectCache}.

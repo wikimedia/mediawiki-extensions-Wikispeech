@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Segment;
 
 use HashBagOStuff;
 use MediaWiki\Config\HashConfig;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use Mediawiki\Title\Title;
@@ -17,8 +18,7 @@ use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use MediaWikiUnitTestCase;
-use RequestContext;
-use WANObjectCache;
+use Wikimedia\ObjectCache\WANObjectCache;
 
 /**
  * @covers \MediaWiki\Wikispeech\Segment\RemoteWikiPageProvider

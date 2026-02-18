@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T417741](https://phabricator.wikimedia.org/T417741) Add HTML region for player
 * [T395320](https://phabricator.wikimedia.org/T395320) Make it easier to report pronunciation errors
 * [T254864](https://phabricator.wikimedia.org/T254864) Play error message if non-existing page is visited
 * [T405333](https://phabricator.wikimedia.org/T405333) Help page should be a popup

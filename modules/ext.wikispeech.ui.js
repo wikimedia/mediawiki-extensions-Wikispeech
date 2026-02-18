@@ -100,6 +100,11 @@ class Ui {
 				position: 'bottom'
 			}
 		);
+
+		this.toolbar.$element
+			.attr( 'aria-label', mw.msg( 'wikispeech-region-player' ) )
+			.attr( 'role', 'region' );
+
 		const playerGroupPlayStop = this.addToolbarGroup();
 		this.playPauseButton = this.addButton(
 			playerGroupPlayStop,

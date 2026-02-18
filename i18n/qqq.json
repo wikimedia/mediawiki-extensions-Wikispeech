@@ -108,6 +108,7 @@
 	"prefs-wikispeech-highlighting-default-option": "The default highlighting colors - Purple sentence + orange token",
 	"prefs-wikispeech-highlighting-green-blue": "Second choice for highlighting colors - Green sentence + blue token",
 	"wikispeech-help-message": "Short selection of the help page at Help:Wikispeech.",
+	"wikispeech-region-player": "Adds a descriptive label to role=region",
 	"wikispeech-report-table-missing": "Shows a notification if the requested report table does not exist or doesn't have the right structure to be able to add a new row.",
 	"wikispeech-pronunciation-saved": "Shows a notification to the user that the pronunciation error report was successfully saved",
 	"wikispeech-report-pronunciation-error": "Title of the pup-up dialouge to report a pronunciation error",

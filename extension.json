@@ -358,7 +358,6 @@
 			],
 			"value": {
 				"span": "mw-editsection",
-				"table": true,
 				"sup": "reference",
 				"div": [
 					"toc",
@@ -383,7 +382,9 @@
 				"h6",
 				"p",
 				"br",
-				"li"
+				"li",
+				"th",
+				"td"
 			]
 		},
 		"WikispeechNamespaces": {

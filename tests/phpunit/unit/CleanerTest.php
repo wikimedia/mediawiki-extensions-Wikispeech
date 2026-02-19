@@ -51,12 +51,146 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testCleanHtml_tags_cleanTags() {
-		$markedUpText = '<i>Element content</i>';
-		$expectedCleanedContent = [
-			new CleanedText( 'Element content', './i/text()' )
+	/**
+	 * @dataProvider cleanHtmlProvider
+	 */
+	public function testCleanHtml( string $html, array $cleaned ) {
+		$this->assertTextCleaned(
+			$cleaned,
+			$html
+		);
+	}
+
+	public static function cleanHtmlProvider(): array {
+		return [
+			'Clean tags' => [
+				'<i>Element content</i>',
+				[ new CleanedText( 'Element content', './i/text()' ) ]
+			],
+			"Strings without markup don't change" => [
+				'A string without any fancy markup.',
+				[ new CleanedText( 'A string without any fancy markup.', './text()' ) ]
+			],
+			'Remove nested tags' => [
+				'<i><b>Nested content</b></i>',
+				[ new CleanedText( 'Nested content', './i/b/text()' ) ]
+			],
+			'Remove empty element' => [
+				'<br />',
+				[]
+			],
+			'Remove element' => [
+				'<del>removed tag </del>',
+				[]
+			],
+			'Remove element with child' => [
+				'<del><i>nested removed tag</i></del>',
+				[]
+			],
+			'Remove element with nested children' => [
+				'<del><i><b>double nested removed tag</b></i></del>',
+				[]
+			],
+			'Remove element with certain class' => [
+				'<sup class="reference">Remove this.</sup>',
+				[]
+			],
+			'Remove element with class' => [
+				'<div class="toc">Remove this.</div><div class="thumb">Also this.</div>',
+				[]
+			],
+			"Don't remove elements without class" => [
+				'<sup>I am not a reference.</sup><sup class="not-a-reference">Neither am I.</sup>',
+				[
+					new CleanedText( 'I am not a reference.', './sup[1]/text()' ),
+					new CleanedText( 'Neither am I.', './sup[2]/text()' )
+				]
+			],
+			"Don't remove elements whose criteria don't match" => [
+				'<h2>Contents</h2>',
+				[ new CleanedText( 'Contents', './h2/text()' ) ]
+			],
+			'Add segment breaks for breaking tags' => [
+				'prefix<q>content</q>suffix',
+				[
+					new CleanedText( 'prefix', './text()[1]' ),
+					new SegmentBreak(),
+					new CleanedText( 'content', './q/text()' ),
+					new SegmentBreak(),
+					new CleanedText( 'suffix', './text()[2]' )
+				]
+			],
+			'Add segments break for empty breaking tags' => [
+				'before<hr />after',
+				[
+					new CleanedText( 'before', './text()[1]' ),
+					new SegmentBreak(),
+					new CleanedText( 'after', './text()[2]' )
+				]
+			],
+			"Don't add multiple segment breaks for consecutive breaking tags" => [
+				'before<hr /><hr />after',
+				[
+					new CleanedText( 'before', './text()[1]' ),
+					new SegmentBreak(),
+					new CleanedText( 'after', './text()[2]' ),
+				],
+			],
+			'Remove elements with multiple classes' => [
+				'<sup class="reference another-class">Remove this.</sup>',
+				[]
+			],
+			'Only remove elements for nested tags with some to remove' => [
+				'<i><b>not removed</b><del>removed</del></i>',
+				[ new CleanedText( 'not removed', './i/b/text()' ) ]
+			],
+			'Keep UTF-8 characters' => [
+				'—',
+				[ new CleanedText( '—', './text()' ) ]
+			],
+			'Decode HTML entities' => [
+				'6&#160;p.m',
+				[ new CleanedText( '6 p.m', './text()' ) ]
+			],
+			'Keep newlines' => [
+				"<i>Keep this newline\n</i>",
+				[ new CleanedText( "Keep this newline\n", './i/text()' ) ]
+			],
+			'Remove empty element after end tag' => [
+				'<i>content</i><br />',
+				[ new CleanedText( 'content', './i/text()' ) ]
+			],
+			'Remove empty element inside element' => [
+				'<i>content<br /></i>',
+				[ new CleanedText( 'content', './i/text()' ) ],
+			],
+			'Ignore comments' => [
+				'<!-- A comment. -->',
+				[]
+			],
+			'Generate paths' => [
+				'<i>level one<br /><b>level two</b></i>level zero',
+				[
+					new CleanedText( 'level one', './i/text()' ),
+					new CleanedText( 'level two', './i/b/text()' ),
+					new CleanedText( 'level zero', './text()' )
+				]
+			],
+			'Generate paths for nested elements of same type' => [
+				'<i id="1">one<i id="2">two</i></i>',
+				[
+					new CleanedText( 'one', './i/text()' ),
+					new CleanedText( 'two', './i/i/text()' )
+				]
+			],
+			'Generate paths for nodes on the same level' => [
+				'level zero<br />also level zero',
+				[
+					new CleanedText( 'level zero', './text()[1]' ),
+					new CleanedText( 'also level zero', './text()[2]' )
+				]
+			]
 		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
 	}
 
 	/**
@@ -222,103 +356,8 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testCleanHtml_stringsWithoutMarkup_dontChange() {
-		$markedUpText = 'A string without any fancy markup.';
-		$expectedCleanedContent = [
-			new CleanedText( 'A string without any fancy markup.', './text()' )
-		];
-		$this->assertContentsEqual(
-			$expectedCleanedContent,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
-	public function testCleanHtml_nestedTags_remove() {
-		$markedUpText = '<i><b>Nested content</b></i>';
-		$expectedCleanedContent = [
-			new CleanedText( 'Nested content', './i/b/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_emptyElementTags_remove() {
-		$markedUpText = '<br />';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_tagToRemove_remove() {
-		$markedUpText = '<del>removed tag </del>';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_tagToRemoveWithChild_remove() {
-		$markedUpText = '<del><i>nested removed tag</i></del>';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_tagToRemoveWithNestedChildren_remove() {
-		$markedUpText = '<del><i><b>double nested removed tag</b></i></del>';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_tagsToRemoveWithCertainClass_remove() {
-		$markedUpText = '<sup class="reference">Remove this.</sup>';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_tagsWithOneOfClasses_remove() {
-		$markedUpText = '<div class="toc">Remove this.</div><div class="thumb">Also this.</div>';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_tagsWithoutCertainClass_dontRemove() {
-		$markedUpText =
-			'<sup>I am not a reference.</sup><sup class="not-a-reference">Neither am I.</sup>';
-		$expectedCleanedContent = [
-			new CleanedText( 'I am not a reference.', './sup[1]/text()' ),
-			new CleanedText( 'Neither am I.', './sup[2]/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_tagsWhoseCriteriaAreFalse_dontRemove() {
-		$markedUpText = '<h2>Contents</h2>';
-		$expectedCleanedContent = [
-			new CleanedText( 'Contents', './h2/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_segmentBreakingTags_addSegmentBreaks() {
-		$markedUpText =
-			'prefix<q>content</q>suffix';
-		$expectedCleanedContents = [
-			new CleanedText( 'prefix', './text()[1]' ),
-			new SegmentBreak(),
-			new CleanedText( 'content', './q/text()' ),
-			new SegmentBreak(),
-			new CleanedText( 'suffix', './text()[2]' )
-		];
-		$this->assertContentsEqual(
-			$expectedCleanedContents,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
-	public function testCleanHtml_emptySegmentTags_addSegmentBreaks() {
-		$markedUpText =
-			'before<hr />after';
-		$expectedCleanedContents = [
-			new CleanedText( 'before', './text()[1]' ),
-			new SegmentBreak(),
-			new CleanedText( 'after', './text()[2]' )
-		];
-		$this->assertContentsEqual(
-			$expectedCleanedContents,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
+	// TODO: Add this to cleanHtmlProvider(). Requires fixing underlying issue
+	// that causes assertTextCleaned() to fail.
 	public function testCleanHtml_nestedSegmentTags_addSegmentBreaksBefore() {
 		$markedUpText =
 			'<q>before<hr />after</q>';
@@ -333,6 +372,8 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		);
 	}
 
+	// TODO: Add this to cleanHtmlProvider(). Requires fixing underlying issue
+	// that causes assertTextCleaned() to fail.
 	public function testCleanHtml_nestedSegmentBrakingTags_addSegmentBreaksAfter() {
 		$markedUpText =
 			'<q><hr />inside</q>after';
@@ -347,20 +388,8 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function testCleanHtml_consecutiveSegmentBreakingTags_dontAddMultipleConsecutiveSegmentBreaks() {
-		$markedUpText =
-			'before<hr /><hr />after';
-		$expectedCleanedContents = [
-			new CleanedText( 'before', './text()[1]' ),
-			new SegmentBreak(),
-			new CleanedText( 'after', './text()[2]' ),
-		];
-		$this->assertContentsEqual(
-			$expectedCleanedContents,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
+	// TODO: Add this to cleanHtmlProvider(). Requires fixing underlying issue
+	// that causes assertTextCleaned() to fail.
 	public function testCleanHtml_onlySegmentBreakingTag_dontAddSegmentBreaksAtStartOrEnd() {
 		$markedUpText =
 			'<q>content</q>';
@@ -369,99 +398,6 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		];
 		$this->assertContentsEqual(
 			$expectedCleanedContents,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
-	public function testCleanHtml_tagsToRemoveWithMultipleClasses_remove() {
-		$markedUpText =
-			'<sup class="reference another-class">Remove this.</sup>';
-		$this->assertTextCleaned( [], $markedUpText );
-	}
-
-	public function testCleanHtml_nestedTagsWithSomeToRemove_onlyRemoveTagsToRemove() {
-		$markedUpText = '<i><b>not removed</b><del>removed</del></i>';
-		$expectedCleanedContent = [
-			new CleanedText( 'not removed', './i/b/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_utf8Characters_keep() {
-		$markedUpText = '—';
-		$expectedCleanedContent = [ new CleanedText( '—', './text()' ) ];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_htmlEntities_decode() {
-		$markedUpText = '6&#160;p.m';
-		$expectedCleanedContent = [ new CleanedText( '6 p.m', './text()' ) ];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_newlines_keep() {
-		$markedUpText = "<i>Keep this newline\n</i>";
-		$expectedCleanedContent = [
-			new CleanedText( "Keep this newline\n", './i/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_emptyElementAfterEndTag_remove() {
-		$markedUpText = '<i>content</i><br />';
-		$expectedCleanedContent = [
-			new CleanedText( 'content', './i/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_emptyElementTagInsideElement_remove() {
-		$markedUpText = '<i>content<br /></i>';
-		$expectedCleanedContent = [
-			new CleanedText( 'content', './i/text()' )
-		];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_comments_ignore() {
-		$markedUpText = '<!-- A comment. -->';
-		$expectedCleanedContent = [];
-		$this->assertTextCleaned( $expectedCleanedContent, $markedUpText );
-	}
-
-	public function testCleanHtml_tags_generatePaths() {
-		$markedUpText = '<i>level one<br /><b>level two</b></i>level zero';
-		$expectedCleanedContent = [
-			new CleanedText( 'level one', './i/text()' ),
-			new CleanedText( 'level two', './i/b/text()' ),
-			new CleanedText( 'level zero', './text()' )
-		];
-		$this->assertEquals(
-			$expectedCleanedContent,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
-	public function testCleanHtml_nestedTagsOfSameType_generatePaths() {
-		$markedUpText = '<i id="1">one<i id="2">two</i></i>';
-		$expectedCleanedContent = [
-			new CleanedText( 'one', './i/text()' ),
-			new CleanedText( 'two', './i/i/text()' )
-		];
-		$this->assertEquals(
-			$expectedCleanedContent,
-			$this->cleaner->cleanHtml( $markedUpText )
-		);
-	}
-
-	public function testCleanHtml_nodesOnSameLevel_generatePaths() {
-		$markedUpText = 'level zero<br />also level zero';
-		$expectedCleanedContent = [
-			new CleanedText( 'level zero', './text()[1]' ),
-			new CleanedText( 'also level zero', './text()[2]' )
-		];
-		$this->assertEquals(
-			$expectedCleanedContent,
 			$this->cleaner->cleanHtml( $markedUpText )
 		);
 	}
@@ -540,5 +476,4 @@ class CleanerTest extends MediaWikiUnitTestCase {
 			]
 		];
 	}
-
 }

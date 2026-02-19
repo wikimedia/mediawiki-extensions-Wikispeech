@@ -30,8 +30,12 @@ Update version in extension.json.
 
 ## Versions
 
-### 0.1.14-SNAPSHOT
+### 0.1.15-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+### 0.1.14
+2026-02-19
 Speechoid: 0.1.2
 
 * [T405330](https://phabricator.wikimedia.org/T405330) Add quick access settings panel in playback controls

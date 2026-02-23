@@ -187,19 +187,21 @@ class Ui {
 				}
 			} );
 
-		this.addButton(
-			this.linkGroup,
-			async () => {
-				const data = await this.openWindow( this.settingsDialog );
-				if ( data && data.action === 'save' ) {
-					writeUserOptionsPreferences( api, this.settingsDialog, this.isProducer );
+		if ( !mw.user.isAnon() ) {
+			this.addButton(
+				this.linkGroup,
+				async () => {
+					const data = await this.openWindow( this.settingsDialog );
+					if ( data && data.action === 'save' ) {
+						writeUserOptionsPreferences( api, this.settingsDialog, this.isProducer );
+					}
+				},
+				{
+					title: mw.msg( 'wikispeech-settings' ),
+					icon: 'settings'
 				}
-			},
-			{
-				title: mw.msg( 'wikispeech-settings' ),
-				icon: 'settings'
-			}
-		);
+			);
+		}
 
 		$( document.body ).append( this.toolbar.$element );
 		this.toolbar.initialize();

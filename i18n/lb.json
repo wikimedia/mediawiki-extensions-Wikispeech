@@ -40,5 +40,7 @@
 	"wikispeech-morphology-nn": "Substantiv",
 	"wikispeech-morphology-pm": "Pronomen",
 	"wikispeech-morphology-vb": "Verb",
-	"wikispeech-menu-label": "Méi Optiounen"
+	"wikispeech-menu-label": "Méi Optiounen",
+	"prefs-wikispeech-highlighting-default-option": "Standard – Mof + Orange",
+	"prefs-wikispeech-highlighting-green-blue": "Gréng + Blo"
 }

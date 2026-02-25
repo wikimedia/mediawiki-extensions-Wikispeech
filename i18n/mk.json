@@ -13,6 +13,7 @@
 	"prefs-wikispeech-enable": "Овозможи Викиговор",
 	"prefs-wikispeech-show-player": "Прикажи изведувач",
 	"prefs-wikispeech-part-of-content": "Прочитајте дополнителни информации за извесни елементи",
+	"prefs-wikispeech-view-all": "Погледајте сите нагодувања на страницата за нагодувања",
 	"prefs-help-wikispeech-part-of-content": "Доколку е овозможено, ќе се читаат дополнителни информации за елементи како врските. Истовремено, нагласувањето на зборови ќе биде оневозможено.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Измените во нагодувањта ќе бидат спроведени следниот пат кога ќе ја вчитате страницата. За да ја преслушате тековната страница со новите нагодувања, превчитајте ја откако ќе ја зачувате.",
 	"right-wikispeech-listen": "Преслушување на страницата",
@@ -55,6 +56,7 @@
 	"wikispeech-play": "Пушти",
 	"wikispeech-pause": "Запри",
 	"wikispeech-play-selection": "Прочитај го избраниот текст на глас",
+	"wikispeech-close-selection-player": "Затвори",
 	"wikispeech-next": "Прескокни збор нанапред",
 	"wikispeech-skip-ahead": "Прескокни реченица нанапред",
 	"wikispeech-help": "Прикажи помош",
@@ -83,5 +85,9 @@
 	"wikispeech-morphology-nn": "Именка",
 	"wikispeech-morphology-pm": "Заменка",
 	"wikispeech-morphology-vb": "Глагол",
-	"wikispeech-menu-label": "Повеќе можности"
+	"wikispeech-menu-label": "Повеќе можности",
+	"prefs-wikispeech-highlighting-enabled": "Овозможи истакнување",
+	"prefs-wikispeech-highlighting-options": "Можности за истакнување",
+	"prefs-wikispeech-highlighting-default-option": "По основно — виолетова + портокалова",
+	"prefs-wikispeech-highlighting-green-blue": "Зелена + сина"
 }

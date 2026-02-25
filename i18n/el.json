@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Geraki"
+		]
+	},
+	"prefs-wikispeech-highlighting-enabled": "Ενεργοποίηση επισήμανσης",
+	"prefs-wikispeech-highlighting-options": "Επιλογές επισήμανσης",
+	"prefs-wikispeech-highlighting-default-option": "Προεπιλογή - Μωβ + πορτοκαλί",
+	"prefs-wikispeech-highlighting-green-blue": "Πράσινο + μπλε"
+}

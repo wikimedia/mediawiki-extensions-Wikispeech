@@ -3,6 +3,7 @@
 		"authors": [
 			"Ajeje Brazorf",
 			"Amedeo463",
+			"Asteralee",
 			"Beta16",
 			"Yiyi"
 		]
@@ -22,6 +23,7 @@
 	"wikispeech-lexicon-save": "Salva",
 	"wikispeech-lexicon-new": "Nuovo",
 	"wikispeech-testlisten-text": "Testo",
+	"wikispeech-close-selection-player": "Chiudi",
 	"wikispeech-lexicon-sync-error-button": "Sovrascrivi",
 	"wikispeech-poc-link": "collegamento:",
 	"wikispeech-enter-transcription": "Inserisci la trascrizione per poterla visualizzare in anteprima.",

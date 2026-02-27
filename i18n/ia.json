@@ -12,6 +12,7 @@
 	"prefs-wikispeech-enable": "Activar Wikispeech",
 	"prefs-wikispeech-show-player": "Monstrar sempre le reproductor",
 	"prefs-wikispeech-part-of-content": "Leger information extra pro certe elementos",
+	"prefs-wikispeech-view-all": "Vider tote le preferentias sur le pagina de preferentias",
 	"prefs-help-wikispeech-part-of-content": "Si iste option es activate, information extra essera legite in alte voce pro elementos como ligamines. Si isto es activate, le evidentiamento de parolas es disactivate.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Le modificationes del preferentias habera effecto le proxime vice que un pagina es cargate. Pro audir le pagina actual con le nove preferentias, recarga le pagina post salveguardar.",
 	"right-wikispeech-listen": "Ascoltar paginas",
@@ -54,6 +55,7 @@
 	"wikispeech-play": "Reproducer",
 	"wikispeech-pause": "Pausar",
 	"wikispeech-play-selection": "Reproducer le texto seligite",
+	"wikispeech-close-selection-player": "Clauder",
 	"wikispeech-next": "Saltar al proxime parola",
 	"wikispeech-skip-ahead": "Saltar al proxime phrase",
 	"wikispeech-help": "Monstrar adjuta",
@@ -82,5 +84,9 @@
 	"wikispeech-morphology-nn": "Substantivo",
 	"wikispeech-morphology-pm": "Pronomine",
 	"wikispeech-morphology-vb": "Verbo",
-	"wikispeech-menu-label": "Plus optiones"
+	"wikispeech-menu-label": "Plus optiones",
+	"prefs-wikispeech-highlighting-enabled": "Activar coloration",
+	"prefs-wikispeech-highlighting-options": "Optiones de coloration",
+	"prefs-wikispeech-highlighting-default-option": "Predefinite: purpura + orange",
+	"prefs-wikispeech-highlighting-green-blue": "Verde + blau"
 }

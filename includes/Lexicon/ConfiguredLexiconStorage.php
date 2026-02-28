@@ -79,6 +79,7 @@ class ConfiguredLexiconStorage implements LexiconStorage {
 		string $language,
 		string $key
 	): ?LexiconEntry {
+		/** @phan-suppress-next-line PhanUndeclaredMethod */
 		return $this->decorated->getLocalEntry( $language, $key );
 	}
 

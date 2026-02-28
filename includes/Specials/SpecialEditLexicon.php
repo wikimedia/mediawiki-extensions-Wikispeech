@@ -250,7 +250,7 @@ class SpecialEditLexicon extends SpecialPage {
 
 		} catch ( InvalidArgumentException ) {
 			$this->getOutput()->addHtml( Html::errorBox(
-				$this->msg( 'wikispeech-lexicon-sync-error-unidentified' )
+				$this->msg( 'wikispeech-lexicon-sync-error-unidentified' )->escaped()
 			) );
 		}
 	}
@@ -451,7 +451,7 @@ class SpecialEditLexicon extends SpecialPage {
 					], htmlspecialchars( $json ) )
 					);
 				} else {
-					$this->postHtml .= Html::element( 'pre', [], $item );
+					$this->postHtml .= Html::element( 'pre', [], $item->toJson() );
 				}
 			}
 		}
@@ -677,7 +677,7 @@ class SpecialEditLexicon extends SpecialPage {
 			)
 		);
 		$this->getOutput()->addHtml(
-			Html::element( 'pre', [], $this->modifiedItem )
+			Html::element( 'pre', [], $this->modifiedItem->toJson() )
 		);
 	}
 }

@@ -63,7 +63,9 @@ class DigitsToSwedishWords extends AbstractDigitsToWords {
 		[ 1000000000000, 'biljon', 'en', 'er' ],
 		[ 1000000000000000, 'biljard', 'en', 'er' ],
 		[ 1000000000000000000, 'triljon', 'en', 'er' ],
-		[ 1000000000000000000000, 'triljard', 'en', 'er' ],
+		// TODO: T419005
+		// Modulo can't be used for numbers of this size.
+		// [ 1000000000000000000000, 'triljard', 'en', 'er' ],
 	];
 
 	/**

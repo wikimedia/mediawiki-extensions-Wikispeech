@@ -48,11 +48,11 @@ class LexiconHandler implements LexiconStorage {
 	/**
 	 * @since 0.1.8
 	 * @param LexiconSpeechoidStorage $speechoidStorage
-	 * @param LexiconStorage $localStorage
+	 * @param LexiconLocalStorage $localStorage
 	 */
 	public function __construct(
 		LexiconSpeechoidStorage $speechoidStorage,
-		LexiconStorage $localStorage
+		LexiconLocalStorage $localStorage
 	) {
 		$this->speechoidStorage = $speechoidStorage;
 		$this->localStorage = $localStorage;

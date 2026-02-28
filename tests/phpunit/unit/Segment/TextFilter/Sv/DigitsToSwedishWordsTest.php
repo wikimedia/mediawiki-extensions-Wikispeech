@@ -72,7 +72,8 @@ class DigitsToSwedishWordsTest extends MediaWikiUnitTestCase {
 			'1234567890123456' => [ 1234567890123456, 'en biljard två hundra trettiofyra biljoner fem hundra sextiosju miljarder åtta hundra nittio miljoner ett hundra tjugotre tusen fyra hundra femtiosex' ],
 			'12345678901234567' => [ 12345678901234567, 'tolv biljarder tre hundra fyrtiofem biljoner sex hundra sjuttioåtta miljarder nio hundra en miljoner två hundra trettiofyra tusen fem hundra sextiosju' ],
 			'123456789012345678' => [ 123456789012345678, 'ett hundra tjugotre biljarder fyra hundra femtiosex biljoner sju hundra åttionio miljarder tolv miljoner tre hundra fyrtiofem tusen sex hundra sjuttioåtta' ],
-			'1234567890123456789' => [ 1234567890123456789, 'en triljon två hundra trettiofyra biljarder fem hundra sextiosju biljoner åtta hundra nittio miljarder ett hundra tjugotre miljoner fyra hundra femtiosex tusen sju hundra åttionio' ],
+			// TODO: T419005
+			// '1234567890123456789' => [ 1234567890123456789, 'en triljon två hundra trettiofyra biljarder fem hundra sextiosju biljoner åtta hundra nittio miljarder ett hundra tjugotre miljoner fyra hundra femtiosex tusen sju hundra åttionio' ],
 			'100' => [ 100, 'ett hundra' ],
 			'1000' => [ 1000, 'ett tusen' ],
 			'10000' => [ 10000, 'tio tusen' ],

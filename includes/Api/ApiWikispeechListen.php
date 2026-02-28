@@ -195,9 +195,7 @@ class ApiWikispeechListen extends ApiBase {
 				$this->dieWithException( $exception );
 			}
 			$response = [
-				// @phan-suppress-next-line PhanTypeArraySuspiciousNullable Phan doesn't understand dieWithException()
 				'audio' => $speechoidResponse['audio_data'],
-				// @phan-suppress-next-line PhanTypeArraySuspiciousNullable Phan doesn't understand dieWithException()
 				'tokens' => $speechoidResponse['tokens']
 			];
 		}

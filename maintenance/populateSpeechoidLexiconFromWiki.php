@@ -146,7 +146,6 @@ class PopulateSpeechoidLexiconFromWiki extends Maintenance {
 				"User '$username' not found or invalid. Please provide an existing username with --user."
 			);
 		}
-		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 		return $services->getUserFactory()->newFromUserIdentity( $userIdentity );
 	}
 

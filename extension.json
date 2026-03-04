@@ -383,8 +383,7 @@
 				"div": [
 					"toc",
 					"shortdescription"
-				],
-				"figure": true
+				]
 			}
 		},
 		"WikispeechSegmentBreakingTags": {

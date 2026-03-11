@@ -34,8 +34,13 @@
 	"wikispeech-transcription": "Transcrição",
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "Pré-visualizar",
+	"wikispeech-lexicon-next": "Próximo",
+	"wikispeech-lexicon-save": "Salvar",
 	"wikispeech-lexicon-add-entry-success": "Entrada adicionada ao léxico.",
 	"wikispeech-lexicon-new": "Novo",
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",
-	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com o [https://creativecommons.org/publicdomain/zero/1.0/ CC0]."
+	"wikispeech-lexicon-copyrightnote": "Ao salvar as alterações, você concorda em liberar sua contribuição de acordo com o [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"wikispeech-play": "Reproduzir",
+	"wikispeech-edit-lexicon-btn": "Editar léxico",
+	"wikispeech-lexicon-sync-error-button": "Substituir"
 }

@@ -1071,16 +1071,18 @@ class Storage {
 					mw.config.get( 'wgScriptPath' );
 		}
 
-		const data = await this.api.get( options );
-		const utterance = {
-			audio: new Audio(
-				'data:audio/ogg;base64,' + data[ 'wikispeech-listen' ].audio
-			),
-			tokens: data[ 'wikispeech-listen' ].tokens
-		};
+		this.uiUtterances[ key ] = this.api.get( options )
+			.then( ( data ) => ( {
+				audio: new Audio(
+					'data:audio/ogg;base64,' + data[ 'wikispeech-listen' ].audio
+				),
+				tokens: data[ 'wikispeech-listen' ].tokens
+			} ) )
+			.catch( ( err ) => {
+				throw err;
+			} );
 
-		this.uiUtterances[ key ] = utterance;
-		return utterance;
+		return this.uiUtterances[ key ];
 	}
 
 }

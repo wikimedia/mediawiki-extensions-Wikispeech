@@ -17,6 +17,8 @@
 	"prefs-wikispeech-part-of-content": "Zusätzliche Informationen für bestimmte Elemente lesen",
 	"prefs-wikispeech-view-all": "Alle Einstellungen auf der Einstellungsseite anzeigen",
 	"prefs-help-wikispeech-part-of-content": "Wenn diese Option aktiviert ist, werden zusätzliche Informationen für Elemente wie Links gelesen. Wenn diese Option aktiviert ist, ist die Worthervorhebung deaktiviert.",
+	"prefs-wikispeech-page-toolbar": "Leseseiten-Werkzeugleiste",
+	"prefs-help-wikispeech-page-toolbar": "Wenn diese Option aktiviert ist, wird die Seitensymbolleiste vorgelesen, wenn man mit der Maus darüberfährt oder sie über die Tastatur fokussiert (z. B. durch Drücken der Tabulatortaste).",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Änderungen an den Voreinstellungen werden beim nächsten Laden einer Seite wirksam. Um die aktuelle Seite mit den neuen Voreinstellungen anzuhören, lade die Seite nach dem Speichern erneut.",
 	"right-wikispeech-listen": "Einer Seite zuhören",
 	"right-wikispeech-read-lexicon": "Lesen im Wikispeech-Lexikon",

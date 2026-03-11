@@ -14,6 +14,8 @@
 	"prefs-wikispeech-part-of-content": "Ler información adicional para certos elementos",
 	"prefs-wikispeech-view-all": "Ver todas as preferencias na páxina de preferencias",
 	"prefs-help-wikispeech-part-of-content": "Se está activado, lerase información adicional para algúns elementos como as ligazóns. Cando isto está activado, o resaltado de palabras está desactivado.",
+	"prefs-wikispeech-page-toolbar": "Ler a barra de ferramentas da páxina",
+	"prefs-help-wikispeech-page-toolbar": "Se está activado, lerase a barra de ferramentas da páxina ao pasar o rato por riba ou ao centrar o foco co teclado (por exemplo, premendo o tabulador).",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Os cambios nas preferencias terán efecto a próxima vez que se cargue unha páxina. Para escoitares a páxina actual coas novas preferencias, recarga a páxina despois de gardares.",
 	"right-wikispeech-listen": "Escoitar a páxina",
 	"right-wikispeech-read-lexicon": "Ler o léxico de Wikispeech",

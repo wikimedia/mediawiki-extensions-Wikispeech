@@ -126,12 +126,6 @@ class UtteranceGenerator {
 		Segment $segment,
 		?string $messageKey = null
 	) {
-		if ( $pageId === 0 && !$messageKey ) {
-			throw new InvalidArgumentException( 'Message key must be set when Page ID is 0.' );
-		}
-		if ( $pageId !== 0 && !$pageId ) {
-			throw new InvalidArgumentException( 'Page ID must be set.' );
-		}
 		$segmentHash = $segment->getHash();
 		if ( $segmentHash === null ) {
 			throw new InvalidArgumentException( 'Segment hash must be set.' );

@@ -34,6 +34,7 @@ Update version in extension.json.
 YYYY-MM-DD
 Speechoid: 0.1.2
 
+* [T166670](https://phabricator.wikimedia.org/T166670) Recite images
 * [T166669](https://phabricator.wikimedia.org/T166669) Add support for simple tables
 * [T417741](https://phabricator.wikimedia.org/T417741) Add HTML region for player
 * [T395320](https://phabricator.wikimedia.org/T395320) Make it easier to report pronunciation errors

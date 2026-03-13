@@ -117,5 +117,8 @@
 	"wikispeech-no-word-error": "Please select a word, not whitespace or punctuation.",
 	"wikispeech-one-word-only": "Please select only one word.",
 	"wikispeech-tip-highlight-word": "Tip: You can also highlight a word before reporting.",
-	"wikispeech-non-existing-page": "The page does not exist, please contact the Wikispeech team."
+	"wikispeech-non-existing-page": "The page does not exist, please contact the Wikispeech team.",
+	"wikispeech-poc-start-image": "start of image",
+	"wikispeech-poc-alt-text": "alternative text",
+	"wikispeech-poc-caption": "caption"
 }

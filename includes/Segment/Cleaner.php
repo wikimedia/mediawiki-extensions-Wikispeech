@@ -14,6 +14,7 @@ use DOMElement;
 use DOMNode;
 use DOMXPath;
 use LogicException;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Image;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
 use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
@@ -259,7 +260,8 @@ class Cleaner {
 		$partOfContent = Link::fromElement( $element ) ??
 			Table::fromElement( $element ) ??
 			TableHeader::fromElement( $element ) ??
-			TableCell::fromElement( $element );
+			TableCell::fromElement( $element ) ??
+			Image::fromElement( $element );
 		if ( $partOfContent ) {
 			$this->cleanedContent[] = $partOfContent;
 		}

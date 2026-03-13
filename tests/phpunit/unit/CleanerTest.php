@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Tests;
 
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Image;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
 use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
@@ -506,7 +507,31 @@ class CleanerTest extends MediaWikiUnitTestCase {
 					new TableCell( 'Food' ),
 					new CleanedText( 'Fish', './table/tbody/tr[3]/td[2]/text()' ),
 				]
-			]
+			],
+			'Image with alt text' => [
+				'text with <img alt="alternative text" /> in it',
+				[
+					new CleanedText( 'text with ', './text()[1]' ),
+					new Image( 'alternative text' ),
+					new CleanedText( ' in it', './text()[2]' )
+				]
+			],
+			'Image with alt text equal to caption' => [
+				'<li><a><img alt="flower" /></a><div class="gallerytext"><i>flower</i></div></li>',
+				[
+					new Link(),
+					new Image( null, 'flower' ),
+					new CleanedText( 'flower', './li/div/i/text()' )
+				]
+			],
+			'Image with alt text not equal to caption' => [
+				'<li><a><img alt="alternative text" /></a><div class="gallerytext"><i>flower</i></div></li>',
+				[
+					new Link(),
+					new Image( 'alternative text', 'flower' ),
+					new CleanedText( 'flower', './li/div/i/text()' )
+				]
+			],
 		];
 	}
 

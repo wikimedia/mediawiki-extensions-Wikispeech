@@ -34,6 +34,8 @@
 	"wikispeech-transcription": "Transcrição",
 	"wikispeech-item-id": "Id",
 	"wikispeech-preview": "Pré-visualizar",
+	"wikispeech-lexicon-next": "Próximo",
+	"wikispeech-lexicon-save": "Salvar",
 	"wikispeech-lexicon-add-entry-success": "Entrada adicionada ao léxico.",
 	"wikispeech-lexicon-new": "Novo",
 	"wikispeech-lexicon-edit-entry-success": "Entrada editada.",

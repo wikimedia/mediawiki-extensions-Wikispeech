@@ -33,6 +33,8 @@
 	"wikispeech-edit-lexicon-raw": "Rohdaten bearbeiten",
 	"wikispeech-error-loading-audio-title": "Konnte kein Audio laden",
 	"wikispeech-error-loading-audio-message": "Dies kann durch eine schlechte Internetverbindung oder einen Fehler auf dem Server verursacht werden. Möchtest du es erneut versuchen oder die Wiedergabe beenden?",
+	"wikispeech-error-nonexisting-page-title": "Nicht vorhandene Seite",
+	"wikispeech-error-nonexisting-page-message": "Eine nicht existierende Seite kann nicht abgespielt werden",
 	"wikispeech-error-generate-preview-title": "Vorschau konnte nicht erstellt werden",
 	"wikispeech-retry": "Erneut versuchen",
 	"wikispeech-stop": "Stop",
@@ -61,6 +63,7 @@
 	"wikispeech-pause": "Pause",
 	"wikispeech-play-selection": "Ausgewählten Text wiedergeben",
 	"wikispeech-close-selection-player": "Schließen",
+	"wikispeech-help-popup-close": "Schließen",
 	"wikispeech-next": "Wort überspringen",
 	"wikispeech-skip-ahead": "Satz überspringen",
 	"wikispeech-help": "Hilfe anzeigen",
@@ -93,5 +96,6 @@
 	"prefs-wikispeech-highlighting-enabled": "Hervorhebung aktivieren",
 	"prefs-wikispeech-highlighting-options": "Hervorhebungsoptionen",
 	"prefs-wikispeech-highlighting-default-option": "Standard – Lila + Orange",
-	"prefs-wikispeech-highlighting-green-blue": "Grün + Blau"
+	"prefs-wikispeech-highlighting-green-blue": "Grün + Blau",
+	"wikispeech-help-message": "Die Erweiterung „Wikispeech“ ist eine Erweiterung für MediaWiki (die Software, auf der unter anderem Wikipedia läuft), die den Inhalt einer Seite vorliest. Sie befindet sich derzeit in der Entwicklung, und die Funktionen werden sich bis zur Fertigstellung des Projekts noch ändern und erweitert werden. \n\nDer Player befindet sich am unteren Rand der Seite und sieht wie auf dem Bild unten aus. Mit dem Player kannst du die Wiedergabe des Textes starten und stoppen. Du kannst auch navigieren, indem du im Text vor- und zurückspringst."
 }

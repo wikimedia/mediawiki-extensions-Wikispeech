@@ -30,6 +30,8 @@
 	"wikispeech-edit-lexicon-raw": "Editar en bruto",
 	"wikispeech-error-loading-audio-title": "Non se puido cargar o son",
 	"wikispeech-error-loading-audio-message": "Isto pode deberse a unha mala conexión a Internet ou a un erro no servidor. Queres intentalo de novo ou deter a reprodución?",
+	"wikispeech-error-nonexisting-page-title": "Páxina non existente",
+	"wikispeech-error-nonexisting-page-message": "Non se pode reproducir unha páxina que non existe",
 	"wikispeech-error-generate-preview-title": "Non se puido xerar a vista previa",
 	"wikispeech-retry": "Reintentar",
 	"wikispeech-stop": "Deter",
@@ -58,6 +60,7 @@
 	"wikispeech-pause": "Pausar",
 	"wikispeech-play-selection": "Reproducir o texto seleccionado",
 	"wikispeech-close-selection-player": "Pechar",
+	"wikispeech-help-popup-close": "Pechar",
 	"wikispeech-next": "Saltar á palabra seguinte",
 	"wikispeech-skip-ahead": "Saltar á frase seguinte",
 	"wikispeech-help": "Amosar a axuda",
@@ -90,5 +93,6 @@
 	"prefs-wikispeech-highlighting-enabled": "Activar o resaltado",
 	"prefs-wikispeech-highlighting-options": "Opcións de resaltado",
 	"prefs-wikispeech-highlighting-default-option": "Predeterminado: púrpura + laranxa",
-	"prefs-wikispeech-highlighting-green-blue": "Verde + azul"
+	"prefs-wikispeech-highlighting-green-blue": "Verde + azul",
+	"wikispeech-help-message": "A extensión Wikispeech é unha extensión para MediaWiki (o software que executa a Wikipedia, entre outros wikis) que le o contido dunha páxina en voz alta. Actualmente está en desenvolvemento e as características cambiarán e engadiranse outras antes de que o proxecto estea finalizado.\n\nO reprodutor pódese atopar na parte inferior da páxina e ten un aspecto semellante á imaxe de embaixo. Co reprodutor, podes comezar e deter a lectura do texto. Tamén podes navegar saltando cara a atrás e cara a adiante no texto."
 }

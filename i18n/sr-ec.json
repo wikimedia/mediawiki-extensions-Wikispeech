@@ -4,11 +4,13 @@
 			"Milicevic01"
 		]
 	},
+	"wikispeech-error-nonexisting-page-title": "Непостојећа страница",
 	"wikispeech-lexicon-next": "Следеће",
 	"wikispeech-lexicon-save": "Сачувај",
 	"wikispeech-testlisten-text": "Текст",
 	"wikispeech-previous": "Претходно",
 	"wikispeech-close-selection-player": "Затвори",
+	"wikispeech-help-popup-close": "Затвори",
 	"wikispeech-next": "Следеће",
 	"wikispeech-help": "Помоћ",
 	"wikispeech-settings": "Подешавања",

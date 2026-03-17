@@ -29,6 +29,7 @@
 	"wikispeech-edit-lexicon-raw": "עריכה במצב גולמי",
 	"wikispeech-error-loading-audio-title": "לא היה אפשר לטעון את האודיו",
 	"wikispeech-error-loading-audio-message": "זה יכול להיגרם על־ידי חיבור אינטרנט גרוע או על־ידי שגיאה בשרת. רוצה לנסות שוב או לעצור את ההשמעה?",
+	"wikispeech-error-nonexisting-page-title": "דף שאינו קיים",
 	"wikispeech-error-generate-preview-title": "לא ניתן ליצור תצוגה מקדימה",
 	"wikispeech-retry": "לנסות שוב",
 	"wikispeech-stop": "לעצור",

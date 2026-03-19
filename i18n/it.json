@@ -5,6 +5,7 @@
 			"Amedeo463",
 			"Asteralee",
 			"Beta16",
+			"FL2226",
 			"Yiyi"
 		]
 	},
@@ -12,7 +13,11 @@
 	"prefs-wikispeech-voice": "Voce",
 	"prefs-wikispeech-enable": "Abilita Wikispeech",
 	"prefs-wikispeech-show-player": "Mostra sempre il riproduttore",
+	"prefs-wikispeech-page-toolbar": "Barra degli strumenti pwr la lettura della pagina",
+	"prefs-help-wikispeech-page-toolbar": "Se abilitata, la barra degli strumenti della pagina comparirà se evidenziata con il mouse o selezionata tramite tastiera (ad esempio, premendo il tasto Tab).",
 	"wikispeech-listen": "Ascolta",
+	"wikispeech-error-nonexisting-page-title": "Pagina non esistente",
+	"wikispeech-error-nonexisting-page-message": "Impossibile riprodurre una pagina inesistente",
 	"wikispeech-retry": "Riprova",
 	"wikispeech-stop": "Ferma",
 	"wikispeech-language": "Lingua",
@@ -24,6 +29,7 @@
 	"wikispeech-lexicon-new": "Nuovo",
 	"wikispeech-testlisten-text": "Testo",
 	"wikispeech-close-selection-player": "Chiudi",
+	"wikispeech-help-popup-close": "Chiudi",
 	"wikispeech-lexicon-sync-error-button": "Sovrascrivi",
 	"wikispeech-poc-link": "collegamento:",
 	"wikispeech-enter-transcription": "Inserisci la trascrizione per poterla visualizzare in anteprima.",
@@ -40,5 +46,6 @@
 	"wikispeech-morphology-nn": "Sostantivo",
 	"wikispeech-morphology-pm": "Pronome",
 	"wikispeech-morphology-vb": "Verbo",
-	"wikispeech-menu-label": "Più opzioni"
+	"wikispeech-menu-label": "Più opzioni",
+	"wikispeech-help-message": "L'estensione Wikispeech è un'estensione per MediaWiki (il software che gestisce Wikipedia, tra gli altri wiki) che legge ad alta voce il contenuto di una pagina. È attualmente in fase di sviluppo e le funzionalità cambieranno e verranno aggiunte prima che il progetto sia finalizzato. Il lettore si trova in fondo alla pagina ed è identificato con l'immagine sottostante. Con il lettore, è possibile avviare e interrompere l'ascolto del testo. È anche possibile navigare scorrendo avanti e indietro nel testo."
 }

@@ -16,6 +16,7 @@
 	"action-wikispeech-edit-lexicon": "ਵਿਕੀ-ਬੋਲ ਦੇ ਸ਼ਬਦਕੋਸ਼ ਨੂੰ ਸੋਧੋ",
 	"wikispeech-listen": "ਸੁਣੋ",
 	"wikispeech-dont-listen": "ਨਾ ਸੁਣੋ",
+	"wikispeech-error-nonexisting-page-title": "ਗ਼ੈਰ-ਮੌਜੂਦ ਵਰਕਾ",
 	"wikispeech-retry": "ਮੁੜ-ਕੋਸ਼ਿਸ਼ ਕਰੋ",
 	"wikispeech-stop": "ਰੋਕੋ",
 	"editlexicon": "ਸ਼ਬਦਕੋਸ਼ ਨੂੰ ਸੋਧੋ",
@@ -28,5 +29,6 @@
 	"wikispeech-lexicon-save": "ਸਾਂਭੋ",
 	"wikispeech-lexicon-new": "ਨਵਾਂ",
 	"group-wikispeech-edit-lexicon": "ਵਿਕੀ-ਬੋਲ ਸ਼ਬਦਕੋਸ਼ ਸੋਧਕ",
-	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1| ਵਿਕੀ-ਬੋਲ ਸ਼ਬਦਕੋਸ਼ ਸੋਧਕ}}"
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1| ਵਿਕੀ-ਬੋਲ ਸ਼ਬਦਕੋਸ਼ ਸੋਧਕ}}",
+	"wikispeech-help-popup-close": "ਬੰਦ ਕਰੋ"
 }

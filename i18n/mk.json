@@ -15,6 +15,8 @@
 	"prefs-wikispeech-part-of-content": "Прочитајте дополнителни информации за извесни елементи",
 	"prefs-wikispeech-view-all": "Погледајте сите нагодувања на страницата за нагодувања",
 	"prefs-help-wikispeech-part-of-content": "Доколку е овозможено, ќе се читаат дополнителни информации за елементи како врските. Истовремено, нагласувањето на зборови ќе биде оневозможено.",
+	"prefs-wikispeech-page-toolbar": "Читај го алатникот на страницата",
+	"prefs-help-wikispeech-page-toolbar": "Ако е овозможено, ќе биде прочитан алатникот на страницата кога ќе дојдете врз него со стрелката (глушецот) или со тастатурата (со копчето Tab).",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Измените во нагодувањта ќе бидат спроведени следниот пат кога ќе ја вчитате страницата. За да ја преслушате тековната страница со новите нагодувања, превчитајте ја откако ќе ја зачувате.",
 	"right-wikispeech-listen": "Преслушување на страницата",
 	"right-wikispeech-read-lexicon": "Читање на лексиконот на Викиговор",
@@ -29,6 +31,8 @@
 	"wikispeech-edit-lexicon-raw": "Уреди сирово",
 	"wikispeech-error-loading-audio-title": "Не можев да го вчитам звучниот запис",
 	"wikispeech-error-loading-audio-message": "Ова може да се должи на лоша врска со семрежјето, или пак на грешка во опслужувачот. Дали сакате да пробате пак, или да го запрете пуштањето?",
+	"wikispeech-error-nonexisting-page-title": "Непостоечка страница",
+	"wikispeech-error-nonexisting-page-message": "Не можам да читам непостоечка страница",
 	"wikispeech-error-generate-preview-title": "Не можев да го создадам прегледот",
 	"wikispeech-retry": "Пробај пак",
 	"wikispeech-stop": "Запри",
@@ -57,6 +61,7 @@
 	"wikispeech-pause": "Запри",
 	"wikispeech-play-selection": "Прочитај го избраниот текст на глас",
 	"wikispeech-close-selection-player": "Затвори",
+	"wikispeech-help-popup-close": "Затвори",
 	"wikispeech-next": "Прескокни збор нанапред",
 	"wikispeech-skip-ahead": "Прескокни реченица нанапред",
 	"wikispeech-help": "Прикажи помош",
@@ -89,5 +94,6 @@
 	"prefs-wikispeech-highlighting-enabled": "Овозможи истакнување",
 	"prefs-wikispeech-highlighting-options": "Можности за истакнување",
 	"prefs-wikispeech-highlighting-default-option": "По основно — виолетова + портокалова",
-	"prefs-wikispeech-highlighting-green-blue": "Зелена + сина"
+	"prefs-wikispeech-highlighting-green-blue": "Зелена + сина",
+	"wikispeech-help-message": "Викиговор е додаток за МедијаВики (програмот на кој работат Википедија и нејзините братски проекти) што ги чита на глас содржините на страниците. Моментално е во развој и неговите функции ќе се менуваат или дополнуваат додека не заврши разработката. \n\nЧитачот ќе го најдете на дното од страницата, и тој изгледа како сликата подолу. Со него ќе можете да го почнувате и запирате читањето. Можете и да преоѓате од еден до друг дел на текстот, напред и назад."
 }

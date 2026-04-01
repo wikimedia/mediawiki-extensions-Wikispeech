@@ -14,6 +14,8 @@
 	"prefs-wikispeech-part-of-content": "Leger information extra pro certe elementos",
 	"prefs-wikispeech-view-all": "Vider tote le preferentias sur le pagina de preferentias",
 	"prefs-help-wikispeech-part-of-content": "Si iste option es activate, information extra essera legite in alte voce pro elementos como ligamines. Si isto es activate, le evidentiamento de parolas es disactivate.",
+	"prefs-wikispeech-page-toolbar": "Leger in alte voce le barra de instrumentos del pagina",
+	"prefs-help-wikispeech-page-toolbar": "Si iste option es activate, le barra de instrumentos del pagina essera legite in alte voce quando le mouse passa supra illo o quando illo es seligite con le claviero (p.ex. con le clave Tab).",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Le modificationes del preferentias habera effecto le proxime vice que un pagina es cargate. Pro audir le pagina actual con le nove preferentias, recarga le pagina post salveguardar.",
 	"right-wikispeech-listen": "Ascoltar paginas",
 	"right-wikispeech-read-lexicon": "Leger le lexico de Wikispeech",
@@ -28,6 +30,8 @@
 	"wikispeech-edit-lexicon-raw": "Modificar texto brute",
 	"wikispeech-error-loading-audio-title": "Non poteva cargar audio",
 	"wikispeech-error-loading-audio-message": "Isto pote esser causate per un connexion a internet defectuose o un error in le servitor. Vole tu tentar de novo o stoppar le reproduction?",
+	"wikispeech-error-nonexisting-page-title": "Pagina non existente",
+	"wikispeech-error-nonexisting-page-message": "Impossibile reproducer un pagina non existente",
 	"wikispeech-error-generate-preview-title": "Non poteva generar previsualisation",
 	"wikispeech-retry": "Reprobar",
 	"wikispeech-stop": "Stoppar",
@@ -56,6 +60,7 @@
 	"wikispeech-pause": "Pausar",
 	"wikispeech-play-selection": "Reproducer le texto seligite",
 	"wikispeech-close-selection-player": "Clauder",
+	"wikispeech-help-popup-close": "Clauder",
 	"wikispeech-next": "Saltar al proxime parola",
 	"wikispeech-skip-ahead": "Saltar al proxime phrase",
 	"wikispeech-help": "Monstrar adjuta",
@@ -88,5 +93,6 @@
 	"prefs-wikispeech-highlighting-enabled": "Activar coloration",
 	"prefs-wikispeech-highlighting-options": "Optiones de coloration",
 	"prefs-wikispeech-highlighting-default-option": "Predefinite: purpura + orange",
-	"prefs-wikispeech-highlighting-green-blue": "Verde + blau"
+	"prefs-wikispeech-highlighting-green-blue": "Verde + blau",
+	"wikispeech-help-message": "Le extension Wikispeech es un extension pro MediaWiki (le software que face functionar Wikipedia, inter altere wikis) que lege le contento de un pagina in alte voce. Illo es actualmente in disveloppamento e le functionalitate cambiara e augmentara ante que le projecto essera terminate.\n\nLe reproductor se trova al fundo del pagina e resimila al imagine infra. Con le reproductor, tu pote initiar e stoppar le ascolta del texto. Pro navigar, tu pote etiam saltar retro e avante in le texto."
 }

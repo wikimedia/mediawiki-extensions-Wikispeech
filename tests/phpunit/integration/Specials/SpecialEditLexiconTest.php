@@ -44,7 +44,7 @@ class SpecialEditLexiconTest extends SpecialPageTestBase {
 
 	protected function setUp(): void {
 		parent::setUp();
-		$this->overrideConfigValue( MainConfigNames::Server, '//wiki.test' );
+		$this->overrideConfigValue( MainConfigNames::Server, 'http://wiki.test' );
 	}
 
 	/**

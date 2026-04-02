@@ -5,6 +5,7 @@
 			"Amedeo463",
 			"Asteralee",
 			"Beta16",
+			"Daimona Eaytoy",
 			"FL2226",
 			"Yiyi"
 		]
@@ -14,7 +15,7 @@
 	"prefs-wikispeech-enable": "Abilita Wikispeech",
 	"prefs-wikispeech-show-player": "Mostra sempre il riproduttore",
 	"prefs-wikispeech-page-toolbar": "Leggi ad alta voce la barra degli strumenti della pagina",
-	"prefs-help-wikispeech-page-toolbar": "Se abilitata, la barra degli strumenti della pagina comparirà se evidenziata con il mouse o selezionata tramite tastiera (ad esempio, premendo il tasto Tab).",
+	"prefs-help-wikispeech-page-toolbar": "Se abilitata, la barra degli strumenti della pagina verrà letta se evidenziata con il mouse o selezionata tramite tastiera (ad esempio, premendo il tasto Tab).",
 	"wikispeech-listen": "Ascolta",
 	"wikispeech-error-nonexisting-page-title": "Pagina non esistente",
 	"wikispeech-error-nonexisting-page-message": "Impossibile riprodurre una pagina inesistente",
@@ -47,5 +48,5 @@
 	"wikispeech-morphology-pm": "Pronome",
 	"wikispeech-morphology-vb": "Verbo",
 	"wikispeech-menu-label": "Più opzioni",
-	"wikispeech-help-message": "L'estensione Wikispeech è un'estensione per MediaWiki (il software che gestisce Wikipedia, tra gli altri wiki) che legge ad alta voce il contenuto di una pagina. È attualmente in fase di sviluppo e le funzionalità cambieranno e verranno aggiunte prima che il progetto sia finalizzato. Il lettore si trova in fondo alla pagina ed è identificato con l'immagine sottostante. Con il lettore, è possibile avviare e interrompere l'ascolto del testo. È anche possibile navigare scorrendo avanti e indietro nel testo."
+	"wikispeech-help-message": "L'estensione Wikispeech è un'estensione per MediaWiki (il software che gestisce Wikipedia, tra gli altri wiki) che legge ad alta voce il contenuto di una pagina. È attualmente in fase di sviluppo e le funzionalità cambieranno e verranno aggiunte prima che il progetto sia finalizzato.\n\nIl lettore si trova in fondo alla pagina ed è identificato con l'immagine sottostante. Con esso, è possibile avviare e interrompere l'ascolto del testo. È anche possibile navigare scorrendo avanti e indietro nel testo."
 }

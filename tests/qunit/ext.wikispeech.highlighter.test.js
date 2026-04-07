@@ -124,6 +124,17 @@ QUnit.test( 'highlightUtterance(): wrap middle text nodes properly', function ( 
 	);
 } );
 
+QUnit.test( "highlightUtterance(): don't highlight if no path", function ( assert ) {
+	this.storage.utterances[ 0 ].content[ 0 ].path = null;
+
+	this.highlighter.highlightUtterance( this.storage.utterances[ 0 ] );
+
+	assert.strictEqual(
+		$( this.contentSelector ).html(),
+		'Utterance zero.'
+	);
+} );
+
 QUnit.test( 'removeWrappers()', function ( assert ) {
 	util.setContentHtml( '<span class="wrapper">Utterance zero.</span>' );
 

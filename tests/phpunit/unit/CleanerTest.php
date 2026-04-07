@@ -11,9 +11,14 @@ namespace MediaWiki\Wikispeech\Tests;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
+use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
+use MediaWiki\Wikispeech\Segment\PartOfContent\TableHeader;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\SegmentContent;
 use MediaWikiUnitTestCase;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
  * @covers \MediaWiki\Wikispeech\Segment\Cleaner
@@ -189,6 +194,32 @@ class CleanerTest extends MediaWikiUnitTestCase {
 					new CleanedText( 'level zero', './text()[1]' ),
 					new CleanedText( 'also level zero', './text()[2]' )
 				]
+			],
+			'Table' => [
+				'<table>' .
+					'<tbody>' .
+						'<tr>' .
+							'<th>Animal</th>' .
+							'<th>Food</th>' .
+						'</tr>' .
+						'<tr>' .
+							'<td>Monkey</td>' .
+							'<td>Banana</td>' .
+						'</tr>' .
+						'<tr>' .
+							'<td>Penguin</td>' .
+							'<td>Fish</td>' .
+						'</tr>' .
+					'</tbody>' .
+				'</table>',
+				[
+					new CleanedText( 'Animal', './table/tbody/tr[1]/th[1]/text()' ),
+					new CleanedText( 'Food', './table/tbody/tr[1]/th[2]/text()' ),
+					new CleanedText( 'Monkey', './table/tbody/tr[2]/td[1]/text()' ),
+					new CleanedText( 'Banana', './table/tbody/tr[2]/td[2]/text()' ),
+					new CleanedText( 'Penguin', './table/tbody/tr[3]/td[1]/text()' ),
+					new CleanedText( 'Fish', './table/tbody/tr[3]/td[2]/text()' ),
+				]
 			]
 		];
 	}
@@ -246,7 +277,15 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		array $cleanedContents,
 		bool $testPaths = true
 	) {
-		$this->assertSameSize( $expectedCleanedContents, $cleanedContents );
+		$differ = new Differ( new UnifiedDiffOutputBuilder() );
+		$this->assertSameSize(
+			$expectedCleanedContents,
+			$cleanedContents,
+			"Not same size:\n" . $differ->diff(
+				var_export( $expectedCleanedContents, true ),
+				var_export( $cleanedContents, true )
+			)
+		);
 		foreach ( $expectedCleanedContents as $i => $expectedCleanedContent ) {
 			$this->assertContentEquals( $expectedCleanedContent, $cleanedContents[$i], $testPaths );
 		}
@@ -263,12 +302,8 @@ class CleanerTest extends MediaWikiUnitTestCase {
 			if ( $testPath ) {
 				$this->assertSame( $expected->getPath(), $value->getPath() );
 			}
-		} elseif ( $expected instanceof SegmentBreak ) {
-			$this->assertTrue( $value instanceof SegmentBreak );
-		} elseif ( $expected instanceof Link ) {
-			$this->assertTrue( $value instanceof Link );
 		} else {
-			$this->fail( 'Unexpected instance of class ' . get_class( $value ) );
+			$this->assertInstanceOf( $expected::class, $value );
 		}
 	}
 
@@ -440,6 +475,39 @@ class CleanerTest extends MediaWikiUnitTestCase {
 					new Link(),
 					new CleanedText( 'a link', './a/text()' ),
 					new CleanedText( ' at the start', './text()' )
+				]
+			],
+			'Table with headers in first row' => [
+				'<table>' .
+					'<tbody>' .
+						'<tr>' .
+							'<th>Animal</th>' .
+							'<th>Food</th>' .
+						'</tr>' .
+						'<tr>' .
+							'<td>Monkey</td>' .
+							'<td>Banana</td>' .
+						'</tr>' .
+						'<tr>' .
+							'<td>Penguin</td>' .
+							'<td>Fish</td>' .
+						'</tr>' .
+					'</tbody>' .
+				'</table>',
+				[
+					new Table(),
+					new TableHeader(),
+					new CleanedText( 'Animal', './table/tbody/tr[1]/th[1]/text()' ),
+					new TableHeader(),
+					new CleanedText( 'Food', './table/tbody/tr[1]/th[2]/text()' ),
+					new TableCell( 'Animal' ),
+					new CleanedText( 'Monkey', './table/tbody/tr[2]/td[1]/text()' ),
+					new TableCell( 'Food' ),
+					new CleanedText( 'Banana', './table/tbody/tr[2]/td[2]/text()' ),
+					new TableCell( 'Animal' ),
+					new CleanedText( 'Penguin', './table/tbody/tr[3]/td[1]/text()' ),
+					new TableCell( 'Food' ),
+					new CleanedText( 'Fish', './table/tbody/tr[3]/td[2]/text()' ),
 				]
 			]
 		];

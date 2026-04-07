@@ -15,6 +15,9 @@ use DOMNode;
 use DOMXPath;
 use LogicException;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
+use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
+use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
+use MediaWiki\Wikispeech\Segment\PartOfContent\TableHeader;
 
 /**
  * Used for cleaning text with HTML markup. The cleaned text is used
@@ -253,9 +256,12 @@ class Cleaner {
 	 * @param DOMElement $element
 	 */
 	private function addPartOfContent( $element ) {
-		// TODO: It may make more sense to have the logic live in the respective classes.
-		if ( $element->nodeName === 'a' ) {
-			$this->cleanedContent[] = new Link();
+		$partOfContent = Link::fromElement( $element ) ??
+			Table::fromElement( $element ) ??
+			TableHeader::fromElement( $element ) ??
+			TableCell::fromElement( $element );
+		if ( $partOfContent ) {
+			$this->cleanedContent[] = $partOfContent;
 		}
 	}
 

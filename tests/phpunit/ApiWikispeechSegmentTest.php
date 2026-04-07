@@ -47,7 +47,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 					'content' => [
 						[
 							'string' => 'Talk',
-							'path' => '//h1/span[1]/text()'
+							'path' => '//h1/span/span[1]/text()'
 						]
 					],
 					'hash' => '1e6560b6663ac62cafb6778e71dcc66c26a3ccd3960e3956f7194a620fd2d174'
@@ -58,7 +58,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 					'content' => [
 						[
 							'string' => ':',
-							'path' => '//h1/span[2]/text()'
+							'path' => '//h1/span/span[2]/text()'
 						]
 					],
 					'hash' => 'f3743a0a18e53d13922cc21a70d783d875a12560c22ff8d28bda5f5ca9fe05c3'
@@ -69,7 +69,7 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 					'content' => [
 						[
 							'string' => 'Test Page',
-							'path' => '//h1/span[3]/text()'
+							'path' => '//h1/span/span[3]/text()'
 						]
 					],
 					'hash' => 'f35b4a5363b82d289322b5a6e8d22b492dbd4c8b564e28c49f4dae3839892f63'

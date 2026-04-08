@@ -476,4 +476,52 @@ class CleanerTest extends MediaWikiUnitTestCase {
 			]
 		];
 	}
+
+	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
+		$title = '<span>Page<span>';
+		$content = '<p>Content</p>';
+
+		$cleaner = new Cleaner( [], [], false );
+		$cleanedText = $cleaner->cleanHtmlDom( $title, $content );
+
+		$this->assertEquals(
+			[
+				new CleanedText( 'Page', '//h1/span/text()' ),
+				new SegmentBreak(),
+				new CleanedText( 'Content', './p/text()' )
+			],
+			$cleanedText
+		);
+	}
+
+	public function testCleanPage_titleContainsElements_giveTitleXpath() {
+		$title = '<i>Page</i>';
+
+		$cleaner = new Cleaner( [], [], false );
+		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
+
+		$this->assertEquals(
+			new CleanedText( 'Page', '//h1/i/text()' ),
+			$cleanedText[0]
+		);
+	}
+
+	public function testCleanPage_titleContainsNamespace_giveCleanedTextArray() {
+		$title = '<span>Namespace</span><span>:</span><span>Page</span>';
+
+		$cleaner = new Cleaner( [], [], false );
+		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
+
+		$this->assertEquals(
+			[
+				new CleanedText( 'Namespace', '//h1/span[1]/text()' ),
+				new SegmentBreak(),
+				new CleanedText( ':', '//h1/span[2]/text()' ),
+				new SegmentBreak(),
+				new CleanedText( 'Page', '//h1/span[3]/text()' )
+			],
+			$cleanedText
+		);
+	}
+
 }

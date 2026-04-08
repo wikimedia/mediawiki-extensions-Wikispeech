@@ -477,51 +477,52 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		];
 	}
 
-	public function testCleanPage_contentAndTitleGiven_giveCleanedTextArray() {
-		$title = '<span>Page<span>';
-		$content = '<p>Content</p>';
-
+	/**
+	 * @dataProvider titleAndContentProvider
+	 */
+	public function testCleanHtmlTitleAndContent( string $title, string $content, array $expected ) {
 		$cleaner = new Cleaner( [], [], false );
-		$cleanedText = $cleaner->cleanHtmlDom( $title, $content );
+		$cleaned = $cleaner->cleanHtmlDom( $title, $content );
 
 		$this->assertEquals(
-			[
-				new CleanedText( 'Page', '//h1/span/text()' ),
-				new SegmentBreak(),
-				new CleanedText( 'Content', './p/text()' )
+			$expected,
+			$cleaned
+		);
+	}
+
+	public static function titleAndContentProvider(): array {
+		return [
+			'Title' => [
+				'<span><span>Page</span></span>',
+				'<p>Content</p>',
+				[
+					new CleanedText( 'Page', '//h1//span/span/text()' ),
+					new SegmentBreak(),
+					new CleanedText( 'Content', './p/text()' )
+				],
 			],
-			$cleanedText
-		);
-	}
-
-	public function testCleanPage_titleContainsElements_giveTitleXpath() {
-		$title = '<i>Page</i>';
-
-		$cleaner = new Cleaner( [], [], false );
-		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
-
-		$this->assertEquals(
-			new CleanedText( 'Page', '//h1/i/text()' ),
-			$cleanedText[0]
-		);
-	}
-
-	public function testCleanPage_titleContainsNamespace_giveCleanedTextArray() {
-		$title = '<span>Namespace</span><span>:</span><span>Page</span>';
-
-		$cleaner = new Cleaner( [], [], false );
-		$cleanedText = $cleaner->cleanHtmlDom( $title, '' );
-
-		$this->assertEquals(
-			[
-				new CleanedText( 'Namespace', '//h1/span[1]/text()' ),
-				new SegmentBreak(),
-				new CleanedText( ':', '//h1/span[2]/text()' ),
-				new SegmentBreak(),
-				new CleanedText( 'Page', '//h1/span[3]/text()' )
+			'Old title' => [
+				'<span>Page</span>',
+				'<p>Content</p>',
+				[
+					new CleanedText( 'Page', '//h1//span/text()' ),
+					new SegmentBreak(),
+					new CleanedText( 'Content', './p/text()' )
+				],
 			],
-			$cleanedText
-		);
+			'Title contains namespace' => [
+				'<span><span>Namespace</span><span>:</span><span>Page</span></span>',
+				'<p>Content</p>',
+				[
+					new CleanedText( 'Namespace', '//h1//span/span[1]/text()' ),
+					new SegmentBreak(),
+					new CleanedText( ':', '//h1//span/span[2]/text()' ),
+					new SegmentBreak(),
+					new CleanedText( 'Page', '//h1//span/span[3]/text()' ),
+					new SegmentBreak(),
+					new CleanedText( 'Content', './p/text()' )
+				]
+			]
+		];
 	}
-
 }

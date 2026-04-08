@@ -47,7 +47,7 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
 			new Segment(
-				[ new CleanedText( 'Page', '//h1/span/span/text()' ) ],
+				[ new CleanedText( 'Page', '//h1//span/span/text()' ) ],
 				0,
 				3,
 				'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'
@@ -97,7 +97,7 @@ class LocalWikiPageProviderTest extends MediaWikiIntegrationTestCase {
 		$title = Title::newFromText( $titleString );
 		$expectedSegments = [
 			new Segment(
-				[ new CleanedText( 'title', '//h1/text()' ) ],
+				[ new CleanedText( 'title', '//h1//text()' ) ],
 				0,
 				4,
 				'1ec72b6861fee9926d828a734ddbd533a1eb1a983d42acec571720deb2b92018'

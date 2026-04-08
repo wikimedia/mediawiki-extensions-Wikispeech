@@ -153,7 +153,7 @@ QUnit.test( 'loadUtterances(): offset leading whitespaces in title', async funct
 				endOffset: 3,
 				content: [ {
 					string: 'Page',
-					path: '//h1/text()'
+					path: '//h1//span/span/text()'
 				} ]
 			} ]
 		}

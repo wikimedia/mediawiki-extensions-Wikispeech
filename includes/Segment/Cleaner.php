@@ -310,7 +310,11 @@ class Cleaner {
 			}
 
 			$node = $xpath->evaluate( '//text()' )->item( $i );
-			$titlePart->setPath( '/' . $node->getNodePath() );
+			// Allow arbitrary nodes being inserted in the middle of the title
+			// element. This should fix issues like T421374 where different
+			// wikis give different outputs.
+			$nodePath = str_replace( '/h1/', '/h1//', $node->getNodePath() );
+			$titlePart->setPath( '/' . $nodePath );
 			$titleSegments[] = $titlePart;
 			$titleSegments[] = new SegmentBreak();
 			$i++;

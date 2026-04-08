@@ -56,7 +56,7 @@ class RemoteWikiPageProviderTest extends MediaWikiUnitTestCase {
 		$title = Title::makeTitle( NS_MAIN, $titleString );
 		$expectedSegments = [
 			new Segment(
-				[ new CleanedText( 'Page', '//h1/text()' ) ],
+				[ new CleanedText( 'Page', '//h1//text()' ) ],
 				0,
 				3,
 				'cd2c3fb786ef2a8ba5430f54cde3d468c558647bf0fd777b437e8138e2348e01'

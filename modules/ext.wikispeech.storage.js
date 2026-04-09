@@ -179,7 +179,7 @@ class Storage {
 					this.prepareUtterance( utterance.errorUtterances );
 				} );
 		} else {
-			return this.requestTts( utterance.hash )
+			return this.requestTts( utterance.hash, window )
 				.then( ( response ) => {
 					const audioBase64 = response[ 'wikispeech-listen' ].audio;
 					this.setAudio( utterance.audio, audioBase64 );

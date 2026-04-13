@@ -68,5 +68,10 @@
 	"wikispeech-morphology-nn": "संज्ञा",
 	"wikispeech-morphology-pm": "सर्वनाम",
 	"wikispeech-morphology-vb": "क्रिया",
-	"wikispeech-menu-label": "अधिक विकल्प"
+	"wikispeech-menu-label": "अधिक विकल्प",
+	"prefs-wikispeech-highlighting-enabled": "हाइलाइटिंग सक्षम करें",
+	"prefs-wikispeech-highlighting-options": "हाइलाइटिंग के विकल्प",
+	"prefs-wikispeech-highlighting-default-option": "डिफ़ॉल्ट - बैंगनी + नारंगी",
+	"prefs-wikispeech-highlighting-green-blue": "हरा + नीला",
+	"wikispeech-region-player": "विकिस्पीच प्लेयर"
 }

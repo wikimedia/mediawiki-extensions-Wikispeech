@@ -44,5 +44,8 @@
 	"wikispeech-morphology-vb": "Verb",
 	"wikispeech-menu-label": "Méi Optiounen",
 	"prefs-wikispeech-highlighting-default-option": "Standard – Mof + Orange",
-	"prefs-wikispeech-highlighting-green-blue": "Gréng + Blo"
+	"prefs-wikispeech-highlighting-green-blue": "Gréng + Blo",
+	"wikispeech-region-player": "Wikispeech-Player",
+	"wikispeech-report-pronunciation-error-context": "Kontext",
+	"wikispeech-non-existing-page": "Dës Säit gëtt et net, kontaktéiert wgl. d'Wikispeech-Team."
 }

@@ -70,7 +70,7 @@
 	"wikispeech-help-popup-close": "Sluiten",
 	"wikispeech-next": "Een woord vooruitspringen",
 	"wikispeech-skip-ahead": "Een zin vooruitspringen",
-	"wikispeech-help": "Hulp tonen",
+	"wikispeech-help": "Hulp weergeven",
 	"wikispeech-feedback": "Uitspraakfout melden",
 	"wikispeech-edit-lexicon-btn": "Lexicon bewerken",
 	"wikispeech-settings": "Instellingen",
@@ -101,5 +101,18 @@
 	"prefs-wikispeech-highlighting-options": "Markeeropties",
 	"prefs-wikispeech-highlighting-default-option": "Standaard - Paars + oranje",
 	"prefs-wikispeech-highlighting-green-blue": "Groen + blauw",
-	"wikispeech-help-message": "De uitbreiding Wikispeech voor MediaWiki (de software waarop Wikipedia en andere wiki's draaien) leest de inhoud van een pagina hardop voor. De uitbreiding is in ontwikkeling en er worden nog functies toegevoegd en gewijzigd voordat het project is afgerond. \n\nDe speler is onderaan de pagina te vinden en ziet eruit zoals op de afbeelding hieronder. Met de speler kunt u het voorlezen starten en stoppen. U kunt ook door de tekst navigeren door vooruit en achteruit te springen."
+	"wikispeech-help-message": "De uitbreiding Wikispeech voor MediaWiki (de software waarop Wikipedia en andere wiki's draaien) leest de inhoud van een pagina hardop voor. De uitbreiding is in ontwikkeling en er worden nog functies toegevoegd en gewijzigd voordat het project is afgerond. \n\nDe speler is onderaan de pagina te vinden en ziet eruit zoals op de afbeelding hieronder. Met de speler kunt u het voorlezen starten en stoppen. U kunt ook door de tekst navigeren door vooruit en achteruit te springen.",
+	"wikispeech-report-table-missing": "De uitspraaklexicontabel heeft niet de juiste structuur.",
+	"wikispeech-pronunciation-saved": "Het uitspraakrapport is opgeslagen op:",
+	"wikispeech-report-pronunciation-error": "Uitspraakfout melden",
+	"wikispeech-report-pronunciation-get-error": "De pagina met het uitspraakrapport kon niet worden geladen. Probeer het later opnieuw.",
+	"wikispeech-report-pronunciation-post-error": "Het rapport met uitspraakfouten kon niet worden opgeslagen.",
+	"wikispeech-report-pronunciation-error-button": "Rapporteren",
+	"wikispeech-report-pronunciation-error-context": "Context",
+	"wikispeech-report-pronunciation-error-other": "Overige",
+	"wikispeech-report-pronunciation-error-select-utterance": "U moet een woord markeren om een melding te kunnen maken.",
+	"wikispeech-no-word-error": "Selecteer een woord, geen spaties of leestekens.",
+	"wikispeech-one-word-only": "Selecteer slechts één woord.",
+	"wikispeech-tip-highlight-word": "Tip: U kunt ook een woord markeren voordat u het rapporteert.",
+	"wikispeech-non-existing-page": "De pagina bestaat niet. Neem contact op met het Wikispeech-team."
 }

@@ -97,5 +97,19 @@
 	"prefs-wikispeech-highlighting-options": "Hervorhebungsoptionen",
 	"prefs-wikispeech-highlighting-default-option": "Standard – Lila + Orange",
 	"prefs-wikispeech-highlighting-green-blue": "Grün + Blau",
-	"wikispeech-help-message": "Die Erweiterung „Wikispeech“ ist eine Erweiterung für MediaWiki (die Software, auf der unter anderem Wikipedia läuft), die den Inhalt einer Seite vorliest. Sie befindet sich derzeit in der Entwicklung, und die Funktionen werden sich bis zur Fertigstellung des Projekts noch ändern und erweitert werden. \n\nDer Player befindet sich am unteren Rand der Seite und sieht wie auf dem Bild unten aus. Mit dem Player kannst du die Wiedergabe des Textes starten und stoppen. Du kannst auch navigieren, indem du im Text vor- und zurückspringst."
+	"wikispeech-help-message": "Die Erweiterung „Wikispeech“ ist eine Erweiterung für MediaWiki (die Software, auf der unter anderem Wikipedia läuft), die den Inhalt einer Seite vorliest. Sie befindet sich derzeit in der Entwicklung, und die Funktionen werden sich bis zur Fertigstellung des Projekts noch ändern und erweitert werden. \n\nDer Player befindet sich am unteren Rand der Seite und sieht wie auf dem Bild unten aus. Mit dem Player kannst du die Wiedergabe des Textes starten und stoppen. Du kannst auch navigieren, indem du im Text vor- und zurückspringst.",
+	"wikispeech-region-player": "Wikispeech-Player",
+	"wikispeech-report-table-missing": "Die Aussprachelexikontabelle hat nicht die richtige Struktur.",
+	"wikispeech-pronunciation-saved": "Der Aussprachebericht wurde gespeichert unter:",
+	"wikispeech-report-pronunciation-error": "Aussprachefehler melden",
+	"wikispeech-report-pronunciation-get-error": "Die Seite mit dem Aussprachebericht konnte nicht geladen werden. Bitte versuche es später erneut.",
+	"wikispeech-report-pronunciation-post-error": "Der Aussprachefehlerbericht konnte nicht gespeichert werden.",
+	"wikispeech-report-pronunciation-error-button": "Bericht",
+	"wikispeech-report-pronunciation-error-context": "Kontext",
+	"wikispeech-report-pronunciation-error-other": "Andere",
+	"wikispeech-report-pronunciation-error-select-utterance": "Du musst ein Wort markieren, um berichten zu können.",
+	"wikispeech-no-word-error": "Bitte wähle ein Wort aus, keine Leerzeichen oder Satzzeichen.",
+	"wikispeech-one-word-only": "Bitte wähle nur ein Wort aus.",
+	"wikispeech-tip-highlight-word": "Tipp: Du kannst auch ein Wort vor dem Bericht markieren.",
+	"wikispeech-non-existing-page": "Die Seite existiert nicht. Bitte kontaktiere das Wikispeech-Team."
 }

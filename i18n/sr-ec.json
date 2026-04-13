@@ -25,5 +25,6 @@
 	"wikispeech-morphology-nn": "Именица",
 	"wikispeech-morphology-pm": "Заменица",
 	"wikispeech-morphology-vb": "Глагол",
-	"wikispeech-menu-label": "Више опција"
+	"wikispeech-menu-label": "Више опција",
+	"wikispeech-report-pronunciation-error-other": "Друго"
 }

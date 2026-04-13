@@ -73,6 +73,7 @@ class RemoteWikiPageProvider extends AbstractPageProvider {
 			[
 				'action' => 'parse',
 				'format' => 'json',
+				'usearticle' => true,
 				'page' => $title,
 				'prop' => 'text|revid|displaytitle'
 			]

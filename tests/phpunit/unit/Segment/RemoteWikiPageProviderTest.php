@@ -37,7 +37,8 @@ class RemoteWikiPageProviderTest extends MediaWikiUnitTestCase {
 		$revisionId = 123;
 		$titleString = 'Page';
 		$content = 'Sentence 1. Sentence 2. Sentence 3.';
-		$request = 'https://consumer.url/api.php?action=parse&format=json&page=Page&prop=text%7Crevid%7Cdisplaytitle';
+		$request = 'https://consumer.url/api.php?' .
+			'action=parse&format=json&usearticle=1&page=Page&prop=text%7Crevid%7Cdisplaytitle';
 		$httpRequestFactory = $this->createMock( HttpRequestFactory::class );
 		$httpRequestFactory
 			->expects( $this->once() )

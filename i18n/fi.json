@@ -3,7 +3,8 @@
 		"authors": [
 			"Joquliina",
 			"Pyscowicz",
-			"Samoasambia"
+			"Samoasambia",
+			"Wikipeedikko"
 		]
 	},
 	"prefs-wikispeech-voice": "Ääni",
@@ -54,6 +55,9 @@
 	"wikispeech-settings": "Asetukset",
 	"wikispeech-lexicon-sync-error-button": "Ylikirjoita",
 	"wikispeech-poc-link": "linkki:",
+	"wikispeech-poc-table": "taulukko",
+	"wikispeech-poc-table-header": "ylätunniste",
+	"wikispeech-poc-table-column": "sarake",
 	"wikispeech-morphology": "Morfologia",
 	"wikispeech-pos": "Sanaluokka",
 	"wikispeech-paradigm": "Paradigma",
@@ -67,5 +71,12 @@
 	"wikispeech-morphology-neu": "Neutri",
 	"wikispeech-morphology-nn": "Substantiivi",
 	"wikispeech-morphology-pm": "Pronomini",
-	"wikispeech-morphology-vb": "Verbi"
+	"wikispeech-morphology-vb": "Verbi",
+	"wikispeech-report-pronunciation-error": "Ilmoita ääntämisvirheestä",
+	"wikispeech-report-pronunciation-post-error": "Ääntämisvirheilmoitusta ei voitu tallentaa.",
+	"wikispeech-report-pronunciation-error-button": "Ilmoita",
+	"wikispeech-report-pronunciation-error-context": "Konteksti",
+	"wikispeech-report-pronunciation-error-other": "Muut",
+	"wikispeech-one-word-only": "Valitse vain yksi sana.",
+	"wikispeech-tip-highlight-word": "Vinkki: Voit myös korostaa sanan ennen ilmoittamista."
 }

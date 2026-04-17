@@ -33,5 +33,9 @@
 	"wikispeech-feedback": "발음 오류 신고",
 	"wikispeech-settings": "설정",
 	"wikispeech-lexicon-sync-error-button": "덮어쓰기",
-	"prefs-wikispeech-highlighting-options": "강조 표시 옵션"
+	"prefs-wikispeech-highlighting-options": "강조 표시 옵션",
+	"wikispeech-pronunciation-saved": "발음 주소가 다음 위치에 저장되었습니다:",
+	"wikispeech-report-pronunciation-error-button": "보고하기",
+	"wikispeech-report-pronunciation-error-other": "기타",
+	"wikispeech-non-existing-page": "이 문서는 존재하지 않습니다. 위키스피치 팀에 연락해 주십시오."
 }

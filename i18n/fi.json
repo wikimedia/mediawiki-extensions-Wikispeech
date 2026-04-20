@@ -73,6 +73,7 @@
 	"wikispeech-morphology-pm": "Pronomini",
 	"wikispeech-morphology-vb": "Verbi",
 	"wikispeech-report-pronunciation-error": "Ilmoita ääntämisvirheestä",
+	"wikispeech-report-pronunciation-get-error": "Ääntämisraporttisivun lataaminen epäonnistui. Yritä myöhemmin uudelleen.",
 	"wikispeech-report-pronunciation-post-error": "Ääntämisvirheilmoitusta ei voitu tallentaa.",
 	"wikispeech-report-pronunciation-error-button": "Ilmoita",
 	"wikispeech-report-pronunciation-error-context": "Konteksti",

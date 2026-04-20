@@ -19,6 +19,7 @@
 	"prefs-wikispeech-enable": "Aktivera Wikispeech",
 	"prefs-wikispeech-show-player": "Visa alltid spelare",
 	"prefs-wikispeech-part-of-content": "Läs extra information för vissa element",
+	"prefs-wikispeech-view-all": "Visa alla inställningar på inställningssidan",
 	"prefs-help-wikispeech-part-of-content": "Om aktiverat kommer extra information att läsas upp för element så som länkar. När detta är aktiverat är ordmarkering inaktiverad.",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Ändringar av inställningar träder i kraft nästa gång en sida laddas. För att lyssna på den aktuella sidan med de nya inställningarna, ladda om sidan efter att du har sparat.",
 	"right-wikispeech-listen": "Lyssna på sidan",
@@ -65,6 +66,10 @@
 	"wikispeech-lexicon-sync-error-button": "Skriv över",
 	"wikispeech-lexicon-sync-error-unidentified": "Ett okänt fel inträffade vid synkronisering av lexikonposter.",
 	"wikispeech-poc-link": "länk",
+	"wikispeech-poc-table": "tabell",
+	"wikispeech-poc-table-header": "rubrik",
+	"wikispeech-poc-table-column": "kolumn",
 	"wikispeech-enter-transcription": "Ange transkription för att kunna förhandsgranska",
-	"wikispeech-morphology": "Morfologi"
+	"wikispeech-morphology": "Morfologi",
+	"wikispeech-menu-label": "Fler alternativ"
 }

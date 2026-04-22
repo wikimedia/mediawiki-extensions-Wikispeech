@@ -14,6 +14,15 @@ namespace MediaWiki\Wikispeech\Segment;
  */
 abstract class SegmentContent {
 	/**
+	 * The XPath expression for the text node that this was created
+	 * from.
+	 *
+	 * @since 0.1.15
+	 * @var string|null
+	 */
+	protected $path;
+
+	/**
 	 * @since 0.1.13
 	 * @return string
 	 */
@@ -22,10 +31,19 @@ abstract class SegmentContent {
 	}
 
 	/**
+	 * @since 0.1.15 return propety instead of always `null`.
 	 * @since 0.1.13
 	 * @return ?string
 	 */
-	public function getPath() {
-		return null;
+	public function getPath(): ?string {
+		return $this->path;
+	}
+
+	/**
+	 * @since 0.1.15
+	 * @param ?string $path
+	 */
+	public function setPath( ?string $path ): void {
+		$this->path = $path;
 	}
 }

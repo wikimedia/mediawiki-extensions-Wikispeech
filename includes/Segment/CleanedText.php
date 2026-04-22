@@ -23,14 +23,6 @@ class CleanedText extends SegmentContent {
 	private $string;
 
 	/**
-	 * The XPath expression for the text node that this was created
-	 * from.
-	 *
-	 * @var string
-	 */
-	private $path;
-
-	/**
 	 * Create a CleanedText, given a string representation.
 	 *
 	 * If the path isn't set, it defaults to the empty string.
@@ -62,21 +54,4 @@ class CleanedText extends SegmentContent {
 	public function setString( string $string ): void {
 		$this->string = $string;
 	}
-
-	/**
-	 * @since 0.1.10
-	 * @return string
-	 */
-	public function getPath(): string {
-		return $this->path;
-	}
-
-	/**
-	 * @since 0.1.10
-	 * @param string $path
-	 */
-	public function setPath( string $path ): void {
-		$this->path = $path;
-	}
-
 }

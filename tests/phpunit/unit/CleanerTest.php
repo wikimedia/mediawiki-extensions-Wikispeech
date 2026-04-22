@@ -296,15 +296,12 @@ class CleanerTest extends MediaWikiUnitTestCase {
 		SegmentContent $value,
 		bool $testPath
 	) {
-		if ( $expected instanceof CleanedText ) {
-			$this->assertTrue( $value instanceof CleanedText );
-			$this->assertSame( $expected->getString(), $value->getString() );
-			if ( $testPath ) {
-				$this->assertSame( $expected->getPath(), $value->getPath() );
-			}
-		} else {
-			$this->assertInstanceOf( $expected::class, $value );
+		if ( !$testPath ) {
+			// We don't care about the paths so set them to nothing.
+			$expected->setPath( null );
+			$value->setPath( null );
 		}
+		$this->assertEquals( $expected, $value );
 	}
 
 	/**

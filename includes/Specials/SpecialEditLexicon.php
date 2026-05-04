@@ -66,13 +66,24 @@ class SpecialEditLexicon extends SpecialPage {
 		$speechoidConnector,
 		$utteranceStore
 	) {
-		parent::__construct( 'EditLexicon', 'wikispeech-edit-lexicon' );
+		// MW 1.43 requires restriction in constructor, 1.46 uses getRestriction().
+		// TODO: Remove when Wikispeech supports MW 1.46 (T425352)
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'EditLexicon' );
+		} else {
+			parent::__construct( 'EditLexicon', 'wikispeech-edit-lexicon' );
+		}
 		$this->languageNameUtils = $languageNameUtils;
 		$this->lexiconStorage = $lexiconStorage;
 		$this->speechoidConnector = $speechoidConnector;
 		$this->utteranceStore = $utteranceStore;
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->postHtml = '';
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'wikispeech-edit-lexicon';
 	}
 
 	/**

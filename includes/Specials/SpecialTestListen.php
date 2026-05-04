@@ -42,11 +42,21 @@ class SpecialTestListen extends SpecialPage {
 		$speechoidConnector,
 		VoiceHandler $voiceHandler
 	) {
-		parent::__construct( 'TestListen', 'wikispeech-listen' );
-
+		// MW <1.46 requires restriction in constructor, ≥1.46 uses getRestriction().
+		// TODO: Remove when Wikispeech supports MW 1.46 (T425352)
+		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
+			parent::__construct( 'TestListen' );
+		} else {
+			parent::__construct( 'TestListen', 'wikispeech-listen' );
+		}
 		$this->languageNameUtils = $languageNameUtils;
 		$this->speechoidConnector = $speechoidConnector;
 		$this->voiceHandler = $voiceHandler;
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'wikispeech-listen';
 	}
 
 	/**

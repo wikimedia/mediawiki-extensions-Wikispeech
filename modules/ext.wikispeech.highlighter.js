@@ -64,7 +64,7 @@ class Highlighter {
 			return;
 		}
 		// Class name is documented above
-		// eslint-disable-next-line mediawiki/class-doc
+
 		const span = $( '<span>' )
 			.addClass( this.utteranceHighlightingClass )
 			.get( 0 );

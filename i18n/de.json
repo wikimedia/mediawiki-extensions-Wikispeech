@@ -114,5 +114,8 @@
 	"wikispeech-no-word-error": "Bitte wähle ein Wort aus, keine Leerzeichen oder Satzzeichen.",
 	"wikispeech-one-word-only": "Bitte wähle nur ein Wort aus.",
 	"wikispeech-tip-highlight-word": "Tipp: Du kannst auch ein Wort vor dem Bericht markieren.",
-	"wikispeech-non-existing-page": "Die Seite existiert nicht. Bitte kontaktiere das Wikispeech-Team."
+	"wikispeech-non-existing-page": "Die Seite existiert nicht. Bitte kontaktiere das Wikispeech-Team.",
+	"wikispeech-poc-start-image": "Bildanfang",
+	"wikispeech-poc-alt-text": "Alternativtext",
+	"wikispeech-poc-caption": "Kurzbeschreibung"
 }

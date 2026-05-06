@@ -51,5 +51,8 @@
 	"wikispeech-morphology-pm": "Pronome",
 	"wikispeech-morphology-vb": "Verbo",
 	"wikispeech-menu-label": "Più opzioni",
-	"wikispeech-help-message": "L'estensione Wikispeech è un'estensione per MediaWiki (il software che gestisce Wikipedia, tra gli altri wiki) che legge ad alta voce il contenuto di una pagina. È attualmente in fase di sviluppo e le funzionalità cambieranno e verranno aggiunte prima che il progetto sia finalizzato.\n\nIl lettore si trova in fondo alla pagina ed è identificato con l'immagine sottostante. Con esso, è possibile avviare e interrompere l'ascolto del testo. È anche possibile navigare scorrendo avanti e indietro nel testo."
+	"wikispeech-help-message": "L'estensione Wikispeech è un'estensione per MediaWiki (il software che gestisce Wikipedia, tra gli altri wiki) che legge ad alta voce il contenuto di una pagina. È attualmente in fase di sviluppo e le funzionalità cambieranno e verranno aggiunte prima che il progetto sia finalizzato.\n\nIl lettore si trova in fondo alla pagina ed è identificato con l'immagine sottostante. Con esso, è possibile avviare e interrompere l'ascolto del testo. È anche possibile navigare scorrendo avanti e indietro nel testo.",
+	"wikispeech-poc-start-image": "inizio dell'immagine",
+	"wikispeech-poc-alt-text": "testo alternativo",
+	"wikispeech-poc-caption": "didascalia"
 }

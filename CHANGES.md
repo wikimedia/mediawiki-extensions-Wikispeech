@@ -30,8 +30,12 @@ Update version in extension.json.
 
 ## Versions
 
-### 0.1.15-SNAPSHOT
+### 0.1.16-SNAPSHOT
 YYYY-MM-DD
+Speechoid: 0.1.2
+
+### 0.1.15
+2026-05-07
 Speechoid: 0.1.2
 
 * [T166670](https://phabricator.wikimedia.org/T166670) Recite images

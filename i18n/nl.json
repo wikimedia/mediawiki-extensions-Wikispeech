@@ -118,5 +118,8 @@
 	"wikispeech-no-word-error": "Selecteer een woord, geen spaties of leestekens.",
 	"wikispeech-one-word-only": "Selecteer slechts één woord.",
 	"wikispeech-tip-highlight-word": "Tip: U kunt ook een woord markeren voordat u het rapporteert.",
-	"wikispeech-non-existing-page": "De pagina bestaat niet. Neem contact op met het Wikispeech-team."
+	"wikispeech-non-existing-page": "De pagina bestaat niet. Neem contact op met het Wikispeech-team.",
+	"wikispeech-poc-start-image": "begin van de afbeelding",
+	"wikispeech-poc-alt-text": "alternatieve tekst",
+	"wikispeech-poc-caption": "bijschrift"
 }

@@ -111,5 +111,8 @@
 	"wikispeech-no-word-error": "Selecciona unha palabra, non espazos en branco nin signos de puntuación.",
 	"wikispeech-one-word-only": "Selecciona só unha palabra.",
 	"wikispeech-tip-highlight-word": "Consello: Tamén podes destacar unha palabra antes de enviar o informe.",
-	"wikispeech-non-existing-page": "A páxina non existe. Ponte en contacto co equipo de Wikispeech."
+	"wikispeech-non-existing-page": "A páxina non existe. Ponte en contacto co equipo de Wikispeech.",
+	"wikispeech-poc-start-image": "inicio da imaxe",
+	"wikispeech-poc-alt-text": "texto alternativo",
+	"wikispeech-poc-caption": "pé de foto"
 }

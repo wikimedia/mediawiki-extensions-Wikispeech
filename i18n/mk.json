@@ -112,5 +112,8 @@
 	"wikispeech-no-word-error": "Изберете збор, а на празно место или интерпункциски знак.",
 	"wikispeech-one-word-only": "Изберете само еден збор.",
 	"wikispeech-tip-highlight-word": "Совет: Можете и да го истакнете зборот со глушецот пред да пријавите.",
-	"wikispeech-non-existing-page": "Оваа страница не постои. Обратете се на екипата на Викиговор."
+	"wikispeech-non-existing-page": "Оваа страница не постои. Обратете се на екипата на Викиговор.",
+	"wikispeech-poc-start-image": "почеток на сликата",
+	"wikispeech-poc-alt-text": "алтернативен текст",
+	"wikispeech-poc-caption": "опис"
 }

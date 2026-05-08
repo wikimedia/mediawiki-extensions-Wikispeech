@@ -21,6 +21,7 @@
 	"prefs-wikispeech-part-of-content": "Läs extra information för vissa element",
 	"prefs-wikispeech-view-all": "Visa alla inställningar på inställningssidan",
 	"prefs-help-wikispeech-part-of-content": "Om aktiverat kommer extra information att läsas upp för element så som länkar. När detta är aktiverat är ordmarkering inaktiverad.",
+	"prefs-wikispeech-page-toolbar": "Läs upp verktygsfältet",
 	"wikispeech-notice-prefs-apply-on-next-page-load": "Ändringar av inställningar träder i kraft nästa gång en sida laddas. För att lyssna på den aktuella sidan med de nya inställningarna, ladda om sidan efter att du har sparat.",
 	"right-wikispeech-listen": "Lyssna på sidan",
 	"right-wikispeech-read-lexicon": "Läs Wikispeechs lexikon",
@@ -57,6 +58,8 @@
 	"wikispeech-play": "Spela",
 	"wikispeech-pause": "Pausa",
 	"wikispeech-play-selection": "Läs markerad text",
+	"wikispeech-close-selection-player": "Stäng",
+	"wikispeech-help-popup-close": "Stäng",
 	"wikispeech-next": "Hoppa fram ett ord",
 	"wikispeech-skip-ahead": "Hoppa fram en mening",
 	"wikispeech-help": "Visa hjälp",
@@ -71,5 +74,8 @@
 	"wikispeech-poc-table-column": "kolumn",
 	"wikispeech-enter-transcription": "Ange transkription för att kunna förhandsgranska",
 	"wikispeech-morphology": "Morfologi",
-	"wikispeech-menu-label": "Fler alternativ"
+	"wikispeech-menu-label": "Fler alternativ",
+	"wikispeech-poc-start-image": "inledning av bild",
+	"wikispeech-poc-alt-text": "alternativ text",
+	"wikispeech-poc-caption": "bildtext"
 }

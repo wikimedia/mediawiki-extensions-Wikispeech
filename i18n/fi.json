@@ -79,5 +79,7 @@
 	"wikispeech-report-pronunciation-error-context": "Konteksti",
 	"wikispeech-report-pronunciation-error-other": "Muut",
 	"wikispeech-one-word-only": "Valitse vain yksi sana.",
-	"wikispeech-tip-highlight-word": "Vinkki: Voit myös korostaa sanan ennen ilmoittamista."
+	"wikispeech-tip-highlight-word": "Vinkki: Voit myös korostaa sanan ennen ilmoittamista.",
+	"wikispeech-poc-start-image": "kuvan alku",
+	"wikispeech-poc-alt-text": "vaihtoehtoinen teksti"
 }

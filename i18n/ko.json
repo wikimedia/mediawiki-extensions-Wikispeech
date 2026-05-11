@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Bisang",
 			"Dr1t jg",
 			"Gustmd7410",
 			"Tensama0415",
@@ -83,5 +84,7 @@
 	"wikispeech-report-pronunciation-error-button": "보고하기",
 	"wikispeech-report-pronunciation-error-context": "맥락",
 	"wikispeech-report-pronunciation-error-other": "기타",
-	"wikispeech-non-existing-page": "이 문서는 존재하지 않습니다. 위키스피치 팀에 연락해 주십시오."
+	"wikispeech-non-existing-page": "이 문서는 존재하지 않습니다. 위키스피치 팀에 연락해 주십시오.",
+	"wikispeech-poc-alt-text": "대체 글",
+	"wikispeech-poc-caption": "캡션"
 }

@@ -225,10 +225,10 @@ class StandardSegmenter extends Segmenter {
 		// or followed by a space and a capital letter.
 
 		return self::isSentenceEndingPunctuation( $character ) && (
-			!$nextCharacter ||
-			$nextCharacter == "\n" || (
-				$nextCharacter == ' ' && (
-					!$characterAfterNext || (
+			$nextCharacter === null ||
+			$nextCharacter === "\n" || (
+				$nextCharacter === ' ' && (
+					$characterAfterNext === null || (
 						self::isLetter( $characterAfterNext ) &&
 						self::isUpper( $characterAfterNext ) ) ) ) );
 	}

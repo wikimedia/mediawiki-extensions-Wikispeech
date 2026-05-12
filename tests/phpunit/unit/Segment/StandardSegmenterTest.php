@@ -80,6 +80,7 @@ class StandardSegmenterTest extends MediaWikiUnitTestCase {
 			'abbreviation' => [ 'One sentence i.e. one segment.' ],
 			'dotDirectlyFollowedByComma' => [ 'As with etc., jr. and friends.' ],
 			'decimalDot' => [ 'In numbers like 2.9.' ],
+			'Decimal dot followed by zero' => [ 'Mellan klockan 10.00 och 14.00.' ],
 		];
 	}
 

@@ -75,6 +75,12 @@
 	"wikispeech-enter-transcription": "Ange transkription för att kunna förhandsgranska",
 	"wikispeech-morphology": "Morfologi",
 	"wikispeech-menu-label": "Fler alternativ",
+	"prefs-wikispeech-highlighting-green-blue": "Grön + blå",
+	"wikispeech-region-player": "Wikispeech-spelare",
+	"wikispeech-report-pronunciation-error": "Rapportera uttalsfel",
+	"wikispeech-report-pronunciation-post-error": "Det gick inte att spara rapporten om uttalsfel.",
+	"wikispeech-one-word-only": "Välj endast ett ord.",
+	"wikispeech-tip-highlight-word": "Tips: Du kan också markera ett ord innan du rapporterar.",
 	"wikispeech-poc-start-image": "inledning av bild",
 	"wikispeech-poc-alt-text": "alternativ text",
 	"wikispeech-poc-caption": "bildtext"

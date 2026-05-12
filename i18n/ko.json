@@ -5,10 +5,14 @@
 			"Gustmd7410",
 			"Ykhwong",
 			"YeBoy371",
-			"Tensama0415"
+			"Tensama0415",
+			"Bisang"
 		]
 	},
+	"prefs-wikispeech-voice": "음성",
 	"prefs-wikispeech-speech-rate": "말하기 속도",
+	"prefs-wikispeech-speech-rate-percent": "말하기 속도 (퍼센트)",
+	"prefs-wikispeech-enable": "위키스피치 활성화",
 	"prefs-wikispeech-show-player": "플레이어 무조건 표시",
 	"right-wikispeech-listen": "문서 듣기",
 	"right-wikispeech-read-lexicon": "위키스피치 기호 읽기",

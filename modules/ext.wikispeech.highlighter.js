@@ -149,7 +149,7 @@ class Highlighter {
 			return;
 		}
 
-		this.removeWrappers( this.wordHighlightingClass );
+		this.removeWrappers( this.wordHighlightingSelector );
 		this.clearHighlightTokenTimer();
 		this.highlightToken( token );
 		this.setHighlightTokenTimer( token );

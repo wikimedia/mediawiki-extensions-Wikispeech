@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16"
+		]
+	},
+	"apihelp-wikispeech-segment-param-page": "Il titolo della pagina da segmentare.",
+	"apihelp-wikispeech-segment-param-part-of-content": "Aggiungi contenuti extra per determinati elementi.",
+	"apihelp-wikispeech-listen-summary": "Sintetizza discorso.",
+	"apihelp-wikispeech-listen-param-lang": "Codice lingua.",
+	"apihelp-wikispeech-listen-param-revision": "Versione della pagina in cui si trova il segmento.",
+	"apihelp-wikispeech-listen-param-segment": "Hash del segmento sintetizzato.",
+	"apihelp-wikispeech-listen-param-text": "Testo da sintetizzare.",
+	"apihelp-wikispeech-listen-param-ipa": "Stringa IPA da sintetizzare.",
+	"apihelp-wikispeech-listen-param-voice": "Voce da utilizzare. Se non indicata, verrà utilizzata la voce predefinita per la lingua.",
+	"apierror-wikispeech-listen-deleted-revision": "Le versioni cancellata non possono essere ascoltate.",
+	"apihelp-wikispeech-listen-example-2": "Usa una voce non predefinita."
+}

@@ -12,6 +12,7 @@ use ConfigException;
 use ExternalStoreException;
 use FormatJson;
 use InvalidArgumentException;
+use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Wikispeech\Api\ListenMetricsEntry;
@@ -60,18 +61,26 @@ class UtteranceGenerator {
 	/** @var WANObjectCache */
 	private $cache;
 
+	/** @var Config */
+	private $config;
+
 	/**
+	 * @since 0.1.16 add `config`.
 	 * @since 0.1.13
 	 * @param SpeechoidConnector $speechoidConnector
 	 * @param UtteranceStore $utteranceStore
 	 * @param SegmentPageFactory $segmentPageFactory
+	 * @param WANObjectCache $cache
+	 * @param SegmentMessagesFactory $segmentMessagesFactory
+	 * @param Config $config
 	 */
 	public function __construct(
 		SpeechoidConnector $speechoidConnector,
 		UtteranceStore $utteranceStore,
 		SegmentPageFactory $segmentPageFactory,
 		WANObjectCache $cache,
-		SegmentMessagesFactory $segmentMessagesFactory
+		SegmentMessagesFactory $segmentMessagesFactory,
+		Config $config
 	) {
 		$this->logger = LoggerFactory::getInstance( 'Wikispeech' );
 		$this->speechoidConnector = $speechoidConnector;
@@ -79,6 +88,7 @@ class UtteranceGenerator {
 		$this->cache = $cache;
 		$this->utteranceStore = $utteranceStore;
 		$this->segmentMessagesFactory = $segmentMessagesFactory;
+		$this->config = $config;
 	}
 
 	/**
@@ -174,10 +184,12 @@ class UtteranceGenerator {
 
 			/** @var string $ssml text/xml Speech Synthesis Markup Language */
 			$ssml = null;
-			if ( $language === 'sv' ) {
-				// @todo implement a per language selecting content text filter facade
-				$textFilter = new SwedishFilter( $segmentText );
-				$ssml = $textFilter->process();
+			if ( $this->config->get( 'WikispeechUseTextFilters' ) ) {
+				if ( $language === 'sv' ) {
+					// @todo implement a per language selecting content text filter facade
+					$textFilter = new SwedishFilter( $segmentText );
+					$ssml = $textFilter->process();
+				}
 			}
 			if ( $ssml !== null ) {
 				$speechoidResponse = $this->speechoidConnector->synthesize(

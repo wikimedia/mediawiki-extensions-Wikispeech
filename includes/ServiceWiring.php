@@ -75,7 +75,8 @@ return [
 			$services->get( 'Wikispeech.UtteranceStore' ),
 			$services->get( 'Wikispeech.SegmentPageFactory' ),
 			$services->getMainWANObjectCache(),
-			$services->get( 'Wikispeech.SegmentMessagesFactory' )
+			$services->get( 'Wikispeech.SegmentMessagesFactory' ),
+			$services->getMainConfig()
 		);
 	},
 	'Wikispeech.UtteranceStore' => static function ( MediaWikiServices $services ): UtteranceStore {

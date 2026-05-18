@@ -9,6 +9,7 @@ namespace MediaWiki\Wikispeech\Tests\Integration\Utterance;
  */
 
 use FormatJson;
+use MediaWiki\Config\HashConfig;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Wikispeech\Segment\CleanedText;
@@ -29,6 +30,14 @@ use Wikimedia\ObjectCache\WANObjectCache;
  * @covers \MediaWiki\Wikispeech\Utterance\UtteranceGenerator
  */
 class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
+
+	/** @var HashConfig */
+	private $config;
+
+	protected function setUp(): void {
+		$this->config = new HashConfig();
+		$this->config->set( 'WikispeechUseTextFilters', true );
+	}
 
 	/**
 	 * @since 0.1.11
@@ -107,7 +116,8 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 			$utteranceStoreMock,
 			$this->createMock( SegmentPageFactory::class ),
 			$this->createStub( WANObjectCache::class ),
-			$this->createMock( SegmentMessagesFactory::class )
+			$this->createMock( SegmentMessagesFactory::class ),
+			$this->config
 		);
 
 		$utterance = $utteranceGenerator->getUtterance(
@@ -187,7 +197,8 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 			$utteranceStoreMock,
 			$this->createMock( SegmentPageFactory::class ),
 			$this->createStub( WANObjectCache::class ),
-			$this->createMock( SegmentMessagesFactory::class )
+			$this->createMock( SegmentMessagesFactory::class ),
+			$this->config
 		);
 
 		$utterance = $utteranceGenerator->getUtterance(
@@ -232,7 +243,8 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 			$this->createMock( UtteranceStore::class ),
 			$segmentPageFactory,
 			$this->createStub( WANObjectCache::class ),
-			$this->createMock( SegmentMessagesFactory::class )
+			$this->createMock( SegmentMessagesFactory::class ),
+			$this->config
 		);
 		$utteranceGenerator->setContext( new RequestContext() );
 

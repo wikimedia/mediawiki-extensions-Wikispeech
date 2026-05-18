@@ -638,8 +638,11 @@
 		"WikispeechReportPronunciationUrl": {
 			"description": "API endpoint to wiki for pronunciation error reporting.",
 			"value": "https://www.mediawiki.org/w/api.php"
+		},
+		"WikispeechUseTextFilters": {
+			"description": "Use filters that change the segment text before it's sent to Speechoid. Can be used to fix expressions (not individual words) that aren't handled properly",
+			"value": true
 		}
-
 	},
 	"DefaultUserOptions": {
 		"wikispeechEnable": true,

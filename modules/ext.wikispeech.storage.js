@@ -308,7 +308,7 @@ class Storage {
 	 */
 
 	requestMessageUtteranceTts( messageText ) {
-		const language = mw.config.get( 'wgPageContentLanguage' );
+		const language = mw.config.get( 'wgUserLanguage' );
 
 		const options = {
 			action: 'wikispeech-listen',

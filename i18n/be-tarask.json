@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ucukor"
+		]
+	},
+	"prefs-wikispeech-voice": "Голас",
+	"wikispeech-error-loading-audio-title": "Не ўдалося заладаваць аўдыё",
+	"wikispeech-language": "Мова",
+	"wikispeech-lexicon-save": "Захаваць",
+	"wikispeech-testlisten-text": "Тэкст"
+}

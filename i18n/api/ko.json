@@ -5,7 +5,16 @@
 			"Tensama0415"
 		]
 	},
+	"apihelp-wikispeech-segment-summary": "문서의 HTML 콘텐츠를 세그먼트로 나눕니다.",
+	"apihelp-wikispeech-segment-param-page": "세그먼트화할 문서의 제목입니다.",
+	"apihelp-wikispeech-segment-param-removetags": "정리 중 완전히 제거해야 하는 HTML 태그를 다음 형식의 JSON 객체로 지정합니다:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n여기서 <code>tag1</code>은 항상 제거되고, <code>tag2</code>는 CSS 클래스 <code>css-class</code>도 함께 있는 경우에만 제거되며, <code>tag3</code>는 CSS 클래스 <code>css-class-1</code> 또는 <code>css-class-2</code>도 함께 있는 경우에만 제거됩니다. wikispeech-listen은 세그먼트 분할에 기본 구성을 사용하므로, 이 매개변수의 임시 설정으로 생성된 세그먼트와 호환되지 않을 수 있습니다.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "세그먼트를 나누어야 하는 HTML 태그입니다. wikispeech-listen은 세그먼트화에 기본 설정을 사용하며, 이 매개변수의 임시 설정으로 생성된 세그먼트와 호환되지 않을 수 있다는 점에 유의하세요.",
+	"apihelp-wikispeech-segment-param-consumer-url": "컨슈머 위키의 스크립트 경로 URL입니다.",
+	"apihelp-wikispeech-segment-example-1": "설정의 기본 매개변수를 사용하여 메인 문서를 세그먼트화합니다.",
+	"apihelp-wikispeech-segment-example-2": "사용자 지정 매개변수를 사용하여 세그먼트화합니다. 태그 <code>sup</code>는 제거되며, 클래스가 <code>toc</code>인 경우 <code>div</code>도 제거됩니다. 태그 <code>h1</code> 및 <code>h2</code>는 세그먼트를 나눕니다.",
+	"apihelp-wikispeech-segment-example-3": "다른 위키의 대문을 세그먼트화합니다.",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var>는 유효한 JSON 문자열이 아닙니다.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var>의 형식이 유효하지 않습니다. 값이 불리언, 문자열 또는 문자열 배열인 객체여야 합니다. 어떤 태그도 제거하지 않으려면 <var>removetags</var>를 빈 객체 <code>{}</code>로 설정하세요.",
 	"apihelp-wikispeech-listen-summary": "음성을 합성합니다.",
 	"apihelp-wikispeech-listen-param-lang": "언어 코드입니다.",
 	"apihelp-wikispeech-listen-param-revision": "세그먼트가 발견된 문서 판입니다.",

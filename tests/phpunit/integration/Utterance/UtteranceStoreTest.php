@@ -123,17 +123,17 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $data['language'], $created->getLanguage() );
 		$this->assertSame( $data['voice'], $created->getVoice() );
 		$this->assertSame( $data['segmentHash'], $created->getSegmentHash() );
-		$this->assertSelect(
-			UtteranceStore::UTTERANCE_TABLE,
-			[ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
-			[ 'wsu_utterance_id' => $created->getUtteranceId() ],
-			[ [
+		$this->newSelectQueryBuilder()
+			->select( [ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ] )
+			->from( UtteranceStore::UTTERANCE_TABLE )
+			->where( [ 'wsu_utterance_id' => $created->getUtteranceId() ] )
+			->assertRowValue( [
 				$data['remoteWikiHash'],
 				$data['pageId'],
 				$data['language'],
 				$data['segmentHash'],
-				$data['voice'] ] ]
-		);
+				$data['voice']
+			] );
 	}
 
 	/**
@@ -163,18 +163,20 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $data['language'], $created->getLanguage() );
 		$this->assertSame( $data['voice'], $created->getVoice() );
 		$this->assertSame( $data['segmentHash'], $created->getSegmentHash() );
-		$this->assertSelect(
-			UtteranceStore::UTTERANCE_TABLE,
-			[ 'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_message_key', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice' ],
-			[ 'wsu_utterance_id' => $created->getUtteranceId() ],
-			[ [
+		$this->newSelectQueryBuilder()
+			->select( [
+				'wsu_remote_wiki_hash', 'wsu_page_id', 'wsu_message_key', 'wsu_lang', 'wsu_seg_hash', 'wsu_voice'
+			] )
+			->from( UtteranceStore::UTTERANCE_TABLE )
+			->where( [ 'wsu_utterance_id' => $created->getUtteranceId() ] )
+			->assertRowValue( [
 				$data['remoteWikiHash'],
 				0,
 				$data['messageKey'],
 				$data['language'],
 				$data['segmentHash'],
-				$data['voice'] ] ]
-		);
+				$data['voice']
+			] );
 	}
 
 	/**
@@ -705,12 +707,11 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 							->synthesisMetadataUrlFactory( $mockedUtterance['utteranceId'] ) ]
 					)
 				);
-				$this->assertSelect(
-					UtteranceStore::UTTERANCE_TABLE,
-					[ 'wsu_utterance_id' ],
-					[ 'wsu_utterance_id' => $mockedUtterance['utteranceId'] ],
-					[]
-				);
+				$this->newSelectQueryBuilder()
+					->select( 'wsu_utterance_id' )
+					->from( UtteranceStore::UTTERANCE_TABLE )
+					->where( [ 'wsu_utterance_id' => $mockedUtterance['utteranceId'] ] )
+					->assertEmptyResult();
 			} else {
 				// utterance should not have been flushed out
 				$this->assertTrue(
@@ -725,12 +726,11 @@ class UtteranceStoreTest extends MediaWikiIntegrationTestCase {
 							->synthesisMetadataUrlFactory( $mockedUtterance['utteranceId'] ) ]
 					)
 				);
-				$this->assertSelect(
-					UtteranceStore::UTTERANCE_TABLE,
-					[ 'wsu_utterance_id' ],
-					[ 'wsu_utterance_id' => $mockedUtterance['utteranceId'] ],
-					[ [ $mockedUtterance['utteranceId'] ] ]
-				);
+				$this->newSelectQueryBuilder()
+					->select( 'wsu_utterance_id' )
+					->from( UtteranceStore::UTTERANCE_TABLE )
+					->where( [ 'wsu_utterance_id' => $mockedUtterance['utteranceId'] ] )
+					->assertFieldValue( $mockedUtterance['utteranceId'] );
 			}
 		}
 	}

@@ -4,6 +4,11 @@
 			"Yupik"
 		]
 	},
+	"prefs-wikispeech": "Guldal siidduid",
+	"right-wikispeech-listen": "Guldalit siiddu",
+	"action-wikispeech-listen": "guldalit siiddu",
+	"wikispeech-listen": "Guldal",
+	"wikispeech-dont-listen": "Ale guldal",
 	"wikispeech-lexicon-save": "Vurke",
 	"wikispeech-lexicon-new": "Ođđa"
 }

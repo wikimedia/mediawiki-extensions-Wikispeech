@@ -5,6 +5,10 @@
 			"Yupik"
 		]
 	},
+	"right-wikispeech-listen": "Kuldâliđ siijđo",
+	"action-wikispeech-listen": "kuldâliđ siijđo",
+	"wikispeech-listen": "Kuldâl",
+	"wikispeech-dont-listen": "Ele kuldâl",
 	"wikispeech-language": "Kielâ",
 	"wikispeech-lexicon-save": "Vuorkkii"
 }

@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"McDutchie"
+			"McDutchie",
+			"Siebrand"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Verwerk een pagina die gebruikt zal worden door de Wikispeech uitbreiding.",
@@ -11,7 +12,7 @@
 	"apihelp-wikispeech-segment-param-part-of-content": "Voeg extra inhoud toe voor bepaalde elementen.",
 	"apihelp-wikispeech-segment-param-consumer-url": "URL naar het scriptpad van de consumerwiki.",
 	"apihelp-wikispeech-segment-example-1": "De hoofdpagina segmenteren met standaardparameters uit de configuratie.",
-	"apihelp-wikispeech-segment-example-2": "Verkrijg originele HTML inhoud en gezuiverde tekst.",
+	"apihelp-wikispeech-segment-example-2": "Segment met behulp van aangepaste parameters. Het label <code>sup</code> wordt verwijderd en <code>div</code> ook wanneer het de klasse <code>toc</code> heeft. De labels <code>h1</code> en <code>h2</code> maken segmenten stuk.",
 	"apihelp-wikispeech-segment-example-3": "Segmenteer de hoofdpagina op een andere wiki.",
 	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> is geen geldige JSON string.",
 	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> is geen geldig formaat. Het moet een object zijn met booleans, strings of stringreeksen als waarden. Om geen labels te verwijderen, set <var>removetags</var> naar leeg object, <code>{}</code>.",

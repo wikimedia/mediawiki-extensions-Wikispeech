@@ -60,7 +60,7 @@
 	"wikispeech-testlisten-audio-data": "Audiogegevens",
 	"group-wikispeech-edit-lexicon": "Wikispeech-lexicon-bewerkers",
 	"group-wikispeech-edit-lexicon-member": "Wikispeech-lexicon-bewerk{{GENDER:$1||st}}er",
-	"wikispeech-lexicon-null-edit": "Er zijn geen ter zake doende veranderingen waargenomen in transcriptie of voorkeursstatus.",
+	"wikispeech-lexicon-null-edit": "Er zijn geen ter zake doende wijzigingen waargenomen in transcriptie of voorkeursstatus.",
 	"wikispeech-skip-back": "Een zin terugspringen",
 	"wikispeech-previous": "Een woord terugspringen",
 	"wikispeech-play": "Afspelen",

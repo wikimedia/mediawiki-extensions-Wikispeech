@@ -1,9 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Joseba"
+			"Joseba",
+			"Maddi Eseberri Colomo"
 		]
 	},
+	"prefs-wikispeech": "Orrialdeak entzun",
 	"prefs-wikispeech-voice": "ahotsa",
-	"prefs-wikispeech-speech-rate": "Hizketa-tasa"
+	"prefs-wikispeech-speech-rate": "Hizketa-tasa",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Wikispeech lexikoaren editorea}}"
 }

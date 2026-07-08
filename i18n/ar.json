@@ -115,5 +115,8 @@
 	"wikispeech-no-word-error": "الرجاء اختيار كلمة، وليس مسافات بيضاء أو علامات ترقيم.",
 	"wikispeech-one-word-only": "يرجى اختيار كلمة واحدة فقط.",
 	"wikispeech-tip-highlight-word": "نصيحة: يمكنك أيضًا تمييز كلمة قبل الإبلاغ عنها.",
-	"wikispeech-non-existing-page": "الصفحة غير موجودة، يرجى الاتصال بفريق ويكي سبيتش."
+	"wikispeech-non-existing-page": "الصفحة غير موجودة، يرجى الاتصال بفريق ويكي سبيتش.",
+	"wikispeech-poc-start-image": "بداية الصورة",
+	"wikispeech-poc-alt-text": "نص بديل",
+	"wikispeech-poc-caption": "التسمية التوضيحية"
 }

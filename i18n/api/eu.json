@@ -1,6 +1,38 @@
 {
 	"@metadata": {
-		"authors": []
+		"authors": [
+			"Maddi Eseberri Colomo"
+		]
 	},
-	"apihelp-wikispeech-listen-param-lang": "hizkuntza-kodea"
+	"apihelp-wikispeech-segment-summary": "Orrialde baten HTML edukia segmentutan banatu.",
+	"apihelp-wikispeech-segment-param-page": "Segmentatuko den orriaren izenburua.",
+	"apihelp-wikispeech-segment-param-removetags": "Garbiketa prozesuan guztiz kendu behar diren HTML etiketak, formatu honetako JSON objektu gisa:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\n <code>tag1</code> beti ezabatzen bada, <code>tag2</code> bakarrik ezabatuko da baldin eta CSS class <code>css-class</code> badu eta <code>tag3</code>, baldin eta CSS class <code>css-class-1</code> edo <code>css-class-2</code> badu. Kontuan izan wikispeech-listen segmentaziorako konfigurazio lehenetsia erabiltzen duela eta agian ez dela bateragarria parametro honen ad hoc ezarpen batekin sortutako segmentuekin.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Segmentuak hautsi beharko lituzketen HTML etiketak. Kontuan izan wikispeech-listen-ek segmentatzeko konfigurazio lehenetsia erabiltzen duela eta baliteke parametro honen ad hoc ezarpen batekin sortutako segmentuekin bateragarria ez izatea.",
+	"apihelp-wikispeech-segment-param-part-of-content": "Gehitu eduki gehigarria elementu batzuetarako.",
+	"apihelp-wikispeech-segment-param-consumer-url": "Kontsumitzaileen wikiaren script bidearen URLa.",
+	"apihelp-wikispeech-segment-example-1": "Segmentatu orri nagusia konfigurazioko parametro lehenetsiak erabiliz.",
+	"apihelp-wikispeech-segment-example-2": "Segmentua parametro pertsonalizatuak erabiliz. <code>sup</code> etiketa kentzen da eta baita <code>div</code> ere <code>toc</code> klasea duenean. <code>h1</code> eta <code>h2</code> etiketek segmentuak hausten dituzte.",
+	"apihelp-wikispeech-segment-example-3": "Segmentatu orrialde nagusia beste wiki batean.",
+	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> ez da baliozko JSON kate bat.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> ez dago baliozko formatuan. Objektu bat izan behar du, eta haren balioek boolearrak, kateak edo kate-zerrendak izan behar dute. Etiketarik ez kentzeko, ezarri <var>removetags</var> objektu huts gisa: <code>{}</code>.",
+	"apihelp-wikispeech-listen-summary": "Ahotsa sintetizatu.",
+	"apihelp-wikispeech-listen-param-lang": "hizkuntza-kodea",
+	"apihelp-wikispeech-listen-param-revision": "Segmentua aurkitzen den orrialdearen berrikuspena.",
+	"apihelp-wikispeech-listen-param-segment": "Segmentu sintetizatuaren Hash.",
+	"apihelp-wikispeech-listen-param-text": "Sintetizatu beharreko testua.",
+	"apihelp-wikispeech-listen-param-ipa": "Sintetizatu beharreko IPA katea.",
+	"apihelp-wikispeech-listen-param-voice": "Erabili beharreko ahotsa. Ematen ez bada, hizkuntzaren ahots lehenetsia erabiliko da.",
+	"apihelp-wikispeech-listen-param-consumer-url": "Kontsumitzaileen wikiaren script bidearen URLa.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Balio lehenetsia faltsua da. Egia bada, datu anonimoak ez dira egunerokoaren metriken erregistroan gordeko. Batez ere aurre-errendatzea exekutatzean erabiltzen da, roboten eskaerak estatistikei gehitu ez dakizkien.",
+	"apierror-wikispeech-listen-deleted-revision": "Ezabatutako berrikuspenak ezin dira entzun.",
+	"apierror-wikispeech-listen-notallowed": "Ez duzu API ekintza hau deitzeko eskubiderik.",
+	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ez da hizkuntza baliozkoa. Hauetako bat izan beharko luke: $2 .",
+	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> ez da ahots baliozkoa. Hauetako bat izan beharko luke: $2 .",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Ezin izan da ' $1 ' berrikuspen IDa duen orrialdea lortu $2 URLko kontsumitzailearengandik.",
+	"apierror-wikispeech-consumer-not-allowed": "Urruneko wikien eskaerak ez dira onartzen.",
+	"apihelp-wikispeech-listen-example-1": "Esaldi bat ingelesez sintetizatu.",
+	"apihelp-wikispeech-listen-example-2": "Erabili lehenetsitakoa ez den ahots bat.",
+	"apihelp-wikispeech-listen-example-3": "Berriskupen batetik segmentu bat eskatu. Cacheko sintesia erabiliko du existitzen bada.",
+	"apihelp-wikispeech-listen-example-4": "Beste wiki bateko esaldi bat sintetizatu.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Sarrerako testuak ezin ditu $1 karaktere baino gehiago izan, baina $2 karaktere izan behar ditu."
 }

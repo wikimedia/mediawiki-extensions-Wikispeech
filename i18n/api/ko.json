@@ -38,5 +38,5 @@
 	"apihelp-wikispeech-listen-example-4": "다른 위키에서의 발화를 합성합니다.",
 	"apihelp-wikispeech-listen-example-5": "메시지 키를 사용하여 시스템 메시지를 합성합니다.",
 	"apierror-wikispeech-listen-invalid-input-too-long": "입력 텍스트는 $1자를 초과할 수 없지만, 실제로는 $2자를 포함합니다.",
-	"apierror-wikispeech-listen-no-audio": "ID가 \"$1\"인 발화는 데이터베이스에 존재하지만 오디오 파일이 없습니다. 'wikispeech_utterance' 테이블에서 해당 항목을 삭제하고, 메시지 기반 발화인 경우 'preSynthesizeMessages.php' 유지 관리 스크립트를 다시 실행하여 발화를 재생성하세요."
+	"apierror-wikispeech-listen-no-audio": "ID가 \"$1\"인 발화는 데이터베이스에 존재하지만 오디오 파일이 없습니다. 'wikispeech_utterance' 테이블에서 해당 항목을 제거하고, 메시지 기반 발화인 경우 'preSynthesizeMessages.php' 유지 관리 스크립트를 다시 실행하여 발화를 재생성하세요."
 }

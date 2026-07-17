@@ -80,7 +80,7 @@ class WikiPageTestUtil {
 		$pageUpdater = $page->newPageUpdater( $testUser, $slotsUpdate );
 		$pageUpdater->setContent( SlotRecord::MAIN, $wikiTextContent );
 		$pageUpdater->saveRevision( CommentStoreComment::newUnsavedComment( '' ) );
-		if ( !$pageUpdater->wasSuccessful() && !$pageUpdater->isUnchanged() ) {
+		if ( !$pageUpdater->wasSuccessful() && $pageUpdater->wasRevisionCreated() ) {
 			throw new RuntimeException( 'Failed to edit page: ' . $pageUpdater->getStatus() );
 		}
 	}

@@ -70,5 +70,8 @@
 	"wikispeech-morphology-neu": "بې جنسه",
 	"wikispeech-morphology-nn": "نوم",
 	"wikispeech-morphology-pm": "نوم‌ځری",
-	"wikispeech-morphology-vb": "کړ"
+	"wikispeech-morphology-vb": "کړ",
+	"wikispeech-report-pronunciation-error-button": "راپور",
+	"wikispeech-report-pronunciation-error-context": "منښتونه",
+	"wikispeech-report-pronunciation-error-other": "نور"
 }

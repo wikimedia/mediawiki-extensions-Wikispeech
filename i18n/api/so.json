@@ -1,0 +1,37 @@
+{
+	"@metadata": {
+		"authors": [
+			"AhmedG612"
+		]
+	},
+	"apihelp-wikispeech-segment-summary": "U kala qaybi nuxurka HTML ee bogga qaybo.",
+	"apihelp-wikispeech-segment-param-page": "Cinwaanka bogga la kala qaybinayo.",
+	"apihelp-wikispeech-segment-param-removetags": "Calaamadaha HTML ee ay tahay in gebi ahaanba laga saaro inta lagu jiro nadiifinta, sida shay JSON ah oo qaabkan ah:\n<pre>{\n\t\"tag1\": true,\n\t\"tag2\": \"css-class\",\n\t\"tag3\": [\"css-class-1\", \"css-class-2\"]\n}</pre>\nhalka <code>tag1</code> mar walba laga saarayo, <code>tag2</code> laga saarayo oo keliya haddii uu sidoo kale leeyahay fasalka CSS ee <code>css-class</code>, halka <code>tag3</code> laga saarayo oo keliya haddii uu sidoo kale leeyahay mid ka mid ah fasallada CSS ee <code>css-class-1</code> ama <code>css-class-2</code>. Ogow in wikispeech-listen uu isticmaalo qaabeynta caadiga ah marka uu kala qaybinayo, sidaas darteed waxaa laga yaabaa inuusan la jaanqaadi karin qaybaha lagu soo saaray dejin gaar ah oo aan caadi ahayn oo xulashadan ah.",
+	"apihelp-wikispeech-segment-param-segmentbreakingtags": "Calaamadaha HTML ee ay tahay inay kala jebiyaan qaybaha. Ogow in wikispeech-listen uu isticmaalo qaabeynta caadiga ah marka uu kala qaybinayo, sidaas darteed waxaa laga yaabaa inuusan la jaanqaadi karin qaybaha lagu soo saaray dejin gaar ah oo aan caadi ahayn xuduudaha.",
+	"apihelp-wikispeech-segment-param-consumer-url": "URL-ka waddada qoraalka ee wikiga macaamilka.",
+	"apihelp-wikispeech-segment-example-1": "Kala qaybi bogga hore adigoo isticmaalaya xuduudaha caadiga ah ee qaabaynta.",
+	"apihelp-wikispeech-segment-example-2": "Kala qaybi adigoo isticmaalaya xuduudo gaar ah. Calaamadda <code>sup</code> waa laga saarayaa, sidoo kalena <code>div</code> marka uu leeyahay fasalka <code>toc</code>. Calaamadaha <code>h1</code> iyo <code>h2</code> waxay kala jebinayaan qaybaha.",
+	"apihelp-wikispeech-segment-example-3": "Kala qaybi bogga hore ee wiki kale.",
+	"apierror-wikispeech-segment-removetagsinvalidjson": "<var>removetags</var> ma aha xadhig JSON oo ansax ah.",
+	"apierror-wikispeech-segment-removetagsinvalid": "<var>removetags</var> ma aha qaab ansax ah. Waa inuu noqdaa shay ay qiimayaashiisu yihiin booleaanno, xadhko ama hannaan xadhko ah. Si aan wax calaamado ah loo saarin, <var>removetags</var> u dhig shay madhan, <code>{}</code>.",
+	"apihelp-wikispeech-listen-summary": "Samee hadal macmal ah.",
+	"apihelp-wikispeech-listen-param-lang": "Koodhka luuqadda.",
+	"apihelp-wikispeech-listen-param-revision": "Dib u eegista bogga ee qaybtu ku jirto.",
+	"apihelp-wikispeech-listen-param-segment": "Hash-ka qaybta hadalka macmalka ah.",
+	"apihelp-wikispeech-listen-param-text": "Qoraalka loo beddelayo hadal macmal ah.",
+	"apihelp-wikispeech-listen-param-ipa": "Xadhigga IPA ee loo beddelayo hadal macmal ah.",
+	"apihelp-wikispeech-listen-param-voice": "Codka la adeegsanayo. Haddii aan la bixin, waxaa la adeegsan doonaa codka caadiga ah ee luuqadda.",
+	"apihelp-wikispeech-listen-param-consumer-url": "URL-ka waddada qoraalka ee wikiga macaamilka.",
+	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Sida caadiga ah waa <code>false</code>. Haddii uu yahay <code>true</code>, xogta qarsoon laguma kaydin doono diiwaanka cabbirrada joornaalka. Inta badan waxaa loo adeegsadaa marka la fulinayo samaynta horudhaca ah si looga fogaado in codsiyada robots lagu daro tirakoobka.",
+	"apierror-wikispeech-listen-deleted-revision": "Dib u eegisyada la tirtiray lama dhagaysan karo.",
+	"apierror-wikispeech-listen-notallowed": "Ma lihid oggolaanshaha aad ugu yeeri karto ficilkan API-ga.",
+	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ma aha luuqad ansax ah. Waa inay ka mid noqotaa: $2.",
+	"apierror-wikispeech-listen-invalid-voice": "<code>$1</code> ma aha cod ansax ah. Waa inuu ka mid noqdaa: $2.",
+	"apierror-wikispeech-listen-failed-getting-page-from-consumer": "Laga soo heli waayay bogga leh aqoonsiga dib u eegista '$1' ee macaamilka ku yaal URL-ka $2.",
+	"apierror-wikispeech-consumer-not-allowed": "Codsiyada ka imanaya wiki-yada fog lama oggola.",
+	"apihelp-wikispeech-listen-example-1": "Samee hadal macmal ah oo Af-Soomaali ah.",
+	"apihelp-wikispeech-listen-example-2": "Isticmaal cod aan ahayn kan caadiga ah.",
+	"apihelp-wikispeech-listen-example-3": "Ka codso qayb ka mid ah dib u eegis. Waxay adeegsan doontaa hadal macmal ah oo kaydsan haddii uu jiro.",
+	"apihelp-wikispeech-listen-example-4": "Ka samee hadal macmal ah wiki kale.",
+	"apierror-wikispeech-listen-invalid-input-too-long": "Qoraalka gelintu waa inuusan ka badnaan $1 xaraf, laakiin wuxuu ka koobnaa $2 xaraf."
+}

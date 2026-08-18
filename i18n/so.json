@@ -1,0 +1,42 @@
+{
+	"@metadata": {
+		"authors": [
+			"AhmedG612"
+		]
+	},
+	"wikispeech-desc": "Qalab qoraal u beddelid hadal ah oo mashaariicda Wikimedia ka dhigaya kuwo si fudud loogu heli karo dadka sababo kala duwan awgood ay ku adag tahay akhrisku.",
+	"prefs-wikispeech-voice": "Cod",
+	"prefs-wikispeech-speech-rate": "Xawaaraha hadalka",
+	"prefs-wikispeech-speech-rate-percent": "Xawaaraha hadalka (boqolkiiba)",
+	"prefs-wikispeech-enable": "Hawl geli Wikispeech",
+	"prefs-wikispeech-show-player": "Mar walba muuji qalabka ciyaarista",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "Isbeddellada lagu sameeyo dookyada waxay dhaqan geli doonaan marka bogga xiga la soo raro. Si aad bogga hadda jira ugu dhagaysato dookyada cusub, dib u soo rar bogga ka dib markaad kaydiso.",
+	"right-wikispeech-listen": "Dhagayso bogga",
+	"right-wikispeech-read-lexicon": "Akhri qaamuuska Wikispeech",
+	"right-wikispeech-edit-lexicon": "Tafatir qaamuuska Wikispeech",
+	"action-wikispeech-listen": "dhagayso bogga",
+	"action-wikispeech-read-lexicon": "akhri qaamuuska Wikispeech",
+	"action-wikispeech-edit-lexicon": "Tafatir qaamuuska Wikispeech",
+	"wikispeech-listen": "Dhageyso",
+	"wikispeech-dont-listen": "Ha dhagaysan",
+	"wikispeech-error-loading-audio-title": "Lama soo rari karin maqalka",
+	"wikispeech-error-loading-audio-message": "Tan waxaa sababi kara isku-xir internet oo liita ama khalad ka dhacay server-ka. Ma rabtaa inaad mar kale isku daydo ama joojiso ciyaarista?",
+	"wikispeech-error-generate-preview-title": "Lama abuuri karin horudhac",
+	"wikispeech-retry": "Mar kale isku day",
+	"wikispeech-stop": "Jooji",
+	"editlexicon": "Wax ka beddel qaamuuska",
+	"wikispeech-language": "Luuqada",
+	"wikispeech-word": "Eray",
+	"wikispeech-transcription": "Qoraal dhawaaqeed",
+	"wikispeech-item-id": "Aqoonsiga",
+	"wikispeech-preview": "Hordhac",
+	"wikispeech-preferred": "La doorbiday",
+	"wikispeech-lexicon-next": "Xiga",
+	"wikispeech-lexicon-save": "Kaydi",
+	"wikispeech-lexicon-add-entry-success": "Gelitaan ayaa lagu daray qaamuuska.",
+	"wikispeech-lexicon-new": "Cusub",
+	"wikispeech-lexicon-edit-entry-success": "Gelitaanka waa la tafatiray.",
+	"wikispeech-lexicon-copyrightnote": "Markaad kaydiso isbeddellada, waxaad oggolaanaysaa in wax ku biirintaada lagu sii daayo [https://creativecommons.org/publicdomain/zero/1.0/ CC0].",
+	"group-wikispeech-edit-lexicon": "Tafatirayaasha qaamuuska Wikispeech",
+	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|Tafatiraha qaamuuska Wikispeech}}"
+}

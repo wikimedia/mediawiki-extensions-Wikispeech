@@ -14,6 +14,7 @@ use MediaWiki\Languages\LanguageNameUtils;
 use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\VoiceHandler;
 use SpecialPage;
+use Wikimedia\Codex\Localization\MediaWikiLocalization;
 use Wikimedia\Codex\Utility\Codex;
 use Wikimedia\Codex\Utility\Sanitizer;
 
@@ -96,7 +97,7 @@ class SpecialTestListen extends SpecialPage {
 			$this->getContext()
 		);
 
-		$codex = new Codex();
+		$codex = new Codex( new MediaWikiLocalization( $this->getContext() ) );
 		// phpcs:ignore Generic.Files.LineLength
 		$ssmlSpeakTag = '<speak xml:lang="en-US" version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd">...</speak>';
 		$sanitizer = new Sanitizer();

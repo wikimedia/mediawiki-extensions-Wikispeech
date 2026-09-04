@@ -16,9 +16,11 @@ use DOMXPath;
 use LogicException;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Image;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
-use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
-use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
-use MediaWiki\Wikispeech\Segment\PartOfContent\TableHeader;
+
+// TODO: See T424044.
+// use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
+// use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
+// use MediaWiki\Wikispeech\Segment\PartOfContent\TableHeader;
 
 /**
  * Used for cleaning text with HTML markup. The cleaned text is used
@@ -258,9 +260,11 @@ class Cleaner {
 	 */
 	private function addPartOfContent( $element ) {
 		$partOfContent = Link::fromElement( $element ) ??
-			Table::fromElement( $element ) ??
-			TableHeader::fromElement( $element ) ??
-			TableCell::fromElement( $element ) ??
+			// TODO: Announcing tables is disabled until the column a cell is
+			// in can be worked out correctly. See T424044.
+			// Table::fromElement( $element ) ??
+			// TableHeader::fromElement( $element ) ??
+			// TableCell::fromElement( $element ) ??
 			Image::fromElement( $element );
 		if ( $partOfContent ) {
 			$this->cleanedContent[] = $partOfContent;

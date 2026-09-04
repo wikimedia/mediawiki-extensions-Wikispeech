@@ -12,9 +12,10 @@ use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Cleaner;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Image;
 use MediaWiki\Wikispeech\Segment\PartOfContent\Link;
-use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
-use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
-use MediaWiki\Wikispeech\Segment\PartOfContent\TableHeader;
+// TODO: See T424044.
+// use MediaWiki\Wikispeech\Segment\PartOfContent\Table;
+// use MediaWiki\Wikispeech\Segment\PartOfContent\TableCell;
+// use MediaWiki\Wikispeech\Segment\PartOfContent\TableHeader;
 use MediaWiki\Wikispeech\Segment\SegmentBreak;
 use MediaWiki\Wikispeech\Segment\SegmentContent;
 use MediaWikiUnitTestCase;
@@ -475,39 +476,41 @@ class CleanerTest extends MediaWikiUnitTestCase {
 					new CleanedText( ' at the start', './text()' )
 				]
 			],
-			'Table with headers in first row' => [
-				'<table>' .
-					'<tbody>' .
-						'<tr>' .
-							'<th>Animal</th>' .
-							'<th>Food</th>' .
-						'</tr>' .
-						'<tr>' .
-							'<td>Monkey</td>' .
-							'<td>Banana</td>' .
-						'</tr>' .
-						'<tr>' .
-							'<td>Penguin</td>' .
-							'<td>Fish</td>' .
-						'</tr>' .
-					'</tbody>' .
-				'</table>',
-				[
-					new Table(),
-					new TableHeader(),
-					new CleanedText( 'Animal', './table/tbody/tr[1]/th[1]/text()' ),
-					new TableHeader(),
-					new CleanedText( 'Food', './table/tbody/tr[1]/th[2]/text()' ),
-					new TableCell( 'Animal' ),
-					new CleanedText( 'Monkey', './table/tbody/tr[2]/td[1]/text()' ),
-					new TableCell( 'Food' ),
-					new CleanedText( 'Banana', './table/tbody/tr[2]/td[2]/text()' ),
-					new TableCell( 'Animal' ),
-					new CleanedText( 'Penguin', './table/tbody/tr[3]/td[1]/text()' ),
-					new TableCell( 'Food' ),
-					new CleanedText( 'Fish', './table/tbody/tr[3]/td[2]/text()' ),
-				]
-			],
+			// TODO: Announcing tables is disabled until the column a cell is
+			// in can be worked out correctly. See T424044.
+			// 'Table with headers in first row' => [
+			// 	'<table>' .
+			// 		'<tbody>' .
+			// 			'<tr>' .
+			// 				'<th>Animal</th>' .
+			// 				'<th>Food</th>' .
+			// 			'</tr>' .
+			// 			'<tr>' .
+			// 				'<td>Monkey</td>' .
+			// 				'<td>Banana</td>' .
+			// 			'</tr>' .
+			// 			'<tr>' .
+			// 				'<td>Penguin</td>' .
+			// 				'<td>Fish</td>' .
+			// 			'</tr>' .
+			// 		'</tbody>' .
+			// 	'</table>',
+			// 	[
+			// 		new Table(),
+			// 		new TableHeader(),
+			// 		new CleanedText( 'Animal', './table/tbody/tr[1]/th[1]/text()' ),
+			// 		new TableHeader(),
+			// 		new CleanedText( 'Food', './table/tbody/tr[1]/th[2]/text()' ),
+			// 		new TableCell( 'Animal' ),
+			// 		new CleanedText( 'Monkey', './table/tbody/tr[2]/td[1]/text()' ),
+			// 		new TableCell( 'Food' ),
+			// 		new CleanedText( 'Banana', './table/tbody/tr[2]/td[2]/text()' ),
+			// 		new TableCell( 'Animal' ),
+			// 		new CleanedText( 'Penguin', './table/tbody/tr[3]/td[1]/text()' ),
+			// 		new TableCell( 'Food' ),
+			// 		new CleanedText( 'Fish', './table/tbody/tr[3]/td[2]/text()' ),
+			// 	]
+			// ],
 			'Image with alt text' => [
 				'text with <img alt="alternative text" /> in it',
 				[

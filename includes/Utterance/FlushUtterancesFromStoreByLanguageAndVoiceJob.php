@@ -10,7 +10,7 @@ namespace MediaWiki\Wikispeech\Utterance;
 
 use Job;
 use MediaWiki\Logger\LoggerFactory;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use Psr\Log\LoggerInterface;
 
 /**

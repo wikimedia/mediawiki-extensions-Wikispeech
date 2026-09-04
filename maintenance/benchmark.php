@@ -12,7 +12,7 @@ use EmptyBagOStuff;
 use Maintenance;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\SegmentList;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use RuntimeException;

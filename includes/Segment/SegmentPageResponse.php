@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Wikispeech\Segment;
 
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 
 /**
  * @file

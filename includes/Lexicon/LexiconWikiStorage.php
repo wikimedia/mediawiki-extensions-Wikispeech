@@ -17,7 +17,7 @@ use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use RuntimeException;
 use User;
 use WikiPage;

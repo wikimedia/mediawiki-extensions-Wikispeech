@@ -12,7 +12,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\PermissionManager;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use MediaWiki\User\UserOptionsManager;
 use MediaWiki\Wikispeech\Hooks\PlayerHooks;
 use MediaWiki\Wikispeech\VoiceHandler;

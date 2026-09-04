@@ -13,7 +13,7 @@ use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\RevisionSlotsUpdate;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use RuntimeException;
 use TestUserRegistry;
 use WikiPage;

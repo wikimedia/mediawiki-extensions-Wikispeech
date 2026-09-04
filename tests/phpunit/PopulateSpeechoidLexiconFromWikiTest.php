@@ -9,7 +9,7 @@ namespace MediaWiki\Wikispeech\Tests;
  */
 
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntry;
 use MediaWiki\Wikispeech\Lexicon\LexiconEntryItem;
 use MediaWiki\Wikispeech\Lexicon\LexiconSpeechoidStorage;

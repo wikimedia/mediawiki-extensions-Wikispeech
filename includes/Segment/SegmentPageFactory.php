@@ -13,7 +13,7 @@ use LogicException;
 use MediaWiki\Config\Config;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use RuntimeException;
 use Wikimedia\ObjectCache\WANObjectCache;
 

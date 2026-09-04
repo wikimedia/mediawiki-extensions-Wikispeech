@@ -15,7 +15,7 @@ use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\PageProvider;
 use MediaWiki\Wikispeech\Segment\PageRevisionProperties;
 use MediaWiki\Wikispeech\Segment\Segmenter;

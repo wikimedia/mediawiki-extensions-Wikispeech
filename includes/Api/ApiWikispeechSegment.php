@@ -14,7 +14,7 @@ use ApiMain;
 use FormatJson;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use MediaWiki\Wikispeech\ConfigurationValidator;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;
 use Wikimedia\ObjectCache\WANObjectCache;

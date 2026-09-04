@@ -11,7 +11,7 @@ namespace MediaWiki\Wikispeech\Utterance;
 use DateTime;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use Psr\Log\LoggerInterface;
 use Wikimedia\ObjectCache\WANObjectCache;
 

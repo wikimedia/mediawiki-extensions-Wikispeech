@@ -13,7 +13,7 @@ use MediaWiki\Config\HashConfig;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
-use Mediawiki\Title\Title;
+use MediaWiki\Title\Title;
 use MediaWiki\Wikispeech\Segment\CleanedText;
 use MediaWiki\Wikispeech\Segment\Segment;
 use MediaWiki\Wikispeech\Segment\SegmentPageFactory;

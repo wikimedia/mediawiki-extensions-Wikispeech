@@ -196,7 +196,6 @@ class Ui {
 	 */
 
 	addButton( group, icon, onClick, label, classes, id ) {
-		// eslint-disable-next-line mediawiki/class-doc
 		const button = new OO.ui.ButtonWidget( {
 			icon: icon,
 			classes: classes,

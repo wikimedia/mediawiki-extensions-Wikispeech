@@ -34,7 +34,6 @@ class Highlighter {
 			// Remove nulls that were added for items without nodes.
 			.filter( ( item ) => item );
 		// Class name is documented above
-		// eslint-disable-next-line mediawiki/class-doc
 		const span = $( '<span>' )
 			.addClass( this.utteranceHighlightingClass )
 			.get( 0 );

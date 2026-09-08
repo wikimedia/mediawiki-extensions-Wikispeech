@@ -15,8 +15,10 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Wikispeech\Api\ApiWikispeechListen;
 use MediaWiki\Wikispeech\Segment\OutdatedOrInvalidRevisionException;
+use MediaWiki\Wikispeech\SpeechoidConnector;
 use MediaWiki\Wikispeech\Utterance\UtteranceGenerator;
 use MediaWiki\Wikispeech\VoiceHandler;
+use RuntimeException;
 use Wikimedia\ObjectCache\WANObjectCache;
 use Wikimedia\TestingAccessWrapper;
 
@@ -321,6 +323,70 @@ class ApiWikispeechListenTest extends ApiTestCase {
 			'segment' => 'hash',
 			'lang' => 'en',
 			'consumer-url' => 'https://consumer.url'
+		] );
+	}
+
+	private function partOfContentSegmentHashes( string $page ): array {
+		$response = $this->doApiRequest( [
+			'action' => 'wikispeech-segment',
+			'page' => $page,
+			'part-of-content' => 1
+		] );
+		$hashes = [];
+		foreach ( $response[0]['wikispeech-segment']['segments'] as $segment ) {
+			$hashes[] = $segment['hash'];
+		}
+		return $hashes;
+	}
+
+	public function testRequest_partOfContentGiven_segmentIsFound() {
+		$speechoidConnector = $this->createMock( SpeechoidConnector::class );
+		$speechoidConnector->method( 'synthesizeText' )->willReturn( [
+			'audio_data' => 'AUDIO',
+			'tokens' => [ [ 'orth' => 'Text', 'endtime' => 100 ] ]
+		] );
+		$this->setService(
+			'Wikispeech.SpeechoidConnector',
+			$speechoidConnector
+		);
+		$page = WikiPageTestUtil::addPage(
+			'Page',
+			'Text with [[Main Page|a link]] in it.'
+		);
+		$hashes = $this->partOfContentSegmentHashes( 'Page' );
+		$hash = $hashes[ count( $hashes ) - 1 ];
+
+		$response = $this->doApiRequest( [
+			'action' => 'wikispeech-listen',
+			'revision' => $page->getLatest(),
+			'segment' => $hash,
+			'lang' => 'en',
+			'voice' => 'en-voice1',
+			'part-of-content' => 1
+		] );
+
+		$this->assertSame(
+			'AUDIO',
+			$response[0]['wikispeech-listen']['audio']
+		);
+	}
+
+	public function testRequest_partOfContentNotGiven_segmentIsNotFound() {
+		$page = WikiPageTestUtil::addPage(
+			'Page',
+			'Text with [[Main Page|a link]] in it.'
+		);
+		$hashes = $this->partOfContentSegmentHashes( 'Page' );
+		$hash = $hashes[ count( $hashes ) - 1 ];
+
+		$this->expectException( RuntimeException::class );
+		$this->expectExceptionMessage( 'No such segment' );
+		$this->doApiRequest( [
+			'action' => 'wikispeech-listen',
+			'revision' => $page->getLatest(),
+			'segment' => $hash,
+			'lang' => 'en',
+			'voice' => 'en-voice1'
 		] );
 	}
 }

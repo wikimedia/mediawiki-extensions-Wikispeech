@@ -252,7 +252,8 @@ class UtteranceGeneratorTest extends MediaWikiIntegrationTestCase {
 			'anna',
 			'sv',
 			456,
-			'SEGMENT HASH'
+			'SEGMENT HASH',
+			false
 		);
 
 		$expectedUtterance = [

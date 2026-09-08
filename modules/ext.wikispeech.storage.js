@@ -294,6 +294,9 @@ class Storage {
 			revision: mw.config.get( 'wgRevisionId' ),
 			segment: segmentHash
 		};
+		if ( mw.user.options.get( 'wikispeechPartOfContent' ) === true ) {
+			options[ 'part-of-content' ] = 1;
+		}
 
 		if ( voice !== '' ) {
 			options.voice = voice;

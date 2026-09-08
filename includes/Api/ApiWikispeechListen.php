@@ -172,6 +172,7 @@ class ApiWikispeechListen extends ApiBase {
 					$language,
 					$inputParameters['revision'],
 					$inputParameters['segment'],
+					$inputParameters['part-of-content'],
 					$inputParameters['consumer-url'],
 					$this->listenMetricEntry
 				);
@@ -379,6 +380,9 @@ class ApiWikispeechListen extends ApiBase {
 				],
 				'message-key' => [
 					ParamValidator::PARAM_TYPE => 'string'
+				],
+				'part-of-content' => [
+					ParamValidator::PARAM_TYPE => 'boolean'
 				]
 			]
 		);

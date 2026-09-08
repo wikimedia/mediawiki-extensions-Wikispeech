@@ -253,6 +253,27 @@ QUnit.test( 'loadAudio()', function ( assert ) {
 	);
 } );
 
+QUnit.test( 'loadAudio(): part of content enabled', function ( assert ) {
+	mw.config.set( 'wgRevisionId', 1 );
+	mw.config.set( 'wgPageContentLanguage', 'en' );
+	mw.user.options.set( 'wikispeechPartOfContent', true );
+	this.storage.utterances[ 0 ].hash = 'hash1234';
+	this.storage.api.get.returns( $.Deferred() );
+
+	this.storage.loadAudio( this.storage.utterances[ 0 ] );
+
+	assert.deepEqual(
+		this.storage.api.get.firstCall.args[ 0 ],
+		{
+			action: 'wikispeech-listen',
+			lang: 'en',
+			revision: 1,
+			segment: 'hash1234',
+			'part-of-content': 1
+		}
+	);
+} );
+
 QUnit.test( 'loadAudio(): request successful', async function ( assert ) {
 	mw.config.set( 'wgPageContentLanguage', 'en' );
 	const response = {

@@ -323,6 +323,7 @@ class SegmentPageFactory extends SegmentFactory {
 			$revisionId,
 			var_export( $removeTags, true ),
 			implode( '-', $segmentBreakingTags ),
+			$this->partOfContent,
 			$pageProvider->getCachedSegmentsKeyComponents()
 		];
 		return $this->cache->makeKey(

@@ -253,6 +253,8 @@ class UtteranceGenerator {
 	 * @param string $language
 	 * @param int $revisionId
 	 * @param string $segmentHash
+	 * @param bool $partOfContent Must match the value the segments were
+	 *  created with, or $segmentHash will not be found.
 	 * @param string|null $consumerUrl URL to the script path on the consumer,
 	 *  if used as a producer.
 	 * @param ListenMetricsEntry|null $listenMetricEntry Add page and segment
@@ -265,12 +267,14 @@ class UtteranceGenerator {
 		string $language,
 		int $revisionId,
 		string $segmentHash,
+		bool $partOfContent,
 		?string $consumerUrl = null,
 		?ListenMetricsEntry $listenMetricEntry = null
 	): array {
 		$segmentPageResponse = $this->segmentPageFactory
 			->setSegmentBreakingTags( null )
 			->setRemoveTags( null )
+			->setPartOfContent( $partOfContent )
 			->setUseSegmentsCache( true )
 			->setUseRevisionPropertiesCache( true )
 			->setContextSource( $this->context )

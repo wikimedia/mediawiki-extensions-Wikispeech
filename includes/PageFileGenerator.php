@@ -96,6 +96,8 @@ class PageFileGenerator {
 				$language,
 				$revisionId,
 				$segment->getHash(),
+				// We might want to look over this later, but for now we don't use the cache for page files.
+				false,
 				$consumerUrl
 			);
 			$audioData = base64_decode( $utterance['audio'] );

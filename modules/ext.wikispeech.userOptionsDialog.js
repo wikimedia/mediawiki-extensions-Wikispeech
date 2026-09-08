@@ -51,13 +51,9 @@ class UserOptionsDialog extends OO.ui.ProcessDialog {
 		const speechRateField = new OO.ui.FieldLayout( this.speechRateInput );
 		speechRateFieldset.addItems( [ speechRateField ] );
 
-		// MediaWiki stores booleans as strings: '1' for true, '' for false.
-		const partOfContentInputRaw = mw.user.options.get( 'wikispeechPartOfContent' );
-		const partOfContentInput = partOfContentInputRaw === '1';
-
 		// Adding extra part of content
 		this.partOfContent = new OO.ui.CheckboxInputWidget( {
-			selected: partOfContentInput
+			selected: mw.user.options.get( 'wikispeechPartOfContent' )
 		} );
 		const layout = new OO.ui.FieldLayout(
 			this.partOfContent,

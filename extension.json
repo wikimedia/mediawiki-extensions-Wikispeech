@@ -220,6 +220,7 @@
 			"tests/qunit/ext.wikispeech.highlighter.test.js",
 			"tests/qunit/ext.wikispeech.player.test.js",
 			"tests/qunit/ext.wikispeech.selectionPlayer.test.js",
+			"tests/qunit/ext.wikispeech.sharedUserOptionSettings.test.js",
 			"tests/qunit/ext.wikispeech.storage.test.js",
 			"tests/qunit/ext.wikispeech.transcriptionPreviewer.test.js",
 			"modules/ext.wikispeech.util.js",

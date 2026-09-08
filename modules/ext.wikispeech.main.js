@@ -53,7 +53,10 @@ class Main {
 		}
 
 		const api = new mw.Api();
-		await addUserOptions( api, true );
+		if ( !mw.config.get( 'wgWikispeechProducerUrl' ) ) {
+			// On consumer the gadget has already read the options.
+			await addUserOptions( api, true );
+		}
 
 		this.storage.loadUtterances( window );
 		// Prepare the first utterance for playback.

@@ -60,8 +60,7 @@ QUnit.test( 'loadUtterances()', async function ( assert ) {
 		this.storage.api.get.firstCall.args[ 0 ],
 		{
 			action: 'wikispeech-segment',
-			page: 'Page',
-			'part-of-content': false
+			page: 'Page'
 		}
 	);
 	const expectedUtterances = [ {
@@ -105,8 +104,7 @@ QUnit.test( 'loadUtterances(): pass URL as consumer', function ( assert ) {
 		{
 			action: 'wikispeech-segment',
 			page: 'Page',
-			'consumer-url': 'https://consumer.url/w',
-			'part-of-content': false
+			'consumer-url': 'https://consumer.url/w'
 		}
 	);
 } );
@@ -134,7 +132,7 @@ QUnit.test( 'loadUtterances(): part of content enabled', function ( assert ) {
 		{
 			action: 'wikispeech-segment',
 			page: 'Page',
-			'part-of-content': true
+			'part-of-content': 1
 		}
 	);
 } );

@@ -4,6 +4,23 @@
 
 const defaultOptions = require( './default-user-options.json' );
 
+/**
+ * Give a user option the type it is supposed to have.
+ *
+ * User preferences are always strings, so options that are meant to be
+ * booleans are converted. The rest are left as they are.
+ *
+ * @param {string} key
+ * @param {string|number|boolean} value
+ * @return {string|number|boolean}
+ */
+function normalizeOption( key, value ) {
+	if ( typeof defaultOptions[ key ] === 'boolean' ) {
+		return value === '1';
+	}
+	return value;
+}
+
 function computeOptionsPage() {
 	const namespace = mw.config.get( 'wgNamespaceIds' ).user;
 	const userPage = mw.Title.makeTitle( namespace, mw.user.getName() ).getPrefixedText();
@@ -82,7 +99,7 @@ function addUserOptions( api, isProducer ) {
 			} else {
 				finalValue = defaultOptions[ key ];
 			}
-			mw.user.options.set( key, finalValue );
+			mw.user.options.set( key, normalizeOption( key, finalValue ) );
 		} );
 		done.resolve();
 	} else {
@@ -122,11 +139,15 @@ function writeUserOptionsPreferences( api, dialog, isProducer ) {
 	const voice = dialog.getVoice();
 	options[ voice.variable ] = voice.voice;
 	options.wikispeechSpeechRate = dialog.getSpeechRate();
-	options.wikispeechPartOfContent = dialog.getPartOfContent() ? '1' : '0';
+	options.wikispeechPartOfContent = dialog.getPartOfContent();
 
 	api.saveOption( voice.variable, voice.voice );
 	api.saveOption( 'wikispeechSpeechRate', String( options.wikispeechSpeechRate ) );
-	api.saveOption( 'wikispeechPartOfContent', options.wikispeechPartOfContent );
+	// User options are strings, unlike the JSON written to the options page.
+	api.saveOption(
+		'wikispeechPartOfContent',
+		options.wikispeechPartOfContent ? '1' : '0'
+	);
 
 	if ( !isProducer ) {
 		const optionsJson = JSON.stringify( options, null, 4 );

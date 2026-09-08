@@ -39,9 +39,11 @@ class Storage {
 		const page = mw.config.get( 'wgPageName' );
 		const options = {
 			action: 'wikispeech-segment',
-			page: page,
-			'part-of-content': mw.user.options.get( 'wikispeechPartOfContent' )
+			page: page
 		};
+		if ( mw.user.options.get( 'wikispeechPartOfContent' ) === true ) {
+			options[ 'part-of-content' ] = 1;
+		}
 		if ( mw.config.get( 'wgWikispeechProducerUrl' ) ) {
 			options[ 'consumer-url' ] = window.location.origin +
 				mw.config.get( 'wgScriptPath' );

@@ -25,6 +25,7 @@
 	"apihelp-wikispeech-listen-param-consumer-url": "URL á ruta de scripts do wiki do consumidor.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "O valor predeterminado é «false». Ao definirse como «true», os datos anónimos non se almacenarán no rexistro de métricas. Úsase principalmente ao executar a renderización previa para evitar engadir solicitudes de robots ás estatísticas.",
 	"apihelp-wikispeech-listen-param-message-key": "Clave da mensaxe a sintetizar.",
+	"apihelp-wikispeech-listen-param-part-of-content": "Engade contido adicional para certos elementos. Debe coincidir co valor empregado cando se crearon os segmentos.",
 	"apierror-wikispeech-listen-deleted-revision": "Non se poden escoitar as revisións eliminadas.",
 	"apierror-wikispeech-listen-notallowed": "Non tes os dereitos necesarios para chamar a esta acción da API.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> non é unha lingua válida. Debería ser unha destas: $2.",

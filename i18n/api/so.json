@@ -25,6 +25,7 @@
 	"apihelp-wikispeech-listen-param-consumer-url": "URL-ka waddada qoraalka ee wikiga macaamilka.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Sida caadiga ah waa <code>false</code>. Haddii uu yahay <code>true</code>, xogta qarsoon laguma kaydin doono diiwaanka cabbirrada joornaalka. Inta badan waxaa loo adeegsadaa marka la fulinayo samaynta horudhaca ah si looga fogaado in codsiyada robots lagu daro tirakoobka.",
 	"apihelp-wikispeech-listen-param-message-key": "Furaha farriinta loo beddelayo hadal macmal ah.",
+	"apihelp-wikispeech-listen-param-part-of-content": "Ku dar nuxur dheeraad ah oo loogu talagalay xubno gaar ah. Waa inuu waafaqaa qiimaha la isticmaalay markii qaybaha la abuurayay.",
 	"apierror-wikispeech-listen-deleted-revision": "Dib u eegisyada la tirtiray lama dhagaysan karo.",
 	"apierror-wikispeech-listen-notallowed": "Ma lihid oggolaanshaha aad ugu yeeri karto ficilkan API-ga.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ma aha luuqad ansax ah. Waa inay ka mid noqotaa: $2.",

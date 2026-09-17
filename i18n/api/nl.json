@@ -26,6 +26,7 @@
 	"apihelp-wikispeech-listen-param-consumer-url": "URL naar het scriptpad van de consumerwiki.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Standaard ingesteld op ''false''. Indien ''true'' worden anonieme gegevens niet opgeslagen in het dagboekstatistiekenlogboek. Wordt voornamelijk gebruikt bij de voorverwerking om te voorkomen dat robotverzoeken aan statistieken worden toegevoegd.",
 	"apihelp-wikispeech-listen-param-message-key": "Berichtsleutel voor synthese.",
+	"apihelp-wikispeech-listen-param-part-of-content": "Voeg extra inhoud toe voor bepaalde elementen. Deze moet overeenkomen met de waarde die is gebruikt bij het aanmaken van de segmenten.",
 	"apierror-wikispeech-listen-deleted-revision": "Verwijderde versies kunnen niet worden beluisterd.",
 	"apierror-wikispeech-listen-notallowed": "U hebt niet de rechten om deze API-handeling aan te roepen.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> is geen geldige taal. Moet één zijn van: $2.",

@@ -18,7 +18,7 @@ use SkinTemplate;
 
 /**
  * @group Database
- * @covers MediaWiki\Wikispeech\Hooks\LexiconArticleEditHooks
+ * @covers \MediaWiki\Wikispeech\Hooks\LexiconArticleEditHooks
  */
 class LexiconArticleEditHooksTest extends MediaWikiIntegrationTestCase {
 

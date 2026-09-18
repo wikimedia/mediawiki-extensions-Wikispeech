@@ -84,8 +84,6 @@ class Benchmark extends Maintenance {
 	private $title;
 
 	/**
-	 * Benchmark constructor.
-	 *
 	 * @since 0.1.8
 	 */
 	public function __construct() {

@@ -12,6 +12,7 @@ namespace MediaWiki\Wikispeech\Api;
 use Config;
 use InvalidArgumentException;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MainConfigNames;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -171,7 +172,8 @@ class ListenMetricsEntryFileJournal implements ListenMetricsEntryJournal {
 	private function getCurrentMetricsJournalFile(): string {
 		$metricsJournalFile = $this->config->get( 'WikispeechListenMetricsJournalFile' );
 		if ( !$metricsJournalFile ) {
-			$metricsJournalFile = "{$this->config->get( 'UploadDirectory' )}/wikispeechListenMetrics.log";
+			$uploadDirectory = $this->config->get( MainConfigNames::UploadDirectory );
+			$metricsJournalFile = "$uploadDirectory/wikispeechListenMetrics.log";
 		}
 		return $metricsJournalFile;
 	}

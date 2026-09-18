@@ -249,7 +249,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'revisiondelete',
 			'type' => 'revision',
-			'target' => $page->getTitle()->getDbKey(),
+			'target' => $page->getTitle()->getDBkey(),
 			'ids' => $oldId,
 			'hide' => 'content',
 			'token' => $testSysop->getEditToken(),
@@ -288,7 +288,7 @@ class ApiWikispeechListenTest extends ApiTestCase {
 		$this->doApiRequest( [
 			'action' => 'revisiondelete',
 			'type' => 'revision',
-			'target' => $page->getTitle()->getDbKey(),
+			'target' => $page->getTitle()->getDBkey(),
 			'ids' => $oldId,
 			'hide' => 'content',
 			'token' => $testSysop->getEditToken(),

@@ -9,7 +9,7 @@ use MediaWikiUnitTestCase;
 use Wikimedia\TestingAccessWrapper;
 
 /**
- * @covers MediaWiki\Wikispeech\Specials\LanguageOptionsTrait
+ * @covers \MediaWiki\Wikispeech\Specials\LanguageOptionsTrait
  */
 class LanguageOptionsTraitTest extends MediaWikiUnitTestCase {
 

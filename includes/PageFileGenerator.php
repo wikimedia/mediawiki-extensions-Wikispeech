@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech;
 
 use IContextSource;
 use MediaWiki\Config\Config;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Shell\Shell;
 use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleFactory;
@@ -116,7 +117,7 @@ class PageFileGenerator {
 
 		$decodedFilePath = stream_get_meta_data( $decodedFile )['uri'];
 		$this->runCommand( 'opusdec', '--force-wav', $mergedFilePath, $decodedFilePath );
-		$dirPath = $this->config->get( 'UploadDirectory' ) . '/page-audio';
+		$dirPath = $this->config->get( MainConfigNames::UploadDirectory ) . '/page-audio';
 		// Make sure the directory exists.
 		if ( !is_dir( $dirPath ) ) {
 			$createdDirectory = mkdir( $dirPath );

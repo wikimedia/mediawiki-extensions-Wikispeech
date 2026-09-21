@@ -26,6 +26,7 @@
 	"apihelp-wikispeech-listen-param-consumer-url": "컨슈머 위키의 스크립트 경로 URL입니다.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "기본값은 false입니다. true로 설정하면 익명 데이터가 저널 측정항목 로그에 저장되지 않습니다. 주로 사전 렌더링 실행 시 로봇 요청이 통계에 추가되는 것을 방지하기 위해 사용됩니다.",
 	"apihelp-wikispeech-listen-param-message-key": "합성할 메시지 키입니다.",
+	"apihelp-wikispeech-listen-param-part-of-content": "특정 원소에 추가 콘텐츠를 추가합니다. 해당 콘텐츠는 세그먼트 생성 시 사용된 값과 일치해야 합니다.",
 	"apierror-wikispeech-listen-deleted-revision": "삭제된 판은 청취가 불가능합니다.",
 	"apierror-wikispeech-listen-notallowed": "당신은 이 API 작업을 호출할 권한이 없습니다.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code>은(는) 유효한 언어가 아닙니다. 다음 중 하나여야 합니다: $2.",

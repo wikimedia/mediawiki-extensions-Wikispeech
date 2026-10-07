@@ -25,6 +25,7 @@
 	"apihelp-wikispeech-listen-param-consumer-url": "عنوان URL لمسار البرنامج النصي الخاص بـ wiki للمستهلك.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "افتراضيًا، القيمة \"خطأ\". إذا كانت \"صحيحًا\"، فلن تُخزَّن البيانات المجهولة في سجل مقاييس المجلة. يُستخدم هذا الخيار بشكل أساسي عند تنفيذ عمليات العرض المسبق لتجنب إضافة طلبات روبوتية إلى الإحصائيات.",
 	"apihelp-wikispeech-listen-param-message-key": "مفتاح الرسالة للتوليف.",
+	"apihelp-wikispeech-listen-param-part-of-content": "أضف محتوى إضافياً لعناصر معينة. يجب أن يتطابق مع القيمة المستخدمة عند إنشاء المقاطع.",
 	"apierror-wikispeech-listen-deleted-revision": "لا يمكن الاستماع إلى المراجعات المحذوفة.",
 	"apierror-wikispeech-listen-notallowed": "ليس لديك الحق في استدعاء إجراء API هذا.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ليست لغة صالحة. يجب أن تكون واحدة مما يلي: $2.",

@@ -87,8 +87,17 @@
 	"prefs-wikispeech-highlighting-default-option": "تلواله - ارغواني + نارنجي",
 	"prefs-wikispeech-highlighting-green-blue": "زرغون + شين",
 	"wikispeech-region-player": "ويکي‌وينا غږوونکی",
+	"wikispeech-report-table-missing": "د وينگ د پيل‌نښې لښتيال سم جوړښت نلري.",
+	"wikispeech-pronunciation-saved": "د وينگ راپور په لاندې ځای کې خوندي شو:",
 	"wikispeech-report-pronunciation-error": "د وينگ تېروتنې خبر ورکول",
+	"wikispeech-report-pronunciation-get-error": "د وينگ راپور مخ نشي پورته کېدای. مهرباني وکړئ وروسته بيا هڅه وکړئ.",
+	"wikispeech-report-pronunciation-post-error": "د وينگ تېروتنې راپور خوندي نشو.",
 	"wikispeech-report-pronunciation-error-button": "راپور",
 	"wikispeech-report-pronunciation-error-context": "منښتونه",
-	"wikispeech-report-pronunciation-error-other": "نور"
+	"wikispeech-report-pronunciation-error-other": "نور",
+	"wikispeech-report-pronunciation-error-select-utterance": "د راپور ورکولو لپاره تاسو بايد يو ويی په نښه کړئ",
+	"wikispeech-no-word-error": "مهرباني وکړئ يو ويی وټاکئ: سپين‌تشيال يا ټکي مه ټاکئ.",
+	"wikispeech-one-word-only": "مهرباني وکړئ يوازې يو ويی وټاکئ.",
+	"wikispeech-tip-highlight-word": "لارښوونه: تاسو کولی شئ له راپور ورکولو دمخه يو ويی روښانه هم کړئ.",
+	"wikispeech-non-existing-page": "دا مخ شتون نلري، مهرباني وکړئ د ويکي‌وينا ټيم سره اړيکه ونيسئ."
 }

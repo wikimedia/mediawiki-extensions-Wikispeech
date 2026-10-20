@@ -11,6 +11,7 @@
 	"prefs-wikispeech-speech-rate-percent": "د وينا د چټکتيا کچه (په سلنه کې)",
 	"prefs-wikispeech-enable": "ويکي‌وينا چارنول",
 	"prefs-wikispeech-show-player": "هر وخت غږوونکی ښودل",
+	"wikispeech-notice-prefs-apply-on-next-page-load": "په غوره‌توبونو کې بدلونونه راوستل به په راتلونکي ځل د مخ بارولو پرمهال اغېز وکړي. د نوي غوره‌توبونو سره د اوسني مخ اورېدلو لپاره، تر خوندي‌کولو وروسته مخ بيا بار کړئ.",
 	"right-wikispeech-listen": "مخ ته غوږ ونيسئ",
 	"right-wikispeech-read-lexicon": "د ويکي‌وينا ويي‌پانگه لوستل",
 	"right-wikispeech-edit-lexicon": "د ويکي‌وينا ويي‌پانگه سمول",
@@ -20,6 +21,7 @@
 	"wikispeech-listen": "واورئ",
 	"wikispeech-dont-listen": "مه يې اورئ",
 	"wikispeech-error-loading-audio-title": "اډيو نشي بارېدی",
+	"wikispeech-error-loading-audio-message": "دا ښايي د ناسمې اينترنېټي نښلېدا يا په پالنگر کې د يوې تېروتنې له کبله وي. ايا تاسو غواړئ بيا هڅه وکړئ يا شاغږون بند کړئ؟",
 	"wikispeech-error-generate-preview-title": "مخکتنه نشي زېږولی",
 	"wikispeech-retry": "بيا هڅه‌کول",
 	"wikispeech-stop": "درول",
@@ -35,6 +37,7 @@
 	"wikispeech-lexicon-add-entry-success": "ويي‌پانگې ته ننوتنه ورگډه شوه.",
 	"wikispeech-lexicon-new": "نوی",
 	"wikispeech-lexicon-edit-entry-success": "ننوتنه سمه شوه.",
+	"wikispeech-lexicon-copyrightnote": "د بدلونونو خوندي‌کولو سره تاسو دا منئ چې خپله ونډه مو د [https://creativecommons.org/publicdomain/zero/1.0/ CC0]. لاندې خپره کړئ.",
 	"group-wikispeech-edit-lexicon": "د ويکي‌وينا ويي‌پانگې سموونکي",
 	"group-wikispeech-edit-lexicon-member": "{{GENDER:$1|د ويکي‌وينا ويي‌پانگې سموونکی}}"
 }

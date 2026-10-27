@@ -27,7 +27,7 @@
 	"wikispeech-error-loading-audio-message": "قد يكون السبب ضعف اتصال الإنترنت أو عطل في الخادم. هل تريد إعادة المحاولة أو إيقاف التشغيل؟",
 	"wikispeech-error-generate-preview-title": "لم يتمكن من إنشاء المعاينة",
 	"wikispeech-retry": "إعادة المحاولة",
-	"wikispeech-stop": "قف",
+	"wikispeech-stop": "إيقاف",
 	"editlexicon": "تحرير المعجم",
 	"wikispeech-language": "لغة",
 	"wikispeech-word": "كلمة",

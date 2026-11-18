@@ -1,3 +1,4 @@
+/* stylelint-disable-next-line wikimedia/selector-class-prefix */
 .wikispeech-title {
 	font-size: 1.1em;
 }
@@ -39,6 +40,7 @@
 	text-align: left;
 }
 
+/* stylelint-disable-next-line wikimedia/selector-class-prefix */
 .wikispeech-margin-top {
 	margin-top: 10px !important; /* stylelint-disable-line declaration-no-important */
 }

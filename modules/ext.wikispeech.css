@@ -28,7 +28,7 @@
 
 .ext-wikispeech-buffering-icon {
 	border: 5px solid #fc2;
-	border-top: 5px solid #0000;
+	border-top-color: transparent;
 	border-radius: 50%;
 	width: 20px;
 	height: 20px;

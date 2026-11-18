@@ -9,8 +9,6 @@
 		"commonjs": true
 	},
 	"rules": {
-		"compat/compat": "warn",
-		"no-jquery/no-done-fail": "warn",
-		"mediawiki/no-unlabeled-buttonwidget": "warn"
+		"no-jquery/no-done-fail": "warn"
 	}
 }

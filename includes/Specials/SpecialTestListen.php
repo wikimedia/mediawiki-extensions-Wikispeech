@@ -48,7 +48,6 @@ class SpecialTestListen extends SpecialPage {
 		if ( version_compare( MW_VERSION, '1.46', '>=' ) ) {
 			parent::__construct( 'TestListen' );
 		} else {
-			// @phan-suppress-next-line PhanParamTooMany
 			parent::__construct( 'TestListen', 'wikispeech-listen' );
 		}
 		$this->languageNameUtils = $languageNameUtils;

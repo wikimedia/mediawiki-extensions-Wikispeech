@@ -10,6 +10,7 @@ namespace MediaWiki\Wikispeech\Segment;
 
 use IContextSource;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Parser\Parser;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Title\Title;
@@ -68,7 +69,17 @@ class LocalWikiPageProvider extends AbstractPageProvider {
 		$page = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		$parserOptions = $page->makeParserOptions( $this->context );
 		$parserOutput = $page->getParserOutput( $parserOptions );
-		$this->setDisplayTitle( $parserOutput->getDisplayTitle() );
+		$displayTitle = $parserOutput->getDisplayTitle();
+		if ( $displayTitle === false ) {
+			// Parsoid sets no display title by default. Make the same title as Article::view().
+			$displayTitle = Parser::formatPageTitle(
+				str_replace( '_', ' ', $title->getNsText() ),
+				':',
+				$title->getText(),
+				$title->getPageLanguage()
+			);
+		}
+		$this->setDisplayTitle( $displayTitle );
 		$this->setPageContent( $parserOutput->runOutputPipeline( $parserOptions )->getContentHolderText() );
 		$this->setRevisionId( $page->getLatest() );
 	}

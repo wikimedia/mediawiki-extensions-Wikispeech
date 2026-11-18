@@ -80,19 +80,19 @@ class ApiWikispeechSegmentTest extends ApiTestCase {
 					'content' => [
 						[
 							'string' => 'Talking about ',
-							'path' => './div/p/text()[1]'
+							'path' => './div/section/p/text()[1]'
 						],
 						[
 							'string' => 'italic',
-							'path' => './div/p/i/text()'
+							'path' => './div/section/p/i/text()'
 						],
 						[
 							'string' => ' ',
-							'path' => './div/p/text()[2]'
+							'path' => './div/section/p/text()[2]'
 						],
 						[
 							'string' => 'bold',
-							'path' => './div/p/b/text()'
+							'path' => './div/section/p/b/text()'
 						]
 					],
 					'hash' => 'beeb949bc6c4193ad4903fcf93090dbd4a759b82b5d923cb0136421eb7eee3ca'

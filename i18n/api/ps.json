@@ -4,5 +4,9 @@
 			"شاه زمان پټان"
 		]
 	},
+	"apihelp-wikispeech-segment-summary": "د مخ تېچ‌ټي‌اېم‌اېل منځپانگه په برخو وېشل.",
+	"apihelp-wikispeech-segment-param-page": "د برخه‌کولو لپاره د مخ سرليک.",
+	"apihelp-wikispeech-segment-param-consumer-url": "د مصرفوونکو ويکي لاسي‌ليک لارې ته وېبتړ.",
+	"apihelp-wikispeech-listen-summary": "د وينا ترتيبول.",
 	"apihelp-wikispeech-listen-param-lang": "د ژبې کوډ."
 }

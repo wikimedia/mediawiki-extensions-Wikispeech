@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Maddi Eseberri Colomo"
+			"Maddi Eseberri Colomo",
+			"Theklan"
 		]
 	},
 	"apihelp-wikispeech-segment-summary": "Orrialde baten HTML edukia segmentutan banatu.",
@@ -25,6 +26,7 @@
 	"apihelp-wikispeech-listen-param-consumer-url": "Kontsumitzaileen wikiaren script bidearen URLa.",
 	"apihelp-wikispeech-listen-param-skip-journal-metrics": "Balio lehenetsia faltsua da. Egia bada, datu anonimoak ez dira egunerokoaren metriken erregistroan gordeko. Batez ere aurre-errendatzea exekutatzean erabiltzen da, roboten eskaerak estatistikei gehitu ez dakizkien.",
 	"apihelp-wikispeech-listen-param-message-key": "Sintetizatzeko mezu-gakoa.",
+	"apihelp-wikispeech-listen-param-part-of-content": "Gehitu eduki gehigarria elementu batzuetarako. Segmentuak sortu zirenean erabilitako balioarekin bat etorri behar du.",
 	"apierror-wikispeech-listen-deleted-revision": "Ezabatutako berrikuspenak ezin dira entzun.",
 	"apierror-wikispeech-listen-notallowed": "Ez duzu API ekintza hau deitzeko eskubiderik.",
 	"apierror-wikispeech-listen-invalid-language": "<code>$1</code> ez da hizkuntza baliozkoa. Hauetako bat izan beharko luke: $2 .",
